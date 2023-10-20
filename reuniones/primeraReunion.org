@@ -18,7 +18,6 @@ Fecha: <2023-10-20 Fri>
 - Partida:
   - Cada partida corre en un hilo propio
 
-
 *** Cliente lara
 - Ahora la onda es *NO* bloqueante. Si no hay interaccion por x cantidad de tiempo, se cierra.
 - Poner un delay para que no haya un busy wait.
@@ -30,7 +29,18 @@ Fecha: <2023-10-20 Fri>
 - Acciones. Muchas que heredan de clase.
 
 ** Division de tareas recomendacion
-1. Juego parte servidor. Box2d. Que se pueda mover
-2. Cliente.Renderizar sdl2.
-3. Protocolo, concurrencia.
+1. Juego parte servidor. Box2d. Que se pueda mover: *Fabri*
+2. Cliente.Renderizar sdl2: *Juampi*
+3. Protocolo, concurrencia: *Anto*
    1. Hay que hacer tests para serializacion y desearilazacion. Arrancar. Separar serializacion y desearilazacion de la parte de enviar.
+
+** Protocolo 
+*** Protocolo cliente->servidor
+- Crear partida
+- Unirse (ID)
+- Moverse (Direccion)
+
+*** Protocolo servidor->cliente
+- Partidas disponibles (N IDS, [ID1...])
+- Estado del juego inicial (Con vigas + agua [splash splash])
+- Actualizacion (N Gusanos, [posx 1, posy 1, vida 1...])
