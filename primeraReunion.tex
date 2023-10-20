@@ -1,0 +1,104 @@
+% Created 2023-10-20 Fri 18:05
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.1 (Org mode 9.6.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Primera reunion}
+\label{sec:org3a75765}
+Fecha: \textit{<2023-10-20 Fri>}
+
+\subsection{Apuntes natalia}
+\label{sec:org4674de3}
+\begin{itemize}
+\item \url{https://www.iforce2d.net/b2dtut} (Box2d)
+\item \url{https://lazyfoo.net/tutorials/SDL/} (SDL2)
+\item \url{https://doc.qt.io/qt-5/qtexamplesandtutorials.html} (Qt5)
+\item \url{https://gameprogrammingpatterns.com/game-loop.html} (GameLoop)
+\item \url{https://book-of-gehn.github.io/articles/2019/10/23/Constant-Rate-Loop.html} (Constant Rate Loop)
+\item \url{https://github.com/catchorg/Catch2} (Libreria para tests automatizados)
+\item \url{https://book-of-gehn.github.io/articles/2019/10/23/Constant-Rate-Loop.html} (Constant Rate Loop)
+\end{itemize}
+\subsection{Estructura natalia}
+\label{sec:org6bcd2d5}
+\begin{itemize}
+\item Monitor de partidas
+\item Clientes
+\begin{itemize}
+\item Recibe
+\begin{itemize}
+\item Referencia al monitor de partidas:
+El que llega le dice si quiere ir a una nueva o una partida existente. Es solo al inicio. \uline{Hacer null despues de usarlo?}
+\end{itemize}
+\end{itemize}
+\item Partida:
+\begin{itemize}
+\item Cada partida corre en un hilo propio
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Cliente lara}
+\label{sec:org60a060f}
+\begin{itemize}
+\item Ahora la onda es \textbf{NO} bloqueante. Si no hay interaccion por x cantidad de tiempo, se cierra.
+\item Poner un delay para que no haya un busy wait.
+\item Recibir y enviar estan en threads distintos.
+\item Como manejar los eventos?
+\begin{itemize}
+\item 4to hilo? Que haga de "despacher" de acciones. Cola bloqueante que le manda al render aka main. \textbf{\textbf{USAR FUNCION DE SDL}}. Gracias Juampi!!!!. Filtrar los eventos. Solo enviar al servidor los eventos que el servidor tiene que saber. Eventos como agrandar la pantalla, mutear, etc son propios del cliente.
+\item Cola "no bloqueante" en el main
+\end{itemize}
+\item Recibe \textbf{todo} el estado del juego. DTO?
+\item Acciones. Muchas que heredan de clase.
+\end{itemize}
+
+\subsection{Division de tareas recomendacion}
+\label{sec:org91fd679}
+\begin{enumerate}
+\item Juego parte servidor. Box2d. Que se pueda mover: \textbf{Fabri}
+\item Cliente.Renderizar sdl2: \textbf{Juampi}
+\item Protocolo, concurrencia: \textbf{Anto}
+\begin{enumerate}
+\item Hay que hacer tests para serializacion y desearilazacion. Arrancar. Separar serializacion y desearilazacion de la parte de enviar.
+\end{enumerate}
+\end{enumerate}
+
+\subsection{Protocolo}
+\label{sec:org46b2963}
+\subsubsection{Protocolo cliente->servidor}
+\label{sec:org2ad4ea3}
+\begin{itemize}
+\item Crear partida
+\item Unirse (ID)
+\item Moverse (Direccion)
+\end{itemize}
+
+\subsubsection{Protocolo servidor->cliente}
+\label{sec:orga0d5140}
+\begin{itemize}
+\item Partidas disponibles (N IDS, [ID1\ldots{}])
+\item Estado del juego inicial (Con vigas + agua [splash splash])
+\item Actualizacion (N Gusanos, [posx 1, posy 1, vida 1\ldots{}])
+\end{itemize}
+\end{document}
