@@ -29,13 +29,21 @@ include_directories("${COMMONDIR}")
 ## Ejecutable del server
 add_executable(server
   "${SERVERDIR}/main.cpp"
-  "${SERVERDIR}/aceptador.cpp"
+  # "${SERVERDIR}/recibidor.cpp"
   "${SERVERDIR}/server.cpp"
+  "${SERVERDIR}/cliente.cpp"
 
+  # Socket
   "${COMMONDIR}/resolvererror.cpp"
   "${COMMONDIR}/liberror.cpp"
   "${COMMONDIR}/resolver.cpp"
   "${COMMONDIR}/socket.cpp"
+
+  #Threads
+  "${COMMONDIR}/thread.h"
+
+  #Thread safe queue
+  "${COMMONDIR}/queue.h"
 )
 
 #Ejecutable del cliente
