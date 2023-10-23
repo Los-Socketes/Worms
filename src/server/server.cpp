@@ -16,6 +16,8 @@ void Server::recibirCliente() {
     // el protocolo
     Cliente clienteNuevo(std::move(conexionEntrante));
 
+    // clienteNuevo.mostrar
+    clienteNuevo.mostrar(this->escenariosDisponibles);
     // clienteNuevo.elegirMapaEntre(
 
     
