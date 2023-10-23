@@ -25,6 +25,11 @@ set(CLIENTDIR src/client)
 ## Ejecutable del server
 add_executable(server
   "${SERVERDIR}/main.cpp"
+  "${SERVERDIR}/aceptador.cpp"
+  "${SERVERDIR}/server.cpp"
+  "${COMMONDIR}/liberror.cpp"
+  "${COMMONDIR}/resolver.cpp"
+  "${COMMONDIR}/socket.cpp"
 )
 
 
