@@ -1,6 +1,5 @@
 # gitignore sacado de la pagina oficial de github :0
 # Fuente: https://raw.githubusercontent.com/github/gitignore/main/CMake.gitignore
-
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -12,3 +11,6 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+# Ignoro los binarios producidos
+build/server
