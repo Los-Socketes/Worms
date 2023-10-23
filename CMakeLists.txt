@@ -15,11 +15,15 @@ set(CMAKE_CXX_STANDARD 11)
 # deberia estar en .gitignore
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Incluimos los directorios con el codigo fuente de cada una de las
-# partes del TP
+# Creamos unas variables para facilitar el uso de directorios en el
+# cmake
 set(SERVERDIR src/server)
 set(COMMONDIR src/common)
 set(CLIENTDIR src/client)
+
+# Hacemos que el directorio common sea el unico directorio de donde
+# se puede incluir (sin contar el directorio propio). 
+include_directories("${COMMONDIR}")
 
 # Creacion de los ejecutables -- Notas Incluir archivo a archivo.
 ## Ejecutable del server
