@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/server.dir/src/server/main.cpp.o -o server 
+/usr/bin/c++ CMakeFiles/server.dir/src/server/main.cpp.o CMakeFiles/server.dir/src/server/aceptador.cpp.o CMakeFiles/server.dir/src/server/server.cpp.o CMakeFiles/server.dir/src/common/liberror.cpp.o CMakeFiles/server.dir/src/common/resolver.cpp.o CMakeFiles/server.dir/src/common/socket.cpp.o -o server 

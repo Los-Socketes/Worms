@@ -83,17 +83,97 @@ CMakeFiles/server.dir/src/server/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/server/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/main.cpp -o CMakeFiles/server.dir/src/server/main.cpp.s
 
+CMakeFiles/server.dir/src/server/aceptador.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/server/aceptador.cpp.o: /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/aceptador.cpp
+CMakeFiles/server.dir/src/server/aceptador.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/server.dir/src/server/aceptador.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/server/aceptador.cpp.o -MF CMakeFiles/server.dir/src/server/aceptador.cpp.o.d -o CMakeFiles/server.dir/src/server/aceptador.cpp.o -c /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/aceptador.cpp
+
+CMakeFiles/server.dir/src/server/aceptador.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/server/aceptador.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/aceptador.cpp > CMakeFiles/server.dir/src/server/aceptador.cpp.i
+
+CMakeFiles/server.dir/src/server/aceptador.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/server/aceptador.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/aceptador.cpp -o CMakeFiles/server.dir/src/server/aceptador.cpp.s
+
+CMakeFiles/server.dir/src/server/server.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/server/server.cpp.o: /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/server.cpp
+CMakeFiles/server.dir/src/server/server.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/server.dir/src/server/server.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/server/server.cpp.o -MF CMakeFiles/server.dir/src/server/server.cpp.o.d -o CMakeFiles/server.dir/src/server/server.cpp.o -c /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/server.cpp
+
+CMakeFiles/server.dir/src/server/server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/server/server.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/server.cpp > CMakeFiles/server.dir/src/server/server.cpp.i
+
+CMakeFiles/server.dir/src/server/server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/server/server.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/server/server.cpp -o CMakeFiles/server.dir/src/server/server.cpp.s
+
+CMakeFiles/server.dir/src/common/liberror.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/common/liberror.cpp.o: /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/liberror.cpp
+CMakeFiles/server.dir/src/common/liberror.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/server.dir/src/common/liberror.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/common/liberror.cpp.o -MF CMakeFiles/server.dir/src/common/liberror.cpp.o.d -o CMakeFiles/server.dir/src/common/liberror.cpp.o -c /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/liberror.cpp
+
+CMakeFiles/server.dir/src/common/liberror.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/common/liberror.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/liberror.cpp > CMakeFiles/server.dir/src/common/liberror.cpp.i
+
+CMakeFiles/server.dir/src/common/liberror.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/common/liberror.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/liberror.cpp -o CMakeFiles/server.dir/src/common/liberror.cpp.s
+
+CMakeFiles/server.dir/src/common/resolver.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/common/resolver.cpp.o: /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/resolver.cpp
+CMakeFiles/server.dir/src/common/resolver.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/server.dir/src/common/resolver.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/common/resolver.cpp.o -MF CMakeFiles/server.dir/src/common/resolver.cpp.o.d -o CMakeFiles/server.dir/src/common/resolver.cpp.o -c /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/resolver.cpp
+
+CMakeFiles/server.dir/src/common/resolver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/common/resolver.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/resolver.cpp > CMakeFiles/server.dir/src/common/resolver.cpp.i
+
+CMakeFiles/server.dir/src/common/resolver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/common/resolver.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/resolver.cpp -o CMakeFiles/server.dir/src/common/resolver.cpp.s
+
+CMakeFiles/server.dir/src/common/socket.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/common/socket.cpp.o: /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/socket.cpp
+CMakeFiles/server.dir/src/common/socket.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/server.dir/src/common/socket.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/common/socket.cpp.o -MF CMakeFiles/server.dir/src/common/socket.cpp.o.d -o CMakeFiles/server.dir/src/common/socket.cpp.o -c /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/socket.cpp
+
+CMakeFiles/server.dir/src/common/socket.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/common/socket.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/socket.cpp > CMakeFiles/server.dir/src/common/socket.cpp.i
+
+CMakeFiles/server.dir/src/common/socket.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/common/socket.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabri/Documents/Facultad/Taller/TPS/worms/src/common/socket.cpp -o CMakeFiles/server.dir/src/common/socket.cpp.s
+
 # Object files for target server
 server_OBJECTS = \
-"CMakeFiles/server.dir/src/server/main.cpp.o"
+"CMakeFiles/server.dir/src/server/main.cpp.o" \
+"CMakeFiles/server.dir/src/server/aceptador.cpp.o" \
+"CMakeFiles/server.dir/src/server/server.cpp.o" \
+"CMakeFiles/server.dir/src/common/liberror.cpp.o" \
+"CMakeFiles/server.dir/src/common/resolver.cpp.o" \
+"CMakeFiles/server.dir/src/common/socket.cpp.o"
 
 # External object files for target server
 server_EXTERNAL_OBJECTS =
 
 server: CMakeFiles/server.dir/src/server/main.cpp.o
+server: CMakeFiles/server.dir/src/server/aceptador.cpp.o
+server: CMakeFiles/server.dir/src/server/server.cpp.o
+server: CMakeFiles/server.dir/src/common/liberror.cpp.o
+server: CMakeFiles/server.dir/src/common/resolver.cpp.o
+server: CMakeFiles/server.dir/src/common/socket.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

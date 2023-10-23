@@ -129,6 +129,102 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
+src/common/liberror.o: src/common/liberror.cpp.o
+.PHONY : src/common/liberror.o
+
+# target to build an object file
+src/common/liberror.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/liberror.cpp.o
+.PHONY : src/common/liberror.cpp.o
+
+src/common/liberror.i: src/common/liberror.cpp.i
+.PHONY : src/common/liberror.i
+
+# target to preprocess a source file
+src/common/liberror.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/liberror.cpp.i
+.PHONY : src/common/liberror.cpp.i
+
+src/common/liberror.s: src/common/liberror.cpp.s
+.PHONY : src/common/liberror.s
+
+# target to generate assembly for a file
+src/common/liberror.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/liberror.cpp.s
+.PHONY : src/common/liberror.cpp.s
+
+src/common/resolver.o: src/common/resolver.cpp.o
+.PHONY : src/common/resolver.o
+
+# target to build an object file
+src/common/resolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/resolver.cpp.o
+.PHONY : src/common/resolver.cpp.o
+
+src/common/resolver.i: src/common/resolver.cpp.i
+.PHONY : src/common/resolver.i
+
+# target to preprocess a source file
+src/common/resolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/resolver.cpp.i
+.PHONY : src/common/resolver.cpp.i
+
+src/common/resolver.s: src/common/resolver.cpp.s
+.PHONY : src/common/resolver.s
+
+# target to generate assembly for a file
+src/common/resolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/resolver.cpp.s
+.PHONY : src/common/resolver.cpp.s
+
+src/common/socket.o: src/common/socket.cpp.o
+.PHONY : src/common/socket.o
+
+# target to build an object file
+src/common/socket.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/socket.cpp.o
+.PHONY : src/common/socket.cpp.o
+
+src/common/socket.i: src/common/socket.cpp.i
+.PHONY : src/common/socket.i
+
+# target to preprocess a source file
+src/common/socket.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/socket.cpp.i
+.PHONY : src/common/socket.cpp.i
+
+src/common/socket.s: src/common/socket.cpp.s
+.PHONY : src/common/socket.s
+
+# target to generate assembly for a file
+src/common/socket.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/common/socket.cpp.s
+.PHONY : src/common/socket.cpp.s
+
+src/server/aceptador.o: src/server/aceptador.cpp.o
+.PHONY : src/server/aceptador.o
+
+# target to build an object file
+src/server/aceptador.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/aceptador.cpp.o
+.PHONY : src/server/aceptador.cpp.o
+
+src/server/aceptador.i: src/server/aceptador.cpp.i
+.PHONY : src/server/aceptador.i
+
+# target to preprocess a source file
+src/server/aceptador.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/aceptador.cpp.i
+.PHONY : src/server/aceptador.cpp.i
+
+src/server/aceptador.s: src/server/aceptador.cpp.s
+.PHONY : src/server/aceptador.s
+
+# target to generate assembly for a file
+src/server/aceptador.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/aceptador.cpp.s
+.PHONY : src/server/aceptador.cpp.s
+
 src/server/main.o: src/server/main.cpp.o
 .PHONY : src/server/main.o
 
@@ -153,6 +249,30 @@ src/server/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/main.cpp.s
 .PHONY : src/server/main.cpp.s
 
+src/server/server.o: src/server/server.cpp.o
+.PHONY : src/server/server.o
+
+# target to build an object file
+src/server/server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/server.cpp.o
+.PHONY : src/server/server.cpp.o
+
+src/server/server.i: src/server/server.cpp.i
+.PHONY : src/server/server.i
+
+# target to preprocess a source file
+src/server/server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/server.cpp.i
+.PHONY : src/server/server.cpp.i
+
+src/server/server.s: src/server/server.cpp.s
+.PHONY : src/server/server.s
+
+# target to generate assembly for a file
+src/server/server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/server.cpp.s
+.PHONY : src/server/server.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,9 +282,24 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
+	@echo "... src/common/liberror.o"
+	@echo "... src/common/liberror.i"
+	@echo "... src/common/liberror.s"
+	@echo "... src/common/resolver.o"
+	@echo "... src/common/resolver.i"
+	@echo "... src/common/resolver.s"
+	@echo "... src/common/socket.o"
+	@echo "... src/common/socket.i"
+	@echo "... src/common/socket.s"
+	@echo "... src/server/aceptador.o"
+	@echo "... src/server/aceptador.i"
+	@echo "... src/server/aceptador.s"
 	@echo "... src/server/main.o"
 	@echo "... src/server/main.i"
 	@echo "... src/server/main.s"
+	@echo "... src/server/server.o"
+	@echo "... src/server/server.i"
+	@echo "... src/server/server.s"
 .PHONY : help
 
 
