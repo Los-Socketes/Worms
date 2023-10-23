@@ -4,12 +4,14 @@
 #include "socket.h"
 #include <string>
 #include <vector>
+#include "protocolo.h"
 
 #define strings std::vector<std::string> //-- Notas Macros para los contenedores
 
 class Cliente { //-- Notas Relacion Cliente - Jugador
 private:
     /* ServerProtocol protocolo; */
+    Protocolo protocolo;
 
 
 public:

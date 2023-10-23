@@ -6,3 +6,7 @@ Cliente::Cliente(Socket &&socket)
 {
 };
 
+
+void Cliente::mostrar(std::vector<std::string> mapasDisponibles) {
+    this->protocolo.mostrar(mapasDisponibles);
+}
