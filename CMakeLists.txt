@@ -10,6 +10,26 @@ project(worms VERSION 0.1 HOMEPAGE_URL https://github.com/Los-Socketes/Worms LAN
 set(CMAKE_CXX_STANDARD 11)
 
 # Incluimos los directorios con el codigo fuente
-# include_directories(src/server)
+set(SERVERDIR src/server)
 
-add_executable(server src/server/main.cpp)
+# Creacion de los ejecutables -- Notas Incluir archivo a archivo.
+## Ejecutable del server
+add_executable(server
+  "${SERVERDIR}/main.cpp"
+)
+
+
+
+
+
+
+
+
+
+
+# Notas a pie:
+## Incluir archivo a archivo:
+### 1: No soy FANATICO de que tengamos que poner cada uno de los
+### archivos individualmente. Sin embargo, segun los creadores de
+### cmake es la "mejor opcion". Fuente:
+### https://cmake.org/cmake/help/latest/command/file.html#filesystem
