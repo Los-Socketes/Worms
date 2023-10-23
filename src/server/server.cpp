@@ -9,8 +9,11 @@ std::vector<RepresentacionPartida> Server::getRepresentacionPartidas() {
     std::vector<RepresentacionPartida> ids;
     id pos = 0;
     for (id pos = 0 ; pos < this->partidas.size() ; pos ++) {
+        // El dia que tengamos que enviar mas datos, simplemente
+        // es anadir mas valores al struct
         RepresentacionPartida nuevaRepre;
         nuevaRepre.ID = pos;
+
         ids.push_back(nuevaRepre);
     }
 
