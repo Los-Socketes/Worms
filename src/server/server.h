@@ -1,16 +1,23 @@
 #ifndef SERVER_HEADER
 #define SERVER_HEADER
 
-#include "aceptador.h"
+#include "recibidor.h"
+#include "socket.h"
+
+#include "cliente.h"
 
 //Hago la declaracion para que compile. Cuando este implentado borro
 //esto
 
 class Server {
 private:
-    Aceptador aceptador;
+    // Recibidor recibidor;
+    Socket aceptador;
+    
+    void recibirCliente();
 
-
+public:
+    Server(const char *puerto);
 };
 
 
