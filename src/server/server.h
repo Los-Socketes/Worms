@@ -10,8 +10,10 @@
 #include <string>
 #include <vector>
 
+typedef uint id;
+
 struct RepresentacionPartida {
-    std::string ID;
+    id ID;
 };
 
 class Server {
@@ -31,10 +33,10 @@ private:
     // En teoria, un vector es mas ineficiente que una lista porque
     // tiene que realocar TODOS los elementos cada vez que se saca
     // un elemento. Sin embargo, el realocar constantemente
-    // nos asegura que no va a haber espacios vacios en el medio
+    // nos asegura que no va a haber espacios vacios en el
+    //medio, lo cual facilita el obtener y modificar sus id
     std::vector<Partida> partidas;
-    //Este counter va a hacer de ID para la partida
-    uint partidaCounter;
+
     [[nodiscard]] std::vector<RepresentacionPartida> getRepresentacionPartidas();
 
 public:
