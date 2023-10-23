@@ -14,3 +14,4 @@ _deps
 
 # Ignoro los binarios producidos
 build/server
+build/client

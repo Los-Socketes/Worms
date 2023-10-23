@@ -35,7 +35,7 @@ add_executable(server
 )
 
 ## Ejecutable del cliente
-# add_executable(cliente
+# add_executable(client
 #   "${CLIENTDIR}/main.cpp"
 # )
 
