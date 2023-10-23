@@ -1,3 +1,0 @@
-/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles/server.dir
-/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles/edit_cache.dir
-/home/fabri/Documents/Facultad/Taller/TPS/worms/build/CMakeFiles/rebuild_cache.dir
