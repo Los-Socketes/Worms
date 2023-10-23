@@ -10,6 +10,11 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 # Usamos el estandar iso 11 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 11)
 
+# Hace que genere el archivo compile_commands.json. Este es usado para
+# algunos editores de texto, llamese Emacs. Ese archivo generado
+# deberia estar en .gitignore
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Incluimos los directorios con el codigo fuente de cada una de las
 # partes del TP
 set(SERVERDIR src/server)
