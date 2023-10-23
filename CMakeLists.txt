@@ -4,13 +4,17 @@
 cmake_minimum_required(VERSION 3.26.5)
 
 # Cuando este listo ponemos la version VERSION 1.0 B)
-project(worms VERSION 0.1 HOMEPAGE_URL https://github.com/Los-Socketes/Worms LANGUAGES CXX)
+project(worms VERSION 0.1 HOMEPAGE_URL
+  https://github.com/Los-Socketes/Worms LANGUAGES CXX)
 
 # Usamos el estandar iso 11 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 11)
 
-# Incluimos los directorios con el codigo fuente
+# Incluimos los directorios con el codigo fuente de cada una de las
+# partes del TP
 set(SERVERDIR src/server)
+set(COMMONDIR src/common)
+set(CLIENTDIR src/client)
 
 # Creacion de los ejecutables -- Notas Incluir archivo a archivo.
 ## Ejecutable del server
