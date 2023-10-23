@@ -32,6 +32,7 @@ add_executable(server
   # "${SERVERDIR}/recibidor.cpp"
   "${SERVERDIR}/server.cpp"
   "${SERVERDIR}/cliente.cpp"
+  "${SERVERDIR}/protocolo.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
