@@ -10,8 +10,13 @@ cd build/
 cmake ../
 ```
 3. Correr el siguiente comando (compila el tp)
+a. Compilar todo el tp
 ```console
 cmake --build .
+```
+b. Compilar solo un target (reemplazar \<executable\> server o client)
+```console
+cmake --build . --target <executable>
 ```
 
 4. Rezar

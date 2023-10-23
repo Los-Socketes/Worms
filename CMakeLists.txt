@@ -34,10 +34,10 @@ add_executable(server
   "${COMMONDIR}/socket.cpp"
 )
 
-## Ejecutable del cliente
-# add_executable(client
-#   "${CLIENTDIR}/main.cpp"
-# )
+#Ejecutable del cliente
+add_executable(client
+  "${CLIENTDIR}/main.cpp"
+)
 
 
 
