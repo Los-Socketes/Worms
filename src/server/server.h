@@ -36,9 +36,6 @@ private:
         "El pico de la Viuda", "Battlesnax"
     };
 
-    // TODO: Preguntar si esto no es una race condition.
-    // Entiendo que si lo es porque se va a modificar en tiempo de
-    // corrida y va a haber threads leyendo y escribiendo en ella.
     // En teoria, un vector es mas ineficiente que una lista porque
     // tiene que realocar TODOS los elementos cada vez que se saca
     // un elemento. Sin embargo, el realocar constantemente
@@ -54,7 +51,6 @@ public:
     //TODO Preguntar que queda mas bonito a mis compis UwU
     // void anadirJugadorAPartida(
     void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
-
 
 };
 
