@@ -1,4 +1,6 @@
 #include "server.h"
+#include "cliente.h"
+#include <vector>
 
 Server::Server(const char *puerto)
     :aceptador(puerto) {
@@ -20,20 +22,30 @@ std::vector<RepresentacionPartida> Server::getRepresentacionPartidas() {
     return ids;
 }
 
-// TODO: Preguntar si este approach naive es correcto. Tecnicamente,
-// esto prevendria que dos jugadores se conecten al mismo mismo tiempo
-// Esta bien asi? O deberia hacerlo para que el proceso de aceptar
-// sea, a su vez, multithread
 void Server::recibirCliente() {
-    Socket conexionEntrante = this->aceptador.accept();
+    //TODO: Hacer que en vez de true sea socket cerrado
+    while (true) {
+        Socket conexionEntrante = this->aceptador.accept();
 
-    // TODO: Aca creo el protocolo, ya me empiezo a comunicar con
-    // el protocolo
-    Cliente clienteNuevo(std::move(conexionEntrante));
+        // Le pasamos toda la informacion actualmente presente al cliente
+        // El cliente va a elejir en base a ESA informacion
+        std::vector<RepresentacionPartida> partidasDisponibles = this->getRepresentacionPartidas();
 
-    // clienteNuevo.mostrar
-    clienteNuevo.mostrar(this->escenariosDisponibles);
-    // clienteNuevo.elegirMapaEntre(
+        //Esto castea a string.
+        //Fuente:https://stackoverflow.com/a/6399098/13683575
+        std::vector<std::string> representacionPartidasDisponibles(partidasDisponibles.begin(), partidasDisponibles.end());
 
-    
+        Cliente *clienteNuevo = new Cliente(std::move(conexionEntrante),
+				    this->escenariosDisponibles,
+				    representacionPartidasDisponibles,
+				    this);
+        clienteNuevo->start();
+
+        //TODO reap dead
+        this->lobby.push_back(clienteNuevo);
+    }
+};
+
+void Server::anadirJugadorAPartida(Protocolo &&protocoloJugador, id idPartida) {
+
 };

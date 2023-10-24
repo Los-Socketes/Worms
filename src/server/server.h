@@ -6,6 +6,7 @@
 #include "socket.h"
 
 #include "cliente.h"
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -14,6 +15,10 @@ typedef uint id;
 
 struct RepresentacionPartida {
     id ID;
+
+    operator std::string() const {
+        return std::to_string(this->ID);
+    }
 };
 
 class Server {
@@ -21,11 +26,15 @@ private:
     // Recibidor recibidor;
     Socket aceptador;
     
+    //Esta funcion se tiene que correr en un thread
     void recibirCliente();
+    std::vector<Cliente *> lobby;
 
     //Esto lo hago constante porque solo es fijo. Se tiene que leer de
     //un archivo
-    const std::vector<std::string> escenariosDisponibles;
+    const std::vector<std::string> escenariosDisponibles = {
+        "El pico de la Viuda", "Battlesnax"
+    };
 
     // TODO: Preguntar si esto no es una race condition.
     // Entiendo que si lo es porque se va a modificar en tiempo de
@@ -41,6 +50,12 @@ private:
 
 public:
     Server(const char *puerto);
+
+    //TODO Preguntar que queda mas bonito a mis compis UwU
+    // void anadirJugadorAPartida(
+    void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
+
+
 };
 
 

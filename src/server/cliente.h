@@ -1,23 +1,41 @@
 #ifndef CLIENTE_HEADER
 #define CLIENTE_HEADER
 
-#include "socket.h"
 #include <string>
 #include <vector>
 #include "protocolo.h"
+#include "thread.h"
 
 #define strings std::vector<std::string> //-- Notas Macros para los contenedores
 
-class Cliente { //-- Notas Relacion Cliente - Jugador
+#define elegirPartida run
+
+// Forward declaration para que el cliente le comunique al server
+// No soy FAN de esto, pero mepa que es la mejor manera de estructurar
+// el codigo para protejer los recursos
+class Server;
+typedef uint id;
+
+class Cliente : public Thread { //-- Notas Relacion Cliente - Jugador
+// class Cliente {
 private:
-    /* ServerProtocol protocolo; */
     Protocolo protocolo;
 
+    bool conectadoAPartida;
+
+    std::vector<std::string> mapasDisponibles;
+
+    std::vector<std::string> partidasPosibles;
+
+    //Este nombre es una mierda. Cambiar
+    Server *avisar;
 
 public:
-    Cliente(Socket&& socket);
+    Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
+	  std::vector<std::string> partidasPosibles, Server *avisar);
 
-    void mostrar(strings mapasDisponibles); 
+    void run();
+
 
 };
 
