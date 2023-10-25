@@ -58,6 +58,21 @@ add_executable(client
   "${CLIENTDIR}/main.cpp"
 )
 
+## TESTS
+# Creamos unas variables para facilitar el uso de directorios en el
+# cmake
+set(SERVERTESTDIR test/server)
+set(COMMONTESTDIR test/common)
+set(CLIENTTESTDIR test/client)
+
+# Ejecutamos los tests
+# TODO: Cambiar estos ejecutables por los tests de cmake
+add_executable(testthreadsafelist
+  "${COMMONTESTDIR}/tslist.cpp"
+)
+add_test(NAME threadsafelisttest
+  COMMAND testthreadsafelist
+)
 
 
 
