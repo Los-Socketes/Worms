@@ -58,6 +58,15 @@ public:
         this->lista.erase(this->lista.begin() + pos);
     }
 
+    int size() {
+        std::unique_lock<std::mutex> lck(mtx);
+
+        int longitud;
+        longitud = this->lista.size();
+
+        return longitud;
+    }
+
 
 };
 
