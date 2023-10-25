@@ -10,6 +10,12 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 # Usamos el estandar iso 11 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 11)
 
+# Seteamos las flags de compilacion
+add_compile_options(-Wall -Wextra -Wpedantic)
+
+# Incluye CTest para poder correr tests
+include(CTest)
+
 # Hace que genere el archivo compile_commands.json. Este es usado para
 # algunos editores de texto, llamese Emacs. Ese archivo generado
 # deberia estar en .gitignore
