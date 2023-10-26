@@ -3,6 +3,7 @@
 
 #include "socket.h"
 #include "partida.h"
+#include "threadSafeList.h"
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
@@ -40,9 +41,9 @@ public:
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);
 
-    void enviarMapas(std::vector<std::string> mapasDisponibles)
+    void enviarMapas(std::vector<std::string> mapasDisponibles);
 
-    void enviarPartidas(std::vector<Partida*> partidasDisponibles); 
+    void enviarPartidas(TSList<Partida*> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();
 
