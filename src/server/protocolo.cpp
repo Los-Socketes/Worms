@@ -40,6 +40,7 @@ std::vector<int32_t> Protocolo::obtenerMapas() {
     return obtenerVector();
 }
 
+
 int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
     int8_t codigo = CREAR;
     int32_t mapa = htonl(mapaSeleccionado);
@@ -62,6 +63,7 @@ int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
     return codigoPartida;
 }
 
+
 bool Protocolo::unirseAPartida(int32_t id) {
     int8_t codigo = UNIRSE;
     int32_t idPartida = htonl(id);
@@ -73,6 +75,7 @@ bool Protocolo::unirseAPartida(int32_t id) {
     // TODO: verificar
 
     // TODO: ver que la respuesta sea afirmativa y devolver
+    return true; // para que funcione por ahora
 }
 
 void Protocolo::moverGusano(int32_t gusano, Direccion direccion) {
@@ -81,17 +84,21 @@ void Protocolo::moverGusano(int32_t gusano, Direccion direccion) {
 
 
 
+std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<int32_t> vectorAEnviar) {
+    std::vector<char*> paraEnviar;
+    for (auto &&elemento : vectorAEnviar) {
+        int32_t valorAEnviar = htonl(elemento);
+        paraEnviar.push_back((char*)&valorAEnviar);
+    }
+    return paraEnviar;
+}
 
 void Protocolo::enviarMapas(std::vector<int32_t> mapasDisponibles) {
     int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
     uint16_t cant = htons(cantMapas);
 
-    std::vector<char*> paraEnviar;
-    for (auto &&mapa : mapasDisponibles) {
-        int32_t valorAEnviar = htonl(mapa);
-        paraEnviar.push_back((char*)&valorAEnviar);
-    }
+    std::vector<char*> paraEnviar = vectorListoParaEnviar(mapasDisponibles);
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
@@ -106,11 +113,7 @@ void Protocolo::enviarPartidas(std::vector<int32_t> partidasDisponibles) {
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
 
-    std::vector<char*> paraEnviar;
-    for (auto &&partida : partidasDisponibles) {
-        int32_t valorAEnviar = htonl(partida);
-        paraEnviar.push_back((char*)&valorAEnviar);
-    }
+    std::vector<char*> paraEnviar = vectorListoParaEnviar(partidasDisponibles);
     bool was_closed = false;
     /* TODO: agregar ifs para ver si se cerro el socket
             mover estos sendall a otro metodo
