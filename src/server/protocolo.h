@@ -7,6 +7,7 @@
 
 //TODO Poner todos los types defs en un header file juntos
 typedef uint id;
+enum Direccion {IZQ, DER};
 
 class Protocolo {
 private:
@@ -14,9 +15,13 @@ private:
 public:
     // Pongo estas para que compile nomas. Ponele el nombre/encaralas de
     // la forma que te parezca
-    void mostrarMapas(std::vector<std::string> mapasDisponibles); 
+    id_t crearPartida(std::string mapaSeleccionado);
+    bool unirseAPartida(id_t id);
+    void moverGusano(id_t gusano, Direccion direccion);
 
-    void mostrarPartidas(std::vector<std::string> partidasDisponibles); 
+    void enviarMapas(std::vector<std::string> mapasDisponibles); 
+
+    void enviarMapas(std::vector<std::string> partidasDisponibles); 
 
     [[nodiscard]] id obtenerPartidaDeseada();
 

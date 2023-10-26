@@ -3,12 +3,28 @@
 Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
-void Protocolo::mostrarMapas(std::vector<std::string> mapasDisponibles) {
+
+id_t Protocolo::crearPartida(std::string mapaSeleccionado) {
+
+}
+
+bool Protocolo::unirseAPartida(id_t id) {
+
+}
+
+void Protocolo::moverGusano(id_t gusano, Direccion direccion) {
+
+}
+
+
+
+
+void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     //Como diria sisop "Your code here"
 
 }
 
-void Protocolo::mostrarPartidas(std::vector<std::string> partidasDisponibles) {
+void Protocolo::enviarMapas(std::vector<std::string> partidasDisponibles) {
     //Como diria sisop "Your code here"
 
 }
@@ -20,3 +36,4 @@ id Protocolo::obtenerPartidaDeseada() {
     // return "Devuelvo esto solamente para que compile";
     return 0;
 }
+
