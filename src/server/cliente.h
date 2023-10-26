@@ -16,7 +16,6 @@
 // No soy FAN de esto, pero mepa que es la mejor manera de estructurar
 // el codigo para protejer los recursos
 // class Server;
-// typedef uint id;
 
 class Cliente : public Thread { //-- Notas Relacion Cliente - Jugador
 // class Cliente {
