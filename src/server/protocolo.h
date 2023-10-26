@@ -6,7 +6,6 @@
 #include <vector>
 
 //TODO Poner todos los types defs en un header file juntos
-typedef uint id;
 
 class Protocolo {
 private:
@@ -18,7 +17,7 @@ public:
 
     void mostrarPartidas(std::vector<std::string> partidasDisponibles); 
 
-    [[nodiscard]] id obtenerPartidaDeseada();
+    [[nodiscard]] int obtenerPartidaDeseada();
 
     Protocolo(Socket&& socket);
 
