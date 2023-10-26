@@ -119,11 +119,9 @@ void Protocolo::enviarMapas(std::vector<id> mapasDisponibles) {
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&cant, sizeof(cant), &was_closed);
     socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
-    
-
 }
 
-void Protocolo::enviarPartidas(std::vector<id> partidasDisponibles) {
+void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
     int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
