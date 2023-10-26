@@ -13,13 +13,14 @@ enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
 #define PARTIDAS 1
 #define MAPAS 2
 #define CREAR 3
-#define CREADA 4
-#define UNIRSE 5
+#define UNIRSE 4
+#define EXITO 5
+#define ERROR 6
 
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 // 
-#define MOV 6
+#define MOV 7
 
 class Protocolo {
 private:
@@ -29,6 +30,7 @@ private:
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
     std::vector<char*> vectorListoParaEnviar(std::vector<id> vectorAEnviar);
+    id verificarConexion();
 public:
     // Pongo estas para que compile nomas. Ponele el nombre/encaralas de
     // la forma que te parezca
@@ -43,6 +45,9 @@ public:
     void enviarPartidas(std::vector<id> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();
+
+    void enviarConfirmacion(id idPartida);
+    void enviarError();
 
     Protocolo(Socket&& socket);
 

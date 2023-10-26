@@ -43,6 +43,23 @@ std::vector<id> Protocolo::obtenerMapas() {
     return obtenerVector();
 }
 
+id Protocolo::verificarConexion() {
+    bool was_closed = false;
+    int8_t codigo;
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    // TODO: verificar
+
+    id idPartida = -1;
+    if ((int)codigo == ERROR) {
+        return idPartida;
+    }
+    // TODO: quizas ver si no es exito -> tirar excepcion
+    socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
+    // TODO: verificar
+    
+    idPartida = ntohl(idPartida);
+    return idPartida;
+}
 
 id Protocolo::crearPartida(id mapaSeleccionado) {
     int8_t codigo = CREAR;
@@ -53,18 +70,7 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
     socket.sendall((char*)&mapa, sizeof(mapa), &was_closed);
     // TODO: verificar
 
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar
-
-    id idPartida;
-    if ((int)codigo != CREADA) {
-        return idPartida; // no me convence
-    }
-    socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
-    // TODO: verificar
-    
-    idPartida = ntohl(idPartida);
-    return idPartida;
+    return verificarConexion();
 }
 
 
@@ -78,8 +84,7 @@ bool Protocolo::unirseAPartida(id id) {
     socket.sendall((char*)idPartida, sizeof(idPartida), &was_closed);
     // TODO: verificar
 
-    // TODO: ver que la respuesta sea afirmativa y devolver
-    return true; // para que funcione por ahora
+    return verificarConexion();
 }
 
 void Protocolo::moverGusano(id gusano, Direccion direccion) {
@@ -159,4 +164,18 @@ id Protocolo::obtenerPartidaDeseada() {
     return obtenerId();
 }
 
+void Protocolo::enviarConfirmacion(id idPartida) {
+    int8_t codigo = EXITO;
+    int32_t idAEnviar = htonl(idPartida);
 
+    bool was_closed = false;
+    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    socket.sendall((char*)&idAEnviar, sizeof(idAEnviar), &was_closed);
+}
+
+void Protocolo::enviarError() {
+    int8_t codigo = ERROR;
+
+    bool was_closed = false;
+    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+}
