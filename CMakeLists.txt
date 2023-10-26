@@ -10,6 +10,12 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 # Usamos el estandar iso 11 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 11)
 
+# Seteamos las flags de compilacion
+add_compile_options(-Wall -Wextra -Wpedantic)
+
+# Incluye CTest para poder correr tests
+include(CTest)
+
 # Hace que genere el archivo compile_commands.json. Este es usado para
 # algunos editores de texto, llamese Emacs. Ese archivo generado
 # deberia estar en .gitignore
@@ -52,6 +58,21 @@ add_executable(client
   "${CLIENTDIR}/main.cpp"
 )
 
+## TESTS
+# Creamos unas variables para facilitar el uso de directorios en el
+# cmake
+set(SERVERTESTDIR test/server)
+set(COMMONTESTDIR test/common)
+set(CLIENTTESTDIR test/client)
+
+# Ejecutamos los tests
+# TODO: Cambiar estos ejecutables por los tests de cmake
+add_executable(testthreadsafelist
+  "${COMMONTESTDIR}/tslist.cpp"
+)
+add_test(NAME threadsafelisttest
+  COMMAND testthreadsafelist
+)
 
 
 

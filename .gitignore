@@ -13,6 +13,11 @@ CTestTestfile.cmake
 _deps
 .cache
 
+# No se por que corno cmkae genera archivos de dart. No estamos usando dart.
+# Pero que demonios
+DartConfiguration.tcl
+
 # Ignoro los binarios producidos
 build/server
 build/client
+build/test*

@@ -38,7 +38,7 @@ void Server::recibirCliente() {
         Cliente *clienteNuevo = new Cliente(std::move(conexionEntrante),
 				    this->escenariosDisponibles,
 				    representacionPartidasDisponibles,
-				    this);
+				    this->partidas);
         clienteNuevo->start();
 
         //TODO reap dead
@@ -46,6 +46,6 @@ void Server::recibirCliente() {
     }
 };
 
-void Server::anadirJugadorAPartida(Protocolo &&protocoloJugador, id idPartida) {
+// void Server::anadirJugadorAPartida(Protocolo &&protocoloJugador, id idPartida) {
 
-};
+// };
