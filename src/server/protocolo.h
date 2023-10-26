@@ -8,6 +8,7 @@
 #include <vector>
 
 //TODO Poner todos los types defs en un header file juntos
+typedef id id;
 enum Direccion {IZQ, DER};
 #define PARTIDAS 1
 #define MAPAS 2
@@ -20,22 +21,22 @@ class Protocolo {
 private:
     Socket socket;
 
-    std::vector<int32_t> obtenerVector();
-    std::vector<char*> vectorListoParaEnviar(std::vector<int32_t> vectorAEnviar);
+    std::vector<id> obtenerVector();
+    std::vector<char*> vectorListoParaEnviar(std::vector<id> vectorAEnviar);
 public:
     // Pongo estas para que compile nomas. Ponele el nombre/encaralas de
     // la forma que te parezca
-    std::vector<int32_t> obtenerPartidas();
-    std::vector<int32_t> obtenerMapas();
-    int32_t crearPartida(int32_t mapaSeleccionado);
-    bool unirseAPartida(int32_t id);
-    void moverGusano(int32_t gusano, Direccion direccion);
+    std::vector<id> obtenerPartidas();
+    std::vector<id> obtenerMapas();
+    id crearPartida(id mapaSeleccionado);
+    bool unirseAPartida(id id);
+    void moverGusano(id gusano, Direccion direccion);
 
-    void enviarMapas(std::vector<int32_t> mapasDisponibles); 
+    void enviarMapas(std::vector<id> mapasDisponibles); 
 
-    void enviarPartidas(std::vector<int32_t> partidasDisponibles); 
-
-    [[nodiscard]] int32_t obtenerPartidaDeseada();
+    void enviarPartidas(std::vector<id> partidasDisponibles); 
+    id obtenerMapaDeseado();
+    [[nodiscard]] id obtenerPartidaDeseada();
 
     Protocolo(Socket&& socket);
 

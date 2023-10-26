@@ -4,14 +4,14 @@ Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
 
-std::vector<int32_t> Protocolo::obtenerVector() {
+std::vector<id> Protocolo::obtenerVector() {
     bool was_closed = false;
     int16_t cant;
     socket.recvall(&cant, sizeof(cant), &was_closed);
     // TODO: verificar
     cant = ntohs(cant);
 
-    std::vector<int32_t> partidas(cant, 0);
+    std::vector<id> partidas(cant, 0);
     socket.recvall(partidas.data(), cant*sizeof(int32_t), &was_closed);
     // TODO: verificar
 
@@ -21,7 +21,7 @@ std::vector<int32_t> Protocolo::obtenerVector() {
     return partidas;
 }
 
-std::vector<int32_t> Protocolo::obtenerPartidas() {
+std::vector<id> Protocolo::obtenerPartidas() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
@@ -31,7 +31,7 @@ std::vector<int32_t> Protocolo::obtenerPartidas() {
 }
 
 
-std::vector<int32_t> Protocolo::obtenerMapas() {
+std::vector<id> Protocolo::obtenerMapas() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
@@ -41,7 +41,7 @@ std::vector<int32_t> Protocolo::obtenerMapas() {
 }
 
 
-int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
+id Protocolo::crearPartida(id mapaSeleccionado) {
     int8_t codigo = CREAR;
     int32_t mapa = htonl(mapaSeleccionado);
 
@@ -64,7 +64,7 @@ int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
 }
 
 
-bool Protocolo::unirseAPartida(int32_t id) {
+bool Protocolo::unirseAPartida(id id) {
     int8_t codigo = UNIRSE;
     int32_t idPartida = htonl(id);
 
@@ -78,13 +78,13 @@ bool Protocolo::unirseAPartida(int32_t id) {
     return true; // para que funcione por ahora
 }
 
-void Protocolo::moverGusano(int32_t gusano, Direccion direccion) {
+void Protocolo::moverGusano(id gusano, Direccion direccion) {
 
 }
 
 
 
-std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<int32_t> vectorAEnviar) {
+std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<id> vectorAEnviar) {
     std::vector<char*> paraEnviar;
     for (auto &&elemento : vectorAEnviar) {
         int32_t valorAEnviar = htonl(elemento);
@@ -93,7 +93,7 @@ std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<int32_t> vectorA
     return paraEnviar;
 }
 
-void Protocolo::enviarMapas(std::vector<int32_t> mapasDisponibles) {
+void Protocolo::enviarMapas(std::vector<id> mapasDisponibles) {
     int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
     uint16_t cant = htons(cantMapas);
@@ -108,7 +108,7 @@ void Protocolo::enviarMapas(std::vector<int32_t> mapasDisponibles) {
 
 }
 
-void Protocolo::enviarPartidas(std::vector<int32_t> partidasDisponibles) {
+void Protocolo::enviarPartidas(std::vector<id> partidasDisponibles) {
     int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
@@ -126,7 +126,18 @@ void Protocolo::enviarPartidas(std::vector<int32_t> partidasDisponibles) {
     
 }
 
-int32_t Protocolo::obtenerPartidaDeseada() {
+id Protocolo::obtenerMapaDeseado() {
+    bool was_closed = false;
+    int8_t codigo;
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    // TODO: verificar
+    int32_t idMapa;
+    socket.recvall(&idMapa, sizeof(idMapa), &was_closed);
+
+
+}
+
+id Protocolo::obtenerPartidaDeseada() {
     //Como diria sisop "Your code here"
     //Tenemos que ponernos de acuerdo en que devolver cuando el cliente
     //elige crear una partida nueva
