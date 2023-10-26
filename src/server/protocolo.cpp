@@ -4,12 +4,8 @@ Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
 
-std::vector<int32_t> Protocolo::obtenerPartidas() {
+std::vector<int32_t> Protocolo::obtenerVector() {
     bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar (was_closed + codigo)
-
     int16_t cant;
     socket.recvall(&cant, sizeof(cant), &was_closed);
     // TODO: verificar
@@ -25,16 +21,30 @@ std::vector<int32_t> Protocolo::obtenerPartidas() {
     return partidas;
 }
 
+std::vector<int32_t> Protocolo::obtenerPartidas() {
+    bool was_closed = false;
+    int8_t codigo;
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    // TODO: verificar (was_closed + codigo)
+
+    return obtenerVector();
+}
+
 
 std::vector<int32_t> Protocolo::obtenerMapas() {
+    bool was_closed = false;
+    int8_t codigo;
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    // TODO: verificar (was_closed + codigo)
 
+    return obtenerVector();
 }
 
 int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
     int8_t codigo = CREAR;
     int32_t mapa = htonl(mapaSeleccionado);
 
-    bool was_closed;
+    bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&mapa, sizeof(mapa), &was_closed);
     // TODO: verificar
@@ -53,7 +63,16 @@ int32_t Protocolo::crearPartida(int32_t mapaSeleccionado) {
 }
 
 bool Protocolo::unirseAPartida(int32_t id) {
+    int8_t codigo = UNIRSE;
+    int32_t idPartida = htonl(id);
 
+    bool was_closed = false;
+    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    // TODO: verificar
+    socket.sendall((char*)idPartida, sizeof(idPartida), &was_closed);
+    // TODO: verificar
+
+    // TODO: ver que la respuesta sea afirmativa y devolver
 }
 
 void Protocolo::moverGusano(int32_t gusano, Direccion direccion) {
@@ -64,18 +83,33 @@ void Protocolo::moverGusano(int32_t gusano, Direccion direccion) {
 
 
 void Protocolo::enviarMapas(std::vector<int32_t> mapasDisponibles) {
-    //Como diria sisop "Your code here"
+    int8_t codigo = MAPAS;
+    int cantMapas = mapasDisponibles.size();
+    uint16_t cant = htons(cantMapas);
+
+    std::vector<char*> paraEnviar;
+    for (auto &&mapa : mapasDisponibles) {
+        int32_t valorAEnviar = htonl(mapa);
+        paraEnviar.push_back((char*)&valorAEnviar);
+    }
+
+    bool was_closed = false;
+    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    socket.sendall((char*)&cant, sizeof(cant), &was_closed);
+    socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantMapas, &was_closed);
+    
 
 }
 
 void Protocolo::enviarPartidas(std::vector<int32_t> partidasDisponibles) {
-    //Como diria sisop "Your code here"
     int8_t codigo = PARTIDAS;
-    uint16_t cant = htons(partidasDisponibles.size());
+    int cantPartidas = partidasDisponibles.size();
+    uint16_t cant = htons(cantPartidas);
 
-    std::vector<int32_t> paraEnviar;
+    std::vector<char*> paraEnviar;
     for (auto &&partida : partidasDisponibles) {
-        paraEnviar.push_back(htonl(partida));
+        int32_t valorAEnviar = htonl(partida);
+        paraEnviar.push_back((char*)&valorAEnviar);
     }
     bool was_closed = false;
     /* TODO: agregar ifs para ver si se cerro el socket
@@ -85,7 +119,7 @@ void Protocolo::enviarPartidas(std::vector<int32_t> partidasDisponibles) {
     */
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&cant, sizeof(cant), &was_closed);
-    socket.sendall(paraEnviar.data(), sizeof(int32_t)*paraEnviar.size(), &was_closed);
+    socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantPartidas, &was_closed);
     
 }
 

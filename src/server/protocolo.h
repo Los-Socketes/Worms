@@ -19,6 +19,8 @@ enum Direccion {IZQ, DER};
 class Protocolo {
 private:
     Socket socket;
+
+    std::vector<int32_t> obtenerVector();
 public:
     // Pongo estas para que compile nomas. Ponele el nombre/encaralas de
     // la forma que te parezca
