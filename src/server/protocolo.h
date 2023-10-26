@@ -9,13 +9,17 @@
 
 //TODO Poner todos los types defs en un header file juntos
 typedef int32_t id;
-enum Direccion {IZQ, DER};
+enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
 #define PARTIDAS 1
 #define MAPAS 2
-#define ACCION 3
-#define CREAR 4
-#define CREADA 5
-#define UNIRSE 6
+#define CREAR 3
+#define CREADA 4
+#define UNIRSE 5
+
+// Codigos para acciones 
+// mov + direccion -> izq, der, salto, pirueta
+// 
+#define MOV 6
 
 class Protocolo {
 private:

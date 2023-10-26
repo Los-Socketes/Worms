@@ -83,9 +83,15 @@ bool Protocolo::unirseAPartida(id id) {
 }
 
 void Protocolo::moverGusano(id gusano, Direccion direccion) {
+    int8_t codigo = MOV;
+    id idGusano = htonl(gusano);
+    int8_t dir = direccion;
 
+    bool was_closed = false;
+    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    socket.sendall((char*)&idGusano, sizeof(idGusano), &was_closed);
+    socket.sendall((char*)&dir, sizeof(dir), &was_closed);
 }
-
 
 
 std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<id> vectorAEnviar) {
