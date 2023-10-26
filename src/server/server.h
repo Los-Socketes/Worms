@@ -12,13 +12,13 @@
 #include <vector>
 #include "threadSafeList.h"
 
-struct RepresentacionPartida {
-    int ID;
+// struct RepresentacionPartida {
+//     int ID;
 
-    operator std::string() const {
-        return std::to_string(this->ID);
-    }
-};
+//     operator std::string() const {
+//         return std::to_string(this->ID);
+//     }
+// };
 
 class Server {
 private:
@@ -43,7 +43,7 @@ private:
     // std::vector<Partida> partidas;
     TSList<Partida> partidas;
 
-    [[nodiscard]] std::vector<RepresentacionPartida> getRepresentacionPartidas();
+    // [[nodiscard]] std::vector<RepresentacionPartida> getRepresentacionPartidas();
 
 public:
     Server(const char *puerto);

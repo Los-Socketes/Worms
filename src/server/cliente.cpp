@@ -8,19 +8,17 @@
 // };
 
 Cliente::Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
-	       std::vector<std::string> partidasPosibles, TSList<Partida>& avisar) 
+	       TSList<Partida>& avisar) 
     : protocolo(std::move(socket)), avisar(avisar) {
     this->conectadoAPartida = false;
     this->mapasDisponibles = mapasDisponibles;
-    this->partidasPosibles = partidasPosibles;
-    // this->avisar = avisar;
 };
 
 //Esto corre en un thread
 void Cliente::elegirPartida() {
     this->protocolo.mostrarMapas(this->mapasDisponibles);
 
-    this->protocolo.mostrarPartidas(this->partidasPosibles);
+    // this->protocolo.mostrarPartidas(this->partidasPosibles);
 
     int partidaElejida = this->protocolo.obtenerPartidaDeseada();
 
