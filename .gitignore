@@ -12,6 +12,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 .cache
+.vscode
 
 # No se por que corno cmkae genera archivos de dart. No estamos usando dart.
 # Pero que demonios

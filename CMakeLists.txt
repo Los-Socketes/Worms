@@ -56,6 +56,9 @@ add_executable(server
 #Ejecutable del cliente
 add_executable(client
   "${CLIENTDIR}/main.cpp"
+  "${CLIENTDIR}/entradateclado.cpp"
+  "${CLIENTDIR}/enviador.cpp"
+  "${CLIENTDIR}/recibidor.cpp"
 )
 
 ## TESTS
