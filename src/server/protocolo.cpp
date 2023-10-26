@@ -4,6 +4,13 @@ Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
 
+int8_t Protocolo::obtenerCodigo() {
+    bool was_closed = false;
+    int8_t codigo;
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    return codigo;
+}
+
 std::vector<id> Protocolo::obtenerVector() {
     bool was_closed = false;
     int16_t cant;
@@ -12,7 +19,7 @@ std::vector<id> Protocolo::obtenerVector() {
     cant = ntohs(cant);
 
     std::vector<id> partidas(cant, 0);
-    socket.recvall(partidas.data(), cant*sizeof(int32_t), &was_closed);
+    socket.recvall(partidas.data(), cant*sizeof(id), &was_closed);
     // TODO: verificar
 
     for (int i = 0; i < (int)cant; i++) {
@@ -22,20 +29,16 @@ std::vector<id> Protocolo::obtenerVector() {
 }
 
 std::vector<id> Protocolo::obtenerPartidas() {
-    bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar (was_closed + codigo)
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar (codigo)
 
     return obtenerVector();
 }
 
 
 std::vector<id> Protocolo::obtenerMapas() {
-    bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar (was_closed + codigo)
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar (codigo)
 
     return obtenerVector();
 }
@@ -52,15 +55,16 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
     // TODO: verificar
-    int32_t codigoPartida;
+
+    id idPartida;
     if ((int)codigo != CREADA) {
-        return codigoPartida; // no me convence
+        return idPartida; // no me convence
     }
-    socket.recvall(&codigoPartida, sizeof(codigoPartida), &was_closed);
+    socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
     // TODO: verificar
     
-    codigoPartida = ntohl(codigoPartida);
-    return codigoPartida;
+    idPartida = ntohl(idPartida);
+    return idPartida;
 }
 
 
@@ -103,7 +107,7 @@ void Protocolo::enviarMapas(std::vector<id> mapasDisponibles) {
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&cant, sizeof(cant), &was_closed);
-    socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantMapas, &was_closed);
+    socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
     
 
 }
@@ -126,23 +130,27 @@ void Protocolo::enviarPartidas(std::vector<id> partidasDisponibles) {
     
 }
 
-id Protocolo::obtenerMapaDeseado() {
+id Protocolo::obtenerId() {
     bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    id idEnviada;
+    socket.recvall(&idEnviada, sizeof(idEnviada), &was_closed);
     // TODO: verificar
-    int32_t idMapa;
-    socket.recvall(&idMapa, sizeof(idMapa), &was_closed);
+    idEnviada = ntohl(idEnviada);
+    return idEnviada;
+}
 
-
+id Protocolo::obtenerMapaDeseado() {
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar
+    return obtenerId();
 }
 
 id Protocolo::obtenerPartidaDeseada() {
-    //Como diria sisop "Your code here"
     //Tenemos que ponernos de acuerdo en que devolver cuando el cliente
     //elige crear una partida nueva
-
-    // return "Devuelvo esto solamente para que compile";
-    return 0;
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar
+    return obtenerId();
 }
+
 

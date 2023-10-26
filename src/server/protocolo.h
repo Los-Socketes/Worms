@@ -8,7 +8,7 @@
 #include <vector>
 
 //TODO Poner todos los types defs en un header file juntos
-typedef id id;
+typedef int32_t id;
 enum Direccion {IZQ, DER};
 #define PARTIDAS 1
 #define MAPAS 2
@@ -21,6 +21,8 @@ class Protocolo {
 private:
     Socket socket;
 
+    id obtenerId();
+    int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
     std::vector<char*> vectorListoParaEnviar(std::vector<id> vectorAEnviar);
 public:
