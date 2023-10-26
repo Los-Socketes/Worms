@@ -2,7 +2,7 @@
 #define PROTOCOLO_HEADER
 
 #include "socket.h"
-
+#include "partida.h"
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
@@ -40,9 +40,9 @@ public:
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);
 
-    void enviarMapas(std::vector<id> mapasDisponibles); 
+    void enviarMapas(std::vector<std::string> mapasDisponibles)
 
-    void enviarPartidas(std::vector<id> partidasDisponibles); 
+    void enviarPartidas(std::vector<Partida*> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();
 

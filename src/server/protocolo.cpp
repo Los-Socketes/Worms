@@ -108,12 +108,18 @@ std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<id> vectorAEnvia
     return paraEnviar;
 }
 
-void Protocolo::enviarMapas(std::vector<id> mapasDisponibles) {
+void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
     uint16_t cant = htons(cantMapas);
 
-    std::vector<char*> paraEnviar = vectorListoParaEnviar(mapasDisponibles);
+    // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
+    std::vector<char*> paraEnviar;
+    for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
+        id idMapa = htonl(i);
+        paraEnviar.push_back((char*)&idMapa);
+    }
+    
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
@@ -121,12 +127,20 @@ void Protocolo::enviarMapas(std::vector<id> mapasDisponibles) {
     socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
 }
 
-void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
+void Protocolo::enviarPartidas(TSList<Partida*> partidasDisponibles) {
     int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
 
-    std::vector<char*> paraEnviar = vectorListoParaEnviar(partidasDisponibles);
+    std::vector<char*> paraEnviar;
+    for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
+        if (partidasDisponibles) {
+            id idMapa = htonl(i);
+            paraEnviar.push_back((char*)&idMapa);
+
+        }
+    }
+    
     bool was_closed = false;
     /* TODO: agregar ifs para ver si se cerro el socket
             mover estos sendall a otro metodo
