@@ -28,7 +28,7 @@ void Protocolo::enviarMapas(std::vector<std::string> partidasDisponibles) {
     //Como diria sisop "Your code here"
 
 }
-id Protocolo::obtenerPartidaDeseada() {
+int Protocolo::obtenerPartidaDeseada() {
     //Como diria sisop "Your code here"
     //Tenemos que ponernos de acuerdo en que devolver cuando el cliente
     //elige crear una partida nueva

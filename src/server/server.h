@@ -12,10 +12,8 @@
 #include <vector>
 #include "threadSafeList.h"
 
-typedef uint id;
-
 struct RepresentacionPartida {
-    id ID;
+    int ID;
 
     operator std::string() const {
         return std::to_string(this->ID);

@@ -6,8 +6,6 @@
 #include <vector>
 
 //TODO Poner todos los types defs en un header file juntos
-typedef uint id;
-enum Direccion {IZQ, DER};
 
 class Protocolo {
 private:
@@ -23,7 +21,7 @@ public:
 
     void enviarMapas(std::vector<std::string> partidasDisponibles); 
 
-    [[nodiscard]] id obtenerPartidaDeseada();
+    [[nodiscard]] int obtenerPartidaDeseada();
 
     Protocolo(Socket&& socket);
 
