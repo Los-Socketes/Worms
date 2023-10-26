@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "threadSafeList.h"
 
 typedef uint id;
 
@@ -41,7 +42,8 @@ private:
     // un elemento. Sin embargo, el realocar constantemente
     // nos asegura que no va a haber espacios vacios en el
     //medio, lo cual facilita el obtener y modificar sus id
-    std::vector<Partida> partidas;
+    // std::vector<Partida> partidas;
+    TSList<Partida> partidas;
 
     [[nodiscard]] std::vector<RepresentacionPartida> getRepresentacionPartidas();
 
@@ -50,7 +52,7 @@ public:
 
     //TODO Preguntar que queda mas bonito a mis compis UwU
     // void anadirJugadorAPartida(
-    void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
+    // void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
 
 };
 

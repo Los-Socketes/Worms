@@ -2,18 +2,18 @@
 #include "socket.h"
 #include <string>
 
-class Server {
-public:
-    void anadirJugadorAPartida(Protocolo&& socketDeJugador, id idPartida);
-};
+// class Server {
+// public:
+//     void anadirJugadorAPartida(Protocolo&& socketDeJugador, id idPartida);
+// };
 
 Cliente::Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
-	       std::vector<std::string> partidasPosibles, Server *avisar) 
-    : protocolo(std::move(socket)) {
+	       std::vector<std::string> partidasPosibles, TSList<Partida>& avisar) 
+    : protocolo(std::move(socket)), avisar(avisar) {
     this->conectadoAPartida = false;
     this->mapasDisponibles = mapasDisponibles;
     this->partidasPosibles = partidasPosibles;
-    this->avisar = avisar;
+    // this->avisar = avisar;
 };
 
 //Esto corre en un thread
@@ -22,9 +22,10 @@ void Cliente::elegirPartida() {
 
     this->protocolo.mostrarPartidas(this->partidasPosibles);
 
-    id partidaElejida = this->protocolo.obtenerPartidaDeseada();
+    int partidaElejida = this->protocolo.obtenerPartidaDeseada();
 
-    this->avisar->anadirJugadorAPartida(std::move(this->protocolo), partidaElejida);
+    // this->avisar->anadirJugadorAPartida(std::move(this->protocolo), partidaElejida);
+    this->avisar.at(partidaElejida);
 
     this->conectadoAPartida = true;
 }
