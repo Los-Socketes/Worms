@@ -125,6 +125,31 @@ set(COMMONTESTDIR test/common)
 set(CLIENTTESTDIR test/client)
 
 # Ejecutamos los tests
+## TESTS DE PROTOCOLO
+add_executable(testprotocolo
+  "${COMMONTESTDIR}/protocolo.cpp"
+
+  "${COMMONDIR}/protocolo.cpp"
+  
+  # Socket
+  "${COMMONDIR}/resolvererror.cpp"
+  "${COMMONDIR}/liberror.cpp"
+  "${COMMONDIR}/resolver.cpp"
+  "${COMMONDIR}/socket.cpp"
+)
+## Macros para pasarle al test
+target_compile_definitions(testprotocolo PUBLIC
+  CLIENT
+)
+target_compile_definitions(testprotocolo PUBLIC
+  SERVER
+)
+add_test(NAME protocolotest
+  COMMAND testprotocolo
+)
+
+## TESTS DE THREAD SAFE LIST
+
 # TODO: Cambiar estos ejecutables por los tests de cmake
 add_executable(testthreadsafelist
   "${COMMONTESTDIR}/tslist.cpp"

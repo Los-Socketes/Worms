@@ -42,26 +42,26 @@ public:
 
 #ifdef CLIENT
     // METODOS DEL CLIENTE
-    void pedirInformacion(tipoInfo infoAPedir);
+    bool pedirInformacion(tipoInfo infoAPedir);
     std::vector<id> obtenerMapas();
     std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
-    void moverGusano(id gusano, Direccion direccion);
+    bool moverGusano(id gusano, Direccion direccion);
 #endif
 
 #ifdef SERVER
     // METODOS DEL SERVER
     noIgn tipoInfo obtenerPedido();
-    void enviarMapas(std::vector<std::string> mapasDisponibles);
-    void enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
+    bool enviarMapas(std::vector<std::string> mapasDisponibles);
+    bool enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
     noIgn id obtenerMapaDeseado();
     noIgn id obtenerPartidaDeseada();
 
-    void enviarConfirmacion(id idPartida);
-    void enviarError();
+    bool enviarConfirmacion(id idPartida);
+    bool enviarError();
 
-    Direccion recibirAccion();
+    Direccion obtenerAccion();
 #endif
 
 
