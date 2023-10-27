@@ -39,6 +39,9 @@ private:
     id verificarConexion();
 public:
 
+    Protocolo(Socket&& socket);
+
+#ifdef CLIENT
     // METODOS DEL CLIENTE
     void pedirInformacion(tipoInfo infoAPedir);
     std::vector<id> obtenerMapas();
@@ -46,8 +49,9 @@ public:
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);
+#endif
 
-
+#ifdef SERVER
     // METODOS DEL SERVER
     tipoInfo obtenerPedido();
     void enviarMapas(std::vector<std::string> mapasDisponibles);
@@ -59,8 +63,8 @@ public:
     void enviarError();
 
     Direccion recibirAccion();
+#endif
 
-    Protocolo(Socket&& socket);
 
 };
 

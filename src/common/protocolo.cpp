@@ -64,6 +64,7 @@ id Protocolo::verificarConexion() {
 
 //METODOS DEL CLIENTE
 
+#ifdef CLIENT
 void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
     int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
 
@@ -127,9 +128,13 @@ void Protocolo::moverGusano(id gusano, Direccion direccion) {
     socket.sendall((char*)&dir, sizeof(dir), &was_closed);
 }
 
+//Endif de la macro de CLIENT
+#endif
+
 
 // METODOS DEL SERVER
 
+#ifdef SERVER
 tipoInfo Protocolo::obtenerPedido() {
     int8_t pedidoARecibir[2] = {0};
     bool was_closed = false;
@@ -229,3 +234,5 @@ Direccion Protocolo::recibirAccion() {
 
     return (Direccion)dir;
 }
+//Endif de la macro de SERVER
+#endif
