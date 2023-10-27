@@ -40,6 +40,7 @@ add_executable(server
   "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
+  "${SERVERDIR}/gusano.cpp"
 
   "${SERVERDIR}/protocolo.cpp"
 
@@ -55,6 +56,10 @@ add_executable(server
   #Thread safe queue
   "${COMMONDIR}/queue.h"
 )
+## Macros para pasarle al server
+target_compile_definitions(server PUBLIC
+  SERVER
+)
 
 #Ejecutable del cliente
 add_executable(client
@@ -62,6 +67,10 @@ add_executable(client
   "${CLIENTDIR}/entradateclado.cpp"
   "${CLIENTDIR}/enviador.cpp"
   "${CLIENTDIR}/recibidor.cpp"
+)
+## Macros para pasarle al client
+target_compile_definitions(client PUBLIC
+  CLIENT
 )
 
 ## TESTS
