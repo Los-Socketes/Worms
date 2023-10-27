@@ -7,20 +7,19 @@ Server::Server(const char *puerto)
     // :recibidor(puerto) {
 };
 
-std::vector<RepresentacionPartida> Server::getRepresentacionPartidas() {
-    std::vector<RepresentacionPartida> ids;
-    id pos = 0;
-    for (id pos = 0 ; pos < this->partidas.size() ; pos ++) {
-        // El dia que tengamos que enviar mas datos, simplemente
-        // es anadir mas valores al struct
-        RepresentacionPartida nuevaRepre;
-        nuevaRepre.ID = pos;
+// std::vector<RepresentacionPartida> Server::getRepresentacionPartidas() {
+//     std::vector<RepresentacionPartida> ids;
+//     for (int pos = 0 ; pos < this->partidas.size() ; pos ++) {
+//         // El dia que tengamos que enviar mas datos, simplemente
+//         // es anadir mas valores al struct
+//         RepresentacionPartida nuevaRepre;
+//         nuevaRepre.ID = pos;
 
-        ids.push_back(nuevaRepre);
-    }
+//         ids.push_back(nuevaRepre);
+//     }
 
-    return ids;
-}
+//     return ids;
+// }
 
 void Server::recibirCliente() {
     //TODO: Hacer que en vez de true sea socket cerrado
@@ -29,16 +28,15 @@ void Server::recibirCliente() {
 
         // Le pasamos toda la informacion actualmente presente al cliente
         // El cliente va a elejir en base a ESA informacion
-        std::vector<RepresentacionPartida> partidasDisponibles = this->getRepresentacionPartidas();
+        // std::vector<RepresentacionPartida> partidasDisponibles = this->getRepresentacionPartidas();
 
         //Esto castea a string.
         //Fuente:https://stackoverflow.com/a/6399098/13683575
-        std::vector<std::string> representacionPartidasDisponibles(partidasDisponibles.begin(), partidasDisponibles.end());
+        // std::vector<std::string> representacionPartidasDisponibles(partidasDisponibles.begin(), partidasDisponibles.end());
 
         Cliente *clienteNuevo = new Cliente(std::move(conexionEntrante),
 				    this->escenariosDisponibles,
-				    representacionPartidasDisponibles,
-				    this);
+				    this->partidas);
         clienteNuevo->start();
 
         //TODO reap dead
@@ -46,6 +44,6 @@ void Server::recibirCliente() {
     }
 };
 
-void Server::anadirJugadorAPartida(Protocolo &&protocoloJugador, id idPartida) {
+// void Server::anadirJugadorAPartida(Protocolo &&protocoloJugador, id idPartida) {
 
-};
+// };

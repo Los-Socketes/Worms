@@ -3,8 +3,10 @@
 
 #include <string>
 #include <vector>
+#include "partida.h"
 #include "protocolo.h"
 #include "thread.h"
+#include "threadSafeList.h"
 
 #define strings std::vector<std::string> //-- Notas Macros para los contenedores
 
@@ -13,8 +15,7 @@
 // Forward declaration para que el cliente le comunique al server
 // No soy FAN de esto, pero mepa que es la mejor manera de estructurar
 // el codigo para protejer los recursos
-class Server;
-typedef uint id;
+// class Server;
 
 class Cliente : public Thread { //-- Notas Relacion Cliente - Jugador
 // class Cliente {
@@ -25,14 +26,12 @@ private:
 
     std::vector<std::string> mapasDisponibles;
 
-    std::vector<std::string> partidasPosibles;
-
     //Este nombre es una mierda. Cambiar
-    Server *avisar;
+    TSList<Partida*>& avisar;
 
 public:
     Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
-	  std::vector<std::string> partidasPosibles, Server *avisar);
+	  TSList<Partida*>& avisar);
 
     void run();
 
