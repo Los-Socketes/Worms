@@ -41,7 +41,7 @@ private:
     // nos asegura que no va a haber espacios vacios en el
     //medio, lo cual facilita el obtener y modificar sus id
     // std::vector<Partida> partidas;
-    TSList<Partida> partidas;
+    TSList<Partida*> partidas;
 
     // [[nodiscard]] std::vector<RepresentacionPartida> getRepresentacionPartidas();
 

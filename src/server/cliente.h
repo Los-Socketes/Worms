@@ -27,11 +27,11 @@ private:
     std::vector<std::string> mapasDisponibles;
 
     //Este nombre es una mierda. Cambiar
-    TSList<Partida>& avisar;
+    TSList<Partida*>& avisar;
 
 public:
     Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
-	  TSList<Partida>& avisar);
+	  TSList<Partida*>& avisar);
 
     void run();
 

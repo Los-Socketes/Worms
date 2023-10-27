@@ -1,8 +1,9 @@
+#include <vector>
 #ifndef PROTOCOLO_HEADER
 #define PROTOCOLO_HEADER
 
 #include "socket.h"
-#include "partida.h"
+// #include "partida.h"
 #include "threadSafeList.h"
 #include <arpa/inet.h>
 #include <string>
@@ -22,6 +23,10 @@ enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
 // mov + direccion -> izq, der, salto, pirueta
 // 
 #define MOV 7
+
+struct RepresentacionPartida {
+    int ID;
+};
 
 class Protocolo {
 private:
@@ -43,7 +48,8 @@ public:
 
     void enviarMapas(std::vector<std::string> mapasDisponibles);
 
-    void enviarPartidas(TSList<Partida*> partidasDisponibles); 
+    // void enviarPartidas(TSList<Partida*> partidasDisponibles); 
+    void enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();
 

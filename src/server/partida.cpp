@@ -1,4 +1,5 @@
 #include "partida.h"
+#include "jugador.h"
 
 Partida::Partida() {
 }
@@ -11,6 +12,10 @@ Partida::Partida() {
   }
 
  */
+
+void Partida::anadirJugador(Jugador *jugadorNuevo) {
+
+}
 
 
 void Partida::gameLoop() {
