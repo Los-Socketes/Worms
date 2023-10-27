@@ -38,6 +38,9 @@ add_executable(server
   # "${SERVERDIR}/recibidor.cpp"
   "${SERVERDIR}/server.cpp"
   "${SERVERDIR}/cliente.cpp"
+  "${SERVERDIR}/jugador.cpp"
+  "${SERVERDIR}/partida.cpp"
+
   "${SERVERDIR}/protocolo.cpp"
 
   # Socket
