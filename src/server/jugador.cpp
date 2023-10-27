@@ -7,7 +7,7 @@ Jugador::Jugador(Protocolo &&protocolo)
       enviador(this->protocolo),
       recibidor(this->protocolo, this->acciones)
 {
-    this->gusanoActual = 0;
+    this->gusanoActualPos = 0;
 
     this->enviador.start();
     this->recibidor.start();
@@ -24,4 +24,23 @@ bool Jugador::obtenerAccion(Direccion& primeraAccion) {
     pudeObtenerla = this->acciones.try_pop(primeraAccion);
 
     return pudeObtenerla;
+}
+
+Gusano *Jugador::getGusanoActual() {
+    Gusano *gusanoActual = nullptr;
+
+    //Busco el primer gusano no muerto
+    while (gusanoActual != nullptr) {
+        gusanoActual = this->gusanos.at(gusanoActualPos);
+        this->gusanoActualPos += 1;
+
+        //WARNING Casteo falopa. En teoria nada deberia explotar
+        if (this->gusanoActualPos > (int) this->gusanos.size())
+	  this->gusanoActualPos = 0;
+    }
+
+    //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
+    //con el proximo
+
+    return gusanoActual;
 }

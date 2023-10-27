@@ -57,7 +57,16 @@ void Partida::gameLoop() {
         if (pudeObtenerla == false)
 	  continue;
 
-        // Gusano& gusanoActual = jugadorActual.getGusanoActual();
+        /*
+         *CUIDADO: EFECTOS SECUNDARIOS:
+         ESTA FUNCION VA A DEVOLVER UN GUSANO DISTINTO CADA VEZ QUE
+         LA LLAMES.
+         No soy nada fan de esto. Pero creo que es la forma mas
+         elegante de hacer que los jugadores manejen a sus gusanos.
+         Entonces, a medida que van muriendo, el jugador se encarga
+         de matarlo.
+        */
+        Gusano *gusanoActual = jugadorActual->getGusanoActual();
 
         //TODO: Cambiar a algo mas generico cuando tengamos las armas
         // int jugadorActual.getAccion();

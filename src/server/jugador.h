@@ -14,7 +14,7 @@ private:
     Sender enviador;
     Reciever recibidor;
 
-    int gusanoActual;
+    int gusanoActualPos;
     std::vector<Gusano*> gusanos;
 
     //TODO Esto seria de accion en el futuro. O anadir otra queue (eh)
@@ -23,7 +23,7 @@ private:
 
 public:
     Jugador(Protocolo&& socket);
-    Gusano& getGusanoActual();
+    Gusano* getGusanoActual();
 
     void obtenerGusanosIniciales(std::vector<Gusano*> gusanos);
 
