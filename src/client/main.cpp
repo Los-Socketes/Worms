@@ -81,6 +81,11 @@ bool menu(Protocolo& protocolo) {
 }
 
 int main(int argc, char* argv[]) {
+    if (strcmp(argv[0], "./client") != 0) {
+        std::cout << argv[0];
+        std::cerr << "Algo salio terriblemente mal\n";
+    }
+
     if (argc != 3) {
         std::cout << "Usar como: client <ip/hostname server> ";
         std::cout << "<puerto/servicename>" << std::endl;
