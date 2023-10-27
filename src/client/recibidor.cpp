@@ -1,10 +1,10 @@
 #include "recibidor.h"
 
-// Recibidor::Recibidor(Protocolo& protocolo, Queue<EstadoJuego>& recepcion_estados): 
-    // protocolo(protocolo), recepcion_estados(recepcion_estados), cont(true) {}
+Recibidor::Recibidor(Protocolo& protocolo, Queue<EstadoJuego>& recepcion_estados): 
+    protocolo(protocolo), recepcion_estados(recepcion_estados), cont(true) {}
 
-Recibidor::Recibidor(Queue<EstadoJuego>& recepcion_estados): 
-    recepcion_estados(recepcion_estados), cont(true) {}
+// Recibidor::Recibidor(Queue<EstadoJuego>& recepcion_estados): 
+//     recepcion_estados(recepcion_estados), cont(true) {}
 
 void Recibidor::run() {
     try {

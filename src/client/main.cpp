@@ -54,7 +54,7 @@ bool menu(Protocolo& protocolo) {
                 opciones = protocolo.obtenerMapas();
                 std::cout << "Mapas disponibles:" << std::endl;
                 for (const id& id_mapa : opciones) {
-                    std::cout << std::to_string(pos+1) << ") " << id_mapa << std::endl;
+                    std::cout << std::to_string(pos) << ") " << id_mapa << std::endl;
                 }
                 std::cin >> sub_opcion;
                 protocolo.crearPartida(opciones[sub_opcion]);
@@ -65,7 +65,7 @@ bool menu(Protocolo& protocolo) {
                 opciones = protocolo.obtenerPartidas();
                 std::cout << "Partidas disponibles:" << std::endl;
                 for (const id& id_partida : opciones) {
-                    std::cout << std::to_string(pos+1) << ") " << id_partida << std::endl;
+                    std::cout << std::to_string(pos) << ") " << id_partida << std::endl;
                 }
                 std::cin >> sub_opcion;
                 protocolo.unirseAPartida(opciones[sub_opcion]);
@@ -98,10 +98,10 @@ int main(int argc, char* argv[]) {
         // TODO: Instanciar Socket(argv[HOST], argv[PUERTO]) y
         // pasarselo al protocolo.
 
-        // Socket socket(argv[HOST], argv[PUERTO]);
-        // Protocolo protocolo(std::move(socket));
+        Socket socket(argv[HOST], argv[PUERTO]);
+        Protocolo protocolo(std::move(socket));
         
-        // continuar = menu(protocolo);
+        continuar = menu(protocolo);
 
         // Colas de comunicación.
         Queue<EstadoJuego> recepcion_estados(TAM_QUEUE);
@@ -112,10 +112,10 @@ int main(int argc, char* argv[]) {
         EntradaTeclado entrada_teclado(envio_comandos, comandos_teclado);
 
         // Hilos de envío y recepción.
-        // Enviador enviador(protocolo, envio_comandos);
-        // Recibidor recibidor(protocolo, recepcion_estados);
-        Enviador enviador(envio_comandos);
-        Recibidor recibidor(recepcion_estados);
+        Enviador enviador(protocolo, envio_comandos);
+        Recibidor recibidor(protocolo, recepcion_estados);
+        // Enviador enviador(envio_comandos);
+        // Recibidor recibidor(recepcion_estados);
 
         // Iniciar hilos.
         entrada_teclado.start();

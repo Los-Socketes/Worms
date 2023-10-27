@@ -1,10 +1,10 @@
 #include "enviador.h"
 
-// Enviador::Enviador(Protocolo& protocolo, Queue<std::string>& envio_comandos) :
-    // protocolo(protocolo), envio_comandos(envio_comandos) , cont(true) {}
+Enviador::Enviador(Protocolo& protocolo, Queue<std::string>& envio_comandos) :
+    protocolo(protocolo), envio_comandos(envio_comandos) , cont(true) {}
 
-Enviador::Enviador(Queue<std::string>& envio_comandos) :
-    envio_comandos(envio_comandos) , cont(true) {}
+// Enviador::Enviador(Queue<std::string>& envio_comandos) :
+//     envio_comandos(envio_comandos) , cont(true) {}
 
 void Enviador::run() {
     try {
