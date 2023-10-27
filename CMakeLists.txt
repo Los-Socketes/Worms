@@ -59,6 +59,8 @@ add_executable(server
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"
+  "${SERVERDIR}/sender.cpp"
+  "${SERVERDIR}/reciever.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
