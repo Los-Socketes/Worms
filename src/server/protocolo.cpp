@@ -29,6 +29,22 @@ std::vector<id> Protocolo::obtenerVector() {
     return partidas;
 }
 
+void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
+    int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
+
+    bool was_closed = false;
+    socket.sendall((char*)pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
+    // TODO: verificar
+}
+
+tipoInfo Protocolo::obtenerPedido() {
+    int8_t pedidoARecibir[2] = {0};
+    bool was_closed = false;
+    socket.recvall(pedidoARecibir, sizeof(pedidoARecibir), &was_closed);
+    // TODO: verificar
+    return (tipoInfo)pedidoARecibir[1];
+}
+
 std::vector<id> Protocolo::obtenerPartidas() {
     int8_t codigo = obtenerCodigo();
     // TODO: verificar (codigo)
@@ -167,8 +183,6 @@ id Protocolo::obtenerMapaDeseado() {
 }
 
 id Protocolo::obtenerPartidaDeseada() {
-    //Tenemos que ponernos de acuerdo en que devolver cuando el cliente
-    //elige crear una partida nueva
     int8_t codigo = obtenerCodigo();
     // TODO: verificar
     return obtenerId();
@@ -192,9 +206,6 @@ void Protocolo::enviarError() {
 
 
 Direccion Protocolo::recibirAccion() {
-    //int8_t codigo = MOV;
-    //id idGusano = htonl(gusano);
-    //int8_t dir = direccion;
     int8_t codigo;
     bool was_closed = false;
 
