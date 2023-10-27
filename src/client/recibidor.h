@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <syslog.h>
+#include <SDL2/SDL.h>
 
 #include "estadojuego.h"
 #include "../common/thread.h"

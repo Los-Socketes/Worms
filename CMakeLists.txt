@@ -7,8 +7,14 @@ cmake_minimum_required(VERSION 3.25.1)
 project(worms VERSION 0.1 HOMEPAGE_URL
   https://github.com/Los-Socketes/Worms LANGUAGES CXX)
 
-# Usamos el estandar iso 11 porque lo dice la consigna
+# Usamos el estandar iso 17 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 17)
+
+# Busco codigo para el sdl
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_mixer 2.6.3 REQUIRED)
+find_package(SDL2pp REQUIRED)
 
 # Seteamos las flags de compilacion
 add_compile_options(
@@ -101,6 +107,14 @@ target_compile_definitions(client PUBLIC
   CLIENT
 )
 
+target_include_directories(client PRIVATE ${SDL2_INCLUDE_DIRS})
+target_include_directories(client PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
+target_include_directories(client PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
+target_link_libraries(client PRIVATE SDL2)
+target_link_libraries(client PRIVATE SDL2_image)
+target_link_libraries(client PRIVATE SDL2_mixer)
+target_link_libraries(client PRIVATE ${SDL2PP_LIBRARIES})
+
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el
 # cmake
@@ -116,9 +130,6 @@ add_executable(testthreadsafelist
 add_test(NAME threadsafelisttest
   COMMAND testthreadsafelist
 )
-
-
-
 
 
 # Notas a pie:

@@ -5,10 +5,11 @@ Enviador::Enviador(Queue<std::string>& envio_comandos) :
 
 void Enviador::run() {
     try {
-        // TODO: Enviar comandos al servidor por protocolo.
-        // Por ahora no hago nada con ellos.
         while(cont){
-            envio_comandos.pop();
+            // TODO: Enviar comandos al servidor por protocolo.
+            // Por ahora solo los imprimo.
+            std::string comando = envio_comandos.pop();
+            std::cout << "Enviando comando: " << comando << std::endl;                        
         }
     } catch (const ClosedQueue& e) {
         syslog(LOG_INFO, "%s", e.what());
