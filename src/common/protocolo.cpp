@@ -1,4 +1,5 @@
 #include "protocolo.h"
+#include <cstdint>
 #include <vector>
 
 Protocolo::Protocolo(Socket&& socket):
@@ -169,10 +170,10 @@ bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     uint16_t cant = htons(cantMapas);
 
     // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
-    std::vector<char*> paraEnviar;
+    std::vector<id> paraEnviar;
     for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
         id idMapa = htonl(i);
-        paraEnviar.push_back((char*)&idMapa);
+        paraEnviar.push_back(idMapa);
     }
     
 
@@ -194,10 +195,10 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
 
-    std::vector<char*> paraEnviar;
+    std::vector<id> paraEnviar;
     for (auto &&partida : partidasDisponibles) {
         id idMapa = htonl(partida.ID);
-        paraEnviar.push_back((char*)&idMapa);
+        paraEnviar.push_back(idMapa);
     }
 
     bool was_closed = false;

@@ -57,6 +57,8 @@ void Cliente::elegirPartida() {
 	  if (partidaElegida == nullptr)
 	      this->protocolo.enviarError();
 
+	  partidaElegida->start();
+
 	  //La anado a la lista para que clientes subsecuentes puedan
 	  //usarla
 	  this->avisar.append(partidaElegida);
@@ -93,12 +95,13 @@ void Cliente::elegirPartida() {
 	  }
     };
 
+    this->protocolo.enviarConfirmacion(partida);
+
     Jugador *jugadorNuevo = new Jugador(std::move(this->protocolo));
 
     //Uno al jugador
     partidaElegida->anadirJugador(jugadorNuevo);
 
-    this->protocolo.enviarConfirmacion(partida);
 
     this->conectadoAPartida = true;
 }

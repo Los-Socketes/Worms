@@ -3,7 +3,7 @@
 #include "protocolo.h"
 #include <unistd.h>
 
-#define SLEEPSEGS 3000
+#define SLEEPSEGS 3
 
 Partida::Partida(std::string mapa) {
     this->mapa = mapa;
@@ -55,6 +55,10 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
 
 void Partida::gameLoop() {
     int posJugadorActual = 0;
+
+    while (this->jugadores.size() < 1) {
+        sleep(4);
+    }
 
     while (true) {
         sleep(SLEEPSEGS);
