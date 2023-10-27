@@ -9,13 +9,16 @@
 
 class Reciever: public Thread {
     // Queue<Mensaje>& queue;
-    Protocolo& protocol;
+    Protocolo& protocolo;
+
+    Queue<Direccion>& acciones;
 
 public:
     void run() override;
     //Reciever(Queue<Mensaje>& queue, Protocol& protocol, ClientesMonitor& clientes,
     //         std::atomic<bool>& is_alive);
-    Reciever(Protocolo& protocol);
+    // 		                                  ;)
+    Reciever(Protocolo& protocol, Queue<Direccion>& acciones);
 };
 
 #endif

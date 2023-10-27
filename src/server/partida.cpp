@@ -1,5 +1,9 @@
 #include "partida.h"
 #include "jugador.h"
+#include "protocolo.h"
+#include <unistd.h>
+
+#define SLEEPSEGS 3000
 
 Partida::Partida(std::string mapa) {
     this->mapa = mapa;
@@ -28,7 +32,7 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         this->gusanos.append(nuevoGusano);
     }
     //Le damos los gusanos al cliente
-    jugadorNuevo->obtenerGusano(gusanosParaElCliente);
+    jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
 
     //Anadimos al jugador a la partida
     this->jugadores.append(jugadorNuevo);
@@ -39,7 +43,20 @@ void Partida::gameLoop() {
     int posJugadorActual = 0;
 
     while (true) {
+        sleep(SLEEPSEGS);
+
         Jugador* jugadorActual = jugadores.at(posJugadorActual);
+
+        //Non blocking pop (try pop)
+        bool pudeObtenerla;
+        Direccion accionAEjecutar;
+        pudeObtenerla = jugadorActual->obtenerAccion(accionAEjecutar);
+
+        //Si no obtuvimos nada, vamos a la siguiente iteracion.
+        //Sigue siendo el turno del mismo jugador y de el mismo gusano
+        if (pudeObtenerla == false)
+	  continue;
+
         // Gusano& gusanoActual = jugadorActual.getGusanoActual();
 
         //TODO: Cambiar a algo mas generico cuando tengamos las armas
@@ -53,5 +70,6 @@ void Partida::gameLoop() {
 
 
         posJugadorActual += 1;
+
     }
 };

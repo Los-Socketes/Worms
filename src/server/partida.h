@@ -25,9 +25,6 @@ class Partida : public Thread {
 
     TSList<Gusano *> gusanos;
 
-    void turnoJugador();
-
-
 public:
     Partida(std::string mapa);
 
