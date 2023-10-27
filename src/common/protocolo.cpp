@@ -65,12 +65,12 @@ id Protocolo::verificarConexion() {
 //METODOS DEL CLIENTE
 
 #ifdef CLIENT
-void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
+bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
     int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
 
     bool was_closed = false;
     socket.sendall((char*)pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
-    // TODO: verificar
+    return !was_closed;
 }
 
 
@@ -96,8 +96,13 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&mapa, sizeof(mapa), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return false;
+    }
 
     return verificarConexion();
 }
@@ -109,23 +114,37 @@ bool Protocolo::unirseAPartida(id id) {
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)idPartida, sizeof(idPartida), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return false;
+    }
 
     return verificarConexion();
 }
 
 
-void Protocolo::moverGusano(id gusano, Direccion direccion) {
+bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     int8_t codigo = MOV;
     id idGusano = htonl(gusano);
     int8_t dir = direccion;
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&idGusano, sizeof(idGusano), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+    return !was_closed;
 }
 
 //Endif de la macro de CLIENT
@@ -144,7 +163,7 @@ tipoInfo Protocolo::obtenerPedido() {
 }
 
 
-void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
+bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
     uint16_t cant = htons(cantMapas);
@@ -159,11 +178,18 @@ void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&cant, sizeof(cant), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
+    return !was_closed;
 }
 
-void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
+bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
     int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
@@ -175,15 +201,20 @@ void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
     }
 
     bool was_closed = false;
-    /* TODO: agregar ifs para ver si se cerro el socket
-            mover estos sendall a otro metodo
+    /* TODO: mover estos sendall a otro metodo
             hacer que este metodo devuelva 1 string/algo con toda la info para hacer
                 mas facil el testeo
     */
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&cant, sizeof(cant), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantPartidas, &was_closed);
-    
+    return !was_closed;    
 }
 
 
@@ -201,25 +232,30 @@ id Protocolo::obtenerPartidaDeseada() {
 }
 
 
-void Protocolo::enviarConfirmacion(id idPartida) {
+bool Protocolo::enviarConfirmacion(id idPartida) {
     int8_t codigo = EXITO;
     int32_t idAEnviar = htonl(idPartida);
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     socket.sendall((char*)&idAEnviar, sizeof(idAEnviar), &was_closed);
+    return !was_closed;
 }
 
 
-void Protocolo::enviarError() {
+bool Protocolo::enviarError() {
     int8_t codigo = ERROR;
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+    return !was_closed; // si sigue abierto (false) -> devuelve true
 }
 
 
-Direccion Protocolo::recibirAccion() {
+Direccion Protocolo::obtenerAccion() {
     int8_t codigo;
     bool was_closed = false;
 
