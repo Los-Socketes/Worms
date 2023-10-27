@@ -8,13 +8,16 @@
 
 #include "../common/thread.h"
 #include "../common/queue.h"
+#include "../common/protocolo.h"
 
 class Enviador: public Thread {
 private:
+    // Protocolo& protocolo;
     Queue<std::string>& envio_comandos;
     std::atomic<bool> cont;
 
 public:
+    // Enviador(Protocolo& protocolo, Queue<std::string>& envio_comandos);
     Enviador(Queue<std::string>& envio_comandos);
 
     // Hilo que se encarga de enviar los comandos al servidor.

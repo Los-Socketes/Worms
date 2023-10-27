@@ -1,5 +1,8 @@
 #include "recibidor.h"
 
+// Recibidor::Recibidor(Protocolo& protocolo, Queue<EstadoJuego>& recepcion_estados): 
+    // protocolo(protocolo), recepcion_estados(recepcion_estados), cont(true) {}
+
 Recibidor::Recibidor(Queue<EstadoJuego>& recepcion_estados): 
     recepcion_estados(recepcion_estados), cont(true) {}
 
@@ -13,6 +16,7 @@ void Recibidor::run() {
         int dirX = 1;
         int dirY = 1;
         while (cont) {
+            
             if (dirX == 1) {
                 estado_juego.coord_x++;
             } else if (dirX == 0) {
