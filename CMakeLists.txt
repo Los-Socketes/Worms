@@ -7,12 +7,13 @@ cmake_minimum_required(VERSION 3.26.5)
 project(worms VERSION 0.1 HOMEPAGE_URL
   https://github.com/Los-Socketes/Worms LANGUAGES CXX)
 
-# Usamos el estandar iso 11 porque lo dice la consigna
+# Usamos el estandar iso 17 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 17)
 
+# 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer 2.6.3 REQUIRED)  # Specify the exact version here
+find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
 
 # Hace que genere el archivo compile_commands.json. Este es usado para
@@ -63,7 +64,6 @@ add_executable(client
 target_include_directories(client PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(client PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
 target_include_directories(client PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
-
 target_link_libraries(client PRIVATE SDL2)
 target_link_libraries(client PRIVATE SDL2_image)
 target_link_libraries(client PRIVATE SDL2_mixer)
