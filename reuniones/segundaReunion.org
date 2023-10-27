@@ -1,0 +1,12 @@
+* TODO
+DEADLINE: <2023-11-03 Fri 16:30>
+
+- Tener un gusanito moviendose
+- Implementar yaml
+Lee el archivo y guarda eso en diccionarios que despues las clases acceden.
+Las clases acceden a ese diccionarios con getters.
+Global o Pasar por Referencia?
+
+La idea es no volver a compilarlo. Lo hace Juampi (dormiste) B)
+  1. Nivel server
+  2. Nivel cliente

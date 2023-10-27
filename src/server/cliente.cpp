@@ -42,6 +42,7 @@ void Cliente::elegirPartida() {
 
     //Paso 1: Envio los mapas
     switch (pedido) {
+        //CREAR
         case MAPA:
 	  {
 	  this->protocolo.enviarMapas(this->mapasDisponibles);
@@ -104,4 +105,8 @@ void Cliente::elegirPartida() {
 
 
     this->conectadoAPartida = true;
+    //Mutar hilo?
+    // jugadorNuevo->main();
+    //sI?
+    //jugador
 }

@@ -104,6 +104,10 @@ void Partida::gameLoop() {
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
         this->coordsGusanos[coordenadasIniciales] = nullptr;
 
+        //actualizarGameState();
+        //TODO: En el game state incluir si es el turno O pedir un
+        //mensaje al protocolo
+
 
         posJugadorActual += 1;
 

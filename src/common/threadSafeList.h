@@ -18,6 +18,8 @@
 */
 template <typename T>
 
+//TODO Hacer monitor con map
+
 class TSList {
 private:
     std::vector<T> lista;
