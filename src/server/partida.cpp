@@ -24,10 +24,10 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         Gusano *nuevoGusano = new Gusano();
         gusanosDelCliente.push_back(nuevoGusano);
 
-        this->gusanos.push_back(nuevoGusano);
+        this->gusanos.append(nuevoGusano);
     }
 
-    this->jugadores.push_back(jugadorNuevo);
+    this->jugadores.append(jugadorNuevo);
 }
 
 

@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 #include "comunes.h"
+#include "threadSafeList.h"
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
@@ -18,9 +19,11 @@ enum class Accion { Mover, Saltar, Disparar };
 class Partida : public Thread {
     std::string mapa;
 
-    std::vector<Jugador *> jugadores;
+    //Esto tiene que ser thread safe porque se modifica en hilos
+    //distintos
+    TSList<Jugador *> jugadores;
 
-    std::vector<Gusano*> gusanos;
+    TSList<Gusano *> gusanos;
 
     void turnoJugador();
 
