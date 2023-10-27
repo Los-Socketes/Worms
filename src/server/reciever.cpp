@@ -2,7 +2,5 @@
 
 #include <iostream>
 
-
-
 void Reciever::run() {
 }
