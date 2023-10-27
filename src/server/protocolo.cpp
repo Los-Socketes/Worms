@@ -134,14 +134,11 @@ void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
     uint16_t cant = htons(cantPartidas);
 
     std::vector<char*> paraEnviar;
-    for (int32_t i = 0; i < (int32_t)cantPartidas; i++) {
-        // if (partidasDisponibles) {
-        id idMapa = htonl(i);
+    for (auto &&partida : partidasDisponibles) {
+        id idMapa = htonl(partida.ID);
         paraEnviar.push_back((char*)&idMapa);
-
-        // }
     }
-    
+
     bool was_closed = false;
     /* TODO: agregar ifs para ver si se cerro el socket
             mover estos sendall a otro metodo

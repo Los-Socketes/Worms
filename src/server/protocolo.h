@@ -25,7 +25,7 @@ enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
 #define MOV 7
 
 struct RepresentacionPartida {
-    int ID;
+    id ID;
 };
 
 class Protocolo {
