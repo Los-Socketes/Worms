@@ -10,6 +10,9 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 # Usamos el estandar iso 17 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 17)
 
+# Anadimos debug symbols
+set(CMAKE_BUILD_TYPE Debug)
+
 # Busco codigo para el sdl
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
