@@ -17,6 +17,21 @@ Cliente::Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
 };
 
 //Esto corre en un thread
+/*
+    obtener pedido
+    if pedido == mapa:
+        *enviarMapas
+        *recibirMapaSeleccionado
+        Creo partida (y lo uno)
+        *envioConfirmacion con idPartida / envioError si no pude creala
+    else:
+        *enviarPartidas
+        *recibirPartidaSeleccionada
+        lo uno
+        *envioConfirmacion con idPartida / envioError si no pude creala
+    
+    me vuelvo jugador
+*/
 void Cliente::elegirPartida() {
     //Paso 1: Envio los mapas
     this->protocolo.enviarMapas(this->mapasDisponibles);

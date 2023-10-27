@@ -12,20 +12,21 @@
 //TODO Poner todos los types defs en un header file juntos
 typedef int32_t id;
 enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
+enum tipoInfo {PARTIDA, MAPA};
 #define PARTIDAS 1
 #define MAPAS 2
 #define CREAR 3
 #define UNIRSE 4
-#define EXITO 5
-#define ERROR 6
+#define PEDIDO 5
+#define EXITO 6
+#define ERROR 7
 
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
-// 
-#define MOV 7
+#define MOV 8
 
 struct RepresentacionPartida {
-    int ID;
+    id ID;
 };
 
 class Protocolo {
@@ -35,26 +36,29 @@ private:
     id obtenerId();
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
-    std::vector<char*> vectorListoParaEnviar(std::vector<id> vectorAEnviar);
     id verificarConexion();
 public:
-    // Pongo estas para que compile nomas. Ponele el nombre/encaralas de
-    // la forma que te parezca
-    std::vector<id> obtenerPartidas();
+
+    // METODOS DEL CLIENTE
+    void pedirInformacion(tipoInfo infoAPedir);
     std::vector<id> obtenerMapas();
+    std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);
 
-    void enviarMapas(std::vector<std::string> mapasDisponibles);
 
-    // void enviarPartidas(TSList<Partida*> partidasDisponibles); 
+    // METODOS DEL SERVER
+    tipoInfo obtenerPedido();
+    void enviarMapas(std::vector<std::string> mapasDisponibles);
     void enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();
 
     void enviarConfirmacion(id idPartida);
     void enviarError();
+
+    Direccion recibirAccion();
 
     Protocolo(Socket&& socket);
 
