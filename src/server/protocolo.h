@@ -36,22 +36,21 @@ private:
     id obtenerId();
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
-    std::vector<char*> vectorListoParaEnviar(std::vector<id> vectorAEnviar);
     id verificarConexion();
 public:
 
-    void pedirInformacion(tipoInfo infoAPedir);
-    tipoInfo obtenerPedido();
     // METODOS DEL CLIENTE
+    void pedirInformacion(tipoInfo infoAPedir);
     std::vector<id> obtenerPartidas();
     std::vector<id> obtenerMapas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);
 
-    void enviarMapas(std::vector<std::string> mapasDisponibles);
 
     // METODOS DEL SERVER
+    tipoInfo obtenerPedido();
+    void enviarMapas(std::vector<std::string> mapasDisponibles);
     void enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
     id obtenerMapaDeseado();
     [[nodiscard]] id obtenerPartidaDeseada();

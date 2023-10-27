@@ -116,15 +116,6 @@ void Protocolo::moverGusano(id gusano, Direccion direccion) {
 }
 
 
-std::vector<char*> Protocolo::vectorListoParaEnviar(std::vector<id> vectorAEnviar) {
-    std::vector<char*> paraEnviar;
-    for (auto &&elemento : vectorAEnviar) {
-        int32_t valorAEnviar = htonl(elemento);
-        paraEnviar.push_back((char*)&valorAEnviar);
-    }
-    return paraEnviar;
-}
-
 void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
