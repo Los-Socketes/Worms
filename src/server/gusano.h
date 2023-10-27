@@ -1,6 +1,7 @@
 #ifndef GUSANO_HEADER
 #define GUSANO_HEADER
 
+#include "protocolo.h"
 #include <sys/types.h>
 
 // hp = healt points
@@ -12,6 +13,8 @@ private:
 
 public:
     Gusano();
+
+    std::pair<int, int> cambio(Direccion accion);
 };
 
 
