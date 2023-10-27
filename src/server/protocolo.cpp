@@ -189,3 +189,23 @@ void Protocolo::enviarError() {
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
 }
+
+
+Direccion Protocolo::recibirAccion() {
+    //int8_t codigo = MOV;
+    //id idGusano = htonl(gusano);
+    //int8_t dir = direccion;
+    int8_t codigo;
+    bool was_closed = false;
+
+    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    id idGusano;
+    socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
+    idGusano = ntohl(idGusano);
+
+    int8_t dir;
+    socket.recvall(&dir, sizeof(dir), &was_closed);
+    // TODO: verificar
+
+    return (Direccion)dir;
+}

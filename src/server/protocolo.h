@@ -21,7 +21,6 @@ enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
 
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
-// 
 #define MOV 7
 
 struct RepresentacionPartida {
@@ -55,6 +54,8 @@ public:
 
     void enviarConfirmacion(id idPartida);
     void enviarError();
+
+    Direccion recibirAccion();
 
     Protocolo(Socket&& socket);
 
