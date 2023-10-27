@@ -42,7 +42,8 @@ add_executable(server
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"
 
-  "${SERVERDIR}/protocolo.cpp"
+  # Protocolo
+  "${COMMONDIR}/protocolo.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
@@ -67,6 +68,21 @@ add_executable(client
   "${CLIENTDIR}/entradateclado.cpp"
   "${CLIENTDIR}/enviador.cpp"
   "${CLIENTDIR}/recibidor.cpp"
+
+  # Socket
+  "${COMMONDIR}/resolvererror.cpp"
+  "${COMMONDIR}/liberror.cpp"
+  "${COMMONDIR}/resolver.cpp"
+  "${COMMONDIR}/socket.cpp"
+
+  #Threads
+  "${COMMONDIR}/thread.h"
+
+  #Thread safe queue
+  "${COMMONDIR}/queue.h"
+
+  # Protocolo
+  "${COMMONDIR}/protocolo.cpp"
 )
 ## Macros para pasarle al client
 target_compile_definitions(client PUBLIC
