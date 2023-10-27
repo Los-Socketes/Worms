@@ -26,8 +26,9 @@ add_compile_options(
   -Werror
 
   # Seteamos esta flag porque muchas veces dejamos algo "en camino"
-  # add_compile_options(-Wunused-variable)
+  # TODO Sacar estos Wno ASAP
   -Wno-unused-variable
+  -Wno-unused-parameter
  )
 
 
