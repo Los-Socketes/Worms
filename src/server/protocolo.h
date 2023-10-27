@@ -41,8 +41,8 @@ public:
 
     // METODOS DEL CLIENTE
     void pedirInformacion(tipoInfo infoAPedir);
-    std::vector<id> obtenerPartidas();
     std::vector<id> obtenerMapas();
+    std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     void moverGusano(id gusano, Direccion direccion);

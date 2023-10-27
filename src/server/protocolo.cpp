@@ -5,12 +5,25 @@ Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
 
+// METODOS PRIVADOS
+
+id Protocolo::obtenerId() {
+    bool was_closed = false;
+    id idEnviada;
+    socket.recvall(&idEnviada, sizeof(idEnviada), &was_closed);
+    // TODO: verificar
+    idEnviada = ntohl(idEnviada);
+    return idEnviada;
+}
+
+
 int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
     return codigo;
 }
+
 
 std::vector<id> Protocolo::obtenerVector() {
     bool was_closed = false;
@@ -29,36 +42,6 @@ std::vector<id> Protocolo::obtenerVector() {
     return partidas;
 }
 
-void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
-    int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
-
-    bool was_closed = false;
-    socket.sendall((char*)pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
-    // TODO: verificar
-}
-
-tipoInfo Protocolo::obtenerPedido() {
-    int8_t pedidoARecibir[2] = {0};
-    bool was_closed = false;
-    socket.recvall(pedidoARecibir, sizeof(pedidoARecibir), &was_closed);
-    // TODO: verificar
-    return (tipoInfo)pedidoARecibir[1];
-}
-
-std::vector<id> Protocolo::obtenerPartidas() {
-    int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
-
-    return obtenerVector();
-}
-
-
-std::vector<id> Protocolo::obtenerMapas() {
-    int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
-
-    return obtenerVector();
-}
 
 id Protocolo::verificarConexion() {
     bool was_closed = false;
@@ -77,6 +60,34 @@ id Protocolo::verificarConexion() {
     idPartida = ntohl(idPartida);
     return idPartida;
 }
+
+
+//METODOS DEL CLIENTE
+
+void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
+    int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
+
+    bool was_closed = false;
+    socket.sendall((char*)pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
+    // TODO: verificar
+}
+
+
+std::vector<id> Protocolo::obtenerMapas() {
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar (codigo)
+
+    return obtenerVector();
+}
+
+
+std::vector<id> Protocolo::obtenerPartidas() {
+    int8_t codigo = obtenerCodigo();
+    // TODO: verificar (codigo)
+
+    return obtenerVector();
+}
+
 
 id Protocolo::crearPartida(id mapaSeleccionado) {
     int8_t codigo = CREAR;
@@ -104,6 +115,7 @@ bool Protocolo::unirseAPartida(id id) {
     return verificarConexion();
 }
 
+
 void Protocolo::moverGusano(id gusano, Direccion direccion) {
     int8_t codigo = MOV;
     id idGusano = htonl(gusano);
@@ -113,6 +125,17 @@ void Protocolo::moverGusano(id gusano, Direccion direccion) {
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&idGusano, sizeof(idGusano), &was_closed);
     socket.sendall((char*)&dir, sizeof(dir), &was_closed);
+}
+
+
+// METODOS DEL SERVER
+
+tipoInfo Protocolo::obtenerPedido() {
+    int8_t pedidoARecibir[2] = {0};
+    bool was_closed = false;
+    socket.recvall(pedidoARecibir, sizeof(pedidoARecibir), &was_closed);
+    // TODO: verificar
+    return (tipoInfo)pedidoARecibir[1];
 }
 
 
@@ -158,14 +181,6 @@ void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
     
 }
 
-id Protocolo::obtenerId() {
-    bool was_closed = false;
-    id idEnviada;
-    socket.recvall(&idEnviada, sizeof(idEnviada), &was_closed);
-    // TODO: verificar
-    idEnviada = ntohl(idEnviada);
-    return idEnviada;
-}
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
@@ -173,11 +188,13 @@ id Protocolo::obtenerMapaDeseado() {
     return obtenerId();
 }
 
+
 id Protocolo::obtenerPartidaDeseada() {
     int8_t codigo = obtenerCodigo();
     // TODO: verificar
     return obtenerId();
 }
+
 
 void Protocolo::enviarConfirmacion(id idPartida) {
     int8_t codigo = EXITO;
@@ -187,6 +204,7 @@ void Protocolo::enviarConfirmacion(id idPartida) {
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     socket.sendall((char*)&idAEnviar, sizeof(idAEnviar), &was_closed);
 }
+
 
 void Protocolo::enviarError() {
     int8_t codigo = ERROR;
