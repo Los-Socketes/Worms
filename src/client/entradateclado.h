@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <syslog.h>
+#include <SDL2/SDL.h>
 
 #include "../common/thread.h"
 #include "../common/queue.h"

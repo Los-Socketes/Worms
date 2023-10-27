@@ -2,10 +2,10 @@
 #define ESTADOJUEGO_H_
 
 struct EstadoJuego {
-    char coord_x;
-    char coord_y;
+    int coord_x;
+    int coord_y;
 
-    EstadoJuego(char coord_x, char coord_y) : coord_x(coord_x), coord_y(coord_y) {}
+    EstadoJuego(int coord_x, int coord_y) : coord_x(coord_x), coord_y(coord_y) {}
     
 };
 
