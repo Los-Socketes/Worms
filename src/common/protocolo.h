@@ -22,6 +22,7 @@ enum tipoInfo {PARTIDA, MAPA};
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 8
+#define noIgn [[nodiscard]]
 
 struct RepresentacionPartida {
     id ID;
@@ -51,11 +52,11 @@ public:
 
 #ifdef SERVER
     // METODOS DEL SERVER
-    tipoInfo obtenerPedido();
+    noIgn tipoInfo obtenerPedido();
     void enviarMapas(std::vector<std::string> mapasDisponibles);
     void enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles); 
-    id obtenerMapaDeseado();
-    [[nodiscard]] id obtenerPartidaDeseada();
+    noIgn id obtenerMapaDeseado();
+    noIgn id obtenerPartidaDeseada();
 
     void enviarConfirmacion(id idPartida);
     void enviarError();
