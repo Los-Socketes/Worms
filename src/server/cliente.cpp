@@ -9,7 +9,6 @@
 //     void anadirJugadorAPartida(Protocolo&& socketDeJugador, id idPartida);
 // };
 
-
 Cliente::Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
 	       TSList<Partida*>& avisar) 
     : protocolo(std::move(socket)), avisar(avisar) {

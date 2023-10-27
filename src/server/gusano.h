@@ -11,6 +11,7 @@ private:
     hp vida;
 
 public:
+    Gusano();
 };
 
 

@@ -16,15 +16,17 @@
 enum class Accion { Mover, Saltar, Disparar };
 
 class Partida : public Thread {
-    int32_t id;
+    std::string mapa;
 
     std::vector<Jugador *> jugadores;
 
     std::vector<Gusano*> gusanos;
 
     void turnoJugador();
+
+
 public:
-    Partida();
+    Partida(std::string mapa);
 
     void anadirJugador(Jugador  *jugadorNuevo);
 
