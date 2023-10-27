@@ -4,6 +4,6 @@
 int main() {
     std::cout << "Inicio test de protocolo\n";
 
-    return -1;
+    // return -1;
     // TODO: agregar tests :p
 }

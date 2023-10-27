@@ -10,7 +10,7 @@ void Reciever::run() {
     //TODO Cambiar a socket vivo o algo
     while (true) {
         Direccion accionDeseada;
-        accionDeseada = this->protocolo.recibirAccion();
+        accionDeseada = this->protocolo.obtenerAccion();
 
         this->acciones.push(accionDeseada);
     }
