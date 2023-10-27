@@ -5,6 +5,7 @@
 #include "jugador.h"
 #include "thread.h"
 #include <cstdint>
+#include <map>
 #include <sys/types.h>
 #include <utility>
 #include <vector>
@@ -24,6 +25,13 @@ class Partida : public Thread {
     TSList<Jugador *> jugadores;
 
     TSList<Gusano *> gusanos;
+
+    std::map<std::pair<int, int>, Gusano *> coordsGusanos;
+
+    //TODO: Aca estaria Box2d
+    std::pair<int, int> gravedad(std::pair<int, int> cambioDeseado,
+			   std::pair<int, int> posInicial
+			   );
 
 public:
     Partida(std::string mapa);

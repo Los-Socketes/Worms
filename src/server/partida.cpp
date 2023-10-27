@@ -25,11 +25,19 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
     std::vector<Gusano*> gusanosParaElCliente;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
-        Gusano *nuevoGusano = new Gusano();
+        //TODO Hacer las coordenadas distintas
+        std::pair<int, int> coordsIniciales(0,0);
+
+        Gusano *nuevoGusano = new Gusano(coordsIniciales);
         gusanosParaElCliente.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
         this->gusanos.append(nuevoGusano);
+
+        //TODO Unificar la lista thread safe con el mapa
+        //TODO No soy fan de que tenga que guardar las coordenadas
+        //en dos lados distintos. Es lo que hay (?.
+        this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
     }
     //Le damos los gusanos al cliente
     jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
@@ -38,6 +46,12 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
     this->jugadores.append(jugadorNuevo);
 }
 
+
+std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
+		        std::pair<int, int> posInicial
+		         ){
+    return cambioDeseado;
+}
 
 void Partida::gameLoop() {
     int posJugadorActual = 0;
@@ -58,7 +72,7 @@ void Partida::gameLoop() {
 	  continue;
 
         /*
-         *CUIDADO: EFECTOS SECUNDARIOS:
+         CUIDADO: EFECTOS SECUNDARIOS:
          ESTA FUNCION VA A DEVOLVER UN GUSANO DISTINTO CADA VEZ QUE
          LA LLAMES.
          No soy nada fan de esto. Pero creo que es la forma mas
@@ -67,7 +81,14 @@ void Partida::gameLoop() {
          de matarlo.
         */
         Gusano *gusanoActual = jugadorActual->getGusanoActual();
+        std::pair<int, int> cambio;
+        cambio = gusanoActual->cambio(accionAEjecutar);
 
+        std::pair<int, int> coordenadasIniciales;
+        coordenadasIniciales = gusanoActual->getCoords();
+
+        std::pair<int, int> coordenadasFinales;
+        coordenadasFinales  = this->gravedad(cambio, coordenadasIniciales);
         //TODO: Cambiar a algo mas generico cuando tengamos las armas
         // int jugadorActual.getAccion();
 
@@ -76,6 +97,8 @@ void Partida::gameLoop() {
 
         //TODO: Implementar "actualizar"
         //this.actualizar();
+        this->coordsGusanos[coordenadasFinales] = gusanoActual;
+        this->coordsGusanos[coordenadasIniciales] = nullptr;
 
 
         posJugadorActual += 1;
