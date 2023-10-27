@@ -25,8 +25,6 @@ private:
     // Recibidor recibidor;
     Socket aceptador;
     
-    //Esta funcion se tiene que correr en un thread
-    void recibirCliente();
     std::vector<Cliente *> lobby;
 
     //Esto lo hago constante porque solo es fijo. Se tiene que leer de
@@ -51,6 +49,9 @@ public:
     //TODO Preguntar que queda mas bonito a mis compis UwU
     // void anadirJugadorAPartida(
     // void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
+
+    //Esta funcion se tiene que correr en un thread
+    void recibirCliente();
 
 };
 
