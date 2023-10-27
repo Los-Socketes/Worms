@@ -18,15 +18,19 @@ Partida::Partida(std::string mapa) {
  */
 
 void Partida::anadirJugador(Jugador *jugadorNuevo) {
-    std::vector<Gusano*> gusanosDelCliente;
+    std::vector<Gusano*> gusanosParaElCliente;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         Gusano *nuevoGusano = new Gusano();
-        gusanosDelCliente.push_back(nuevoGusano);
+        gusanosParaElCliente.push_back(nuevoGusano);
 
+        //Anadimos los gusanos del cliente a la partida
         this->gusanos.append(nuevoGusano);
     }
+    //Le damos los gusanos al cliente
+    jugadorNuevo->obtenerGusano(gusanosParaElCliente);
 
+    //Anadimos al jugador a la partida
     this->jugadores.append(jugadorNuevo);
 }
 
