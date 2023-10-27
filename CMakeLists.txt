@@ -11,7 +11,19 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 set(CMAKE_CXX_STANDARD 17)
 
 # Seteamos las flags de compilacion
-add_compile_options(-Wall -Wextra -Wpedantic)
+add_compile_options(
+  
+  # Queremos todos las advertencias y errores posibles
+  -Wall -Wextra -Wpedantic
+
+  # Queremos que los warnings sean errors
+  -Werror
+
+  # Seteamos esta flag porque muchas veces dejamos algo "en camino"
+  # add_compile_options(-Wunused-variable)
+  -Wno-unused-variable
+ )
+
 
 # Incluye CTest para poder correr tests
 include(CTest)
