@@ -1,4 +1,5 @@
 #include "protocolo.h"
+#include <vector>
 
 Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
@@ -127,18 +128,18 @@ void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
 }
 
-void Protocolo::enviarPartidas(TSList<Partida*> partidasDisponibles) {
+void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
     int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
     uint16_t cant = htons(cantPartidas);
 
     std::vector<char*> paraEnviar;
-    for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
-        if (partidasDisponibles) {
-            id idMapa = htonl(i);
-            paraEnviar.push_back((char*)&idMapa);
+    for (int32_t i = 0; i < (int32_t)cantPartidas; i++) {
+        // if (partidasDisponibles) {
+        id idMapa = htonl(i);
+        paraEnviar.push_back((char*)&idMapa);
 
-        }
+        // }
     }
     
     bool was_closed = false;

@@ -36,7 +36,7 @@ public:
     // no una copia. Yo le hubiese puesto "get", pero _etimologicamente_
     // get implica que vos lo obtenes (llamese, te pasan copia) y eso
     // no es lo que hace.
-    T& at(int pos) {
+    [[nodiscard]] T& at(int pos) {
         //Lockeamos porque obtener es una RC*
         //Entendo que es una race condition, porque si alguien esta
         //modificando la lista; vos podrias llegar a ver una vision
@@ -58,7 +58,7 @@ public:
         this->lista.erase(this->lista.begin() + pos);
     }
 
-    int size() {
+    [[nodiscard]] int size() {
         std::unique_lock<std::mutex> lck(mtx);
 
         int longitud;

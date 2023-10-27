@@ -3,7 +3,6 @@
 
 #include "gusano.h"
 #include "jugador.h"
-#include "protocolo.h"
 #include "thread.h"
 #include <cstdint>
 #include <sys/types.h>
@@ -19,7 +18,7 @@ enum class Accion { Mover, Saltar, Disparar };
 class Partida : public Thread {
     int32_t id;
 
-    std::vector<Jugador> jugadores;
+    std::vector<Jugador *> jugadores;
 
     std::vector<Gusano*> gusanos;
 
@@ -27,7 +26,7 @@ class Partida : public Thread {
 public:
     Partida();
 
-    void anadirJugador(Protocolo&& jugadorNuevo);
+    void anadirJugador(Jugador  *jugadorNuevo);
 
     void gameLoop();
 };
