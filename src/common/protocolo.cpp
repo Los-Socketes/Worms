@@ -117,7 +117,7 @@ bool Protocolo::unirseAPartida(id id) {
     if (was_closed) {
         return false;
     }
-    socket.sendall((char*)idPartida, sizeof(idPartida), &was_closed);
+    socket.sendall((char*)&idPartida, sizeof(idPartida), &was_closed);
     if (was_closed) {
         return false;
     }
