@@ -1,6 +1,7 @@
 #include "cliente.h"
 #include "jugador.h"
 #include "partida.h"
+#include "protocolo.h"
 #include "socket.h"
 #include <string>
 
@@ -29,38 +30,75 @@ Cliente::Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
         *recibirPartidaSeleccionada
         lo uno
         *envioConfirmacion con idPartida / envioError si no pude creala
-    
+
     me vuelvo jugador
 */
 void Cliente::elegirPartida() {
+    tipoInfo pedido;
+    pedido = this->protocolo.obtenerPedido();
+
+    Partida *partidaElegida;
+    id partida;
+
     //Paso 1: Envio los mapas
-    this->protocolo.enviarMapas(this->mapasDisponibles);
+    switch (pedido) {
+        case MAPA:
+	  {
+	  this->protocolo.enviarMapas(this->mapasDisponibles);
 
-    //Paso 2: Envio las partidas
-    std::vector<RepresentacionPartida> partidasAEnviar;
-    for (int i = 0; i < this->avisar.size() ; i++) {
-        Partida* partida = this->avisar.at(i);
+	  //Obtengo el nombre del mapa que me pidio
+	  id mapaDeseado = this->protocolo.obtenerMapaDeseado();
+	  std::string nombreMapaDeseado;
+	  nombreMapaDeseado = this->mapasDisponibles.at(mapaDeseado);
 
-        if (partida == nullptr)
-	  continue;
+	  //Creo la nueva partida y chequeo si se creo correctamente
+	  //Si no, error; si si, digo que si :D
+	  partidaElegida = new Partida(nombreMapaDeseado);
+	  if (partidaElegida == nullptr)
+	      this->protocolo.enviarError();
 
-        
-        RepresentacionPartida repreActual;
-        repreActual.ID = i;
+	  //La anado a la lista para que clientes subsecuentes puedan
+	  //usarla
+	  this->avisar.append(partidaElegida);
+	  //TODO TAL VEZ hacer que append devuelva la posicion
+	  //idk, maybe *sniff* maybe
+	  partida = this->avisar.size() - 1;
 
-        partidasAEnviar.push_back(repreActual);
-    }
+	  break;
+	  }
 
-    this->protocolo.enviarPartidas(partidasAEnviar);
+        case PARTIDA:
+	  {
+	  //Paso 2: Envio las partidas
+	  std::vector<RepresentacionPartida> partidasAEnviar;
+	  for (int i = 0; i < this->avisar.size() ; i++) {
+	      Partida* partida = this->avisar.at(i);
 
-    //Paso 3: Obtengo la partida deseada
-    int partidaElejida = this->protocolo.obtenerPartidaDeseada();
+	      if (partida == nullptr)
+		continue;
 
-    Partida *partidaElegida = this->avisar.at(partidaElejida);
+
+	      RepresentacionPartida repreActual;
+	      repreActual.ID = i;
+
+	      partidasAEnviar.push_back(repreActual);
+	  }
+	  this->protocolo.enviarPartidas(partidasAEnviar);
+	  partida = this->protocolo.obtenerPartidaDeseada();
+
+	  partidaElegida = this->avisar.at(partida);
+
+	  // partidaElejida->anadirJugador
+	  break;
+	  }
+    };
 
     Jugador *jugadorNuevo = new Jugador(std::move(this->protocolo));
 
+    //Uno al jugador
     partidaElegida->anadirJugador(jugadorNuevo);
+
+    this->protocolo.enviarConfirmacion(partida);
 
     this->conectadoAPartida = true;
 }
