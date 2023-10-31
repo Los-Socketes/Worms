@@ -12,7 +12,10 @@ id Protocolo::obtenerId() {
     bool was_closed = false;
     id idEnviada;
     socket.recvall(&idEnviada, sizeof(idEnviada), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return INVAL_ID;
+    }
+
     idEnviada = ntohl(idEnviada);
     return idEnviada;
 }
@@ -22,20 +25,25 @@ int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    return codigo;
+    return (was_closed)? (int8_t)-1 : codigo;
 }
 
 
 std::vector<id> Protocolo::obtenerVector() {
     bool was_closed = false;
     int16_t cant;
+    std::vector<id> error;
     socket.recvall(&cant, sizeof(cant), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return error;
+    }
     cant = ntohs(cant);
 
     std::vector<id> partidas(cant, 0);
     socket.recvall(partidas.data(), cant*sizeof(id), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return error;
+    }
 
     for (int i = 0; i < (int)cant; i++) {
         partidas.at(i) = ntohl(partidas[i]);
@@ -46,17 +54,21 @@ std::vector<id> Protocolo::obtenerVector() {
 
 id Protocolo::verificarConexion() {
     bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar
+    int8_t codigo = obtenerCodigo();
+    if ((int)codigo == -1) {
+        return codigo;
+    }
 
-    id idPartida = -1;
     if ((int)codigo == ERROR) {
-        return idPartida;
+        return INVAL_ID;
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
+
+    id idPartida;
     socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return INVAL_ID;
+    }
     
     idPartida = ntohl(idPartida);
     return idPartida;
@@ -77,7 +89,10 @@ bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
 
 std::vector<id> Protocolo::obtenerMapas() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
+    if ((int)codigo != MAPAS) {
+        std::vector<id> error;
+        return error;
+    }
 
     return obtenerVector();
 }
@@ -85,7 +100,10 @@ std::vector<id> Protocolo::obtenerMapas() {
 
 std::vector<id> Protocolo::obtenerPartidas() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
+    if (codigo != PARTIDAS) {
+        std::vector<id> error;
+        return error;
+    }
 
     return obtenerVector();
 }
@@ -98,11 +116,11 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
     if (was_closed) {
-        return false;
+        return INVAL_ID;
     }
     socket.sendall((char*)&mapa, sizeof(mapa), &was_closed);
     if (was_closed) {
-        return false;
+        return INVAL_ID;
     }
 
     return verificarConexion();
@@ -159,7 +177,9 @@ tipoInfo Protocolo::obtenerPedido() {
     int8_t pedidoARecibir[2] = {0};
     bool was_closed = false;
     socket.recvall(pedidoARecibir, sizeof(pedidoARecibir), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return INVAL_TIPO;
+    }
     return (tipoInfo)pedidoARecibir[1];
 }
 
@@ -221,14 +241,18 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar
+    if ((int)codigo != MAPAS) {
+        return INVAL_ID;
+    }
     return obtenerId();
 }
 
 
 id Protocolo::obtenerPartidaDeseada() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar
+    if ((int)codigo != PARTIDAS) {
+        return INVAL_ID;
+    }
     return obtenerId();
 }
 
@@ -252,7 +276,7 @@ bool Protocolo::enviarError() {
 
     bool was_closed = false;
     socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    return !was_closed; // si sigue abierto (false) -> devuelve true
+    return !was_closed;
 }
 
 
@@ -261,15 +285,19 @@ Direccion Protocolo::obtenerAccion() {
     bool was_closed = false;
 
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    if (was_closed) {
+        return INVAL_DIR;
+    }
     id idGusano;
     socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
+    if (was_closed) {
+        return INVAL_DIR;
+    }
     idGusano = ntohl(idGusano);
 
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
-    // TODO: verificar
-
-    return (Direccion)dir;
+    return (was_closed) ? INVAL_DIR : (Direccion)dir;
 }
 //Endif de la macro de SERVER
 #endif
