@@ -9,7 +9,7 @@
 
 //TODO Poner todos los types defs en un header file juntos
 typedef int32_t id;
-enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
+enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA};
 enum tipoInfo {PARTIDA, MAPA};
 #define PARTIDAS 1
 #define MAPAS 2
