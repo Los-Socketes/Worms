@@ -30,17 +30,19 @@ jobs:
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build Server
+      id: server
       if: always()
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
+      id: client
       if: always()
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -- -k
 
-    - name: Build todo
-      if: always()
+    - name: Build todo junto
+      if: ${{ steps.client.outcome == 'success' &&  steps.server.outcome == 'success' }}
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -- -k
 
@@ -65,17 +67,19 @@ jobs:
       run: cmake -B ${{github.workspace}}/buildClang -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build Server
+      id: server
       if: always()
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
+      id: client
       if: always()
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -- -k
 
     - name: Build todo junto
-      if: always()
+      if: ${{ steps.client.outcome == 'success' &&  steps.server.outcome == 'success' }}
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -- -k
 
