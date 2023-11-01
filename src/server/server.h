@@ -30,8 +30,9 @@ private:
     Aceptador aceptador;
 
 
-    //Esto lo hago constante porque solo es fijo. Se tiene que leer de
+    //Esto lo hago constante porque es fijo. Se tiene que leer de
     //un archivo
+    //TODO: Leer de un archivo
     const std::vector<std::string> escenariosDisponibles = {
         "El pico de la Viuda", "Battlesnax"
     };
@@ -49,12 +50,6 @@ private:
 public:
     Server(const char *puerto);
 
-    //TODO Preguntar que queda mas bonito a mis compis UwU
-    // void anadirJugadorAPartida(
-    // void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
-
-    //Esta funcion se tiene que correr en un thread
-    // void recibirCliente();
     void esperarQueSeCierre();
 
 };

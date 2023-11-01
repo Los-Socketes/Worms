@@ -34,7 +34,7 @@ class Partida : public Thread {
 			   );
 
 public:
-    Partida(std::string mapa);
+    Partida(const std::string mapa);
 
     void anadirJugador(Jugador  *jugadorNuevo);
 
