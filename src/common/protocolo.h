@@ -9,8 +9,9 @@
 
 //TODO Poner todos los types defs en un header file juntos
 typedef int32_t id;
-enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
-enum tipoInfo {PARTIDA, MAPA};
+#define INVAL_ID (id)-1
+enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
+enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 #define PARTIDAS 1
 #define MAPAS 2
 #define CREAR 3
@@ -36,6 +37,9 @@ private:
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
     id verificarConexion();
+    bool enviarCodigo(int codigo);
+    bool enviarCantidad(int cant);
+    bool enviarId(id id);
 public:
 
     Protocolo(Socket&& socket);
