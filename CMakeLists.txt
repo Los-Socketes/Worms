@@ -57,7 +57,6 @@ include_directories("${COMMONDIR}")
 ## Ejecutable del server
 add_executable(server
   "${SERVERDIR}/main.cpp"
-  # "${SERVERDIR}/recibidor.cpp"
   "${SERVERDIR}/server.cpp"
   "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
@@ -65,6 +64,7 @@ add_executable(server
   "${SERVERDIR}/gusano.cpp"
   "${SERVERDIR}/sender.cpp"
   "${SERVERDIR}/reciever.cpp"
+  "${SERVERDIR}/aceptador.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"

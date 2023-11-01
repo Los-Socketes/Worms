@@ -2,6 +2,7 @@
 #define SERVER_HEADER
 
 // #include "recibidor.h"
+#include "aceptador.h"
 #include "partida.h"
 #include "socket.h"
 
@@ -23,9 +24,11 @@
 class Server {
 private:
     // Recibidor recibidor;
-    Socket aceptador;
+    // Socket aceptador;
     
-    std::vector<Cliente *> lobby;
+    // std::vector<Cliente *> lobby;
+    Aceptador aceptador;
+
 
     //Esto lo hago constante porque solo es fijo. Se tiene que leer de
     //un archivo
@@ -51,7 +54,8 @@ public:
     // void anadirJugadorAPartida(Protocolo&& protocoloJugador, id idPartida);
 
     //Esta funcion se tiene que correr en un thread
-    void recibirCliente();
+    // void recibirCliente();
+    void esperarQueSeCierre();
 
 };
 

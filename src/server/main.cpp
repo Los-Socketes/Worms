@@ -19,6 +19,6 @@ int main(int argc, char* argv[]) {
     }
 
     Server server(argv[1]);
-    server.recibirCliente();
+    server.esperarQueSeCierre();
 
 }
