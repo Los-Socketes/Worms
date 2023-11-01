@@ -37,6 +37,7 @@ private:
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
     id verificarConexion();
+    bool enviarCodigo(int codigo);
 public:
 
     Protocolo(Socket&& socket);
