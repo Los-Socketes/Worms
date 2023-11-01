@@ -29,6 +29,11 @@ struct RepresentacionPartida {
     id ID;
 };
 
+struct RepresentacionMapa {
+    id ID;
+    std::string nombre;
+};
+
 class Protocolo {
 private:
     Socket socket;
@@ -47,11 +52,12 @@ public:
 #ifdef CLIENT
     // METODOS DEL CLIENTE
     bool pedirInformacion(tipoInfo infoAPedir);
-    std::vector<id> obtenerMapas();
+    std::vector<RepresentacionMapa> obtenerMapas();
     std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
+    // void recibirEstadoDelJuego();
 #endif
 
 #ifdef SERVER
@@ -66,6 +72,7 @@ public:
     bool enviarError();
 
     Direccion obtenerAccion();
+    // bool enviarEstadoDelJuego();
 #endif
 
 
