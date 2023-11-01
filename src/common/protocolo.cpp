@@ -200,6 +200,26 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
+
+std::vector<int> Protocolo::recibirEstadoDelJuego() {
+    int8_t codigo = obtenerCodigo();
+    vector<int> error;
+    if ((int)codigo == -1 || (int)codigo != ESTADO) {
+        return error;
+    }
+
+    vector<int32_t> posicion(2,0);
+    bool was_closed = false;
+    socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+    if (was_closed) {
+        return error;
+    }
+
+    vector<int> posicionRecibida(2,0);
+    posicionRecibida[0] = (int)ntohl(posicion[0]);
+    posicionRecibida[1] = (int)ntohl(posicion[1]);
+    return posicionRecibida;
+}
 //Endif de la macro de CLIENT
 #endif
 
@@ -323,5 +343,22 @@ Direccion Protocolo::obtenerAccion() {
     socket.recvall(&dir, sizeof(dir), &was_closed);
     return (was_closed) ? INVAL_DIR : (Direccion)dir;
 }
+
+
+// por ahora se manda solo la direccion de 1 gusano con un vector de int
+bool Protocolo::enviarEstadoDelJuego(std::vector<int> estado) {
+    bool was_closed = enviarCodigo(ESTADO);
+    if (was_closed) {
+        return false;
+    }
+
+    std::vector<int32_t> estadoAEnviar;
+    estadoAEnviar.pushback(htonl((int32_t)estado[0]));
+    estadoAEnviar.pushback(htonl((int32_t)estado[1]));
+
+    socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
+    return !was_closed;
+}
+
 //Endif de la macro de SERVER
 #endif
