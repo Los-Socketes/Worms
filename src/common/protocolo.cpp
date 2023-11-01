@@ -84,21 +84,11 @@ id Protocolo::verificarConexion() {
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
 
-    // id idPartida;
-    // socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
-    // if (was_closed) {
-    //     return INVAL_ID;
-    // }
-    
-    // idPartida = ntohl(idPartida);
-    // return idPartida;
-    
     return obtenerId();
 }
 
 
 //METODOS DEL CLIENTE
-
 #ifdef CLIENT
 bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
     int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
@@ -132,16 +122,11 @@ std::vector<id> Protocolo::obtenerPartidas() {
 
 
 id Protocolo::crearPartida(id mapaSeleccionado) {
-    // int8_t codigo = CREAR;
-    // int32_t mapa = htonl(mapaSeleccionado);
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = enviarCodigo(CREAR);
     if (was_closed) {
         return INVAL_ID;
     }
-    // socket.sendall(&mapa, sizeof(mapa), &was_closed);
+
     was_closed = enviarId(mapaSeleccionado);
     if (was_closed) {
         return INVAL_ID;
@@ -152,16 +137,11 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 
 
 bool Protocolo::unirseAPartida(id id) {
-    // int8_t codigo = UNIRSE;
-    // int32_t idPartida = htonl(id);
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = enviarCodigo(UNIRSE);
     if (was_closed) {
         return false;
     }
-    // socket.sendall(&idPartida, sizeof(idPartida), &was_closed);
+
     was_closed = enviarId(id);
     if (was_closed) {
         return false;
@@ -172,21 +152,17 @@ bool Protocolo::unirseAPartida(id id) {
 
 
 bool Protocolo::moverGusano(id gusano, Direccion direccion) {
-    // int8_t codigo = MOV;
-    // id idGusano = htonl(gusano);
-    int8_t dir = direccion;
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = enviarCodigo(MOV);
     if (was_closed) {
         return false;
     }
-    // socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
+
     was_closed = enviarId(gusano);
     if (was_closed) {
         return false;
     }
+
+    int8_t dir = direccion;
     socket.sendall(&dir, sizeof(dir), &was_closed);
     if (was_closed) {
         return false;
@@ -213,9 +189,7 @@ tipoInfo Protocolo::obtenerPedido() {
 
 
 bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
-    // int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
-    // uint16_t cant = htons(cantMapas);
 
     // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
     std::vector<id> paraEnviar;
@@ -224,26 +198,22 @@ bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
         paraEnviar.push_back(idMapa);
     }
     
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = enviarCodigo(MAPAS);
     if (was_closed) {
         return false;
     }
-    // socket.sendall(&cant, sizeof(cant), &was_closed);
+
     was_closed = enviarCantidad(cantMapas);
     if (was_closed) {
         return false;
     }
+    
     socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
     return !was_closed;
 }
 
 bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
-    // int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
-    // uint16_t cant = htons(cantPartidas);
 
     std::vector<id> paraEnviar;
     for (auto &&partida : partidasDisponibles) {
@@ -255,17 +225,16 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
             hacer que este metodo devuelva 1 string/algo con toda la info para hacer
                 mas facil el testeo
     */
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
-    was_closed = enviarCodigo(PARTIDAS);
+    bool was_closed = enviarCodigo(PARTIDAS);
     if (was_closed) {
         return false;
     }
-    // socket.sendall(&cant, sizeof(cant), &was_closed);
+
     was_closed = enviarCantidad(cantPartidas);
     if (was_closed) {
         return false;
     }
+
     socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantPartidas, &was_closed);
     return !was_closed;    
 }
@@ -290,48 +259,28 @@ id Protocolo::obtenerPartidaDeseada() {
 
 
 bool Protocolo::enviarConfirmacion(id idPartida) {
-    // int8_t codigo = EXITO;
-    // int32_t idAEnviar = htonl(idPartida);
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = enviarCodigo(EXITO);
     if (was_closed) {
         return false;
     }
-    // socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
-    // return !was_closed;
+
     return enviarId(idPartida);
 }
 
 
 bool Protocolo::enviarError() {
-    // int8_t codigo = ERROR;
-
-    // bool was_closed = false;
-    // socket.sendall(&codigo, sizeof(codigo), &was_closed);
-    // return !was_closed;
     return enviarCodigo(ERROR);
 }
 
 
 Direccion Protocolo::obtenerAccion() {
-    // int8_t codigo;
-    // bool was_closed = false;
-
-    // socket.recvall(&codigo, sizeof(codigo), &was_closed);
     bool was_closed = obtenerCodigo();
     if (was_closed) {
         return INVAL_DIR;
     }
-    // id idGusano;
-    // socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
-    // if (was_closed) {
-    //     return INVAL_DIR;
-    // }
-    // idGusano = ntohl(idGusano);
+
     id idGusano = obtenerId();
-    if (id == INVAL_ID) {
+    if (idGusano == INVAL_ID) {
         return INVAL_DIR;
     }
 
