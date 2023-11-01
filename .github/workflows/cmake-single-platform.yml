@@ -25,30 +25,30 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build Server
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server
 
     - name: Build Client
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client
 
     - name: Build todo
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
-        working-directory: ${{github.workspace}}/build
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -C ${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C ${{env.BUILD_TYPE}}
 
   buildClang:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -62,46 +62,46 @@ jobs:
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: CXX=/usr/lib/llvm/16/bin/clang++ cmake -B ${{github.workspace}}/buildClang -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/buildClang -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build Server
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server
 
     - name: Build Client
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client
 
     - name: Build todo junto
-        if: always()
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -- -k
+      if: always()
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}}
 
     - name: Test
-        working-directory: ${{github.workspace}}/buildClang
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -C ${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/buildClang
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C ${{env.BUILD_TYPE}}
 
-    TODOs:
-        runs-on: self-hosted
+  todos:
+    runs-on: self-hosted
 
-        steps:
-        - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-        - name: Cuento la cantidad de TODOS
+    - name: Cuento la cantidad de TODOS
 
-        run: sh ./build/grepearTodos.sh
+      run: sh ./build/grepearTodos.sh
 
-    cppcheck:
-        runs-on: self-hosted
+  cppcheck:
+    runs-on: self-hosted
 
-        steps:
-        - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-        - name: Cppcheck es solo una herramienta. Nadie nos obliga a esucharla. <Ni dioses ni reyes> - Andrew Ryan
+    - name: Cppcheck es solo una herramienta. Nadie nos obliga a esucharla. <Ni dioses ni reyes> - Andrew Ryan
 
       run: sh ./build/cppcheck.sh
 
