@@ -21,6 +21,14 @@ id Protocolo::obtenerId() {
 }
 
 
+bool Protocolo::enviarId(id ID) {
+    id idAEnviar = htonl(ID);
+    bool was_closed = false;
+    socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
 int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
@@ -41,14 +49,6 @@ bool Protocolo::enviarCantidad(int cant) {
     int16_t cantAEnviar = htons(cant);
     bool was_closed = false;
     socket.sendall(&cantAEnviar, sizeof(cantAEnviar), &was_closed);
-    return !was_closed;
-}
-
-
-bool Protocolo::enviarId(id ID) {
-    id idAEnviar = htonl(ID);
-    bool was_closed = false;
-    socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
     return !was_closed;
 }
 
@@ -84,14 +84,16 @@ id Protocolo::verificarConexion() {
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
 
-    id idPartida;
-    socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
-    if (was_closed) {
-        return INVAL_ID;
-    }
+    // id idPartida;
+    // socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
+    // if (was_closed) {
+    //     return INVAL_ID;
+    // }
     
-    idPartida = ntohl(idPartida);
-    return idPartida;
+    // idPartida = ntohl(idPartida);
+    // return idPartida;
+    
+    return obtenerId();
 }
 
 
@@ -131,7 +133,7 @@ std::vector<id> Protocolo::obtenerPartidas() {
 
 id Protocolo::crearPartida(id mapaSeleccionado) {
     // int8_t codigo = CREAR;
-    int32_t mapa = htonl(mapaSeleccionado);
+    // int32_t mapa = htonl(mapaSeleccionado);
 
     // bool was_closed = false;
     // socket.sendall(&codigo, sizeof(codigo), &was_closed);
@@ -139,7 +141,8 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
     if (was_closed) {
         return INVAL_ID;
     }
-    socket.sendall(&mapa, sizeof(mapa), &was_closed);
+    // socket.sendall(&mapa, sizeof(mapa), &was_closed);
+    was_closed = enviarId(mapaSeleccionado);
     if (was_closed) {
         return INVAL_ID;
     }
@@ -313,19 +316,24 @@ bool Protocolo::enviarError() {
 
 
 Direccion Protocolo::obtenerAccion() {
-    int8_t codigo;
-    bool was_closed = false;
+    // int8_t codigo;
+    // bool was_closed = false;
 
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    // socket.recvall(&codigo, sizeof(codigo), &was_closed);
+    bool was_closed = obtenerCodigo();
     if (was_closed) {
         return INVAL_DIR;
     }
-    id idGusano;
-    socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
-    if (was_closed) {
+    // id idGusano;
+    // socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
+    // if (was_closed) {
+    //     return INVAL_DIR;
+    // }
+    // idGusano = ntohl(idGusano);
+    id idGusano = obtenerId();
+    if (id == INVAL_ID) {
         return INVAL_DIR;
     }
-    idGusano = ntohl(idGusano);
 
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
