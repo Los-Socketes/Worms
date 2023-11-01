@@ -31,15 +31,15 @@ jobs:
 
     - name: Build Server
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -- -k
 
     - name: Build todo
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/build
@@ -63,15 +63,15 @@ jobs:
 
     - name: Build Server
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -- -k
 
     - name: Build todo junto
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/buildClang
