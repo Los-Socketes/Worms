@@ -32,6 +32,7 @@ add_compile_options(
   # TODO Sacar estos Wno ASAP
   -Wno-unused-variable
   -Wno-unused-parameter
+
  )
 
 
@@ -65,6 +66,7 @@ add_executable(server
   "${SERVERDIR}/sender.cpp"
   "${SERVERDIR}/reciever.cpp"
   "${SERVERDIR}/aceptador.cpp"
+  "${SERVERDIR}/monitorPartida.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
