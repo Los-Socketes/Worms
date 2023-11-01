@@ -63,7 +63,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Corremos cppcheck. Cppcheck es solo una herramienta. Ni dioses ni reyes - Andrew Ryan
+    - name: Cppcheck es solo una herramienta. Nadie nos obliga a esucharla. "Ni dioses ni reyes" - Andrew Ryan
 
       run: sh ./build/cppcheck.sh
 
