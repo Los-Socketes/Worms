@@ -32,17 +32,17 @@ jobs:
     - name: Build Server
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -- -k
 
     - name: Build todo
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/build
@@ -67,17 +67,17 @@ jobs:
     - name: Build Server
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -- -k
 
     - name: Build Client
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -- -k
 
     - name: Build todo junto
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/buildClang
@@ -85,7 +85,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
 
-  todos:
+  TODOs:
     runs-on: self-hosted
 
     steps:
