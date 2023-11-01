@@ -38,6 +38,8 @@ private:
     std::vector<id> obtenerVector();
     id verificarConexion();
     bool enviarCodigo(int codigo);
+    bool enviarCantidad(int cant);
+    bool enviarId(id id);
 public:
 
     Protocolo(Socket&& socket);

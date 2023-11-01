@@ -28,10 +28,27 @@ int8_t Protocolo::obtenerCodigo() {
     return (was_closed)? (int8_t)-1 : codigo;
 }
 
+
 bool Protocolo::enviarCodigo(int codigo) {
     int8_t codigoAEnviar = codigo;
     bool was_closed = false;
     socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::enviarCantidad(int cant) {
+    int16_t cantAEnviar = htons(cant);
+    bool was_closed = false;
+    socket.sendall(&cantAEnviar, sizeof(cantAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::enviarId(id ID) {
+    id idAEnviar = htonl(ID);
+    bool was_closed = false;
+    socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
     return !was_closed;
 }
 
@@ -133,7 +150,7 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 
 bool Protocolo::unirseAPartida(id id) {
     // int8_t codigo = UNIRSE;
-    int32_t idPartida = htonl(id);
+    // int32_t idPartida = htonl(id);
 
     // bool was_closed = false;
     // socket.sendall(&codigo, sizeof(codigo), &was_closed);
@@ -141,7 +158,8 @@ bool Protocolo::unirseAPartida(id id) {
     if (was_closed) {
         return false;
     }
-    socket.sendall(&idPartida, sizeof(idPartida), &was_closed);
+    // socket.sendall(&idPartida, sizeof(idPartida), &was_closed);
+    was_closed = enviarId(id);
     if (was_closed) {
         return false;
     }
@@ -152,7 +170,7 @@ bool Protocolo::unirseAPartida(id id) {
 
 bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     // int8_t codigo = MOV;
-    id idGusano = htonl(gusano);
+    // id idGusano = htonl(gusano);
     int8_t dir = direccion;
 
     // bool was_closed = false;
@@ -161,7 +179,8 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     if (was_closed) {
         return false;
     }
-    socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
+    // socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
+    was_closed = enviarId(gusano);
     if (was_closed) {
         return false;
     }
@@ -193,7 +212,7 @@ tipoInfo Protocolo::obtenerPedido() {
 bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     // int8_t codigo = MAPAS;
     int cantMapas = mapasDisponibles.size();
-    uint16_t cant = htons(cantMapas);
+    // uint16_t cant = htons(cantMapas);
 
     // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
     std::vector<id> paraEnviar;
@@ -209,7 +228,8 @@ bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     if (was_closed) {
         return false;
     }
-    socket.sendall(&cant, sizeof(cant), &was_closed);
+    // socket.sendall(&cant, sizeof(cant), &was_closed);
+    was_closed = enviarCantidad(cantMapas);
     if (was_closed) {
         return false;
     }
@@ -220,7 +240,7 @@ bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
 bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
     // int8_t codigo = PARTIDAS;
     int cantPartidas = partidasDisponibles.size();
-    uint16_t cant = htons(cantPartidas);
+    // uint16_t cant = htons(cantPartidas);
 
     std::vector<id> paraEnviar;
     for (auto &&partida : partidasDisponibles) {
@@ -238,7 +258,8 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
     if (was_closed) {
         return false;
     }
-    socket.sendall(&cant, sizeof(cant), &was_closed);
+    // socket.sendall(&cant, sizeof(cant), &was_closed);
+    was_closed = enviarCantidad(cantPartidas);
     if (was_closed) {
         return false;
     }
@@ -267,7 +288,7 @@ id Protocolo::obtenerPartidaDeseada() {
 
 bool Protocolo::enviarConfirmacion(id idPartida) {
     // int8_t codigo = EXITO;
-    int32_t idAEnviar = htonl(idPartida);
+    // int32_t idAEnviar = htonl(idPartida);
 
     // bool was_closed = false;
     // socket.sendall(&codigo, sizeof(codigo), &was_closed);
@@ -275,8 +296,9 @@ bool Protocolo::enviarConfirmacion(id idPartida) {
     if (was_closed) {
         return false;
     }
-    socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
-    return !was_closed;
+    // socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
+    // return !was_closed;
+    return enviarId(idPartida);
 }
 
 
