@@ -1,6 +1,4 @@
 #include "server.h"
-#include "cliente.h"
-#include <vector>
 
 Server::Server(const char *puerto)
     :aceptador(puerto) {
