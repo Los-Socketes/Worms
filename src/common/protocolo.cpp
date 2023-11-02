@@ -201,15 +201,24 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 }
 
 
-std::vector<int> Protocolo::recibirEstadoDelJuego() {
+EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
-    vector<int> error;
+    EstadoDelJuego error;
     if ((int)codigo == -1 || (int)codigo != ESTADO) {
         return error;
     }
 
-    vector<int32_t> posicion(2,0);
+    int8_t dir;
     bool was_closed = false;
+    socket.recvall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return error;
+    }
+    EstadoDelJuego estado;
+    // no se si hace falta castear a int antes de castear a enum
+    estado.dir = (DireccionGusano)dir;
+
+    vector<int32_t> posicion(2,0);
     socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
     if (was_closed) {
         return error;
@@ -218,7 +227,9 @@ std::vector<int> Protocolo::recibirEstadoDelJuego() {
     vector<int> posicionRecibida(2,0);
     posicionRecibida[0] = (int)ntohl(posicion[0]);
     posicionRecibida[1] = (int)ntohl(posicion[1]);
-    return posicionRecibida;
+
+    estado.posicion = posicionRecibida;
+    return estado;
 }
 //Endif de la macro de CLIENT
 #endif
@@ -346,15 +357,20 @@ Direccion Protocolo::obtenerAccion() {
 
 
 // por ahora se manda solo la direccion de 1 gusano con un vector de int
-bool Protocolo::enviarEstadoDelJuego(std::vector<int> estado) {
+bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     bool was_closed = enviarCodigo(ESTADO);
+    if (was_closed) {
+        return false;
+    }
+    int8_t dir = estado.dir;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
     if (was_closed) {
         return false;
     }
 
     std::vector<int32_t> estadoAEnviar;
-    estadoAEnviar.pushback(htonl((int32_t)estado[0]));
-    estadoAEnviar.pushback(htonl((int32_t)estado[1]));
+    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[0]));
+    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[1]));
 
     socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
     return !was_closed;

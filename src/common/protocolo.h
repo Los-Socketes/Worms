@@ -32,7 +32,7 @@ public:
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
-    std::vector<int> recibirEstadoDelJuego();
+    EstadoDelJuego recibirEstadoDelJuego();
 #endif
 
 #ifdef SERVER
@@ -47,7 +47,7 @@ public:
     bool enviarError();
 
     Direccion obtenerAccion();
-    bool enviarEstadoDelJuego(std::vector<int> estado);
+    bool enviarEstadoDelJuego(EstadoDelJuego estado);
 #endif
 
 
