@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <syslog.h>
-#include <SDL2/SDL.h>
+#include <SDL2pp/SDL2pp.hh>
 
 #include "estadojuego.h"
 #include "entradateclado.h"
@@ -16,10 +16,23 @@
 #define PUERTO 2
 #define TAM_QUEUE 500
 
+using namespace SDL2pp;
+
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-void renderizar(SDL_Window* ventana, EstadoJuego& estado_juego) {
+void renderizar(Renderer& renderizador, EstadoJuego& estado_juego) {
+    Texture sprites(renderizador, Surface("assets/sprites/wjetfly2.png")
+            .SetColorKey(true, 0));
+
+    renderizador.Clear();
+
+    renderizador.Copy(sprites, Rect(0, 0, 60, 60), Rect(estado_juego.coord_x, estado_juego.coord_y, 60, 60));
+    
+    // Actualizo ventana.
+    renderizador.Present();
+
+    /*
     // Pantalla en blanco.
     SDL_Surface* pantalla = SDL_GetWindowSurface(ventana);
     SDL_FillRect(pantalla, NULL, SDL_MapRGB(pantalla->format, 0xFF, 0xFF, 0xFF));
@@ -33,6 +46,7 @@ void renderizar(SDL_Window* ventana, EstadoJuego& estado_juego) {
 
     // Actualizo ventana.
     SDL_UpdateWindowSurface(ventana);
+    */
 }
 
 bool menu(Protocolo& protocolo) {
@@ -122,7 +136,12 @@ int main(int argc, char* argv[]) {
         enviador.start();
         recibidor.start();
 
-        // Inicializar SDL.        
+        // Inicializar SDL.  
+
+        SDL sdl(SDL_INIT_VIDEO);
+        Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+        Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
+        /*     
         if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
             printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
             return 1;
@@ -134,6 +153,7 @@ int main(int argc, char* argv[]) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             return 1;
         }
+        */
 
         // Loop principal.
         while (continuar) {
@@ -151,7 +171,7 @@ int main(int argc, char* argv[]) {
             recepcion_estados.try_pop(estado_juego);
 
             // Renderizo.
-            renderizar(ventana, estado_juego);
+            renderizar(renderizador, estado_juego);
 
             // Chequeo comandos de teclado.
             std::string comando;
@@ -176,9 +196,6 @@ int main(int argc, char* argv[]) {
         recibidor.stop();
         enviador.join();
         recibidor.join();
-
-        SDL_DestroyWindow(ventana);
-        SDL_Quit();
     } catch (const std::exception& e) {
         syslog(LOG_CRIT, "[Crit] Error: %s\n", e.what());
     } catch (...) {
