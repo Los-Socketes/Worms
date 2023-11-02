@@ -11,6 +11,7 @@
 #include "protocolo.h"
 #include "queue.h"
 #include "menu.h"
+#include "animacion.h"
 
 using namespace SDL2pp;
 
@@ -35,7 +36,7 @@ class Cliente {
     void iniciar();
 
     // Renderiza el estado del juego.
-    void renderizar(Renderer& renderizador);
+    void renderizar(Renderer& renderizador, Animacion& caminar);
  public:
     Cliente(Socket&& skt);
     

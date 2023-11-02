@@ -13,6 +13,7 @@ void EntradaTeclado::run() {
             // de comandos locales de teclado para que se encargue
             // el loop principal de procesarlos.
             if (evento.type == SDL_QUIT) {
+                comandos_teclado.push("salir");
                 cont = false;
             } else if (evento.type == SDL_KEYDOWN) {
                 switch (evento.key.keysym.sym) {

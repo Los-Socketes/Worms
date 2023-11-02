@@ -2,15 +2,14 @@
 
 Cliente::Cliente(Socket&& skt):
     protocolo(std::move(skt)),
-    estado_juego(0,0),
+    estado_juego(0,0,1),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {
-}
+    enviador(protocolo, envio_comandos) {}
 
 void Cliente::iniciar() {
     entrada_teclado.start();
@@ -18,14 +17,11 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-void Cliente::renderizar(Renderer& renderizador) {
-    Texture sprites(renderizador, Surface("assets/sprites/wjetfly2.png")
-            .SetColorKey(true, 0));
-
+void Cliente::renderizar(Renderer& renderizador, Animacion& caminar) {
     renderizador.Clear();
 
-    renderizador.Copy(sprites, Rect(0, 0, 60, 60), Rect(estado_juego.coord_x, estado_juego.coord_y, 60, 60));
-    
+    caminar.siguiente_frame(estado_juego.coord_x, estado_juego.coord_y, estado_juego.dir_x);
+
     // Actualizo ventana.
     renderizador.Present();
 }
@@ -40,6 +36,9 @@ void Cliente::loop_principal() {
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
 
+    // TODO: tener un mapa de texturas y/o animaciones ya inicializadas.
+    Animacion caminar(renderizador, "assets/sprites/wwalk.png", 15);
+
     iniciar();
 
     bool continuar = true;
@@ -48,7 +47,7 @@ void Cliente::loop_principal() {
         recepcion_estados.try_pop(estado_juego);
 
         // Renderizo.
-        renderizar(renderizador);
+        renderizar(renderizador, caminar);
 
         // Chequeo comandos de teclado.
         std::string comando;
