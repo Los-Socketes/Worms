@@ -13,6 +13,7 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
 
     //TODO: Check new
     Partida *partidaNueva = new Partida(mapaNombre);
+    partidaNueva->start();
 
     // this->mapa.insert(idPartidaNueva, partidaNueva);
     this->mapa.insert({idPartidaNueva, partidaNueva});
