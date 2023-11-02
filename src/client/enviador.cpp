@@ -8,6 +8,7 @@ Enviador::Enviador(Protocolo& protocolo, Queue<std::string>& envio_comandos) :
 
 void Enviador::run() {
     try {
+        cont = true;
         while(cont){
             // TODO: Enviar comandos al servidor por protocolo.
             // Por ahora solo los imprimo.

@@ -8,6 +8,7 @@ Recibidor::Recibidor(Protocolo& protocolo, Queue<EstadoJuego>& recepcion_estados
 
 void Recibidor::run() {
     try {
+        cont = true;
         // TODO: Recibir estados del juego de protocolo.
 
         // Por ahora solo devuelvo un estado con
