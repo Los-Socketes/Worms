@@ -6,7 +6,11 @@
 #include "queue.h"
 #include "reciever.h"
 #include "sender.h"
+#include "socket.h"
 #include <vector>
+
+//Forward declaration por include circulares
+class MonitorPartida;
 
 class Jugador {
 private:
@@ -22,7 +26,8 @@ private:
     Queue<Direccion> acciones;
 
 public:
-    Jugador(Protocolo&& socket);
+    Jugador(Socket&& socket, std::vector<std::string> mapasDisponibles,
+	       MonitorPartida& partidasDisponibles);
     Gusano* getGusanoActual();
 
     void obtenerGusanosIniciales(std::vector<Gusano*> gusanos);

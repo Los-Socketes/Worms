@@ -8,3 +8,11 @@ Sender::Sender(Protocolo& protocolo)
 
 void Sender::run() {
 }
+
+// void Sender::enviarMapas(std::vector<std::string> mapasDisponibles) {
+//     this->protocol.enviarMapas(mapasDisponibles);
+// }
+
+// void Sender::enviarConfirmacion(id idPartida) {
+//     this->protocol.enviarConfirmacion(idPartida);
+// }

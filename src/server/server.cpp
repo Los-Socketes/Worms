@@ -1,7 +1,7 @@
 #include "server.h"
 
 Server::Server(const char *puerto)
-    :aceptador(puerto) {
+    :aceptador(puerto, this->escenariosDisponibles, this->partidas) {
     this->aceptador.aceptarClientes();
 };
 

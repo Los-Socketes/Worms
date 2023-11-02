@@ -2,8 +2,12 @@
 #include "jugador.h"
 
 
-Aceptador::Aceptador(const char *puerto)
-    :socket(puerto) {
+Aceptador::Aceptador(const char *puerto,
+                     std::vector<std::string> escenariosDisponibles,
+                     MonitorPartida &partidas)
+    : socket(puerto), escenariosDisponibles(escenariosDisponibles),
+      partidas(partidas)
+{
 };
 
 void Aceptador::aceptarClientes() {
@@ -11,7 +15,7 @@ void Aceptador::aceptarClientes() {
     while (true) {
         Socket conexionEntrante = this->socket.accept();
 
-        Jugador *jugadorNuevo = new Jugador(std::move(conexionEntrante));
+        Jugador *jugadorNuevo = new Jugador(std::move(conexionEntrante), this->escenariosDisponibles, this->partidas);
     }
 
 }

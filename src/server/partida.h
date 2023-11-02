@@ -2,7 +2,6 @@
 #define PARTIDA_HEADER
 
 #include "gusano.h"
-#include "jugador.h"
 #include "thread.h"
 #include <cstdint>
 #include <map>
@@ -11,9 +10,14 @@
 #include <vector>
 #include "comunes.h"
 #include "threadSafeList.h"
+#include "jugador.h"
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
+
+//Forward declaration por include circulares
+// class Jugador;
+
 
 enum class Accion { Mover, Saltar, Disparar };
 

@@ -19,6 +19,10 @@ public:
     //         std::atomic<bool>& is_alive);
     // 		                                  ;)
     Reciever(Protocolo& protocol, Queue<Direccion>& acciones);
+
+    // noIgn id obtenerMapaDeseado();
+
+    // noIgn tipoInfo obtenerPedido();
 };
 
 #endif

@@ -17,7 +17,11 @@ class MonitorPartida {
 public:
     MonitorPartida();
 
-    [[nodiscard]] id anadirPartida(const std::string mapaNombre);
+    [[nodiscard]] id anadirPartida(std::string mapaNombre);
+
+    void anadirJugadorAPartida(Jugador *nuevoJugador, id partidaEspecifica);
+
+    [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 
     ~MonitorPartida();
 

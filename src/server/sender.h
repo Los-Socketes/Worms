@@ -15,6 +15,10 @@ public:
     void run() override;
     //Sender(Queue<Mensaje>& msg_queue, Protocol& protocol_ref, std::atomic<bool>& is_alive);
     Sender(Protocolo& protocolo);
+
+    // //Logica de lobby
+    // void enviarMapas(std::vector<std::string> mapasDisponibles);
+    // void enviarConfirmacion(id idPartida);
 };
 
 #endif
