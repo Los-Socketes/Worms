@@ -94,6 +94,9 @@ add_executable(client
   "${CLIENTDIR}/entradateclado.cpp"
   "${CLIENTDIR}/enviador.cpp"
   "${CLIENTDIR}/recibidor.cpp"
+  "${CLIENTDIR}/cliente.cpp"
+  "${CLIENTDIR}/menu.cpp"
+  "${CLIENTDIR}/animacion.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
@@ -115,13 +118,18 @@ target_compile_definitions(client PUBLIC
   CLIENT
 )
 
+# Linkeo de las librerias SDL
 target_include_directories(client PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(client PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
 target_include_directories(client PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
-target_link_libraries(client PRIVATE SDL2)
-target_link_libraries(client PRIVATE SDL2_image)
-target_link_libraries(client PRIVATE SDL2_mixer)
-target_link_libraries(client PRIVATE ${SDL2PP_LIBRARIES})
+target_include_directories(client PRIVATE ${SDL2PP_INCLUDE_DIRS})
+target_link_libraries(client PRIVATE SDL2::SDL2)
+target_link_libraries(client PRIVATE SDL2_image::SDL2_image)
+target_link_libraries(client PRIVATE SDL2_mixer::SDL2_mixer)
+target_link_libraries(client PRIVATE SDL2pp::SDL2pp)
+
+# Copiamos los assets a la carpeta de build
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el
