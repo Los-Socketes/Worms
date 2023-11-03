@@ -17,10 +17,10 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-void Cliente::renderizar(Renderer& renderizador, Animacion& caminar) {
+void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, int it) {
     renderizador.Clear();
 
-    caminar.siguiente_frame(estado_juego.coord_x, estado_juego.coord_y, estado_juego.dir_x);
+    caminar.siguiente_frame(estado_juego.coord_x, estado_juego.coord_y, estado_juego.dir_x, it);
 
     // Actualizo ventana.
     renderizador.Present();
@@ -41,13 +41,13 @@ void Cliente::loop_principal() {
 
     iniciar();
 
+    int it = 0;
+    int tick_anterior = SDL_GetTicks();
+    int rate = 1000 / FPS;
     bool continuar = true;
     while (continuar) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
-
-        // Renderizo.
-        renderizar(renderizador, caminar);
 
         // Chequeo comandos de teclado.
         std::string comando;
@@ -56,10 +56,26 @@ void Cliente::loop_principal() {
                 continuar = false;
             }
         }
-                
-        // Delay para controlar el framerate.
-        // TODO: implementar constant rate loop.
-        SDL_Delay(1000 / 60);
+
+        // Renderizo.
+        renderizar(renderizador, caminar, it);
+
+        // Constant rate loop.
+        int tick_actual = SDL_GetTicks();
+        int descanso = rate - (tick_actual - tick_anterior);
+
+        if (descanso < 0) {
+            int ticks_detras = -descanso;
+            int ticks_perdidos = ticks_detras / ticks_detras % rate;
+            tick_anterior += ticks_perdidos;
+            it += int(ticks_detras / rate);
+        }
+        else {
+            SDL_Delay(descanso);
+        }
+    
+        tick_anterior += rate;
+        it++;
     }
 }
 

@@ -16,6 +16,7 @@
 using namespace SDL2pp;
 
 #define TAM_QUEUE 500
+#define FPS 60
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -36,7 +37,7 @@ class Cliente {
     void iniciar();
 
     // Renderiza el estado del juego.
-    void renderizar(Renderer& renderizador, Animacion& caminar);
+    void renderizar(Renderer& renderizador, Animacion& caminar, int itq);
  public:
     Cliente(Socket&& skt);
     

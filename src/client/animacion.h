@@ -10,13 +10,12 @@ class Animacion {
  private:
     Renderer& renderizador;
     int frames;
-    int frame_actual;
     Texture textura;
 
  public:
     Animacion(Renderer& render, std::string ruta_textura, int frames);
 
-    void siguiente_frame(int pos_x, int pos_y, int dir_x);
+    void siguiente_frame(int pos_x, int pos_y, int dir_x, int it);
 };
 
 #endif // ANIMACION_H_
