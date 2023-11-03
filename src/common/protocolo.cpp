@@ -99,39 +99,38 @@ bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
 }
 
 
-std::vector<id> Protocolo::obtenerMapas() {
+std::vector<RepresentacionMapa> Protocolo::obtenerMapas() {
     int8_t codigo = obtenerCodigo();
+    std::vector<RepresentacionMapa> error;
     if ((int)codigo != MAPAS) {
-        std::vector<id> error;
         return error;
     }
 
     bool was_closed = false;
     int16_t cant;
-    std::vector<RepresentacionMapa> error;
     socket.recvall(&cant, sizeof(cant), &was_closed);
     if (was_closed) {
         return error;
     }
     cant = ntohs(cant);
 
-    std::vector<RepresentacionMapa> mapas(cant, 0);
+    std::vector<RepresentacionMapa> mapas(cant);
     for (int i = 0; i < (int)cant; i++) {
         uint16_t sz;
-        skt.recvall(&sz, sizeof(sz), &was_closed);
+        socket.recvall(&sz, sizeof(sz), &was_closed);
         if (was_closed) {
             return error;
         }
 
-        int tamanio = (int)ntohs(sz[0]);
+        int tamanio = (int)ntohs(sz);
         std::vector<char> mapa(tamanio, 0x00);
-        skt.recvall(mapa.data(), tamanio, &was_closed);
+        socket.recvall(mapa.data(), tamanio, &was_closed);
         if (was_closed) {
             return error;
         }
         RepresentacionMapa repMapa;
-        repMapa.id = (id)i;
-        nombre = std::string(msg.begin(), msg.end());
+        repMapa.ID = (id)i;
+        std::string nombre = std::string(mapa.begin(), mapa.end());
         repMapa.nombre = nombre;
         
         mapas[i] = repMapa;
@@ -218,13 +217,13 @@ EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
     // no se si hace falta castear a int antes de castear a enum
     estado.dir = (DireccionGusano)dir;
 
-    vector<int32_t> posicion(2,0);
+    std::vector<int32_t> posicion(2,0);
     socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
     if (was_closed) {
         return error;
     }
 
-    vector<int> posicionRecibida(2,0);
+    std::vector<int> posicionRecibida(2,0);
     posicionRecibida[0] = (int)ntohl(posicion[0]);
     posicionRecibida[1] = (int)ntohl(posicion[1]);
 
@@ -369,8 +368,8 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     }
 
     std::vector<int32_t> estadoAEnviar;
-    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[0]));
-    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[1]));
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion[0]));
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion[1]));
 
     socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
     return !was_closed;
