@@ -103,3 +103,8 @@ Gusano *Jugador::getGusanoActual() {
 void Jugador::obtenerAccesoAAcciones(Queue<Direccion>* acciones){
     this->acciones = acciones;
 }
+
+
+void Jugador::enviarEstadoJuego(EstadoDelJuego estado) {
+    this->enviador.anadirEstado(estado);
+}

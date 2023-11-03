@@ -1,6 +1,7 @@
 #ifndef JUGADOR_HEADER
 #define JUGADOR_HEADER
 
+#include "defs.h"
 #include "gusano.h"
 #include "protocolo.h"
 #include "queue.h"
@@ -35,6 +36,8 @@ public:
     void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
 
     bool obtenerAccion(Direccion& primeraAccion);
+
+    void enviarEstadoJuego(EstadoDelJuego estado);
 };
 
 #endif
