@@ -26,7 +26,7 @@ private:
 
     std::vector<std::string> mapasDisponibles;
 
-    //Este nombre es una mierda. Cambiar
+    //TODO Este nombre no esta tan bueno. Cambiar
     TSList<Partida*>& avisar;
 
 public:

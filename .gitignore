@@ -18,7 +18,11 @@ _deps
 # Pero que demonios
 DartConfiguration.tcl
 
+# Archivos de tiburoncin
+AtoB.dump
+BtoA.dump
+
 # Ignoro los binarios producidos
-build/server
-build/client
-build/test*
+build*/server
+build*/client
+build*/test*

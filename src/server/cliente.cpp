@@ -42,6 +42,7 @@ void Cliente::elegirPartida() {
 
     //Paso 1: Envio los mapas
     switch (pedido) {
+        //CREAR
         case MAPA:
 	  {
 	  this->protocolo.enviarMapas(this->mapasDisponibles);
@@ -56,6 +57,8 @@ void Cliente::elegirPartida() {
 	  partidaElegida = new Partida(nombreMapaDeseado);
 	  if (partidaElegida == nullptr)
 	      this->protocolo.enviarError();
+
+	  partidaElegida->start();
 
 	  //La anado a la lista para que clientes subsecuentes puedan
 	  //usarla
@@ -93,12 +96,17 @@ void Cliente::elegirPartida() {
 	  }
     };
 
+    this->protocolo.enviarConfirmacion(partida);
+
     Jugador *jugadorNuevo = new Jugador(std::move(this->protocolo));
 
     //Uno al jugador
     partidaElegida->anadirJugador(jugadorNuevo);
 
-    this->protocolo.enviarConfirmacion(partida);
 
     this->conectadoAPartida = true;
+    //Mutar hilo?
+    // jugadorNuevo->main();
+    //sI?
+    //jugador
 }

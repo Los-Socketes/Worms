@@ -5,56 +5,52 @@ EntradaTeclado::EntradaTeclado(Queue<std::string>& envio_comandos, Queue<std::st
 
 void EntradaTeclado::run() {
     try {
-        while (cont) {
+        cont = true;
+        SDL_Event evento;
+        while (cont && SDL_WaitEvent(&evento)) {
             // Capturo eventos de teclado y los envío a la cola
             // de salida hacia al servidor, o bien a la cola
             // de comandos locales de teclado para que se encargue
             // el loop principal de procesarlos.
-            SDL_Event evento;
-            while(SDL_PollEvent(&evento) != 0) {
-                if (evento.type == SDL_QUIT) {
-                    cont = false;
-                } else if (evento.type == SDL_KEYDOWN) {
-                    switch (evento.key.keysym.sym) {
-                        case SDLK_UP:
-                            if(evento.key.repeat == 0)
-                                envio_comandos.push("Presionando arriba");
-                            break;
-                        case SDLK_DOWN:
-                            if(evento.key.repeat == 0)
-                                envio_comandos.push("Presionando abajo");
-                            break;
-                        case SDLK_LEFT:
-                            if(evento.key.repeat == 0)
-                                envio_comandos.push("Presionando izquierda");
-                            break;
-                        case SDLK_RIGHT:
-                            if(evento.key.repeat == 0)
-                                envio_comandos.push("Presionando derecha");
-                            break;
-                        case SDLK_q:
-                            comandos_teclado.push("q");
-                            break;
-                        default:
-                            break;
-                    }
-                } else if (evento.type == SDL_KEYUP) {
-                    switch (evento.key.keysym.sym) {
-                        case SDLK_UP:
-                            envio_comandos.push("Soltando arriba");
-                            break;
-                        case SDLK_DOWN:
-                            envio_comandos.push("Soltando abajo");
-                            break;
-                        case SDLK_LEFT:
-                            envio_comandos.push("Soltando izquierda");
-                            break;
-                        case SDLK_RIGHT:
-                            envio_comandos.push("Soltando derecha");
-                            break;
-                        default:
-                            break;
-                    }
+
+            // TODO: Crear clase Accion para generalizar el envío de comandos.
+            if (evento.type == SDL_QUIT) {
+                comandos_teclado.push("salir");
+                cont = false;
+            } else if (evento.type == SDL_KEYDOWN) {
+                switch (evento.key.keysym.sym) {
+                    case SDLK_LEFT:
+                        if(evento.key.repeat == 0)
+                            envio_comandos.push("Presionando izquierda");
+                        break;
+                    case SDLK_RIGHT:
+                        if(evento.key.repeat == 0)
+                            envio_comandos.push("Presionando derecha");
+                        break;
+                    case SDLK_RETURN:
+                        if(evento.key.repeat == 0)
+                            envio_comandos.push("Enter");
+                        break;
+                    case SDLK_BACKSPACE:
+                        if(evento.key.repeat == 0)
+                            envio_comandos.push("Retroceso");
+                        break;
+                    case SDLK_q:
+                        comandos_teclado.push("q");
+                        break;
+                    default:
+                        break;
+                }
+            } else if (evento.type == SDL_KEYUP) {
+                switch (evento.key.keysym.sym) {
+                    case SDLK_LEFT:
+                        envio_comandos.push("Soltando izquierda");
+                        break;
+                    case SDLK_RIGHT:
+                        envio_comandos.push("Soltando derecha");
+                        break;
+                    default:
+                        break;
                 }
             }
         }

@@ -5,10 +5,10 @@
 #include <iostream>
 #include <string>
 #include <syslog.h>
-#include <SDL2/SDL.h>
+#include <SDL2pp/SDL2pp.hh>
 
-#include "../common/thread.h"
-#include "../common/queue.h"
+#include "thread.h"
+#include "queue.h"
 
 class EntradaTeclado: public Thread {
 private:

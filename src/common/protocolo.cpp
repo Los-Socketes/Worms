@@ -1,4 +1,5 @@
 #include "protocolo.h"
+#include <cstdint>
 #include <vector>
 
 Protocolo::Protocolo(Socket&& socket):
@@ -11,9 +12,20 @@ id Protocolo::obtenerId() {
     bool was_closed = false;
     id idEnviada;
     socket.recvall(&idEnviada, sizeof(idEnviada), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return INVAL_ID;
+    }
+
     idEnviada = ntohl(idEnviada);
     return idEnviada;
+}
+
+
+bool Protocolo::enviarId(id ID) {
+    id idAEnviar = htonl(ID);
+    bool was_closed = false;
+    socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
+    return was_closed;
 }
 
 
@@ -21,20 +33,41 @@ int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    return codigo;
+    return (was_closed)? (int8_t)-1 : codigo;
+}
+
+
+bool Protocolo::enviarCodigo(int codigo) {
+    int8_t codigoAEnviar = codigo;
+    bool was_closed = false;
+    socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
+    return was_closed;
+}
+
+
+bool Protocolo::enviarCantidad(int cant) {
+    int16_t cantAEnviar = htons(cant);
+    bool was_closed = false;
+    socket.sendall(&cantAEnviar, sizeof(cantAEnviar), &was_closed);
+    return was_closed;
 }
 
 
 std::vector<id> Protocolo::obtenerVector() {
     bool was_closed = false;
     int16_t cant;
+    std::vector<id> error;
     socket.recvall(&cant, sizeof(cant), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return error;
+    }
     cant = ntohs(cant);
 
     std::vector<id> partidas(cant, 0);
     socket.recvall(partidas.data(), cant*sizeof(id), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return error;
+    }
 
     for (int i = 0; i < (int)cant; i++) {
         partidas.at(i) = ntohl(partidas[i]);
@@ -45,89 +78,158 @@ std::vector<id> Protocolo::obtenerVector() {
 
 id Protocolo::verificarConexion() {
     bool was_closed = false;
-    int8_t codigo;
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar
-
-    id idPartida = -1;
-    if ((int)codigo == ERROR) {
-        return idPartida;
+    int8_t codigo = obtenerCodigo();
+    if ((int)codigo == -1 || (int)codigo == ERROR) {
+        return INVAL_ID;
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
-    socket.recvall(&idPartida, sizeof(idPartida), &was_closed);
-    // TODO: verificar
-    
-    idPartida = ntohl(idPartida);
-    return idPartida;
+
+    return obtenerId();
 }
 
 
 //METODOS DEL CLIENTE
-
 #ifdef CLIENT
-void Protocolo::pedirInformacion(tipoInfo infoAPedir) {
+bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
     int8_t pedidoAEnviar[2] = {PEDIDO, (int8_t)infoAPedir};
 
     bool was_closed = false;
-    socket.sendall((char*)pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
-    // TODO: verificar
+    socket.sendall(pedidoAEnviar, sizeof(pedidoAEnviar), &was_closed);
+    return !was_closed;
 }
 
 
-std::vector<id> Protocolo::obtenerMapas() {
+std::vector<RepresentacionMapa> Protocolo::obtenerMapas() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
+    std::vector<RepresentacionMapa> error;
+    if ((int)codigo != MAPAS) {
+        return error;
+    }
 
-    return obtenerVector();
+    bool was_closed = false;
+    int16_t cant;
+    socket.recvall(&cant, sizeof(cant), &was_closed);
+    if (was_closed) {
+        return error;
+    }
+    cant = ntohs(cant);
+
+    std::vector<RepresentacionMapa> mapas(cant);
+    for (int i = 0; i < (int)cant; i++) {
+        uint16_t sz;
+        socket.recvall(&sz, sizeof(sz), &was_closed);
+        if (was_closed) {
+            return error;
+        }
+
+        int tamanio = (int)ntohs(sz);
+        std::vector<char> mapa(tamanio, 0x00);
+        socket.recvall(mapa.data(), tamanio, &was_closed);
+        if (was_closed) {
+            return error;
+        }
+        RepresentacionMapa repMapa;
+        repMapa.ID = (id)i;
+        std::string nombre = std::string(mapa.begin(), mapa.end());
+        repMapa.nombre = nombre;
+        
+        mapas[i] = repMapa;
+    }
+    return mapas;
 }
 
 
 std::vector<id> Protocolo::obtenerPartidas() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar (codigo)
+    if (codigo != PARTIDAS) {
+        std::vector<id> error;
+        return error;
+    }
 
     return obtenerVector();
 }
 
 
 id Protocolo::crearPartida(id mapaSeleccionado) {
-    int8_t codigo = CREAR;
-    int32_t mapa = htonl(mapaSeleccionado);
+    bool was_closed = enviarCodigo(CREAR);
+    if (was_closed) {
+        return INVAL_ID;
+    }
 
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    socket.sendall((char*)&mapa, sizeof(mapa), &was_closed);
-    // TODO: verificar
+    was_closed = enviarId(mapaSeleccionado);
+    if (was_closed) {
+        return INVAL_ID;
+    }
 
     return verificarConexion();
 }
 
 
 bool Protocolo::unirseAPartida(id id) {
-    int8_t codigo = UNIRSE;
-    int32_t idPartida = htonl(id);
+    bool was_closed = enviarCodigo(UNIRSE);
+    if (was_closed) {
+        return false;
+    }
 
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    // TODO: verificar
-    socket.sendall((char*)idPartida, sizeof(idPartida), &was_closed);
-    // TODO: verificar
+    was_closed = enviarId(id);
+    if (was_closed) {
+        return false;
+    }
 
     return verificarConexion();
 }
 
 
-void Protocolo::moverGusano(id gusano, Direccion direccion) {
-    int8_t codigo = MOV;
-    id idGusano = htonl(gusano);
-    int8_t dir = direccion;
+bool Protocolo::moverGusano(id gusano, Direccion direccion) {
+    bool was_closed = enviarCodigo(MOV);
+    if (was_closed) {
+        return false;
+    }
 
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    socket.sendall((char*)&idGusano, sizeof(idGusano), &was_closed);
-    socket.sendall((char*)&dir, sizeof(dir), &was_closed);
+    was_closed = enviarId(gusano);
+    if (was_closed) {
+        return false;
+    }
+
+    int8_t dir = direccion;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+    return !was_closed;
 }
 
+
+EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
+    int8_t codigo = obtenerCodigo();
+    EstadoDelJuego error;
+    if ((int)codigo == -1 || (int)codigo != ESTADO) {
+        return error;
+    }
+
+    int8_t dir;
+    bool was_closed = false;
+    socket.recvall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return error;
+    }
+    EstadoDelJuego estado;
+    // no se si hace falta castear a int antes de castear a enum
+    estado.dir = (DireccionGusano)dir;
+
+    std::vector<int32_t> posicion(2,0);
+    socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+    if (was_closed) {
+        return error;
+    }
+
+    std::pair<int, int> posicionRecibida;
+    posicionRecibida.first = (int)ntohl(posicion[0]);
+    posicionRecibida.second = (int)ntohl(posicion[1]);
+
+    estado.posicion = posicionRecibida;
+    return estado;
+}
 //Endif de la macro de CLIENT
 #endif
 
@@ -139,100 +241,144 @@ tipoInfo Protocolo::obtenerPedido() {
     int8_t pedidoARecibir[2] = {0};
     bool was_closed = false;
     socket.recvall(pedidoARecibir, sizeof(pedidoARecibir), &was_closed);
-    // TODO: verificar
+    if (was_closed) {
+        return INVAL_TIPO;
+    }
     return (tipoInfo)pedidoARecibir[1];
 }
 
 
-void Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
-    int8_t codigo = MAPAS;
+bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     int cantMapas = mapasDisponibles.size();
-    uint16_t cant = htons(cantMapas);
 
-    // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
-    std::vector<char*> paraEnviar;
-    for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
-        id idMapa = htonl(i);
-        paraEnviar.push_back((char*)&idMapa);
+    bool was_closed = enviarCodigo(MAPAS);
+    if (was_closed) {
+        return false;
+    }
+
+    was_closed = enviarCantidad(cantMapas);
+    if (was_closed) {
+        return false;
+    }
+
+    for (auto &&mapa : mapasDisponibles){
+        int16_t sz = mapa.size();
+        int16_t tam = htons(sz);
+        socket.sendall(&tam, sizeof(tam), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        socket.sendall(mapa.c_str(), (int)sz, &was_closed);
+        if (was_closed) {
+            return false;
+        }
     }
     
-
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    socket.sendall((char*)&cant, sizeof(cant), &was_closed);
-    socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
+    return true;
 }
 
-void Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
-    int8_t codigo = PARTIDAS;
+bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
     int cantPartidas = partidasDisponibles.size();
-    uint16_t cant = htons(cantPartidas);
 
-    std::vector<char*> paraEnviar;
+    std::vector<id> paraEnviar;
     for (auto &&partida : partidasDisponibles) {
         id idMapa = htonl(partida.ID);
-        paraEnviar.push_back((char*)&idMapa);
+        paraEnviar.push_back(idMapa);
     }
 
-    bool was_closed = false;
-    /* TODO: agregar ifs para ver si se cerro el socket
-            mover estos sendall a otro metodo
+    /* TODO: mover estos sendall a otro metodo
             hacer que este metodo devuelva 1 string/algo con toda la info para hacer
                 mas facil el testeo
     */
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    socket.sendall((char*)&cant, sizeof(cant), &was_closed);
+    bool was_closed = enviarCodigo(PARTIDAS);
+    if (was_closed) {
+        return false;
+    }
+
+    was_closed = enviarCantidad(cantPartidas);
+    if (was_closed) {
+        return false;
+    }
+
     socket.sendall(paraEnviar.data(), sizeof(int32_t)*cantPartidas, &was_closed);
-    
+    return !was_closed;    
 }
 
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar
+    if (
+        ((int)codigo != MAPAS)
+        &&
+        ((int)codigo != CREAR))
+        {
+        return INVAL_ID;
+    }
     return obtenerId();
 }
 
 
 id Protocolo::obtenerPartidaDeseada() {
     int8_t codigo = obtenerCodigo();
-    // TODO: verificar
+    if ((int)codigo != PARTIDAS) {
+        return INVAL_ID;
+    }
     return obtenerId();
 }
 
 
-void Protocolo::enviarConfirmacion(id idPartida) {
-    int8_t codigo = EXITO;
-    int32_t idAEnviar = htonl(idPartida);
+bool Protocolo::enviarConfirmacion(id idPartida) {
+    bool was_closed = enviarCodigo(EXITO);
+    if (was_closed) {
+        return false;
+    }
 
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
-    socket.sendall((char*)&idAEnviar, sizeof(idAEnviar), &was_closed);
+    return enviarId(idPartida);
 }
 
 
-void Protocolo::enviarError() {
-    int8_t codigo = ERROR;
-
-    bool was_closed = false;
-    socket.sendall((char*)&codigo, sizeof(codigo), &was_closed);
+bool Protocolo::enviarError() {
+    return enviarCodigo(ERROR);
 }
 
 
-Direccion Protocolo::recibirAccion() {
-    int8_t codigo;
+Direccion Protocolo::obtenerAccion() {
+    int8_t codigo = obtenerCodigo();
+    if (codigo != MOV) { //MOV = 9 
+        return INVAL_DIR;
+    }
+
+    id idGusano = obtenerId();
+    if (idGusano == INVAL_ID) {
+        return INVAL_DIR;
+    }
+
     bool was_closed = false;
-
-    socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    id idGusano;
-    socket.recvall(&idGusano, sizeof(idGusano), &was_closed);
-    idGusano = ntohl(idGusano);
-
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
-    // TODO: verificar
-
-    return (Direccion)dir;
+    return (was_closed) ? INVAL_DIR : (Direccion)dir;
 }
+
+
+// por ahora se manda solo la direccion de 1 gusano con un vector de int
+bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
+    bool was_closed = enviarCodigo(ESTADO);
+    if (was_closed) {
+        return false;
+    }
+    int8_t dir = estado.dir;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    std::vector<int32_t> estadoAEnviar;
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.first));
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.second));
+
+    socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
+    return !was_closed;
+}
+
 //Endif de la macro de SERVER
 #endif

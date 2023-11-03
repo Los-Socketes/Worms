@@ -3,19 +3,20 @@
 
 #include <atomic>
 #include <syslog.h>
-#include <SDL2/SDL.h>
+#include <SDL2pp/SDL2pp.hh>
 
-#include "estadojuego.h"
-#include "../common/thread.h"
-#include "../common/queue.h"
+#include "thread.h"
+#include "queue.h"
+#include "protocolo.h"
 
 class Recibidor: public Thread {
 private:
-    Queue<EstadoJuego>& recepcion_estados;
+    Protocolo& protocolo;
+    Queue<EstadoDelJuego>& recepcion_estados;
     std::atomic<bool> cont;
 
 public:
-    Recibidor(Queue<EstadoJuego>& recepcion_estados);
+    Recibidor(Protocolo& protocolo, Queue<EstadoDelJuego>& recepcion_estados);
 
     // Hilo que se encarga de recibir los estados del juego.
     void run() override;
