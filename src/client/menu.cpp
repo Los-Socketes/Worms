@@ -14,30 +14,31 @@ bool Menu::ejecutar() {
         std::cin >> opcion;
         int pos = 0;
         int sub_opcion;
-        std::vector<id> opciones;
+        std::vector<id> opciones_partida;
+        std::vector<RepresentacionMapa> opciones_mapa;
         switch (opcion){
             case 1:
                 protocolo.pedirInformacion(MAPA);
-                opciones = protocolo.obtenerMapas();
+                opciones_mapa = protocolo.obtenerMapas();
                 std::cout << "Mapas disponibles:" << std::endl;
-                for (const id& id_mapa : opciones) {
-                    std::cout << std::to_string(pos) << ") " << id_mapa << std::endl;
+                for (const RepresentacionMapa& mapa : opciones_mapa) {
+                    std::cout << std::to_string(pos) << ") " << mapa.nombre << std::endl;
                     pos++;
                 }
                 std::cin >> sub_opcion;
-                protocolo.crearPartida(opciones[sub_opcion]);
+                protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
                 continuar_menu = false;
                 break;
             case 2:
                 protocolo.pedirInformacion(MAPA);
-                opciones = protocolo.obtenerPartidas();
+                opciones_partida = protocolo.obtenerPartidas();
                 std::cout << "Partidas disponibles:" << std::endl;
-                for (const id& id_partida : opciones) {
+                for (const id& id_partida : opciones_partida) {
                     std::cout << std::to_string(pos) << ") " << id_partida << std::endl;
                     pos++;
                 }
                 std::cin >> sub_opcion;
-                protocolo.unirseAPartida(opciones[sub_opcion]);
+                protocolo.unirseAPartida(opciones_partida[sub_opcion]);
                 continuar_menu = false;
                 break;
             default:
