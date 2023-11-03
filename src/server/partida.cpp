@@ -49,7 +49,6 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
     jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
     jugadorNuevo->obtenerAccesoAAcciones(&this->acciones);
 
-
     //Anadimos al jugador a la partida
     this->jugadores.push_back(jugadorNuevo);
     //Aviso que se unio un jugador
@@ -219,12 +218,6 @@ void Partida::gameLoop() {
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        // if (accionRecibida == INICIO_DER || accionRecibida == INICIO_IZQ)
-        // 	  gusanoActual->ponerEnMovimiento();
-
-        // if (accionRecibida == FIN_DER || accionRecibida == FIN_IZQ)
-        // 	  gusanoActual->detener();
-
         Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
@@ -236,14 +229,10 @@ void Partida::gameLoop() {
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
-        // if (cambioDeseado.first < 0){
-        //     gusanoActual->setDireccion(DireccionGusano::DERECHA);
-        // } else if (cambioDeseado.first > 0){
-        //     gusanoActual->setDireccion(DireccionGusano::IZQUIERDA);
-        // }
-
         gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
+
+        //TODO Borrar
         //Tengo que poner el if, porque sino se pisaria el puntero en
         //el caso donde ambas posiciones sean iguales aka el gusano
         //no se movio

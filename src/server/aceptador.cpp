@@ -17,6 +17,7 @@ void Aceptador::aceptarClientes() {
     while (true) {
         Socket conexionEntrante = this->socket.accept();
 
+        //TODO Anadir un reap dead ACA que busque en una lista de jugadores
         Jugador *jugadorNuevo = new Jugador(std::move(conexionEntrante), this->escenariosDisponibles, this->partidas);
     }
 
@@ -25,3 +26,4 @@ void Aceptador::aceptarClientes() {
 void Aceptador::asignar(std::vector<std::string> escenariosDisponibles) {
     this->escenariosDisponibles = escenariosDisponibles;
 }
+
