@@ -132,6 +132,58 @@ inline void Partida::enviarEstadoAJugadores() {
     }
 }
 
+// std::pair<int,int> Partida::calcularMovimiento(Gusano *gusano, Direccion accion, bool estaMoviendose) {
+//     std::pair<int,int> cambioARealizar;
+//     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
+//     switch (accion) {
+//     case SALTO:
+//         break;
+//     case PIRUETA:
+//         break;
+//     case INVAL_DIR:
+//         abort();
+//         break;
+//     }
+    
+    
+// }
+
+Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva) {
+    Accion accionAEjecutar;
+    if (obtuvoNueva == false) {
+        accionAEjecutar = Accion::MOV_QUIETO;
+        return accionAEjecutar;
+    }
+
+    switch (accionObtenida) {
+//     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
+    case INICIO_IZQ:
+        accionAEjecutar = Accion::MOV_IZQ;
+        break;
+    case FIN_IZQ:
+        accionAEjecutar = Accion::MOV_QUIETO;
+        break;
+    case INICIO_DER:
+        accionAEjecutar = Accion::MOV_DER;
+        break;
+    case FIN_DER:
+        accionAEjecutar = Accion::MOV_QUIETO;
+        break;
+    case SALTO:
+        accionAEjecutar = Accion::MOV_SALTO;
+        break;
+    case PIRUETA:
+        accionAEjecutar = Accion::MOV_PIRUETA;
+        break;
+    case INVAL_DIR:
+        abort();
+        break;
+    }
+
+    return accionAEjecutar;
+}
+
+//     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 

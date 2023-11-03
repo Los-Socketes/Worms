@@ -1,6 +1,7 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include "defs.h"
 #include "gusano.h"
 #include "thread.h"
 #include <cstdint>
@@ -19,7 +20,7 @@
 
 #define MINJUGADORES 1
 
-enum class Accion { Mover, Saltar, Disparar };
+// enum class Accion { Mover, Saltar, Disparar };
 
 class Partida : public Thread {
     Queue<Direccion> acciones;
@@ -40,6 +41,8 @@ class Partida : public Thread {
 			   );
 
     void enviarEstadoAJugadores();
+
+    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva);
 
 public:
     Partida(const std::string mapa);
