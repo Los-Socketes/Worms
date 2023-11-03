@@ -1,8 +1,8 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include "defs.h"
 #include "gusano.h"
-#include "jugador.h"
 #include "thread.h"
 #include <cstdint>
 #include <map>
@@ -11,20 +11,27 @@
 #include <vector>
 #include "comunes.h"
 #include "threadSafeList.h"
+#include "jugador.h"
+#include <condition_variable>
+#include <mutex>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-enum class Accion { Mover, Saltar, Disparar };
+#define MINJUGADORES 1
+
+// enum class Accion { Mover, Saltar, Disparar };
 
 class Partida : public Thread {
+    Queue<Direccion> acciones;
+
     std::string mapa;
 
-    //Esto tiene que ser thread safe porque se modifica en hilos
-    //distintos
-    TSList<Jugador *> jugadores;
+    std::vector<Jugador *> jugadores;
+    std::mutex mtx;
+    std::condition_variable seUnioJugador;
 
-    TSList<Gusano *> gusanos;
+    // std::vector<Gusano *> gusanos;
 
     std::map<std::pair<int, int>, Gusano *> coordsGusanos;
 
@@ -33,8 +40,12 @@ class Partida : public Thread {
 			   std::pair<int, int> posInicial
 			   );
 
+    void enviarEstadoAJugadores();
+
+    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva);
+
 public:
-    Partida(std::string mapa);
+    Partida(const std::string mapa);
 
     void anadirJugador(Jugador  *jugadorNuevo);
 

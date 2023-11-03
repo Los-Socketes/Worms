@@ -1,7 +1,8 @@
 #include "reciever.h"
+#include "protocolo.h"
 
 
-Reciever::Reciever(Protocolo& protocol, Queue<Direccion>& acciones)
+Reciever::Reciever(Protocolo& protocol, Queue<Direccion> *acciones)
     : protocolo(protocol),
       acciones(acciones) {
 }
@@ -12,6 +13,6 @@ void Reciever::run() {
         Direccion accionDeseada;
         accionDeseada = this->protocolo.obtenerAccion();
 
-        this->acciones.push(accionDeseada);
+        this->acciones->push(accionDeseada);
     }
 }

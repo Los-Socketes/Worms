@@ -32,6 +32,7 @@ add_compile_options(
   # TODO Sacar estos Wno ASAP
   -Wno-unused-variable
   -Wno-unused-parameter
+
  )
 
 
@@ -57,14 +58,15 @@ include_directories("${COMMONDIR}")
 ## Ejecutable del server
 add_executable(server
   "${SERVERDIR}/main.cpp"
-  # "${SERVERDIR}/recibidor.cpp"
   "${SERVERDIR}/server.cpp"
-  "${SERVERDIR}/cliente.cpp"
+  # "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"
   "${SERVERDIR}/sender.cpp"
   "${SERVERDIR}/reciever.cpp"
+  "${SERVERDIR}/aceptador.cpp"
+  "${SERVERDIR}/monitorPartida.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"

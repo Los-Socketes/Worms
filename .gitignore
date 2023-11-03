@@ -19,6 +19,6 @@ _deps
 DartConfiguration.tcl
 
 # Ignoro los binarios producidos
-build/server
-build/client
-build/test*
+build*/server
+build*/client
+build*/test*
