@@ -25,7 +25,7 @@ bool Protocolo::enviarId(id ID) {
     id idAEnviar = htonl(ID);
     bool was_closed = false;
     socket.sendall(&idAEnviar, sizeof(idAEnviar), &was_closed);
-    return !was_closed;
+    return was_closed;
 }
 
 
