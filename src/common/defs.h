@@ -2,6 +2,7 @@
 #define DEFS_HEADER
 
 #include <string>
+#include <vector>
 
 
 typedef int32_t id;
