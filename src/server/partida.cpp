@@ -32,18 +32,21 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         gusanosParaElCliente.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
-        this->gusanos.append(nuevoGusano);
+        this->gusanos.push_back(nuevoGusano);
 
-        //TODO Unificar la lista thread safe con el mapa
         //TODO No soy fan de que tenga que guardar las coordenadas
         //en dos lados distintos. Es lo que hay (?.
         this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
     }
-    //Le damos los gusanos al cliente
+    //Le damos los gusanos al cliente y acceso a la queue de acciones
     jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
+    jugadorNuevo->obtenerAccesoAAcciones(&this->acciones);
+
 
     //Anadimos al jugador a la partida
-    this->jugadores.append(jugadorNuevo);
+    this->jugadores.push_back(jugadorNuevo);
+    //Aviso que se unio un jugador
+    this->seUnioJugador.notify_all();
 }
 
 
@@ -53,63 +56,77 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
     return cambioDeseado;
 }
 
-void Partida::gameLoop() {
-    int posJugadorActual = 0;
+// void Partida::gameLoop() {
+//     int posJugadorActual = 0;
 
-    while (this->jugadores.size() < 1) {
-        sleep(4);
-    }
+//     while (this->jugadores.size() < 1) {
+//         sleep(4);
+//     }
+
+//     while (true) {
+//         sleep(SLEEPSEGS);
+
+//         Jugador* jugadorActual = jugadores.at(posJugadorActual);
+
+//         //Non blocking pop (try pop)
+//         bool pudeObtenerla;
+//         Direccion accionAEjecutar;
+//         pudeObtenerla = jugadorActual->obtenerAccion(accionAEjecutar);
+
+//         //Si no obtuvimos nada, vamos a la siguiente iteracion.
+//         //Sigue siendo el turno del mismo jugador y de el mismo gusano
+//         if (pudeObtenerla == false)
+// 	  continue;
+
+//         /*
+//          CUIDADO: EFECTOS SECUNDARIOS:
+//          ESTA FUNCION VA A DEVOLVER UN GUSANO DISTINTO CADA VEZ QUE
+//          LA LLAMES.
+//          No soy nada fan de esto. Pero creo que es la forma mas
+//          elegante de hacer que los jugadores manejen a sus gusanos.
+//          Entonces, a medida que van muriendo, el jugador se encarga
+//          de matarlo.
+//         */
+//         Gusano *gusanoActual = jugadorActual->getGusanoActual();
+//         std::pair<int, int> cambio;
+//         cambio = gusanoActual->cambio(accionAEjecutar);
+
+//         std::pair<int, int> coordenadasIniciales;
+//         coordenadasIniciales = gusanoActual->getCoords();
+
+//         std::pair<int, int> coordenadasFinales;
+//         coordenadasFinales  = this->gravedad(cambio, coordenadasIniciales);
+//         //TODO: Cambiar a algo mas generico cuando tengamos las armas
+//         // int jugadorActual.getAccion();
+
+//         //TODO: Implementar "calcular cambios"
+//         //std::list<std::pair<posX,posY> areasAfectadas = this.calcularCambios(Accion);
+
+//         //TODO: Implementar "actualizar"
+//         //this.actualizar();
+//         this->coordsGusanos[coordenadasFinales] = gusanoActual;
+//         this->coordsGusanos[coordenadasIniciales] = nullptr;
+
+//         //actualizarGameState();
+//         //TODO: En el game state incluir si es el turno O pedir un
+//         //mensaje al protocolo
+
+
+//         posJugadorActual += 1;
+
+//     }
+// };
+
+void Partida::gameLoop() {
+    std::unique_lock<std::mutex> lck(mtx);
+
+    //Esperamos hasta que se unan todos los jugadores necesarios
+    while (this->jugadores.size() < MINJUGADORES)
+        this->seUnioJugador.wait(lck);
 
     while (true) {
         sleep(SLEEPSEGS);
-
-        Jugador* jugadorActual = jugadores.at(posJugadorActual);
-
-        //Non blocking pop (try pop)
-        bool pudeObtenerla;
-        Direccion accionAEjecutar;
-        pudeObtenerla = jugadorActual->obtenerAccion(accionAEjecutar);
-
-        //Si no obtuvimos nada, vamos a la siguiente iteracion.
-        //Sigue siendo el turno del mismo jugador y de el mismo gusano
-        if (pudeObtenerla == false)
-	  continue;
-
-        /*
-         CUIDADO: EFECTOS SECUNDARIOS:
-         ESTA FUNCION VA A DEVOLVER UN GUSANO DISTINTO CADA VEZ QUE
-         LA LLAMES.
-         No soy nada fan de esto. Pero creo que es la forma mas
-         elegante de hacer que los jugadores manejen a sus gusanos.
-         Entonces, a medida que van muriendo, el jugador se encarga
-         de matarlo.
-        */
-        Gusano *gusanoActual = jugadorActual->getGusanoActual();
-        std::pair<int, int> cambio;
-        cambio = gusanoActual->cambio(accionAEjecutar);
-
-        std::pair<int, int> coordenadasIniciales;
-        coordenadasIniciales = gusanoActual->getCoords();
-
-        std::pair<int, int> coordenadasFinales;
-        coordenadasFinales  = this->gravedad(cambio, coordenadasIniciales);
-        //TODO: Cambiar a algo mas generico cuando tengamos las armas
-        // int jugadorActual.getAccion();
-
-        //TODO: Implementar "calcular cambios"
-        //std::list<std::pair<posX,posY> areasAfectadas = this.calcularCambios(Accion);
-
-        //TODO: Implementar "actualizar"
-        //this.actualizar();
-        this->coordsGusanos[coordenadasFinales] = gusanoActual;
-        this->coordsGusanos[coordenadasIniciales] = nullptr;
-
-        //actualizarGameState();
-        //TODO: En el game state incluir si es el turno O pedir un
-        //mensaje al protocolo
-
-
-        posJugadorActual += 1;
-
+        
     }
-};
+
+}

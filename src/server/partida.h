@@ -11,24 +11,30 @@
 #include "comunes.h"
 #include "threadSafeList.h"
 #include "jugador.h"
+#include <condition_variable>
+#include <mutex>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-//Forward declaration por include circulares
-// class Jugador;
-
+#define MINJUGADORES 1
 
 enum class Accion { Mover, Saltar, Disparar };
 
 class Partida : public Thread {
+    Queue<Direccion> acciones;
+
     std::string mapa;
 
     //Esto tiene que ser thread safe porque se modifica en hilos
     //distintos
-    TSList<Jugador *> jugadores;
+    // TSList<Jugador *> jugadores;
+    std::vector<Jugador *> jugadores;
+    std::mutex mtx;
+    std::condition_variable seUnioJugador;
 
-    TSList<Gusano *> gusanos;
+    // TSList<Gusano *> gusanos;
+    std::vector<Gusano *> gusanos;
 
     std::map<std::pair<int, int>, Gusano *> coordsGusanos;
 
