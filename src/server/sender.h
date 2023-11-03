@@ -6,10 +6,13 @@
 #include "protocolo.h"
 #include "queue.h"
 #include "thread.h"
+#include "defs.h"
 
 class Sender: public Thread {
     // Queue<Mensaje>& queue;
     Protocolo& protocol;
+
+    Queue<EstadoDelJuego> estadoAEnviar;
 
 public:
     void run() override;

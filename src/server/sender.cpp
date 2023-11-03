@@ -7,12 +7,10 @@ Sender::Sender(Protocolo& protocolo)
 
 
 void Sender::run() {
+    //TODO emprolijar, sacar el true
+    while (true) {
+        EstadoDelJuego ultimo;
+        ultimo = this->estadoAEnviar.pop();
+        this->protocol.enviarEstadoDelJuego(ultimo);
+    }
 }
-
-// void Sender::enviarMapas(std::vector<std::string> mapasDisponibles) {
-//     this->protocol.enviarMapas(mapasDisponibles);
-// }
-
-// void Sender::enviarConfirmacion(id idPartida) {
-//     this->protocol.enviarConfirmacion(idPartida);
-// }
