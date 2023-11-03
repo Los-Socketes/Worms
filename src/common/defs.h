@@ -42,7 +42,7 @@ struct RepresentacionMapa {
 // Por ahora solo un gusano con posicion y direccion
 struct EstadoDelJuego {
     DireccionGusano dir;
-    std::vector<int> posicion;
+    std::pair<int, int> posicion;
 };
 
 #endif
