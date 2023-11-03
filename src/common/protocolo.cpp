@@ -41,7 +41,7 @@ bool Protocolo::enviarCodigo(int codigo) {
     int8_t codigoAEnviar = codigo;
     bool was_closed = false;
     socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
-    return !was_closed;
+    return was_closed;
 }
 
 
@@ -49,7 +49,7 @@ bool Protocolo::enviarCantidad(int cant) {
     int16_t cantAEnviar = htons(cant);
     bool was_closed = false;
     socket.sendall(&cantAEnviar, sizeof(cantAEnviar), &was_closed);
-    return !was_closed;
+    return was_closed;
 }
 
 
