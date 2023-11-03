@@ -3,6 +3,7 @@
 
 #include "protocolo.h"
 #include <sys/types.h>
+#include "defs.h"
 
 // hp = healt points
 typedef uint hp;
@@ -10,6 +11,7 @@ typedef uint hp;
 class Gusano {
 private:
     hp vida;
+    DireccionGusano direccion;
     std::pair<int, int> coords;
 
 public:
