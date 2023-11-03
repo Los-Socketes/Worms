@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <utility>
 
-#define SLEEPSEGS 0.2
+#define SLEEPSEGS 1
 
 Partida::Partida(std::string mapa) {
     this->mapa = mapa;
