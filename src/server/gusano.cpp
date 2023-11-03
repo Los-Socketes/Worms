@@ -1,4 +1,5 @@
 #include "gusano.h"
+#include "defs.h"
 #include "protocolo.h"
 
 typedef int cambioX;
@@ -6,6 +7,7 @@ typedef int cambioY;
 
 Gusano::Gusano(std::pair<int, int> coords) {
     this->coords = coords;
+    this->direccion = DERECHA;
     this->vida = 100;
 }
 
@@ -49,4 +51,11 @@ std::pair<int, int> Gusano::getCoords() {
 }
 void Gusano::setCoords(std::pair<int, int> nuevasCoords) {
     this->coords = nuevasCoords;
+}
+
+DireccionGusano Gusano::getDireccion() {
+    DireccionGusano direccionActual;
+    direccionActual = this->direccion;
+
+    return direccionActual;
 }

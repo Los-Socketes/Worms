@@ -119,8 +119,15 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
 // };
 inline void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;
-    for(Jugador *jugador : this->jugadores) {
+    for (auto const& [posicion, gusano] : this->coordsGusanos) {
+	  estadoActual.posicion = posicion;
 
+	  DireccionGusano direccionPresente;
+	  direccionPresente = gusano->getDireccion(); 
+	  estadoActual.dir = direccionPresente;
+        }
+
+    for(Jugador *jugador : this->jugadores) {
         jugador->enviarEstadoJuego(estadoActual);
     }
 }
@@ -134,6 +141,7 @@ void Partida::gameLoop() {
 
     while (true) {
         sleep(SLEEPSEGS);
+        this->enviarEstadoAJugadores();
         Direccion accionRecibida;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
