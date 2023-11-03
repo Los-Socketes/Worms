@@ -4,6 +4,8 @@
 #include <string>
 #include <SDL2pp/SDL2pp.hh>
 
+#include "defs.h"
+
 using namespace SDL2pp;
 
 class Animacion {

@@ -2,14 +2,18 @@
 
 Cliente::Cliente(Socket&& skt):
     protocolo(std::move(skt)),
-    estado_juego(0,0,1),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {}
+    enviador(protocolo, envio_comandos) {
+        // Inicializo el estado del juego.
+        estado_juego.posicion.first = 50;
+        estado_juego.posicion.second = 250;
+        estado_juego.dir = DERECHA;
+    }
 
 void Cliente::iniciar() {
     entrada_teclado.start();
@@ -20,7 +24,7 @@ void Cliente::iniciar() {
 void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, int it) {
     renderizador.Clear();
 
-    caminar.siguiente_frame(estado_juego.coord_x, estado_juego.coord_y, estado_juego.dir_x, it);
+    caminar.siguiente_frame(estado_juego.posicion.first, estado_juego.posicion.second, estado_juego.dir, it);
 
     // Actualizo ventana.
     renderizador.Present();

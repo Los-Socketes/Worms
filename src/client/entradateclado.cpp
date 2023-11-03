@@ -12,6 +12,8 @@ void EntradaTeclado::run() {
             // de salida hacia al servidor, o bien a la cola
             // de comandos locales de teclado para que se encargue
             // el loop principal de procesarlos.
+
+            // TODO: Crear clase Accion para generalizar el envío de comandos.
             if (evento.type == SDL_QUIT) {
                 comandos_teclado.push("salir");
                 cont = false;

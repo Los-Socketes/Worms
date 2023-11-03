@@ -7,7 +7,7 @@ Animacion::Animacion(Renderer& render, std::string ruta_textura, int frames) :
 
 void Animacion::siguiente_frame(int pos_x, int pos_y, int dir_x, int it) {
     int frame_actual = it % frames;  
-    if (dir_x == 0){
+    if (dir_x == DERECHA){
         // Si camina a la derecha.
         renderizador.Copy(textura, Rect(-frame_actual, frame_actual * 60, 60, 60), Rect(pos_x, pos_y, 60, 60));
     } else {

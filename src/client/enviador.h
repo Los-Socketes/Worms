@@ -9,6 +9,7 @@
 #include "thread.h"
 #include "queue.h"
 #include "protocolo.h"
+#include "defs.h"
 
 class Enviador: public Thread {
 private:

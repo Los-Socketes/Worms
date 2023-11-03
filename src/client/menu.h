@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "protocolo.h"
+#include "defs.h"
 
 class Menu {
  private:

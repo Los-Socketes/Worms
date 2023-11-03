@@ -3,7 +3,6 @@
 
 #include <SDL2pp/SDL2pp.hh>
 
-#include "estadojuego.h"
 #include "entradateclado.h"
 #include "recibidor.h"
 #include "enviador.h"
@@ -12,11 +11,12 @@
 #include "queue.h"
 #include "menu.h"
 #include "animacion.h"
+#include "defs.h"
 
 using namespace SDL2pp;
 
 #define TAM_QUEUE 500
-#define FPS 60
+#define FPS 30
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -24,9 +24,9 @@ const int SCREEN_HEIGHT = 480;
 class Cliente {
  private:
     Protocolo protocolo;
-    EstadoJuego estado_juego;
+    EstadoDelJuego estado_juego;
     Menu menu;
-    Queue<EstadoJuego> recepcion_estados;
+    Queue<EstadoDelJuego> recepcion_estados;
     Queue<std::string> envio_comandos;
     Queue<std::string> comandos_teclado;
     EntradaTeclado entrada_teclado;
