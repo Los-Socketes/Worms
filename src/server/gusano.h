@@ -26,7 +26,7 @@ public:
 
     std::pair<int, int> getCoords();
     void setCoords(std::pair<int, int> nuevasCoords);
-
+    void setDireccion(DireccionGusano nuevaDireccion);
 
     void detener();
     void ponerEnMovimiento();

@@ -67,6 +67,10 @@ void Gusano::setCoords(std::pair<int, int> nuevasCoords) {
     this->coords = nuevasCoords;
 }
 
+void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
+    this->direccion = nuevaDireccion;
+}
+
 DireccionGusano Gusano::getDireccion() {
     DireccionGusano direccionActual;
     direccionActual = this->direccion;

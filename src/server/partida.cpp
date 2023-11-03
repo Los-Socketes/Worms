@@ -6,8 +6,11 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <utility>
+#include <chrono>
 
 #define SLEEPSEGS 1
+
+const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 Partida::Partida(std::string mapa) {
     this->mapa = mapa;
@@ -210,7 +213,6 @@ void Partida::gameLoop() {
     Accion ultimaAccion = Accion::MOV_QUIETO;
 
     while (true) {
-        sleep(SLEEPSEGS);
         this->enviarEstadoAJugadores();
 
         Direccion accionRecibida;
@@ -234,6 +236,12 @@ void Partida::gameLoop() {
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
+        if (cambioDeseado.first < 0){
+            gusanoActual->setDireccion(DireccionGusano::DERECHA);
+        } else if (cambioDeseado.first > 0){
+            gusanoActual->setDireccion(DireccionGusano::IZQUIERDA);
+        }
+
         gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
         //Tengo que poner el if, porque sino se pisaria el puntero en
@@ -241,6 +249,8 @@ void Partida::gameLoop() {
         //no se movio
         if (coordenadasIniciales != coordenadasFinales)
 	  this->coordsGusanos[coordenadasIniciales] = nullptr;
+      
+        std::this_thread::sleep_for(frameDuration);
     }
 
 }
