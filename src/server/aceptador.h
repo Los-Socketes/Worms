@@ -12,14 +12,15 @@ class Aceptador : public Thread {
     Socket socket;
 
     //TODO: Hacerlo un puntero
-    const std::vector<std::string> escenariosDisponibles;
+    std::vector<std::string> escenariosDisponibles;
 
     MonitorPartida& partidas;
 
  public:
     Aceptador(const char *puerto,
-	    std::vector<std::string> escenariosDisponibles,
 	    MonitorPartida &partidas);
+    void asignar(
+	       std::vector<std::string> escenariosDisponibles);
 
     void aceptarClientes();
 };
