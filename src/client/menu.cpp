@@ -30,7 +30,7 @@ bool Menu::ejecutar() {
                 continuar_menu = false;
                 break;
             case 2:
-                protocolo.pedirInformacion(MAPA);
+                protocolo.pedirInformacion(PARTIDA);
                 opciones_partida = protocolo.obtenerPartidas();
                 std::cout << "Partidas disponibles:" << std::endl;
                 for (const id& id_partida : opciones_partida) {

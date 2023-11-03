@@ -17,7 +17,7 @@ class Animacion {
  public:
     Animacion(Renderer& render, std::string ruta_textura, int frames);
 
-    void siguiente_frame(int pos_x, int pos_y, int dir_x, int it);
+    void siguiente_frame(int pos_x, int pos_y, DireccionGusano dir, int it);
 };
 
 #endif // ANIMACION_H_
