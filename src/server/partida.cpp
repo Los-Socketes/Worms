@@ -33,7 +33,7 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         gusanosParaElCliente.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
-        this->gusanos.push_back(nuevoGusano);
+        // this->gusanos.push_back(nuevoGusano);
 
         //TODO No soy fan de que tenga que guardar las coordenadas
         //en dos lados distintos. Es lo que hay (?.

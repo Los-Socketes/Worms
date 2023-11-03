@@ -30,7 +30,7 @@ class Partida : public Thread {
     std::mutex mtx;
     std::condition_variable seUnioJugador;
 
-    std::vector<Gusano *> gusanos;
+    // std::vector<Gusano *> gusanos;
 
     std::map<std::pair<int, int>, Gusano *> coordsGusanos;
 
