@@ -76,7 +76,7 @@ void Jugador::obtenerGusanosIniciales(std::vector<Gusano*> gusanos) {
 
 bool Jugador::obtenerAccion(Direccion& primeraAccion) {
     bool pudeObtenerla;
-    pudeObtenerla = this->acciones.try_pop(primeraAccion);
+    pudeObtenerla = this->acciones->try_pop(primeraAccion);
 
     return pudeObtenerla;
 }
