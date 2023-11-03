@@ -223,9 +223,9 @@ EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
         return error;
     }
 
-    std::vector<int> posicionRecibida(2,0);
-    posicionRecibida[0] = (int)ntohl(posicion[0]);
-    posicionRecibida[1] = (int)ntohl(posicion[1]);
+    std::pair<int, int> posicionRecibida;
+    posicionRecibida.first = (int)ntohl(posicion[0]);
+    posicionRecibida.second = (int)ntohl(posicion[1]);
 
     estado.posicion = posicionRecibida;
     return estado;
@@ -368,8 +368,8 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     }
 
     std::vector<int32_t> estadoAEnviar;
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion[0]));
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion[1]));
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.first));
+    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.second));
 
     socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
     return !was_closed;
