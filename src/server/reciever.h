@@ -11,14 +11,14 @@ class Reciever: public Thread {
     // Queue<Mensaje>& queue;
     Protocolo& protocolo;
 
-    Queue<Direccion>& acciones;
+    Queue<Direccion> *acciones;
 
 public:
     void run() override;
     //Reciever(Queue<Mensaje>& queue, Protocol& protocol, ClientesMonitor& clientes,
     //         std::atomic<bool>& is_alive);
     // 		                                  ;)
-    Reciever(Protocolo& protocol, Queue<Direccion>& acciones);
+    Reciever(Protocolo& protocol, Queue<Direccion> *acciones);
 
     // noIgn id obtenerMapaDeseado();
 

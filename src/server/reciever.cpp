@@ -2,7 +2,7 @@
 #include "protocolo.h"
 
 
-Reciever::Reciever(Protocolo& protocol, Queue<Direccion>& acciones)
+Reciever::Reciever(Protocolo& protocol, Queue<Direccion> *acciones)
     : protocolo(protocol),
       acciones(acciones) {
 }
