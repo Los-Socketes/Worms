@@ -1,8 +1,11 @@
 #include "partida.h"
 #include "defs.h"
+#include "gusano.h"
 #include "jugador.h"
 #include "protocolo.h"
+#include <cstdlib>
 #include <unistd.h>
+#include <utility>
 
 #define SLEEPSEGS 3
 
