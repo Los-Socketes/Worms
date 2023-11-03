@@ -3,30 +3,11 @@
 
 #include "socket.h"
 #include "threadSafeList.h"
+#include "defs.h"
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
 
-//TODO Poner todos los types defs en un header file juntos
-typedef int32_t id;
-enum Direccion {IZQUIERDA, DERECHA, SALTO, PIRUETA};
-enum tipoInfo {PARTIDA, MAPA};
-#define PARTIDAS 1
-#define MAPAS 2
-#define CREAR 3
-#define UNIRSE 4
-#define PEDIDO 5
-#define EXITO 6
-#define ERROR 7
-
-// Codigos para acciones 
-// mov + direccion -> izq, der, salto, pirueta
-#define MOV 8
-#define noIgn [[nodiscard]]
-
-struct RepresentacionPartida {
-    id ID;
-};
 
 class Protocolo {
 private:
@@ -36,6 +17,9 @@ private:
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
     id verificarConexion();
+    bool enviarCodigo(int codigo);
+    bool enviarCantidad(int cant);
+    bool enviarId(id id);
 public:
 
     Protocolo(Socket&& socket);
@@ -43,11 +27,12 @@ public:
 #ifdef CLIENT
     // METODOS DEL CLIENTE
     bool pedirInformacion(tipoInfo infoAPedir);
-    std::vector<id> obtenerMapas();
+    std::vector<RepresentacionMapa> obtenerMapas();
     std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
+    EstadoDelJuego recibirEstadoDelJuego();
 #endif
 
 #ifdef SERVER
@@ -62,6 +47,7 @@ public:
     bool enviarError();
 
     Direccion obtenerAccion();
+    bool enviarEstadoDelJuego(EstadoDelJuego estado);
 #endif
 
 
