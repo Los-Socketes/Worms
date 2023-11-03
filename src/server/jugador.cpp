@@ -85,7 +85,7 @@ Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
 
     //Busco el primer gusano no muerto
-    while (gusanoActual != nullptr) {
+    while (gusanoActual == nullptr) {
         gusanoActual = this->gusanos.at(gusanoActualPos);
         this->gusanoActualPos += 1;
 

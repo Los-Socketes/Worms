@@ -225,9 +225,14 @@ void Partida::gameLoop() {
         std::pair<int, int> coordenadasFinales;
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
+
         gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
-        this->coordsGusanos[coordenadasIniciales] = nullptr;
+        //Tengo que poner el if, porque sino se pisaria el puntero en
+        //el caso donde ambas posiciones sean iguales aka el gusano
+        //no se movio
+        if (coordenadasIniciales != coordenadasFinales)
+	  this->coordsGusanos[coordenadasIniciales] = nullptr;
     }
 
 }
