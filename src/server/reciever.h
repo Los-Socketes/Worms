@@ -18,8 +18,10 @@ public:
     //Reciever(Queue<Mensaje>& queue, Protocol& protocol, ClientesMonitor& clientes,
     //         std::atomic<bool>& is_alive);
     // 		                                  ;)
-    Reciever(Protocolo& protocol, Queue<Direccion> *acciones);
+    // Reciever(Protocolo& protocol, Queue<Direccion> *acciones);
+    Reciever(Protocolo& protocol);
 
+    void darAcceso(Queue<Direccion> *acciones);
     // noIgn id obtenerMapaDeseado();
 
     // noIgn tipoInfo obtenerPedido();

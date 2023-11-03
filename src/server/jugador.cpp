@@ -15,7 +15,7 @@ Jugador::Jugador(Socket &&socket, std::vector<std::string> mapasDisponibles,
 	       MonitorPartida& partidasDisponibles):
       protocolo(std::move(socket)),
       enviador(this->protocolo),
-      recibidor(this->protocolo, this->acciones)
+      recibidor(this->protocolo)
 {
     this->gusanoActualPos = 0;
 
@@ -101,7 +101,9 @@ Gusano *Jugador::getGusanoActual() {
 }
 
 void Jugador::obtenerAccesoAAcciones(Queue<Direccion>* acciones){
+    //TODO Sacar tal vez?
     this->acciones = acciones;
+    this->recibidor.darAcceso(acciones);
 }
 
 
