@@ -17,6 +17,7 @@ private:
     //Representa que el gusano se esta moviendo aka esta en un estado
     //de moverser
     // bool moviendose = false;
+    void setDireccion(DireccionGusano nuevaDireccion);
 
 public:
     Gusano(std::pair<int, int> coords);
@@ -26,7 +27,6 @@ public:
 
     std::pair<int, int> getCoords();
     void setCoords(std::pair<int, int> nuevasCoords);
-    void setDireccion(DireccionGusano nuevaDireccion);
 
     void detener();
     void ponerEnMovimiento();

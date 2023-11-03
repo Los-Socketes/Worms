@@ -236,11 +236,11 @@ void Partida::gameLoop() {
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
-        if (cambioDeseado.first < 0){
-            gusanoActual->setDireccion(DireccionGusano::DERECHA);
-        } else if (cambioDeseado.first > 0){
-            gusanoActual->setDireccion(DireccionGusano::IZQUIERDA);
-        }
+        // if (cambioDeseado.first < 0){
+        //     gusanoActual->setDireccion(DireccionGusano::DERECHA);
+        // } else if (cambioDeseado.first > 0){
+        //     gusanoActual->setDireccion(DireccionGusano::IZQUIERDA);
+        // }
 
         gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;

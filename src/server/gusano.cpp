@@ -33,10 +33,12 @@ std::pair<int, int> Gusano::cambio(Accion accion) {
 //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
     switch (accion) {
     case Accion::MOV_IZQ:
+        this->setDireccion(DERECHA);
         cambio.first = -1;
         cambio.second = 0;
         break;
     case Accion::MOV_DER:
+        this->setDireccion(IZQUIERDA);
         cambio.first = 1;
         cambio.second = 0;
         break;
