@@ -99,3 +99,7 @@ Gusano *Jugador::getGusanoActual() {
 
     return gusanoActual;
 }
+
+void Jugador::obtenerAccesoAAcciones(Queue<Direccion>* acciones){
+    this->acciones = acciones;
+}
