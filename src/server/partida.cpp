@@ -117,7 +117,7 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
 
 //     }
 // };
-inline void Partida::enviarEstadoAJugadores() {
+void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;
     for (auto const& [posicion, gusano] : this->coordsGusanos) {
 	  estadoActual.posicion = posicion;
@@ -191,14 +191,40 @@ void Partida::gameLoop() {
     while (this->jugadores.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
+    int posJugadorActual = 0;
+
+    //TODO Como cambiar de jugador
+    Jugador *jugadorActual;
+    jugadorActual = jugadores.at(posJugadorActual);
+    Gusano *gusanoActual;
+    gusanoActual = jugadorActual->getGusanoActual();
+
     while (true) {
         sleep(SLEEPSEGS);
         this->enviarEstadoAJugadores();
+
         Direccion accionRecibida;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        
+        // if (accionRecibida == INICIO_DER || accionRecibida == INICIO_IZQ)
+        // 	  gusanoActual->ponerEnMovimiento();
+
+        // if (accionRecibida == FIN_DER || accionRecibida == FIN_IZQ)
+        // 	  gusanoActual->detener();
+
+        Accion accionAEjecutar;
+        accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla);
+
+        std::pair<int, int> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
+
+        std::pair<int, int> coordenadasIniciales = gusanoActual->getCoords();
+        std::pair<int, int> coordenadasFinales;
+        coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
+        coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
+        gusanoActual->setCoords(coordenadasFinales);
+        this->coordsGusanos[coordenadasFinales] = gusanoActual;
+        this->coordsGusanos[coordenadasIniciales] = nullptr;
     }
 
 }
