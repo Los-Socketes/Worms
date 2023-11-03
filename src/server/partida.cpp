@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <utility>
 
-#define SLEEPSEGS 3
+#define SLEEPSEGS 0.2
 
 Partida::Partida(std::string mapa) {
     this->mapa = mapa;
@@ -123,12 +123,14 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
 void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;
     for (auto const& [posicion, gusano] : this->coordsGusanos) {
-	  estadoActual.posicion = posicion;
+        if (gusano == nullptr)
+	  continue;
+        estadoActual.posicion = posicion;
 
-	  DireccionGusano direccionPresente;
-	  direccionPresente = gusano->getDireccion(); 
-	  estadoActual.dir = direccionPresente;
-        }
+        DireccionGusano direccionPresente;
+        direccionPresente = gusano->getDireccion(); 
+        estadoActual.dir = direccionPresente;
+    }
 
     for(Jugador *jugador : this->jugadores) {
         jugador->enviarEstadoJuego(estadoActual);
@@ -151,10 +153,12 @@ void Partida::enviarEstadoAJugadores() {
     
 // }
 
-Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva) {
+Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
+			Accion& ultimaAccion) {
     Accion accionAEjecutar;
     if (obtuvoNueva == false) {
-        accionAEjecutar = Accion::MOV_QUIETO;
+        // accionAEjecutar = Accion::MOV_QUIETO;
+        accionAEjecutar = ultimaAccion;
         return accionAEjecutar;
     }
 
@@ -183,6 +187,7 @@ Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva) {
         break;
     }
 
+    ultimaAccion = accionAEjecutar;
     return accionAEjecutar;
 }
 
@@ -202,6 +207,8 @@ void Partida::gameLoop() {
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
 
+    Accion ultimaAccion = Accion::MOV_QUIETO;
+
     while (true) {
         sleep(SLEEPSEGS);
         this->enviarEstadoAJugadores();
@@ -217,7 +224,8 @@ void Partida::gameLoop() {
         // 	  gusanoActual->detener();
 
         Accion accionAEjecutar;
-        accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla);
+        accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
+				      ultimaAccion);
 
         std::pair<int, int> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
 

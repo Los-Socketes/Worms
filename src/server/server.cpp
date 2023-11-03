@@ -21,3 +21,5 @@ void Server::esperarQueSeCierre() {
     };
     this->aceptador.join();
 }
+
+//TODO Pide partidas en vez de mapas

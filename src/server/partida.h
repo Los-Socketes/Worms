@@ -42,7 +42,8 @@ class Partida : public Thread {
 
     void enviarEstadoAJugadores();
 
-    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva);
+    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
+		     Accion& ultimaAccion);
 
 public:
     Partida(const std::string mapa);
