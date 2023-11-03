@@ -37,6 +37,11 @@ struct RepresentacionMapa {
     std::string nombre;
 };
 
+// Estas macros permiten que hagas:
+// posicion.enX
+// posicion.enY
+#define enX first
+#define enY second
 
 // Tiene la info del estado del juego
 // Por ahora solo un gusano con posicion y direccion
