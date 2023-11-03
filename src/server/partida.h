@@ -26,14 +26,10 @@ class Partida : public Thread {
 
     std::string mapa;
 
-    //Esto tiene que ser thread safe porque se modifica en hilos
-    //distintos
-    // TSList<Jugador *> jugadores;
     std::vector<Jugador *> jugadores;
     std::mutex mtx;
     std::condition_variable seUnioJugador;
 
-    // TSList<Gusano *> gusanos;
     std::vector<Gusano *> gusanos;
 
     std::map<std::pair<int, int>, Gusano *> coordsGusanos;
@@ -42,6 +38,8 @@ class Partida : public Thread {
     std::pair<int, int> gravedad(std::pair<int, int> cambioDeseado,
 			   std::pair<int, int> posInicial
 			   );
+
+    void enviarEstadoAJugadores();
 
 public:
     Partida(const std::string mapa);

@@ -1,4 +1,5 @@
 #include "partida.h"
+#include "defs.h"
 #include "jugador.h"
 #include "protocolo.h"
 #include <unistd.h>
@@ -116,6 +117,13 @@ std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
 
 //     }
 // };
+inline void Partida::enviarEstadoAJugadores() {
+    EstadoDelJuego estadoActual;
+    for(Jugador *jugador : this->jugadores) {
+
+        jugador->enviarEstadoJuego(estadoActual);
+    }
+}
 
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
@@ -126,6 +134,10 @@ void Partida::gameLoop() {
 
     while (true) {
         sleep(SLEEPSEGS);
+        Direccion accionRecibida;
+        bool pudeObtenerla;
+        pudeObtenerla = acciones.try_pop(accionRecibida);
+
         
     }
 
