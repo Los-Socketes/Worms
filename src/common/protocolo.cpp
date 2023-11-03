@@ -106,7 +106,37 @@ std::vector<id> Protocolo::obtenerMapas() {
         return error;
     }
 
-    return obtenerVector();
+    bool was_closed = false;
+    int16_t cant;
+    std::vector<RepresentacionMapa> error;
+    socket.recvall(&cant, sizeof(cant), &was_closed);
+    if (was_closed) {
+        return error;
+    }
+    cant = ntohs(cant);
+
+    std::vector<RepresentacionMapa> mapas(cant, 0);
+    for (int i = 0; i < (int)cant; i++) {
+        uint16_t sz;
+        skt.recvall(&sz, sizeof(sz), &was_closed);
+        if (was_closed) {
+            return error;
+        }
+
+        int tamanio = (int)ntohs(sz[0]);
+        std::vector<char> mapa(tamanio, 0x00);
+        skt.recvall(mapa.data(), tamanio, &was_closed);
+        if (was_closed) {
+            return error;
+        }
+        RepresentacionMapa repMapa;
+        repMapa.id = (id)i;
+        nombre = std::string(msg.begin(), msg.end());
+        repMapa.nombre = nombre;
+        
+        mapas[i] = repMapa;
+    }
+    return mapas;
 }
 
 
@@ -170,6 +200,37 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
+
+EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
+    int8_t codigo = obtenerCodigo();
+    EstadoDelJuego error;
+    if ((int)codigo == -1 || (int)codigo != ESTADO) {
+        return error;
+    }
+
+    int8_t dir;
+    bool was_closed = false;
+    socket.recvall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return error;
+    }
+    EstadoDelJuego estado;
+    // no se si hace falta castear a int antes de castear a enum
+    estado.dir = (DireccionGusano)dir;
+
+    vector<int32_t> posicion(2,0);
+    socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+    if (was_closed) {
+        return error;
+    }
+
+    vector<int> posicionRecibida(2,0);
+    posicionRecibida[0] = (int)ntohl(posicion[0]);
+    posicionRecibida[1] = (int)ntohl(posicion[1]);
+
+    estado.posicion = posicionRecibida;
+    return estado;
+}
 //Endif de la macro de CLIENT
 #endif
 
@@ -191,13 +252,6 @@ tipoInfo Protocolo::obtenerPedido() {
 bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     int cantMapas = mapasDisponibles.size();
 
-    // por ahora solo enviamos ids, despues vemos de mandar mas info (nombre)
-    std::vector<id> paraEnviar;
-    for (int32_t i = 0; i < (int32_t)cantMapas; i++) {
-        id idMapa = htonl(i);
-        paraEnviar.push_back(idMapa);
-    }
-    
     bool was_closed = enviarCodigo(MAPAS);
     if (was_closed) {
         return false;
@@ -207,9 +261,21 @@ bool Protocolo::enviarMapas(std::vector<std::string> mapasDisponibles) {
     if (was_closed) {
         return false;
     }
+
+    for (auto &&mapa : mapasDisponibles){
+        int16_t sz = mapa.size();
+        int16_t tam = htons(sz);
+        socket.sendall(&tam, sizeof(tam), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        socket.sendall(mapa.c_str(), (int)sz, &was_closed);
+        if (was_closed) {
+            return false;
+        }
+    }
     
-    socket.sendall(paraEnviar.data(), sizeof(id)*cantMapas, &was_closed);
-    return !was_closed;
+    return true;
 }
 
 bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDisponibles) {
@@ -288,5 +354,27 @@ Direccion Protocolo::obtenerAccion() {
     socket.recvall(&dir, sizeof(dir), &was_closed);
     return (was_closed) ? INVAL_DIR : (Direccion)dir;
 }
+
+
+// por ahora se manda solo la direccion de 1 gusano con un vector de int
+bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
+    bool was_closed = enviarCodigo(ESTADO);
+    if (was_closed) {
+        return false;
+    }
+    int8_t dir = estado.dir;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    std::vector<int32_t> estadoAEnviar;
+    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[0]));
+    estadoAEnviar.pushback(htonl((int32_t)estado.posicion[1]));
+
+    socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
+    return !was_closed;
+}
+
 //Endif de la macro de SERVER
 #endif
