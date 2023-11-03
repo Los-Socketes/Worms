@@ -16,16 +16,3 @@ void Reciever::run() {
         this->acciones.push(accionDeseada);
     }
 }
-
-// id Reciever::obtenerMapaDeseado() {
-//     id mapaDeseado;
-//     mapaDeseado = this->protocolo.obtenerMapaDeseado();
-
-//     return mapaDeseado;
-// }
-
-// tipoInfo Reciever::obtenerPedido() {
-//     tipoInfo pedidoDeseado;
-//     pedidoDeseado = this->protocolo.obtenerPedido();
-//     return pedidoDeseado;
-// }
