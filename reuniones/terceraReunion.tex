@@ -1,0 +1,51 @@
+% Created 2023-11-03 Fri 18:50
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.1 (Org mode 9.6.11)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Tercera reunion}
+\label{sec:orga00f395}
+Fecha: \textit{<2023-11-03 Fri>}
+
+\subsection{{\bfseries\sffamily TODO} Refactorizar}
+\label{sec:org56e3a3a}
+\begin{itemize}
+\item Volver a crear la clase cliente (existia antes, nos la hicieron borrar y ahora la tenemos que crear de nuevo)
+\begin{itemize}
+\item Esta clase es la que es duena del enviador y el recibidor
+\item El monitor es el que tiene a los cliente y se encarga de matarlo si se desconecta
+\item La partida deberia tener una referencia a la cola de salida, no a toda clase cliente
+\end{itemize}
+\end{itemize}
+
+\subsection{{\bfseries\sffamily TODO} Anadir}
+\label{sec:orgbb259dc}
+\begin{itemize}
+\item Anadir un reap dead ACA que busque en una lista de jugadores y destructores en la parte server en general
+\item Box2D
+\item Animaciones con las colisiones en el cliente (depende de BOX2D)
+\item Mover la camara
+\end{itemize}
+\end{document}

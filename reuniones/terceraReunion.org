@@ -1,0 +1,17 @@
+* Tercera reunion
+Fecha: <2023-11-03 Fri>
+
+** TODO Refactorizar
+DEADLINE: <2023-11-10 Fri>
+- Volver a crear la clase cliente (existia antes, nos la hicieron borrar y ahora la tenemos que crear de nuevo)
+  - Esta clase es la que es duena del enviador y el recibidor
+  - El monitor es el que tiene a los cliente y se encarga de matarlo si se desconecta
+  - La partida deberia tener una referencia a la cola de salida, no a toda clase cliente
+
+** TODO Anadir
+DEADLINE: <2023-11-10 Fri>
+- Anadir un reap dead ACA que busque en una lista de jugadores y destructores en la parte server en general
+- Box2D
+- Animaciones con las colisiones en el cliente (depende de BOX2D)
+- Mover la camara
+  
