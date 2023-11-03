@@ -13,6 +13,6 @@ void Reciever::run() {
         Direccion accionDeseada;
         accionDeseada = this->protocolo.obtenerAccion();
 
-        this->acciones.push(accionDeseada);
+        this->acciones->push(accionDeseada);
     }
 }
