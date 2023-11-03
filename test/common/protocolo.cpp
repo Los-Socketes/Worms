@@ -14,15 +14,19 @@ int main() {
 
     std::cout << "Inicio test de protocolo\n";
 
-    // return 0;
+    // TESTEO PEDIR INFORMACION
     protocolo.pedirInformacion(MAPA);
     tipoInfo recibido = protocoloServer.obtenerPedido();
-    if (recibido == MAPA) {
-        return 0;
-    } else {
+    if (recibido != MAPA) {
         std::cerr << recibido;
         return 1;
     }
-    // return -1;
-    // TODO: agregar tests :p
+
+    protocolo.pedirInformacion(PARTIDA);
+    recibido = protocoloServer.obtenerPedido();
+    if (recibido != PARTIDA) {
+        std::cerr << recibido;
+        return 1;
+    }
+    return 0;
 }
