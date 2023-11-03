@@ -343,8 +343,8 @@ bool Protocolo::enviarError() {
 
 
 Direccion Protocolo::obtenerAccion() {
-    bool was_closed = obtenerCodigo();
-    if (was_closed) {
+    int8_t codigo = obtenerCodigo();
+    if (codigo != MOV) { //MOV = 9 
         return INVAL_DIR;
     }
 
@@ -353,6 +353,7 @@ Direccion Protocolo::obtenerAccion() {
         return INVAL_DIR;
     }
 
+    bool was_closed = false;
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
     return (was_closed) ? INVAL_DIR : (Direccion)dir;
