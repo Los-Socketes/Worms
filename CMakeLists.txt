@@ -18,6 +18,8 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
+# Busco codigo para catch2
+find_package(Catch2 2.13.10 REQUIRED)
 
 # Seteamos las flags de compilacion
 add_compile_options(
@@ -161,6 +163,7 @@ target_compile_definitions(testprotocolo PUBLIC
 add_test(NAME protocolotest
   COMMAND testprotocolo
 )
+target_link_libraries(testprotocolo PRIVATE Catch2::Catch2WithMain)
 
 ## TESTS DE THREAD SAFE LIST
 
