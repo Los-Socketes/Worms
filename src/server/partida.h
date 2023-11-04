@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 #include "comunes.h"
-#include "threadSafeList.h"
+#include "TSList.h"
 #include "jugador.h"
 #include <condition_variable>
 #include <mutex>
