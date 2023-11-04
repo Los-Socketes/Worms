@@ -18,8 +18,29 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
-# Busco codigo para catch2
-find_package(Catch2 2.13.10 REQUIRED)
+
+# Catch2 tiene versiones relativamente distintas entre Gentoo y Debian
+# Como solo usamos la libreria para correr tests, vamos a usar una
+# version u otra dependiendo de la distro. Los includes van a ser
+# reemplazados con macros
+set (grep_cmd "grep")
+set (grep_arg "^NAME=")
+set (grep_file "/etc/os-release")
+execute_process(COMMAND ${grep_cmd} ${grep_arg} ${grep_file}
+    OUTPUT_VARIABLE infoOS
+)
+string(REPLACE NAME= "" infoOS ${infoOS})
+string(REPLACE \n "" infoOS ${infoOS})
+
+string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
+string(COMPARE EQUAL ${infoOS} "Debian GNU/Linux" esDebian)
+if(${esGentoo}) 
+  message("Estas en " ${infoOS})
+  find_package(Catch2 3.4.0 REQUIRED)
+elseif(${esDebian})
+  message("Estas en " ${infoOS})
+  find_package(Catch2 2.13.10 REQUIRED)
+endif()
 
 # Seteamos las flags de compilacion
 add_compile_options(
@@ -160,6 +181,16 @@ target_compile_definitions(testprotocolo PUBLIC
 target_compile_definitions(testprotocolo PUBLIC
   SERVER
 )
+if(${esGentoo})
+  target_compile_definitions(testprotocolo PUBLIC
+    DISTRO=GENTOO
+  )
+elseif(${esDebian})
+  target_compile_definitions(testprotocolo PUBLIC
+    DISTRO=DEBIAN
+  )
+endif()
+
 add_test(NAME protocolotest
   COMMAND testprotocolo
 )

@@ -4,7 +4,11 @@
 #include "socket.h"
 #include <iostream>
 
+#if DISTRO == GENTOO
+#include <catch2/catch_test_macros.hpp>
+#elif DISTO == DEBIAN
 #include <catch2/catch.hpp>
+#endif
 
 #include <cstdint>
 
