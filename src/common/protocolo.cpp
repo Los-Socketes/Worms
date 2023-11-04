@@ -310,11 +310,7 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
-    if (
-        ((int)codigo != MAPAS)
-        &&
-        ((int)codigo != CREAR))
-        {
+    if ((int)codigo != CREAR) {
         return INVAL_ID;
     }
     return obtenerId();
