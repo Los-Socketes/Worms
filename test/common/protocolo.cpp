@@ -1,3 +1,5 @@
+// Se le pide que cree un main a catch
+#define CATCH_CONFIG_MAIN 
 #include "protocolo.h"
 #include "socket.h"
 #include <iostream>
@@ -6,13 +8,15 @@
 
 #include <cstdint>
 
-tipoInfo pedirInformacion(tipoInfo info) {
-    Socket mockSocketServer("9097");
-    Socket mockSocket("127.0.0.1", "9097");
-    Protocolo protocolo(std::move(mockSocket));
-    Socket accept = mockSocketServer.accept();
-    Protocolo protocoloServer(std::move(accept));
+// Inicializo las variables que voy a usar en los tests
+static Socket mockSocketServer("9097");
+static Socket mockSocket("127.0.0.1", "9097");
+static Protocolo protocolo(std::move(mockSocket));
+static Socket peer = mockSocketServer.accept();
+static Protocolo protocoloServer(std::move(peer));
 
+// TEST 1
+tipoInfo pedirInformacion(tipoInfo info) {
     protocolo.pedirInformacion(info);
     return protocoloServer.obtenerPedido();
 }
@@ -23,30 +27,14 @@ TEST_CASE( "Tests de pedirInforamcion", "[pedirInformacion]" ) {
 }
 
 
-// int main() {
-//     Socket mockSocketServer("9097");
-//     Socket mockSocket("127.0.0.1", "9097");
-//     Protocolo protocolo(std::move(mockSocket));
-//     Socket accept = mockSocketServer.accept();
-//     Protocolo protocoloServer(std::move(accept));
+// TEST 2
+Direccion moverGusano(id gusano, Direccion dir) {
+    protocolo.moverGusano(gusano, dir);
+    return protocoloServer.obtenerAccion();
+}
 
-//     std::cout << "Inicio test de protocolo\n";
+TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
+    REQUIRE( moverGusano((id)0, INICIO_DER) == INICIO_DER);
+    REQUIRE( moverGusano((id)1, INICIO_IZQ) == INICIO_IZQ);
+}
 
-
-
-//     // TESTEO PEDIR INFORMACION
-//     protocolo.pedirInformacion(MAPA);
-//     tipoInfo recibido = protocoloServer.obtenerPedido();
-//     if (recibido != MAPA) {
-//         std::cerr << recibido;
-//         return 1;
-//     }
-
-//     protocolo.pedirInformacion(PARTIDA);
-//     recibido = protocoloServer.obtenerPedido();
-//     if (recibido != PARTIDA) {
-//         std::cerr << recibido;
-//         return 1;
-//     }
-//     return 0;
-// }
