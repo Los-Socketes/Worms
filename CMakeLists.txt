@@ -42,6 +42,9 @@ elseif(${esDebian})
   find_package(Catch2 2.13.10 REQUIRED)
 endif()
 
+#Incluimos codigo de box2d
+find_package(box2d REQUIRED)
+
 # Seteamos las flags de compilacion
 add_compile_options(
   
