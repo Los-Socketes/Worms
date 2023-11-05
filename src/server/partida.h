@@ -14,6 +14,7 @@
 #include "jugador.h"
 #include <condition_variable>
 #include <mutex>
+#include <box2d/box2d.h>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
@@ -24,6 +25,9 @@
 
 class Partida : public Thread {
     Queue<Direccion> acciones;
+
+    //World de box2d de la partida
+    b2World world;
 
     std::string mapa;
 

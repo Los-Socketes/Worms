@@ -8,13 +8,14 @@
 #include <utility>
 #include <chrono>
 
-#include <box2d/box2d.h>
-
+#define fuerzaGravitariaX 0.0f
+#define fuerzaGravitariaY -10.0f 
 #define SLEEPSEGS 1
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
-Partida::Partida(std::string mapa) {
+Partida::Partida(std::string mapa)
+    :world(b2Vec2(fuerzaGravitariaX, fuerzaGravitariaY)){
     this->mapa = mapa;
 }
 
@@ -122,11 +123,6 @@ void Partida::gameLoop() {
     /*
       Creamos el mundo y la gravedad
     */
-    //Definimos el vector gravitatorio usado por el world
-    b2Vec2 gravity(0.0f, -10.0f);
-
-    //Creamos el mundo con gravedad creada antes
-    b2World world(gravity);
 
     /*
       Creamos un cuerpo rigidoo
