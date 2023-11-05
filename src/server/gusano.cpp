@@ -9,6 +9,10 @@ Gusano::Gusano(std::pair<int, int> coords) {
     this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
+    /*
+      arma en mano
+      equipo
+    */
 }
 
 // void Gusano::detener(){

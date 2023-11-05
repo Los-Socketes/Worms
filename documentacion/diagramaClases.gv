@@ -1,0 +1,86 @@
+digraph uml {
+    
+
+graph [
+       label = "Diagrama de clases",
+       labelloc = "t",
+       labeljust = "c",
+       fontsize = 18,
+       rankdir = LR,
+       margin = 0.2,
+       splines = spline,
+       ranksep = 1.0,
+       nodesep = 0.9
+       layout = dot
+       ]
+
+node [
+      style = "solid,filled",
+      labelloc="t";
+      shape=record
+      ]
+
+server[label = <
+       <b>Server</b>|
+       >]
+
+aceptador[label = <
+       <b>Aceptador</b>|
+       >]
+
+cliente[label = <
+       <b>Cliente</b>|
+       >]
+
+enviador[label = <
+       <b>Enviador</b>|
+       >]
+
+recibidor[label = <
+       <b>Recibidor</b>|
+       - ID Jugador que esta usando
+       >]
+
+protocolo[label = <
+       <b>Protocolo</b>|
+       >]
+
+jugador[label = <
+       <b>Jugador</b>|
+       >]
+
+monitorPartidas[label = <
+       <b>Monitor de Partidas</b>|
+       >]
+
+partidas[label = <
+       <b>Partidas</b>|
+       >]
+
+gusano[label = <
+       <b>Gusano</b>|
+       >]
+
+server->aceptador
+aceptador->cliente
+cliente->enviador
+cliente->recibidor
+enviador->protocolo [label = "Solo envia"]
+recibidor->protocolo [label = "Solo recibe"]
+cliente->jugador [label = ID]
+
+aceptador->monitorPartidas
+monitorPartidas->partidas
+
+partidas->cliente [label = "Lista de", style = dashed ]
+partidas->gusano
+
+jugador->gusano [label = "Los que le pertenecen", style = dashed ]
+}
+
+# ID
+# n gusanos
+# vida, pos, direccion, arma en mano
+
+# std::map
+# id: lista<Gusano> 
