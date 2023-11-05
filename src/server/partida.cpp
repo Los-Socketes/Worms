@@ -203,16 +203,68 @@ void Partida::gameLoop() {
     while (this->jugadores.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    //Definimos el vector gravitatorio usado por el borld
+    /*
+      Creamos un cuerpo rigidoo
+    */
+    //Definimos el vector gravitatorio usado por el world
     b2Vec2 gravity(0.0f, -10.0f);
 
+    //Creamos el mundo con gravedad creada antes
+    b2World world(gravity);
+
+    //Esto crea un cuerpo, el cual despues se lo vamos a pasar al
+    //mundo. Los cuerpos por default, son estaticos
+    //WARNING:*Los cuerpos estaticos no chocan con otros cuerpos y son
+    //inmovibles*
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(0.0f, -10.0f);
+
+    //Hacemos que el world cree un cuerpo basado en nuestra definicion
+    b2Body* groundBody = world.CreateBody(&groundBodyDef);
+
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(50.0f, 10.0f);
+
+    groundBody->CreateFixture(&groundBox, 0.0f);
+
+
+    /*
+      Creamos un cuerpo dinamico
+    */
+    b2BodyDef bodyDef;
+    //ATTENTION: Hacemos que el cuerpo sea dinamico
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 4.0f);
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture(&fixtureDef);
 
 
 
+    float timeStep = 1.0f / 60.0f;
 
+    int32 velocityIterations = 6;
+    int32 positionIterations = 2;
+
+    for (int32 i = 0; i < 60; ++i)
+    {
+        world.Step(timeStep, velocityIterations, positionIterations);
+        b2Vec2 position = body->GetPosition();
+        float angle = body->GetAngle();
+        printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+    }
 
 
     
+    abort();
 
     int posJugadorActual = 0;
 
