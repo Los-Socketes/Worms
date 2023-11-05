@@ -8,6 +8,8 @@
 #include <utility>
 #include <chrono>
 
+#include <box2d/box2d.h>
+
 #define SLEEPSEGS 1
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
@@ -200,6 +202,17 @@ void Partida::gameLoop() {
     //Esperamos hasta que se unan todos los jugadores necesarios
     while (this->jugadores.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
+
+    //Definimos el vector gravitatorio usado por el borld
+    b2Vec2 gravity(0.0f, -10.0f);
+
+
+
+
+
+
+
+    
 
     int posJugadorActual = 0;
 
