@@ -33,11 +33,11 @@ class Partida : public Thread {
 
     // std::vector<Gusano *> gusanos;
 
-    std::map<std::pair<int, int>, Gusano *> coordsGusanos;
+    std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
 
     //TODO: Aca estaria Box2d
-    std::pair<int, int> gravedad(std::pair<int, int> cambioDeseado,
-			   std::pair<int, int> posInicial
+    std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,
+			   std::pair<coordX, coordY> posInicial
 			   );
 
     void enviarEstadoAJugadores();

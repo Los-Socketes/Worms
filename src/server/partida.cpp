@@ -26,7 +26,7 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        std::pair<int, int> coordsIniciales(0,0);
+        std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
         Gusano *nuevoGusano = new Gusano(coordsIniciales);
         gusanosParaElCliente.push_back(nuevoGusano);
@@ -49,9 +49,10 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
 }
 
 
-std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
-		        std::pair<int, int> posInicial
-		         ){
+std::pair<coordX, coordY> Partida::gravedad(
+				    std::pair<cambioX, cambioY> cambioDeseado,
+				    std::pair<coordX, coordY> posInicial
+				    ) {
     return cambioDeseado;
 }
 
@@ -206,10 +207,10 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        std::pair<int, int> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
+        std::pair<cambioX, cambioY> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
 
-        std::pair<int, int> coordenadasIniciales = gusanoActual->getCoords();
-        std::pair<int, int> coordenadasFinales;
+        std::pair<coordX, coordY> coordenadasIniciales = gusanoActual->getCoords();
+        std::pair<coordX, coordY> coordenadasFinales;
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
