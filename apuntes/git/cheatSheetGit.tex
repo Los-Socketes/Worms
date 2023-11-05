@@ -1,0 +1,205 @@
+% Created 2023-10-21 Sat 21:23
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.1 (Org mode 9.6.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Git}
+\label{sec:org6dc9dbb}
+\begin{itemize}
+\item <>: Representa una "variable". No hay que ponerlas.
+\item La gran mayoria de las opciones de un mismo comando se pueden combinar!
+\end{itemize}
+
+\subsection{Checkout}
+\label{sec:orgcfe4c1b}
+\subsubsection{Ir a una rama}
+\label{sec:org9880c70}
+\begin{verbatim}
+git checkout <branch>
+\end{verbatim}
+
+\subsubsection{Ir a un commit en particular}
+\label{sec:org0d25083}
+\begin{verbatim}
+git checkout <hash>
+\end{verbatim}
+
+\subsection{Switch}
+\label{sec:org4f94128}
+\subsubsection{Ir a una rama}
+\label{sec:orge17a11f}
+\begin{verbatim}
+git switch <branch>
+\end{verbatim}
+\subsubsection{Crear una rama nueva}
+\label{sec:org688b20b}
+\begin{verbatim}
+git switch -c <branch>
+\end{verbatim}
+
+\subsection{Status}
+\label{sec:orgc0d2f26}
+\subsubsection{Ver el estado general}
+\label{sec:org2d1ce86}
+\begin{verbatim}
+git status
+\end{verbatim}
+
+\subsection{Log}
+\label{sec:org48a8df4}
+\subsubsection{Ver el historial de commits}
+\label{sec:orga65e43f}
+\begin{verbatim}
+git log
+\end{verbatim}
+
+\subsubsection{Ver el ultimo commit}
+\label{sec:org61ce05f}
+\begin{verbatim}
+git log -1
+\end{verbatim}
+
+\subsubsection{Ver el grafo de commits}
+\label{sec:org707b543}
+Para recordarlo esta buena la regla mnemotécnica "A DOG". 
+\begin{verbatim}
+git log --all --decorate --oneline --graph
+\end{verbatim}
+
+\subsubsection{Ver los cambios del commit}
+\label{sec:org5f29363}
+\begin{verbatim}
+git log --patch
+\end{verbatim}
+
+\subsubsection{Grepear los mensajes de commits}
+\label{sec:org92278bb}
+\begin{verbatim}
+git log --grep=<texto>
+\end{verbatim}
+
+\subsubsection{Grepear los diffs de commits}
+\label{sec:orga1b6122}
+\begin{verbatim}
+git log -G <texto> --patch
+\end{verbatim}
+
+\subsubsection{Diferencias de commits entre dos ramas}
+\label{sec:orga40611a}
+\begin{verbatim}
+git log <branchX>..<branchY>
+\end{verbatim}
+
+\subsection{Diff}
+\label{sec:org0524783}
+\subsubsection{Ver diferencias entre ultimo commit y el estado actual}
+\label{sec:org6950fed}
+\begin{verbatim}
+git diff
+\end{verbatim}
+
+\subsubsection{Ver diferencias entre ultimo commit y el estado actual de un archivo particular}
+\label{sec:orgd8abda5}
+\begin{verbatim}
+git diff <archivo>
+\end{verbatim}
+
+\subsubsection{Ver diferencias de patches entre dos ramas}
+\label{sec:orgb52b3e0}
+\begin{verbatim}
+git diff <branchX>..<branchY>
+\end{verbatim}
+
+\subsubsection{Ver diferencias de patches entre dos ramas en un archivo especifico}
+\label{sec:orgfe8ec16}
+\begin{verbatim}
+git diff <branchX>..<branchY> -- <archivo>
+\end{verbatim}
+
+\subsection{Show}
+\label{sec:org36ed0ee}
+\subsubsection{Mostrar el commit de un hash en particular}
+\label{sec:org73d7401}
+\begin{verbatim}
+git show <hash>
+\end{verbatim}
+
+\subsection{Bisect}
+\label{sec:orga6204ca}
+Git de alto nivel!! Realiza una busqueda binaria interactivamente, preguntandote en cada paso. Te permite encontrar el commit "que lo rompe" de una manera re piola.
+
+\subsubsection{Arranca el modo bisect}
+\label{sec:orgaa1da55}
+\begin{verbatim}
+git bisect start
+\end{verbatim}
+
+\subsubsection{Marcar el primer commit bueno}
+\label{sec:org0a6aea5}
+\begin{verbatim}
+git bisect good <hash>
+\end{verbatim}
+
+\subsubsection{Marcar el commit en el que estas como bueno}
+\label{sec:org505c30c}
+\begin{verbatim}
+git bisect good
+\end{verbatim}
+
+\subsubsection{Marcar el commit en el que estas como malo}
+\label{sec:org67a8a3c}
+\begin{verbatim}
+git bisect malo
+\end{verbatim}
+
+\subsubsection{Finalizar el modo bisect}
+\label{sec:org7450a1c}
+\begin{verbatim}
+git bisect reset
+\end{verbatim}
+
+\subsection{Blame}
+\label{sec:orgf9bc21f}
+\subsubsection{Ver linea a linea quien es el autor del ultimo commit}
+\label{sec:orgb8b542f}
+\begin{verbatim}
+git blame <archivo>
+\end{verbatim}
+
+\subsection{Stash}
+\label{sec:org5cff059}
+Este esta re bueno. Si tenes cosas sin commitear y tenes que cambiar de rama o lo que sea esto te sirve para "guardar" tus cosas momentaneamente
+\subsubsection{Guardar el estado de git sin necesidad de commitear}
+\label{sec:org3db7bd8}
+\begin{verbatim}
+git stash
+\end{verbatim}
+
+\subsubsection{Restaurar lo guardado}
+\label{sec:org5fa1590}
+\begin{verbatim}
+git stash pop
+\end{verbatim}
+\end{document}
