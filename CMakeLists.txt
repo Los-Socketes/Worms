@@ -80,6 +80,7 @@ set(CLIENTDIR src/client)
 # se puede incluir (sin contar el directorio propio). 
 include_directories("${COMMONDIR}")
 
+
 # Creacion de los ejecutables -- Notas Incluir archivo a archivo.
 ## Ejecutable del server
 add_executable(server
@@ -113,6 +114,10 @@ add_executable(server
 target_compile_definitions(server PUBLIC
   SERVER
 )
+
+# Linkeo box2d
+target_include_directories(server PRIVATE ${box2d_INCLUDE_DIRS})
+target_link_libraries(server PRIVATE box2d::box2d)
 
 #Ejecutable del cliente
 add_executable(client
