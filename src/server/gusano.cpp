@@ -2,23 +2,19 @@
 #include "defs.h"
 #include "protocolo.h"
 
-Gusano::Gusano(std::pair<coordX, coordY> coords) {
-    this->coords = coords;
+Gusano::Gusano(b2Body &cuerpo)
+    : cuerpo(cuerpo)
+      {
+    // this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
+
+    //ATTENTION: Hacemos que el cuerpo sea dinamico
     /*
       arma en mano
       equipo
     */
 }
-
-// void Gusano::detener(){
-//     this->moviendose = false;
-// }
-// void Gusano::ponerEnMovimiento(){
-//     this->moviendose = true;
-// }
-
 
 std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
     std::pair<cambioX, cambioY> cambio(0.0f,0.0f);
@@ -64,11 +60,20 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {
-    return this->coords;
+    b2Vec2 position = this->cuerpo.GetPosition();
+    std::pair<coordX, coordY> representacionPair;
+    representacionPair.enX = position.x;
+    representacionPair.enY = position.y;
+
+    return representacionPair;
 }
-void Gusano::setCoords(std::pair<coordX, coordY> nuevasCoords) {
-    this->coords = nuevasCoords;
-}
+// void Gusano::setCoords(std::pair<coordX, coordY> nuevasCoords) {
+//     b2Vec2 position;
+//     nuevasCoords.enX = position.x;
+//     nuevasCoords.enY = position.y;
+
+//     this->cuerpo. = nuevasCoords;
+// }
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;

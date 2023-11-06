@@ -49,6 +49,8 @@ class Partida : public Thread {
     Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
 
+    Gusano *anadirGusano(std::pair<coordX, coordY> coords);
+
 public:
     Partida(const std::string mapa);
 

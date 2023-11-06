@@ -22,6 +22,23 @@ Partida::Partida(std::string mapa)
 //Esto tendria que estar en el YAML?
 #define CANTGUSANOS 1
 
+// Usado para castear un puntero a una reference y hacer
+// el codigo mas explicito
+#define REFERENCE *
+
+Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
+    b2BodyDef bodyDef;
+    //ATTENTION: Hacemos que el cuerpo sea dinamico
+    //ya que los gusanos se van a mover
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(coords.enX, coords.enY);
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    Gusano *nuevoGusano = new Gusano(REFERENCE body);
+
+    return nuevoGusano;
+}
+
 void Partida::anadirJugador(Jugador *jugadorNuevo) {
     std::vector<Gusano*> gusanosParaElCliente;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
@@ -29,7 +46,7 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         //TODO Hacer las coordenadas distintas
         std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
-        Gusano *nuevoGusano = new Gusano(coordsIniciales);
+        Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
         gusanosParaElCliente.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
@@ -210,7 +227,7 @@ void Partida::gameLoop() {
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
-        gusanoActual->setCoords(coordenadasFinales);
+        // gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
 
         //TODO Borrar
