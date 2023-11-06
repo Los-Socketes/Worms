@@ -32,7 +32,8 @@ public:
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
-    EstadoDelJuego recibirEstadoDelJuego();
+    bool ataqueCuerpoACuerpo(id gusano, DireccionGusano dir);
+    EstadoDelJuego obtenerEstadoDelJuego();
 #endif
 
 #ifdef SERVER
@@ -46,7 +47,7 @@ public:
     bool enviarConfirmacion(id idPartida);
     bool enviarError();
 
-    Direccion obtenerAccion();
+    Accion obtenerAccion();
     bool enviarEstadoDelJuego(EstadoDelJuego estado);
 #endif
 

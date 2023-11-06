@@ -199,8 +199,29 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
+// Este metodo tendra que mutar cuando tenga toda la implementacion
+// del bate, pero para esta semana con esto nos sirve
+bool Protocolo::ataqueBate(idGusano, DireccionGusano dir) {
+    bool is_open = enviarCodigo(ATAQUE);
+    if (!is_open) {
+        return false;
+    }
 
-EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
+    is_open = enviarId(gusano);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t dir = direccion;
+    bool was_closed = false;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+    return !was_closed;
+}
+
+EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     EstadoDelJuego error;
     if ((int)codigo == -1 || (int)codigo != ESTADO) {
@@ -214,7 +235,6 @@ EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
         return error;
     }
     EstadoDelJuego estado;
-    // no se si hace falta castear a int antes de castear a enum
     estado.dir = (DireccionGusano)dir;
 
     std::vector<int32_t> posicion(2,0);
@@ -340,21 +360,29 @@ bool Protocolo::enviarError() {
 }
 
 
-Direccion Protocolo::obtenerAccion() {
+Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
-    if (codigo != MOV) { //MOV = 9 
-        return INVAL_DIR;
+    Accion accion;
+    if (codigo != MOV || codigo != ATAQUE) { //MOV = 9 
+        return accion;
     }
 
     id idGusano = obtenerId();
     if (idGusano == INVAL_ID) {
-        return INVAL_DIR;
+        return accion;
     }
 
     bool was_closed = false;
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
-    return (was_closed) ? INVAL_DIR : (Direccion)dir;
+    if (was_closed) {
+        return accion;
+    }
+
+    accion.tipoAccion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
+    accion.idGusano = idGusano;
+    accion.dir = dir;
+    return accion;
 }
 
 

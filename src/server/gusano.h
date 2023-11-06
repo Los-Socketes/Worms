@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include "defs.h"
 
-typedef uint hp;
+// typedef uint hp;
 
 class Gusano {
 private:
