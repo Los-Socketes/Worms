@@ -8,27 +8,45 @@
 #include <utility>
 #include <chrono>
 
-#include <box2d/box2d.h>
-
+#define fuerzaGravitariaX 0.0f
+#define fuerzaGravitariaY -10.0f 
 #define SLEEPSEGS 1
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
-Partida::Partida(std::string mapa) {
+Partida::Partida(std::string mapa)
+    :world(b2Vec2(fuerzaGravitariaX, fuerzaGravitariaY)){
     this->mapa = mapa;
 }
 
 //Esto tendria que estar en el YAML?
 #define CANTGUSANOS 1
 
+// Usado para castear un puntero a una reference y hacer
+// el codigo mas explicito
+#define REFERENCE *
+
+Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
+    b2BodyDef bodyDef;
+    //ATTENTION: Hacemos que el cuerpo sea dinamico
+    //ya que los gusanos se van a mover
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(coords.enX, coords.enY);
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    Gusano *nuevoGusano = new Gusano(REFERENCE body);
+
+    return nuevoGusano;
+}
+
 void Partida::anadirJugador(Jugador *jugadorNuevo) {
     std::vector<Gusano*> gusanosParaElCliente;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        std::pair<int, int> coordsIniciales(0,0);
+        std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
-        Gusano *nuevoGusano = new Gusano(coordsIniciales);
+        Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
         gusanosParaElCliente.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
@@ -50,9 +68,10 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
 }
 
 
-std::pair<int, int> Partida::gravedad(std::pair<int, int> cambioDeseado,
-		        std::pair<int, int> posInicial
-		         ){
+std::pair<coordX, coordY> Partida::gravedad(
+				    std::pair<cambioX, cambioY> cambioDeseado,
+				    std::pair<coordX, coordY> posInicial
+				    ) {
     return cambioDeseado;
 }
 
@@ -123,11 +142,6 @@ void Partida::gameLoop() {
     /*
       Creamos el mundo y la gravedad
     */
-    //Definimos el vector gravitatorio usado por el world
-    b2Vec2 gravity(0.0f, -10.0f);
-
-    //Creamos el mundo con gravedad creada antes
-    b2World world(gravity);
 
     /*
       Creamos un cuerpo rigidoo
@@ -208,14 +222,14 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        std::pair<int, int> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
+        std::pair<cambioX, cambioY> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
 
-        std::pair<int, int> coordenadasIniciales = gusanoActual->getCoords();
-        std::pair<int, int> coordenadasFinales;
+        std::pair<coordX, coordY> coordenadasIniciales = gusanoActual->getCoords();
+        std::pair<coordX, coordY> coordenadasFinales;
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
-        gusanoActual->setCoords(coordenadasFinales);
+        // gusanoActual->setCoords(coordenadasFinales);
         this->coordsGusanos[coordenadasFinales] = gusanoActual;
 
         //TODO Borrar

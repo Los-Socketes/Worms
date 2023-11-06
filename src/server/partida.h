@@ -13,6 +13,7 @@
 #include "queue.h"
 #include <condition_variable>
 #include <mutex>
+#include <box2d/box2d.h>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
@@ -24,6 +25,9 @@
 class Partida : public Thread {
     Queue<Direccion> acciones;
 
+    //World de box2d de la partida
+    b2World world;
+
     std::string mapa;
 
     std::vector<Jugador *> jugadores;
@@ -32,17 +36,19 @@ class Partida : public Thread {
 
     // std::vector<Gusano *> gusanos;
 
-    std::map<std::pair<int, int>, Gusano *> coordsGusanos;
+    std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
 
     //TODO: Aca estaria Box2d
-    std::pair<int, int> gravedad(std::pair<int, int> cambioDeseado,
-			   std::pair<int, int> posInicial
+    std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,
+			   std::pair<coordX, coordY> posInicial
 			   );
 
     void enviarEstadoAJugadores();
 
     Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
+
+    Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
 public:
     Partida(const std::string mapa);

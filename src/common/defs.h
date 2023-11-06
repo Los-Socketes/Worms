@@ -8,7 +8,16 @@
 typedef int32_t id;
 typedef int idJugador;
 
-#define strings std::vector<std::string> //-- Notas Macros para los contenedores
+#define strings std::vector<std::string>
+
+// Estos dos typedefs representan las COORDENADAS de un objeto en la
+// partida
+typedef float coordX;
+typedef float coordY;
+
+// Estos dos typedefs representan el CAMBIO deseado por un objeto
+typedef float cambioX;
+typedef float cambioY;
 
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
@@ -53,7 +62,7 @@ struct RepresentacionMapa {
 // Por ahora solo un gusano con posicion y direccion
 struct EstadoDelJuego {
     DireccionGusano dir;
-    std::pair<int, int> posicion;
+    std::pair<coordX, coordY> posicion;
 };
 
 #endif

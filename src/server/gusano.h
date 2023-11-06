@@ -2,17 +2,21 @@
 #define GUSANO_HEADER
 
 #include "protocolo.h"
+#include <box2d/box2d.h>
 #include <sys/types.h>
 #include "defs.h"
 
-// hp = healt points
 typedef uint hp;
 
 class Gusano {
 private:
     hp vida;
     DireccionGusano direccion;
-    std::pair<int, int> coords;
+    // std::pair<coordX, coordY> coords;
+
+    //Conceptos de b2box
+    //TODO: Mejor nombre?
+    b2Body& cuerpo;
 
     //Representa que el gusano se esta moviendo aka esta en un estado
     //de moverser
@@ -20,13 +24,13 @@ private:
     void setDireccion(DireccionGusano nuevaDireccion);
 
 public:
-    Gusano(std::pair<int, int> coords);
+    Gusano(b2Body& cuerpo);
 
-    std::pair<int, int> cambio(Accion accion);
+    std::pair<cambioX, cambioY> cambio(Accion accion);
     [[nodiscard]] DireccionGusano getDireccion();
 
-    std::pair<int, int> getCoords();
-    void setCoords(std::pair<int, int> nuevasCoords);
+    std::pair<coordX, coordY> getCoords();
+    // void setCoords(std::pair<coordX, coordY> nuevasCoords);
 
     void detener();
     void ponerEnMovimiento();
