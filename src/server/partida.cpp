@@ -54,7 +54,8 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
+        std::pair<coordX, coordY> coordsIniciales(0.0f,100.0f);
+        // std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
         gusanosParaElCliente.push_back(nuevoGusano);
@@ -168,10 +169,6 @@ void Partida::gameLoop() {
         this->seUnioJugador.wait(lck);
 
     /*
-      Creamos el mundo y la gravedad
-    */
-
-    /*
       Creamos un cuerpo rigidoo
     */
 
@@ -194,50 +191,61 @@ void Partida::gameLoop() {
     /*
       Creamos un cuerpo dinamico
     */
-    b2BodyDef bodyDef;
-    //ATTENTION: Hacemos que el cuerpo sea dinamico
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 4.0f);
-    b2Body* body = world.CreateBody(&bodyDef);
+    // b2BodyDef bodyDef;
+    // //ATTENTION: Hacemos que el cuerpo sea dinamico
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(0.0f, 4.0f);
+    // b2Body* body = world.CreateBody(&bodyDef);
 
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
+    // b2PolygonShape dynamicBox;
+    // dynamicBox.SetAsBox(1.0f, 1.0f);
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &dynamicBox;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
 
-    body->CreateFixture(&fixtureDef);
+    // body->CreateFixture(&fixtureDef);
 
 
 
     float timeStep = 1.0f / 60.0f;
-
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
 
-    for (int32 i = 0; i < 60; ++i)
+    Cliente *clienteActual;
+    clienteActual = this->clientes.at(0);
+    Jugador *jugadorActual;
+    jugadorActual = clienteActual->getJugador();
+    Gusano *gusanoActual;
+    gusanoActual = jugadorActual->getGusanoActual();
+    for (int32 i = 0; i < 600; ++i)
     {
         world.Step(timeStep, velocityIterations, positionIterations);
-        b2Vec2 position = body->GetPosition();
-        float angle = body->GetAngle();
-        printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+        // b2Vec2 position = body->GetPosition();
+        // float angle = body->GetAngle();
+        // printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+        std::pair<coordX, coordY> coords;
+        coords = gusanoActual->getCoords();
+        printf("%4.2f %4.2f \n", coords.enX, coords.enY);
+        this->enviarEstadoAJugadores();
+
+        std::this_thread::sleep_for(frameDuration);
     }
 
 
     
     abort();
 
-    int posJugadorActual = 0;
+    // int posJugadorActual = 0;
 
     //TODO Como cambiar de jugador
-    Cliente *clienteActual;
-    clienteActual = this->clientes.at(posJugadorActual);
-    Jugador *jugadorActual;
-    jugadorActual = clienteActual->getJugador();
-    Gusano *gusanoActual;
-    gusanoActual = jugadorActual->getGusanoActual();
+    // Cliente *clienteActual;
+    // clienteActual = this->clientes.at(posJugadorActual);
+    // Jugador *jugadorActual;
+    // jugadorActual = clienteActual->getJugador();
+    // Gusano *gusanoActual;
+    // gusanoActual = jugadorActual->getGusanoActual();
 
     Accion ultimaAccion = Accion::MOV_QUIETO;
 
@@ -260,14 +268,14 @@ void Partida::gameLoop() {
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
         // gusanoActual->setCoords(coordenadasFinales);
-        this->coordsGusanos[coordenadasFinales] = gusanoActual;
+        // this->coordsGusanos[coordenadasFinales] = gusanoActual;
 
         //TODO Borrar
         //Tengo que poner el if, porque sino se pisaria el puntero en
         //el caso donde ambas posiciones sean iguales aka el gusano
         //no se movio
-        if (coordenadasIniciales != coordenadasFinales)
-	  this->coordsGusanos[coordenadasIniciales] = nullptr;
+        // if (coordenadasIniciales != coordenadasFinales)
+        // 	  this->coordsGusanos[coordenadasIniciales] = nullptr;
       
         std::this_thread::sleep_for(frameDuration);
     }
