@@ -23,6 +23,7 @@ const int SCREEN_HEIGHT = 480;
 
 class Cliente {
  private:
+    SDL sdl;
     Protocolo protocolo;
     EstadoDelJuego estado_juego;
     Menu menu;

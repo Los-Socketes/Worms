@@ -1,6 +1,7 @@
 #include "cliente.h"
 
 Cliente::Cliente(Socket&& skt):
+    sdl(SDL_INIT_VIDEO),
     protocolo(std::move(skt)),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
@@ -10,8 +11,8 @@ Cliente::Cliente(Socket&& skt):
     recibidor(protocolo, recepcion_estados),
     enviador(protocolo, envio_comandos) {
         // Inicializo el estado del juego.
-        estado_juego.posicion.first = 50;
-        estado_juego.posicion.second = 250;
+        estado_juego.posicion.first = 0;
+        estado_juego.posicion.second = 0;
         estado_juego.dir = DERECHA;
     }
 
@@ -36,7 +37,6 @@ bool Cliente::ejecutar_menu() {
 
 void Cliente::loop_principal() {
     // Inicializar SDL.  
-    SDL sdl(SDL_INIT_VIDEO);
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
 
@@ -85,12 +85,12 @@ void Cliente::loop_principal() {
 
 Cliente::~Cliente() {
     comandos_teclado.close();
-    entrada_teclado.stop();
-    entrada_teclado.join();
     recepcion_estados.close();
     envio_comandos.close();
+    entrada_teclado.stop();
     enviador.stop();
     recibidor.stop();
+    entrada_teclado.join();
     enviador.join();
     recibidor.join();
 }     

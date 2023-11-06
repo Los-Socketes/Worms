@@ -12,7 +12,7 @@ void Recibidor::run() {
         }
     } catch (const ClosedQueue& e) {
         syslog(LOG_INFO, "%s", e.what());
-    }
+    } 
 }
 
 void Recibidor::stop() {

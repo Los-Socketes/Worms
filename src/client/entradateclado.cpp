@@ -37,6 +37,7 @@ void EntradaTeclado::run() {
                         break;
                     case SDLK_q:
                         comandos_teclado.push("q");
+                        cont = false;
                         break;
                     default:
                         break;
