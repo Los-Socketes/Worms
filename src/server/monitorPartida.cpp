@@ -49,5 +49,12 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
 }
 
 MonitorPartida::~MonitorPartida() {
-    //TODO free
+    for (auto const& [idPartida, partida] : this->mapa) {
+        if (partida == nullptr) {
+            continue;
+        }
+
+        // TODO: verificar que el destructor de partida esta bien y no leakea memoria
+        delete partida;
+    }
 }

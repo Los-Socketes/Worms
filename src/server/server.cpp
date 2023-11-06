@@ -2,7 +2,7 @@
 #include "aceptador.h"
 
 Server::Server(const char *puerto)
-    :aceptador(puerto, this->partidas) {
+    :aceptador(puerto) {
     this->aceptador.asignar(escenariosDisponibles);
     this->aceptador.start();
 };
@@ -12,12 +12,11 @@ void Server::esperarQueSeCierre() {
     std::string input;
     while (std::cin >> input) {
         if (input == "q") {
-	  //TODO Crear este metodo
-            // this->aceptador.kill();
+            this->aceptador.kill();
             break;
         }
     };
     this->aceptador.join();
 }
 
-//TODO Pide partidas en vez de mapas
+//TODO Pide partidas en vez de mapas || TODO (Anto): preguntar que es este todo

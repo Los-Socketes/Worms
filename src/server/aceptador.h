@@ -4,6 +4,7 @@
 #include "jugador.h"
 #include "socket.h"
 #include "thread.h"
+#include "monitorPartida.h"
 #include <vector>
 
 #define aceptarClientes run
@@ -14,15 +15,15 @@ class Aceptador : public Thread {
     //TODO: Hacerlo un puntero
     std::vector<std::string> escenariosDisponibles;
 
-    MonitorPartida& partidas;
+    MonitorPartida partidas;
 
  public:
-    Aceptador(const char *puerto,
-	    MonitorPartida &partidas);
-    void asignar(
-	       std::vector<std::string> escenariosDisponibles);
+    Aceptador(const char *puerto);
+    void asignar(std::vector<std::string> escenariosDisponibles);
 
     void aceptarClientes();
+
+    void kill();
 };
 
 #endif

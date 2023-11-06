@@ -3,7 +3,6 @@
 
 #include "aceptador.h"
 #include <string>
-#include "monitorPartida.h"
 
 class Server {
 private:
@@ -16,7 +15,6 @@ private:
         "El pico de la Viuda", "Battlesnax"
     };
 
-    MonitorPartida partidas;
 
 
 public:
