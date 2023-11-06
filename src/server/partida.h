@@ -33,9 +33,9 @@ class Partida : public Thread {
     std::mutex mtx;
     std::condition_variable seUnioJugador;
 
-    // std::vector<Gusano *> gusanos;
+    std::vector<Gusano *> gusanos;
 
-    std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
+    // std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
 
     //TODO: Aca estaria Box2d
     // std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,

@@ -64,7 +64,8 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
 
         //TODO No soy fan de que tenga que guardar las coordenadas
         //en dos lados distintos. Es lo que hay (?.
-        this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
+        // this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
+        this->gusanos.push_back(nuevoGusano);
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
@@ -88,20 +89,36 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
 
 void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;
-    for (auto const& [posicion, gusano] : this->coordsGusanos) {
-        if (gusano == nullptr)
-	  continue;
-        estadoActual.posicion = posicion;
+    // for (auto const& [posicion, gusano] : this->coordsGusanos) {
+    //     if (gusano == nullptr)
+    // 	  continue;
+    //     estadoActual.posicion = posicion;
+
+    //     DireccionGusano direccionPresente;
+    //     direccionPresente = gusano->getDireccion(); 
+    //     estadoActual.dir = direccionPresente;
+    // }
+    for (Gusano *gusanoActual : this->gusanos) {
+        std::pair<coordX, coordY> coords;
+        coords = gusanoActual->getCoords();
+
+        estadoActual.posicion = coords;
 
         DireccionGusano direccionPresente;
-        direccionPresente = gusano->getDireccion(); 
+        direccionPresente = gusanoActual->getDireccion(); 
         estadoActual.dir = direccionPresente;
     }
+
+
 
     // TODO: cambiar a clientes
     // for(Jugador *jugador : this->jugadores) {
     //     jugador->enviarEstadoJuego(estadoActual);
     // }
+    for(Cliente *cliente : this->clientes) {
+        cliente->enviarEstadoJuego(estadoActual);
+    }
+
 }
 
 Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
