@@ -33,7 +33,7 @@ string(REPLACE NAME= "" infoOS ${infoOS})
 string(REPLACE \n "" infoOS ${infoOS})
 
 string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
-string(COMPARE EQUAL ${infoOS} "Debian GNU/Linux" esDebian)
+string(COMPARE EQUAL ${infoOS} "\"Debian GNU/Linux\"" esDebian)
 if(${esGentoo}) 
   message("Estas en " ${infoOS})
   find_package(Catch2 3.4.0 REQUIRED)
