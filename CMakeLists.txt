@@ -191,11 +191,11 @@ target_compile_definitions(testprotocolo PUBLIC
 )
 if(${esGentoo})
   target_compile_definitions(testprotocolo PUBLIC
-    DISTRO=GENTOO
+    DISTRO=1
   )
 elseif(${esDebian})
   target_compile_definitions(testprotocolo PUBLIC
-    DISTRO=DEBIAN
+    DISTRO=2
   )
 endif()
 
