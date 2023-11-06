@@ -33,7 +33,7 @@ string(REPLACE NAME= "" infoOS ${infoOS})
 string(REPLACE \n "" infoOS ${infoOS})
 
 string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
-string(COMPARE EQUAL ${infoOS} "Debian GNU/Linux" esDebian)
+string(COMPARE EQUAL ${infoOS} "\"Debian GNU/Linux\"" esDebian)
 if(${esGentoo}) 
   message("Estas en " ${infoOS})
   find_package(Catch2 3.4.0 REQUIRED)
@@ -86,7 +86,7 @@ include_directories("${COMMONDIR}")
 add_executable(server
   "${SERVERDIR}/main.cpp"
   "${SERVERDIR}/server.cpp"
-  # "${SERVERDIR}/cliente.cpp"
+  "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"
@@ -191,11 +191,11 @@ target_compile_definitions(testprotocolo PUBLIC
 )
 if(${esGentoo})
   target_compile_definitions(testprotocolo PUBLIC
-    DISTRO=GENTOO
+    DISTRO=1
   )
 elseif(${esDebian})
   target_compile_definitions(testprotocolo PUBLIC
-    DISTRO=DEBIAN
+    DISTRO=2
   )
 endif()
 

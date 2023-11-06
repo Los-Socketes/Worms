@@ -6,6 +6,9 @@
 
 
 typedef int32_t id;
+typedef int idJugador;
+
+#define strings std::vector<std::string>
 
 // Estos dos typedefs representan las COORDENADAS de un objeto en la
 // partida

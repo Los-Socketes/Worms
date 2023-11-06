@@ -58,7 +58,8 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
     }
     //Le damos los gusanos al cliente y acceso a la queue de acciones
     jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
-    jugadorNuevo->obtenerAccesoAAcciones(&this->acciones);
+    // TODO: arreglar a que sea del cliente
+    // jugadorNuevo->obtenerAccesoAAcciones(&this->acciones);
 
     //Anadimos al jugador a la partida
     this->jugadores.push_back(jugadorNuevo);
@@ -86,9 +87,10 @@ void Partida::enviarEstadoAJugadores() {
         estadoActual.dir = direccionPresente;
     }
 
-    for(Jugador *jugador : this->jugadores) {
-        jugador->enviarEstadoJuego(estadoActual);
-    }
+    // TODO: cambiar a clientes
+    // for(Jugador *jugador : this->jugadores) {
+    //     jugador->enviarEstadoJuego(estadoActual);
+    // }
 }
 
 Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,

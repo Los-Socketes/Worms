@@ -9,9 +9,8 @@
 #include <sys/types.h>
 #include <utility>
 #include <vector>
-#include "comunes.h"
-#include "TSList.h"
 #include "jugador.h"
+#include "queue.h"
 #include <condition_variable>
 #include <mutex>
 #include <box2d/box2d.h>
