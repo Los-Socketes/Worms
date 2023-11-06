@@ -34,6 +34,16 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     bodyDef.position.Set(coords.enX, coords.enY);
     b2Body* body = world.CreateBody(&bodyDef);
 
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture(&fixtureDef);
+
     Gusano *nuevoGusano = new Gusano(REFERENCE body);
 
     return nuevoGusano;
