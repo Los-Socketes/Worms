@@ -6,6 +6,10 @@
 
 
 typedef int32_t id;
+typedef int idJugador;
+
+#define strings std::vector<std::string> //-- Notas Macros para los contenedores
+
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 

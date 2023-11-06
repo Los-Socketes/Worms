@@ -86,7 +86,7 @@ include_directories("${COMMONDIR}")
 add_executable(server
   "${SERVERDIR}/main.cpp"
   "${SERVERDIR}/server.cpp"
-  # "${SERVERDIR}/cliente.cpp"
+  "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"

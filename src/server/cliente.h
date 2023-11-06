@@ -5,37 +5,27 @@
 #include <vector>
 #include "partida.h"
 #include "protocolo.h"
-#include "thread.h"
-#include "threadSafeList.h"
-
-#define strings std::vector<std::string> //-- Notas Macros para los contenedores
+#include "sender.h"
+#include "reciever.h"
+#include "monitorPartida.h"
+#include "jugador.h"
 
 #define elegirPartida run
 
-// Forward declaration para que el cliente le comunique al server
-// No soy FAN de esto, pero mepa que es la mejor manera de estructurar
-// el codigo para protejer los recursos
-// class Server;
 
-class Cliente : public Thread { //-- Notas Relacion Cliente - Jugador
-// class Cliente {
+class Cliente {
 private:
     Protocolo protocolo;
+    Sender sender;
+    Reciever reciever;
+    Jugador jugador;
 
-    bool conectadoAPartida;
-
-    std::vector<std::string> mapasDisponibles;
-
-    //TODO Este nombre no esta tan bueno. Cambiar
-    TSList<Partida*>& avisar;
 
 public:
-    Cliente(Socket&& socket, std::vector<std::string> mapasDisponibles,
-	  TSList<Partida*>& avisar);
+    Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& monitorPartidas);
 
-    void run();
-
-
+    void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
+    void enviarEstadoJuego(EstadoDelJuego estado);
 };
 
 
