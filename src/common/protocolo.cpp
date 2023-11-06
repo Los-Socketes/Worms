@@ -77,7 +77,6 @@ std::vector<id> Protocolo::obtenerVector() {
 
 
 id Protocolo::verificarConexion() {
-    bool was_closed = false;
     int8_t codigo = obtenerCodigo();
     if ((int)codigo == -1 || (int)codigo == ERROR) {
         return INVAL_ID;
