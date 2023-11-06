@@ -87,6 +87,18 @@ id Protocolo::verificarConexion() {
 }
 
 
+// Fuente: https://www.geeksforgeeks.org/rounding-floating-point-number-two-decimal-places-c-c/
+float Protocolo::toFloat(int valor) {
+    return (float)valor / 10000;
+}
+
+
+int Protocolo::toInt(float valor) {
+    // redondeo y uso 2 decimales
+    return (int)(valor * 10000 + .5);
+}
+
+
 //METODOS DEL CLIENTE
 #ifdef CLIENT
 bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
@@ -201,13 +213,13 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 
 // Este metodo tendra que mutar cuando tenga toda la implementacion
 // del bate, pero para esta semana con esto nos sirve
-bool Protocolo::ataqueBate(idGusano, DireccionGusano dir) {
+bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
     bool is_open = enviarCodigo(ATAQUE);
     if (!is_open) {
         return false;
     }
 
-    is_open = enviarId(gusano);
+    is_open = enviarId(idGusano);
     if (!is_open) {
         return false;
     }
@@ -243,9 +255,9 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
         return error;
     }
 
-    std::pair<int, int> posicionRecibida;
-    posicionRecibida.first = (int)ntohl(posicion[0]);
-    posicionRecibida.second = (int)ntohl(posicion[1]);
+    std::pair<coordX, coordY> posicionRecibida;
+    posicionRecibida.first = toFloat(ntohl(posicion[0]));
+    posicionRecibida.second = toFloat(ntohl(posicion[1]));
 
     estado.posicion = posicionRecibida;
     return estado;
@@ -381,7 +393,7 @@ Accion Protocolo::obtenerAccion() {
 
     accion.tipoAccion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
     accion.idGusano = idGusano;
-    accion.dir = dir;
+    accion.dir = (Direccion)dir;
     return accion;
 }
 
@@ -400,8 +412,8 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     }
 
     std::vector<int32_t> estadoAEnviar;
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.first));
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.second));
+    estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.first)));
+    estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.second)));
 
     socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
     return !was_closed;
