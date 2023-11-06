@@ -3,6 +3,7 @@
 
 #include <utility>
 
+#include "defs.h"
 #include "protocolo.h"
 #include "queue.h"
 #include "thread.h"
@@ -22,6 +23,7 @@ class Reciever: public Thread {
     strings mapasDisponibles;
     MonitorPartida& partidas;
     Cliente *cliente;
+    idJugador miId;
 
     void lobby();
 

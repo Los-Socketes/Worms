@@ -20,10 +20,8 @@ private:
     // Queue<Direccion>* acciones;
 
 public:
-    Jugador();
+    Jugador(std::vector<Gusano*> gusanos);
     Gusano* getGusanoActual();
-
-    void obtenerGusanosIniciales(std::vector<Gusano*> gusanos);
 
     // void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
 

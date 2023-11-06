@@ -35,6 +35,7 @@ class Partida : public Thread {
 
     std::vector<Gusano *> gusanos;
 
+    std::vector<Jugador *> jugadores;
     // std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
 
     //TODO: Aca estaria Box2d
@@ -44,15 +45,15 @@ class Partida : public Thread {
 
     void enviarEstadoAJugadores();
 
-    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
+    [[nodiscard]] Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
 
-    Gusano *anadirGusano(std::pair<coordX, coordY> coords);
+    [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
 public:
     Partida(const std::string mapa);
 
-    void anadirCliente(Cliente *clienteNuevo);
+    [[nodiscard]] idJugador anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
 };

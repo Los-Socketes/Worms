@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "defs.h"
 #include "protocolo.h"
 #include "sender.h"
 #include "reciever.h"
@@ -17,7 +18,7 @@ private:
     Protocolo protocolo;
     Sender sender;
     Reciever reciever;
-    Jugador jugador;
+    // idJugador jugador;
 
 
 public:
@@ -27,7 +28,7 @@ public:
 
     void enviarEstadoJuego(EstadoDelJuego estado);
 
-    Jugador *getJugador();
+    // idJugador getJugador();
 };
 
 #endif

@@ -25,9 +25,9 @@ void Cliente::enviarEstadoJuego(EstadoDelJuego estado) {
     this->sender.anadirEstado(estado);
 }
 
-Jugador *Cliente::getJugador() {
-    Jugador *miJugador;
-    miJugador = &this->jugador;
-    return miJugador;
-}
+// idJugador Cliente::getJugador() {
+//     idJugador miJugador;
+//     miJugador = this->jugador;
+//     return miJugador;
+// }
 

@@ -1,12 +1,11 @@
 #include "reciever.h"
+#include "defs.h"
 #include "protocolo.h"
 #include <cstdlib>
 
-class MonitorPartida {
-public:
-    [[nodiscard]] id anadirPartida(std::string mapaNombre);
+class MonitorPartida {public: [[nodiscard]] id anadirPartida(std::string mapaNombre);
 
-    void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+    [[nodiscard]] idJugador anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
 
     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 };
@@ -20,7 +19,6 @@ Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida
 void Reciever::lobby() {
     tipoInfo pedido;
     pedido = this->protocolo.obtenerPedido();
-
     id partidaElegida;
     switch (pedido) {
         case MAPA:
@@ -57,7 +55,9 @@ void Reciever::lobby() {
 
     this->protocolo.enviarConfirmacion(partidaElegida);
     // TODO: cambiar a que sea de cliente o algo idk
-    partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
+    idJugador idDelNuevoJugador;
+    idDelNuevoJugador = partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
+    this->miId = idDelNuevoJugador;
 }
 
 

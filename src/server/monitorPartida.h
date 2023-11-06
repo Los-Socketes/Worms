@@ -3,6 +3,7 @@
 
 #include <map>
 #include <mutex>
+#include "defs.h"
 #include "partida.h"
 
 typedef int id;
@@ -19,7 +20,7 @@ public:
 
     [[nodiscard]] id anadirPartida(std::string mapaNombre);
 
-    void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+    [[nodiscard]] idJugador anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
 
     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 

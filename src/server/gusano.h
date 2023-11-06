@@ -15,12 +15,8 @@ private:
     // std::pair<coordX, coordY> coords;
 
     //Conceptos de b2box
-    //TODO: Mejor nombre?
     b2Body& cuerpo;
 
-    //Representa que el gusano se esta moviendo aka esta en un estado
-    //de moverser
-    // bool moviendose = false;
     void setDireccion(DireccionGusano nuevaDireccion);
 
 public:

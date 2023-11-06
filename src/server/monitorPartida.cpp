@@ -1,4 +1,5 @@
 #include "monitorPartida.h"
+#include "defs.h"
 #include "partida.h"
 
 MonitorPartida::MonitorPartida() {
@@ -23,11 +24,14 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     return idPartidaNueva;
 }
 
-void MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
+idJugador MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
     Partida *partidaRecibidora;
     partidaRecibidora = this->mapa.at(partidaEspecifica);
 
-    partidaRecibidora->anadirCliente(nuevoCliente);
+    idJugador nuevoJugdor;
+    nuevoJugdor = partidaRecibidora->anadirCliente(nuevoCliente);
+
+    return nuevoJugdor;
 }
 
 std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {

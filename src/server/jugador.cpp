@@ -11,8 +11,10 @@
 //     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 // };
 
-Jugador::Jugador() {
+Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
+
+    this->gusanos = gusanos;
 
     // MOVIMOS A RECIEVER + CLIENTE
     //A partir de aca hasta el final esta la logica de "lobby".
@@ -27,9 +29,9 @@ Jugador::Jugador() {
 }
 
 
-void Jugador::obtenerGusanosIniciales(std::vector<Gusano*> gusanos) {
-    this->gusanos = gusanos;
-}
+// void Jugador::obtenerGusanosIniciales(std::vector<Gusano*> gusanos) {
+//     this->gusanos = gusanos;
+// }
 
 
 // bool Jugador::obtenerAccion(Direccion& primeraAccion) {

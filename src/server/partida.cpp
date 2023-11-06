@@ -49,8 +49,8 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirCliente(Cliente *clienteNuevo) {
-    std::vector<Gusano*> gusanosParaElCliente;
+idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
+    std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
@@ -58,7 +58,7 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
         // std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
-        gusanosParaElCliente.push_back(nuevoGusano);
+        gusanosParaElNuevoJugador.push_back(nuevoGusano);
 
         //Anadimos los gusanos del cliente a la partida
         // this->gusanos.push_back(nuevoGusano);
@@ -70,14 +70,17 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
-    Jugador *jugadorInterno;
-    jugadorInterno = clienteNuevo->getJugador();
-    jugadorInterno->obtenerGusanosIniciales(gusanosParaElCliente);
+    Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
+    this->jugadores.push_back(jugadorNuevo);
 
     //Anadimos al jugador a la partida
     this->clientes.push_back(clienteNuevo);
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
+
+    idJugador idNuevoJugador;
+    idNuevoJugador = (idJugador) this->jugadores.size();
+    return idNuevoJugador;
 }
 
 
@@ -213,10 +216,10 @@ void Partida::gameLoop() {
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
 
-    Cliente *clienteActual;
-    clienteActual = this->clientes.at(0);
+    // Cliente *clienteActual;
+    // clienteActual = this->clientes.at(0);
     Jugador *jugadorActual;
-    jugadorActual = clienteActual->getJugador();
+    jugadorActual = this->jugadores.at(0);
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
     for (int32 i = 0; i < 600; ++i)
