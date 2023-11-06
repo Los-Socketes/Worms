@@ -1,6 +1,7 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include "cliente.h"
 #include "defs.h"
 #include "gusano.h"
 #include "thread.h"
@@ -20,8 +21,6 @@
 
 #define MINJUGADORES 1
 
-// enum class Accion { Mover, Saltar, Disparar };
-
 class Partida : public Thread {
     Queue<Direccion> acciones;
 
@@ -30,7 +29,7 @@ class Partida : public Thread {
 
     std::string mapa;
 
-    std::vector<Jugador *> jugadores;
+    std::vector<Cliente *> clientes;
     std::mutex mtx;
     std::condition_variable seUnioJugador;
 
@@ -53,7 +52,7 @@ class Partida : public Thread {
 public:
     Partida(const std::string mapa);
 
-    void anadirJugador(Jugador  *jugadorNuevo);
+    void anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
 };

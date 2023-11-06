@@ -6,7 +6,13 @@
 #include "protocolo.h"
 #include "queue.h"
 #include "thread.h"
-#include "monitorPartida.h"
+// #include "monitorPartida.h"
+
+//Forward declaration
+class MonitorPartida;
+class Cliente;
+
+#define recibirEstado run
 
 class Reciever: public Thread {
     // Queue<Mensaje>& queue;
@@ -14,21 +20,19 @@ class Reciever: public Thread {
 
     Queue<Direccion> *acciones;
     strings mapasDisponibles;
-    MonitorPartida& partidasDisponibles;
+    MonitorPartida& partidas;
+    Cliente *cliente;
+
+    void lobby();
+
+    void recibirEstado() override;
 
 public:
-    void run() override;
-    //Reciever(Queue<Mensaje>& queue, Protocol& protocol, ClientesMonitor& clientes,
-    //         std::atomic<bool>& is_alive);
-    // 		                                  ;)
-    // Reciever(Protocolo& protocol, Queue<Direccion> *acciones);
-    Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas);
 
-    void darAcceso(Queue<Direccion> *acciones);
-    void lobby();
-    // noIgn id obtenerMapaDeseado();
+    Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente);
 
-    // noIgn tipoInfo obtenerPedido();
+    void obtener(Queue<Direccion> *acciones);
+
 };
 
 #endif

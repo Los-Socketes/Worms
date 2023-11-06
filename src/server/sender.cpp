@@ -9,7 +9,7 @@ void Sender::anadirEstado(EstadoDelJuego estado) {
     this->estadoAEnviar.push(estado);
 }
 
-void Sender::run() {
+void Sender::enviarEstado() {
     //TODO emprolijar, sacar el true
     EstadoDelJuego nuevoEstado;
     while (true) {

@@ -39,7 +39,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirJugador(Jugador *jugadorNuevo) {
+void Partida::anadirCliente(Cliente *clienteNuevo) {
     std::vector<Gusano*> gusanosParaElCliente;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
@@ -56,13 +56,14 @@ void Partida::anadirJugador(Jugador *jugadorNuevo) {
         //en dos lados distintos. Es lo que hay (?.
         this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
     }
-    //Le damos los gusanos al cliente y acceso a la queue de acciones
-    jugadorNuevo->obtenerGusanosIniciales(gusanosParaElCliente);
-    // TODO: arreglar a que sea del cliente
-    // jugadorNuevo->obtenerAccesoAAcciones(&this->acciones);
+    //Le damos los gusanos al jugador del cliente y acceso a la queue
+    //de acciones
+    Jugador *jugadorInterno;
+    jugadorInterno = clienteNuevo->getJugador();
+    jugadorInterno->obtenerGusanosIniciales(gusanosParaElCliente);
 
     //Anadimos al jugador a la partida
-    this->jugadores.push_back(jugadorNuevo);
+    this->clientes.push_back(clienteNuevo);
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
 }
@@ -136,7 +137,7 @@ void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 
     //Esperamos hasta que se unan todos los jugadores necesarios
-    while (this->jugadores.size() < MINJUGADORES)
+    while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
     /*
@@ -204,8 +205,10 @@ void Partida::gameLoop() {
     int posJugadorActual = 0;
 
     //TODO Como cambiar de jugador
+    Cliente *clienteActual;
+    clienteActual = this->clientes.at(posJugadorActual);
     Jugador *jugadorActual;
-    jugadorActual = jugadores.at(posJugadorActual);
+    jugadorActual = clienteActual->getJugador();
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
 

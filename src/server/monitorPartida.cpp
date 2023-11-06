@@ -23,11 +23,11 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     return idPartidaNueva;
 }
 
-void MonitorPartida::anadirJugadorAPartida(Jugador *nuevoJugador, id partidaEspecifica) {
+void MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
     Partida *partidaRecibidora;
     partidaRecibidora = this->mapa.at(partidaEspecifica);
 
-    partidaRecibidora->anadirJugador(nuevoJugador);
+    partidaRecibidora->anadirCliente(nuevoCliente);
 }
 
 std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {

@@ -2,9 +2,18 @@
 #include "protocolo.h"
 #include <cstdlib>
 
+class MonitorPartida {
+public:
+    [[nodiscard]] id anadirPartida(std::string mapaNombre);
 
-Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas) 
-    : protocolo(protocol), partidasDisponibles(monitorPartidas) {
+    void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+
+    [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
+};
+
+
+Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente) 
+    : protocolo(protocol), partidas(monitorPartidas), cliente(cliente) {
         this->mapasDisponibles = mapasDisponibles;
     }
 
@@ -24,14 +33,14 @@ void Reciever::lobby() {
 	      std::string nombreMapaDeseado;
 	      nombreMapaDeseado = mapasDisponibles.at(mapaDeseado);
 
-	      partidaElegida = partidasDisponibles.anadirPartida(nombreMapaDeseado);
+	      partidaElegida = partidas.anadirPartida(nombreMapaDeseado);
 
 	  break;
 	  }
         case PARTIDA:
 	  {
 	  std::vector<RepresentacionPartida> partidasAEnviar;
-	  partidasAEnviar = partidasDisponibles.partidasDisponibles();
+	  partidasAEnviar = partidas.partidasDisponibles();
 
 	  this->protocolo.enviarPartidas(partidasAEnviar);
 
@@ -48,11 +57,11 @@ void Reciever::lobby() {
 
     this->protocolo.enviarConfirmacion(partidaElegida);
     // TODO: cambiar a que sea de cliente o algo idk
-    // partidasDisponibles.anadirJugadorAPartida(this, partidaElegida);
+    partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
 }
 
 
-void Reciever::darAcceso(Queue<Direccion> *accionesRecibidas) {
+void Reciever::obtener(Queue<Direccion> *accionesRecibidas) {
     //TODO Throw
     if (accionesRecibidas == nullptr)
         abort();

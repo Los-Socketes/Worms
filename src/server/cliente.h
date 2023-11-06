@@ -3,15 +3,14 @@
 
 #include <string>
 #include <vector>
-#include "partida.h"
 #include "protocolo.h"
 #include "sender.h"
 #include "reciever.h"
-#include "monitorPartida.h"
 #include "jugador.h"
 
 #define elegirPartida run
 
+class MonitorPartida;
 
 class Cliente {
 private:
@@ -25,10 +24,11 @@ public:
     Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& monitorPartidas);
 
     void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
+
     void enviarEstadoJuego(EstadoDelJuego estado);
+
+    Jugador *getJugador();
 };
-
-
 
 #endif
 /*
