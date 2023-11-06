@@ -69,12 +69,12 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
 }
 
 
-std::pair<coordX, coordY> Partida::gravedad(
-				    std::pair<cambioX, cambioY> cambioDeseado,
-				    std::pair<coordX, coordY> posInicial
-				    ) {
-    return cambioDeseado;
-}
+// std::pair<coordX, coordY> Partida::gravedad(
+// 				    std::pair<cambioX, cambioY> cambioDeseado,
+// 				    std::pair<coordX, coordY> posInicial
+// 				    ) {
+//     return cambioDeseado;
+// }
 
 void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;

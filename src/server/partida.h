@@ -38,9 +38,9 @@ class Partida : public Thread {
     std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
 
     //TODO: Aca estaria Box2d
-    std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,
-			   std::pair<coordX, coordY> posInicial
-			   );
+    // std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,
+    // 			   std::pair<coordX, coordY> posInicial
+    // 			   );
 
     void enviarEstadoAJugadores();
 
