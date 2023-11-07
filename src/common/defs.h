@@ -3,10 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <list>
+
 
 
 typedef int32_t id;
 typedef int idJugador;
+typedef uint hp;
 
 #define strings std::vector<std::string>
 
@@ -24,9 +28,11 @@ typedef float cambioY;
 
 //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-enum class Accion { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA, MOV_QUIETO };
+enum class AccionServer { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA, MOV_QUIETO };
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
+
+enum tipoAccion {MOVERSE, ATAQUE_CUERPO};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -40,6 +46,9 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 9
+// este se usa para ataques cuerpo a cuerpo
+#define ATAQUE 10
+#define DISPARAR 11
 
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {
@@ -58,11 +67,26 @@ struct RepresentacionMapa {
 #define enX first
 #define enY second
 
-// Tiene la info del estado del juego
-// Por ahora solo un gusano con posicion y direccion
-struct EstadoDelJuego {
+struct RepresentacionGusano {
+    id idGusano;
+    hp vida;
     DireccionGusano dir;
     std::pair<coordX, coordY> posicion;
+    // TODO: agregar arma en mano
+};
+
+
+// Tiene la info del estado del juego
+struct EstadoDelJuego {
+    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    // DireccionGusano dir;
+    // std::pair<coordX, coordY> posicion;
+};
+
+struct Accion {
+    id idGusano;
+    tipoAccion tipoAccion;
+    Direccion dir;
 };
 
 #endif

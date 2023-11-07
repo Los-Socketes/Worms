@@ -20,6 +20,9 @@ private:
     bool enviarCodigo(int codigo);
     bool enviarCantidad(int cant);
     bool enviarId(id id);
+
+    float toFloat(int valor);
+    int toInt(float valor);
 public:
 
     Protocolo(Socket&& socket);
@@ -32,7 +35,8 @@ public:
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
-    EstadoDelJuego recibirEstadoDelJuego();
+    bool ataqueBate(id idGusano, DireccionGusano direccion);
+    EstadoDelJuego obtenerEstadoDelJuego();
 #endif
 
 #ifdef SERVER
@@ -46,7 +50,7 @@ public:
     bool enviarConfirmacion(id idPartida);
     bool enviarError();
 
-    Direccion obtenerAccion();
+    Accion obtenerAccion();
     bool enviarEstadoDelJuego(EstadoDelJuego estado);
 #endif
 

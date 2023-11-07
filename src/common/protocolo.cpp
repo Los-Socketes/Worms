@@ -87,6 +87,18 @@ id Protocolo::verificarConexion() {
 }
 
 
+// Fuente: https://www.geeksforgeeks.org/rounding-floating-point-number-two-decimal-places-c-c/
+float Protocolo::toFloat(int valor) {
+    return (float)valor / 10000;
+}
+
+
+int Protocolo::toInt(float valor) {
+    // redondeo y uso 2 decimales
+    return (int)(valor * 10000 + .5);
+}
+
+
 //METODOS DEL CLIENTE
 #ifdef CLIENT
 bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
@@ -199,36 +211,130 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
+// Este metodo tendra que mutar cuando tenga toda la implementacion
+// del bate, pero para esta semana con esto nos sirve
+bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
+    bool is_open = enviarCodigo(ATAQUE);
+    if (!is_open) {
+        return false;
+    }
 
-EstadoDelJuego Protocolo::recibirEstadoDelJuego() {
+    is_open = enviarId(idGusano);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t dir = direccion;
+    bool was_closed = false;
+    socket.sendall(&dir, sizeof(dir), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+    return !was_closed;
+}
+
+EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
-    EstadoDelJuego error;
+    RepresentacionEstadoDelJuego error;
     if ((int)codigo == -1 || (int)codigo != ESTADO) {
         return error;
     }
 
-    int8_t dir;
+    int32_t cantJugadores;
     bool was_closed = false;
-    socket.recvall(&dir, sizeof(dir), &was_closed);
+    socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
         return error;
     }
+    cantJugadores = ntohl(cantJugadores);
+
+    std::map<idJugador,std::vector<RepresentacionGusano>> gusanos;
+    for (int32_t i = 0; i < cantJugadores; i++) {
+        id idJugador = obtenerId();
+        if (idJugador == INVAL_ID) {
+            return error;
+        }
+
+        int32_t cantGusanos;
+        was_closed = false;
+        socket.recvall(&cantGusanos, sizeof(cantGusanos), &was_closed);
+        if (was_closed) {
+            return error;
+        }
+        cantGusanos = ntohl(cantGusanos);
+
+        std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
+        for (int32_t j = 0; j < cantGusanos; j++) {
+            id idGusano = obtenerId();
+            if (idJugador == INVAL_ID) {
+                return error;
+            }
+
+            uint32_t vida;
+            socket.recvall(&vida, sizeof(vida), &was_closed);
+            if (was_closed) {
+                return error;
+            }
+            vida = ntohl(vida);
+
+            std::vector<int32_t> posicion(2,0);
+            socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+            if (was_closed) {
+                return error;
+            }
+
+            std::pair<coordX, coordY> posicionRecibida;
+            posicionRecibida.enX = toFloat(ntohl(posicion[0]));
+            posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+
+            int8_t dir;
+            bool was_closed = false;
+            socket.recvall(&dir, sizeof(dir), &was_closed);
+            if (was_closed) {
+                return error;
+            }
+
+            // TODO: recibir arma equipada
+
+            RepresentacionGusano gusanoActual;
+            gusanoActual.vida = vida;
+            gusanoActual.idGusano = idGusano;
+            gusanoActual.dir = (DireccionGusano)dir;
+            gusanoActual.posicion = posicionRecibida;
+
+            listaGusanos[i] = gusanoActual;
+        }   
+
+        gusanos.insert({idJugador, listaGusanos});
+        
+    }
+    
     EstadoDelJuego estado;
-    // no se si hace falta castear a int antes de castear a enum
-    estado.dir = (DireccionGusano)dir;
-
-    std::vector<int32_t> posicion(2,0);
-    socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
-    if (was_closed) {
-        return error;
-    }
-
-    std::pair<int, int> posicionRecibida;
-    posicionRecibida.first = (int)ntohl(posicion[0]);
-    posicionRecibida.second = (int)ntohl(posicion[1]);
-
-    estado.posicion = posicionRecibida;
+    estado.gusanos = gusanos;
     return estado;
+
+    // int8_t dir;
+    // bool was_closed = false;
+    // socket.recvall(&dir, sizeof(dir), &was_closed);
+    // if (was_closed) {
+    //     return error;
+    // }
+    // EstadoDelJuego estado;
+    // estado.dir = (DireccionGusano)dir;
+
+    // std::vector<int32_t> posicion(2,0);
+    // socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+    // if (was_closed) {
+    //     return error;
+    // }
+
+    // std::pair<coordX, coordY> posicionRecibida;
+    // posicionRecibida.first = toFloat(ntohl(posicion[0]));
+    // posicionRecibida.second = toFloat(ntohl(posicion[1]));
+
+    // estado.posicion = posicionRecibida;
+    // return estado;
+
 }
 //Endif de la macro de CLIENT
 #endif
@@ -340,42 +446,115 @@ bool Protocolo::enviarError() {
 }
 
 
-Direccion Protocolo::obtenerAccion() {
+Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
-    if (codigo != MOV) { //MOV = 9 
-        return INVAL_DIR;
+    Accion accion;
+    if (codigo != MOV || codigo != ATAQUE) { //MOV = 9 
+        return accion;
     }
 
     id idGusano = obtenerId();
     if (idGusano == INVAL_ID) {
-        return INVAL_DIR;
+        return accion;
     }
 
     bool was_closed = false;
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
-    return (was_closed) ? INVAL_DIR : (Direccion)dir;
+    if (was_closed) {
+        return accion;
+    }
+
+    accion.tipoAccion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
+    accion.idGusano = idGusano;
+    accion.dir = (Direccion)dir;
+    return accion;
 }
 
 
-// por ahora se manda solo la direccion de 1 gusano con un vector de int
+// se manda ESCENARIO+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
 bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     bool is_open = enviarCodigo(ESTADO);
     if (!is_open) {
         return false;
     }
-    int8_t dir = estado.dir;
+    int cant = estado.gusanos.size();
+    //envio cantJugadores
+    int32_t sz = htonl((int32_t)cant);
     bool was_closed = false;
-    socket.sendall(&dir, sizeof(dir), &was_closed);
+    socket.sendall(&sz, sizeof(sz), &was_closed);
     if (was_closed) {
         return false;
     }
 
-    std::vector<int32_t> estadoAEnviar;
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.first));
-    estadoAEnviar.push_back(htonl((int32_t)estado.posicion.second));
+    for (auto const& [idJugador, listaGusanos] : estado.gusanos) {
+        // envio idJugador
+        int32_t id = htonl((int32_t)idJugador);
+        socket.sendall(&id, sizeof(id), &was_closed);
+        if (was_closed) {
+            return false;
+        }
 
-    socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
+        // envio cant de gusanos
+        int cantGusanos = listaGusanos.size();
+        int32_t szGusanos = htonl((int32_t)cantGusanos);
+        socket.sendall(&szGusanos, sizeof(szGusanos), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        for (int32_t i = 0; i < cantGusanos; i++) {
+            RepresentacionGusano gusano = listaGusanos[i];
+            // envio el id del gusano
+            int32_t idGusano = htonl((int32_t)gusano.idGusano);
+            socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            
+            // envio vida del gusano
+            uint32_t vida = htonl((uint32_t)gusano.vida);
+            socket.sendall(&vida, sizeof(vida), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            
+            // envio posicion
+            std::vector<int32_t> posAEnviar;
+            posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enX)));
+            posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enY)));
+
+            socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            // envio direccion
+            int8_t dir = gusano.dir;
+            socket.sendall(&dir, sizeof(dir), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            // TODO: enviar arma equipada
+        }
+        
+        
+    }
+    
+
+    // int8_t dir = estado.dir;
+    // bool was_closed = false;
+    // socket.sendall(&dir, sizeof(dir), &was_closed);
+    // if (was_closed) {
+    //     return false;
+    // }
+
+    // std::vector<int32_t> estadoAEnviar;
+    // estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.first)));
+    // estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.second)));
+
+    // socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
     return !was_closed;
 }
 
