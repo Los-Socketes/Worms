@@ -42,7 +42,7 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
  *3. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                  0        1          2        3
-enum tipoAccion {MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
+enum tipoAccion {NOMOVERSE, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -99,7 +99,9 @@ struct Accion {
     id idGusano;
     idJugador jugador;
     tipoAccion accion;
-    Direccion dir;
+    // union Argumento{
+        Direccion dir;
+    // };
 };
 
 #endif

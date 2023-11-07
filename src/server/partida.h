@@ -36,17 +36,11 @@ class Partida : public Thread {
     std::vector<Gusano *> gusanos;
 
     std::vector<Jugador *> jugadores;
-    // std::map<std::pair<coordX, coordY>, Gusano *> coordsGusanos;
-
-    //TODO: Aca estaria Box2d
-    // std::pair<coordX, coordY> gravedad(std::pair<cambioX, cambioY> cambioDeseado,
-    // 			   std::pair<coordX, coordY> posInicial
-    // 			   );
 
     void enviarEstadoAJugadores();
 
-    [[nodiscard]] AccionServer obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
-		     AccionServer& ultimaAccion);
+    [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
+		     Accion& ultimaAccion);
 
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 

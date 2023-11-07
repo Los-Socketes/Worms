@@ -4,6 +4,7 @@
 #include "jugador.h"
 #include "protocolo.h"
 #include <cstdlib>
+#include <iostream>
 #include <unistd.h>
 #include <utility>
 #include <chrono>
@@ -139,42 +140,29 @@ void Partida::enviarEstadoAJugadores() {
 
 }
 
-AccionServer Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
-			AccionServer& ultimaAccion) {
-    AccionServer accionAEjecutar;
-    if (obtuvoNueva == false) {
-        // accionAEjecutar = Accion::MOV_QUIETO;
-        accionAEjecutar = ultimaAccion;
-        return accionAEjecutar;
-    }
+Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
+			Accion& ultimaAccion) {
+       Accion accionAEjecutar;
+       //Si la ultima accion fue de movimiento y no obtuvimos nada
+       //nuevo; ejecutamos esa accion de movimiento.
+       //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
+       //de detenernos
 
-    switch (accionObtenida) {
-//     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    case INICIO_IZQ:
-        accionAEjecutar = AccionServer::MOV_IZQ;
-        break;
-    case FIN_IZQ:
-        accionAEjecutar = AccionServer::MOV_QUIETO;
-        break;
-    case INICIO_DER:
-        accionAEjecutar = AccionServer::MOV_DER;
-        break;
-    case FIN_DER:
-        accionAEjecutar = AccionServer::MOV_QUIETO;
-        break;
-    case SALTO:
-        accionAEjecutar = AccionServer::MOV_SALTO;
-        break;
-    case PIRUETA:
-        accionAEjecutar = AccionServer::MOV_PIRUETA;
-        break;
-    case INVAL_DIR:
-        abort();
-        break;
-    }
+       tipoAccion tipoUltimaAccion;
+       tipoUltimaAccion = ultimaAccion.accion;
+       if (obtuvoNueva == true) {
+	 accionAEjecutar = accionObtenida;
+       }
+       //Si entra en estos otros if es porque NO se obtuvo algo nuevo
+       else if (tipoUltimaAccion == MOVERSE) {
+	  accionAEjecutar = ultimaAccion;
+       }
+       else {
+	  accionAEjecutar = ultimaAccion;
+	  accionAEjecutar.accion = NOMOVERSE;
+       }
 
-    ultimaAccion = accionAEjecutar;
-    return accionAEjecutar;
+       return accionAEjecutar;
 }
 
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
@@ -264,7 +252,7 @@ void Partida::gameLoop() {
     // Gusano *gusanoActual;
     // gusanoActual = jugadorActual->getGusanoActual();
 
-    AccionServer ultimaAccion = AccionServer::MOV_QUIETO;
+    Accion ultimaAccion;
 
     while (true) {
         this->enviarEstadoAJugadores();
@@ -273,7 +261,7 @@ void Partida::gameLoop() {
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        AccionServer accionAEjecutar;
+        Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 

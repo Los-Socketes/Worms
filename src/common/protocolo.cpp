@@ -465,7 +465,7 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
+    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;

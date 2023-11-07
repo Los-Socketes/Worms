@@ -1,5 +1,6 @@
 #include "gusano.h"
 #include "defs.h"
+#include <iostream>
 // #include "defs.h"
 // #include "protocolo.h"
 
@@ -20,7 +21,7 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<cambioX, cambioY> Gusano::cambio(AccionServer accion) {
+std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
     std::pair<cambioX, cambioY> cambio(0.0f,0.0f);
     /*Arranca abajo a la izquierda.
      *X:
@@ -30,33 +31,35 @@ std::pair<cambioX, cambioY> Gusano::cambio(AccionServer accion) {
      *	^: +1
      *	v: -1
     */
+    //WARNING Pongo este std::out solamente para que compile
+    std::cout << accion.idGusano;
 
 //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    switch (accion) {
-    case AccionServer::MOV_IZQ:
-        this->setDireccion(DERECHA);
-        cambio.first = -1.0f;
-        cambio.second = 0.0f;
-        break;
-    case AccionServer::MOV_DER:
-        this->setDireccion(IZQUIERDA);
-        cambio.first = 1.0f;
-        cambio.second = 0.0f;
-        break;
-        //TODO Esto no se si es 100% correcto. Por ahora funca
-    case AccionServer::MOV_SALTO:
-        cambio.first = 1.0f;
-        cambio.second = 1.0f;
-        break;
-    case AccionServer::MOV_PIRUETA:
-        cambio.first = -1.0f;
-        cambio.second = 1.0f;
-        break;
-    case AccionServer::MOV_QUIETO:
-        cambio.first = 0.0f;
-        cambio.second = 0.0f;
-        break;
-    }
+    // switch (accion) {
+    // case AccionServer::MOV_IZQ:
+    //     this->setDireccion(DERECHA);
+    //     cambio.first = -1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // case AccionServer::MOV_DER:
+    //     this->setDireccion(IZQUIERDA);
+    //     cambio.first = 1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    //     //TODO Esto no se si es 100% correcto. Por ahora funca
+    // case AccionServer::MOV_SALTO:
+    //     cambio.first = 1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_PIRUETA:
+    //     cambio.first = -1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_QUIETO:
+    //     cambio.first = 0.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // }
 
     return cambio;
     
