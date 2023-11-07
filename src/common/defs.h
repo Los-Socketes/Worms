@@ -27,13 +27,14 @@ typedef float cambioY;
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-// enum class AccionServer { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA,
-// MOV_QUIETO };
 enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
+// Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
+enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
+                    GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
+                    TELETRANSPORTACION_P};
 
 /*
  *0. El gusano se mueve
@@ -85,6 +86,7 @@ struct RepresentacionGusano {
     // TODO: Agregar recibir y enviar estado
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
+    ArmaProtocolo armaEquipada;
     // TODO: agregar arma en mano
 };
 
@@ -101,6 +103,7 @@ struct Accion {
     idJugador jugador;
     tipoAccion accion;
     Direccion dir;
+    ArmaProtocolo armaAEquipar;
 };
 
 #endif

@@ -212,13 +212,20 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 }
 
 
-// bool equiparArma(id gusano, Arma arma) {
-//     bool is_open = enviarCodigo(CALIBRAR);
-//     if (!is_open) {
-//         return false;
-//     }
-//     // TODO: enviar arma, necesito saber si es un enum o q
-// }
+bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
+    bool is_open = enviarCodigo(EQUIPAR);
+    if (!is_open) {
+        return false;
+    }
+    is_open = enviarId(gusano);
+    if (!is_open) {
+        return false;
+    }
+    int8_t armaAEnviar = arma;
+    bool was_closed = false;
+    socket.sendall(&armaAEnviar, sizeof(armaAEnviar), &was_closed);
+    return !was_closed;
+}
 
 
 // Este metodo tendra que mutar cuando tenga toda la implementacion
@@ -430,12 +437,26 @@ bool Protocolo::enviarError() {
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     Accion accion;
-    if (codigo != MOV || codigo != ATACAR) { //MOV = 9 
+    if (codigo != MOV || codigo != ATACAR || codigo != EQUIPAR) {
         return accion;
     }
 
     id idGusano = obtenerId();
     if (idGusano == INVAL_ID) {
+        return accion;
+    }
+
+    if (codigo == EQUIPAR) {
+        bool was_closed = false;
+        int8_t arma;
+        socket.recvall(&arma, sizeof(arma), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
+
+        accion.accion = EQUIPARSE;
+        accion.idGusano = idGusano;
+        accion.armaAEquipar = (ArmaProtocolo)arma;
         return accion;
     }
 
