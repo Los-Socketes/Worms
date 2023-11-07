@@ -42,7 +42,7 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
  *3. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                  0        1        2        3
-enum tipoAccion {MOVERSE, EQUIPAR, PREPARAR, ATAQUE};
+enum tipoAccion {MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -57,8 +57,9 @@ enum tipoAccion {MOVERSE, EQUIPAR, PREPARAR, ATAQUE};
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 9
 // este se usa para ataques cuerpo a cuerpo
-#define ATAQUE 10
-#define DISPARAR 11
+#define EQUIPAR 10
+#define CALIBRAR 11
+#define ATACAR 11
 
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {

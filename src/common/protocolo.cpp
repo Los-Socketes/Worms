@@ -214,7 +214,7 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 // Este metodo tendra que mutar cuando tenga toda la implementacion
 // del bate, pero para esta semana con esto nos sirve
 bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
-    bool is_open = enviarCodigo(ATAQUE);
+    bool is_open = enviarCodigo(ATACAR);
     if (!is_open) {
         return false;
     }
@@ -449,7 +449,7 @@ bool Protocolo::enviarError() {
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     Accion accion;
-    if (codigo != MOV || codigo != ATAQUE) { //MOV = 9 
+    if (codigo != MOV || codigo != ATACAR) { //MOV = 9 
         return accion;
     }
 
@@ -465,7 +465,7 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
+    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
