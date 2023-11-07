@@ -22,7 +22,7 @@
 #define MINJUGADORES 1
 
 class Partida : public Thread {
-    Queue<Direccion> acciones;
+    Queue<Accion> acciones;
 
     //World de box2d de la partida
     b2World world;
@@ -45,8 +45,8 @@ class Partida : public Thread {
 
     void enviarEstadoAJugadores();
 
-    [[nodiscard]] Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
-		     Accion& ultimaAccion);
+    [[nodiscard]] AccionServer obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
+		     AccionServer& ultimaAccion);
 
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 

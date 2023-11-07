@@ -19,7 +19,7 @@ class Reciever: public Thread {
     // Queue<Mensaje>& queue;
     Protocolo& protocolo;
 
-    Queue<Direccion> *acciones;
+    Queue<Accion> *acciones;
     strings mapasDisponibles;
     MonitorPartida& partidas;
     Cliente *cliente;
@@ -33,7 +33,7 @@ public:
 
     Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente);
 
-    void obtener(Queue<Direccion> *acciones);
+    void obtener(Queue<Accion> *acciones);
 
 };
 

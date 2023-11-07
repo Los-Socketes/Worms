@@ -14,7 +14,7 @@ Cliente::Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& moni
     this->reciever.start();
 };
 
-void Cliente::obtenerAccesoAAcciones(Queue<Direccion>* acciones) {
+void Cliente::obtenerAccesoAAcciones(Queue<Accion>* acciones) {
     //TODO Sacar tal vez?
     // this->acciones = acciones;
     this->reciever.obtener(acciones);

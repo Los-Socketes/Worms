@@ -7,6 +7,7 @@
 #include <list>
 
 
+//TODO: Anadir fucniones de conversion de coordenadas box2d a sdl
 
 typedef int32_t id;
 typedef int idJugador;
@@ -28,11 +29,20 @@ typedef float cambioY;
 
 //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-enum class AccionServer { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA, MOV_QUIETO };
+// enum class AccionServer { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA,
+// MOV_QUIETO };
+enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 
-enum tipoAccion {MOVERSE, ATAQUE_CUERPO};
+/*
+ *0. El gusano se mueve
+ *1. El gusano equipa un arma
+ *2. El gusano prepara/calibra el arma equipada
+ *3. El gusano realiza el ataque con la calibracion previamente establecida
+ */
+//                  0        1        2        3
+enum tipoAccion {MOVERSE, EQUIPAR, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -71,6 +81,8 @@ struct RepresentacionGusano {
     id idGusano;
     hp vida;
     DireccionGusano dir;
+    // TODO: Agregar recibir y enviar estado
+    EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
     // TODO: agregar arma en mano
 };
@@ -85,6 +97,7 @@ struct EstadoDelJuego {
 
 struct Accion {
     id idGusano;
+    idJugador jugador;
     tipoAccion accion;
     Direccion dir;
 };

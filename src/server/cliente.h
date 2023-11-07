@@ -24,7 +24,7 @@ private:
 public:
     Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& monitorPartidas);
 
-    void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
+    void obtenerAccesoAAcciones(Queue<Accion>* acciones);
 
     void enviarEstadoJuego(EstadoDelJuego estado);
 

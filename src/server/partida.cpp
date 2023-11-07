@@ -139,9 +139,9 @@ void Partida::enviarEstadoAJugadores() {
 
 }
 
-Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
-			Accion& ultimaAccion) {
-    Accion accionAEjecutar;
+AccionServer Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
+			AccionServer& ultimaAccion) {
+    AccionServer accionAEjecutar;
     if (obtuvoNueva == false) {
         // accionAEjecutar = Accion::MOV_QUIETO;
         accionAEjecutar = ultimaAccion;
@@ -151,22 +151,22 @@ Accion Partida::obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
     switch (accionObtenida) {
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
     case INICIO_IZQ:
-        accionAEjecutar = Accion::MOV_IZQ;
+        accionAEjecutar = AccionServer::MOV_IZQ;
         break;
     case FIN_IZQ:
-        accionAEjecutar = Accion::MOV_QUIETO;
+        accionAEjecutar = AccionServer::MOV_QUIETO;
         break;
     case INICIO_DER:
-        accionAEjecutar = Accion::MOV_DER;
+        accionAEjecutar = AccionServer::MOV_DER;
         break;
     case FIN_DER:
-        accionAEjecutar = Accion::MOV_QUIETO;
+        accionAEjecutar = AccionServer::MOV_QUIETO;
         break;
     case SALTO:
-        accionAEjecutar = Accion::MOV_SALTO;
+        accionAEjecutar = AccionServer::MOV_SALTO;
         break;
     case PIRUETA:
-        accionAEjecutar = Accion::MOV_PIRUETA;
+        accionAEjecutar = AccionServer::MOV_PIRUETA;
         break;
     case INVAL_DIR:
         abort();
@@ -264,16 +264,16 @@ void Partida::gameLoop() {
     // Gusano *gusanoActual;
     // gusanoActual = jugadorActual->getGusanoActual();
 
-    Accion ultimaAccion = Accion::MOV_QUIETO;
+    AccionServer ultimaAccion = AccionServer::MOV_QUIETO;
 
     while (true) {
         this->enviarEstadoAJugadores();
 
-        Direccion accionRecibida;
+        Accion accionRecibida;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        Accion accionAEjecutar;
+        AccionServer accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 

@@ -61,7 +61,7 @@ void Reciever::lobby() {
 }
 
 
-void Reciever::obtener(Queue<Direccion> *accionesRecibidas) {
+void Reciever::obtener(Queue<Accion> *accionesRecibidas) {
     //TODO Throw
     if (accionesRecibidas == nullptr)
         abort();
@@ -73,8 +73,9 @@ void Reciever::run() {
     //TODO Cambiar a socket vivo o algo
     lobby();
     while (true) {
-        Direccion accionDeseada;
+        Accion accionDeseada;
         accionDeseada = this->protocolo.obtenerAccion();
+        accionDeseada.jugador = this->miId;
 
         this->acciones->push(accionDeseada);
     }
