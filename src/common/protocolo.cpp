@@ -211,26 +211,25 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
+
+// bool equiparArma(id gusano, Arma arma) {
+//     bool is_open = enviarCodigo(CALIBRAR);
+//     if (!is_open) {
+//         return false;
+//     }
+//     // TODO: enviar arma, necesito saber si es un enum o q
+// }
+
+
 // Este metodo tendra que mutar cuando tenga toda la implementacion
 // del bate, pero para esta semana con esto nos sirve
-bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
+bool Protocolo::atacar(id idGusano) {
     bool is_open = enviarCodigo(ATACAR);
     if (!is_open) {
         return false;
     }
 
-    is_open = enviarId(idGusano);
-    if (!is_open) {
-        return false;
-    }
-
-    int8_t dir = direccion;
-    bool was_closed = false;
-    socket.sendall(&dir, sizeof(dir), &was_closed);
-    if (was_closed) {
-        return false;
-    }
-    return !was_closed;
+    return enviarId(idGusano);
 }
 
 EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
@@ -465,6 +464,7 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
+    // TODO: ampliar a los otros tipos de accion
     accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
@@ -528,6 +528,7 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             if (was_closed) {
                 return false;
             }
+            // TODO: enviar estado del gusano
 
             // envio direccion
             int8_t dir = gusano.dir;

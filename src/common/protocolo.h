@@ -35,7 +35,8 @@ public:
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
-    bool ataqueBate(id idGusano, DireccionGusano direccion);
+    // bool equiparArma(id gusano, Arma arma);
+    bool atacar(id idGusano);
     EstadoDelJuego obtenerEstadoDelJuego();
 #endif
 
