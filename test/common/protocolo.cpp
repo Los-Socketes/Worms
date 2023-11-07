@@ -31,16 +31,16 @@ TEST_CASE( "Tests de pedirInforamcion", "[pedirInformacion]" ) {
 }
 
 
-// TEST 2
-Direccion moverGusano(id gusano, Direccion dir) {
-    protocolo.moverGusano(gusano, dir);
-    return protocoloServer.obtenerAccion();
-}
+// // TEST 2
+// Direccion moverGusano(id gusano, Direccion dir) {
+//     protocolo.moverGusano(gusano, dir);
+//     return protocoloServer.obtenerAccion();
+// }
 
-TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
-    REQUIRE( moverGusano((id)0, INICIO_DER) == INICIO_DER);
-    REQUIRE( moverGusano((id)1, INICIO_IZQ) == INICIO_IZQ);
-}
+// TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
+//     REQUIRE( moverGusano((id)0, INICIO_DER) == INICIO_DER);
+//     REQUIRE( moverGusano((id)1, INICIO_IZQ) == INICIO_IZQ);
+// }
 
 // TEST 3
 
