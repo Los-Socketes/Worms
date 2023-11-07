@@ -235,7 +235,7 @@ bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
 
 EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
-    RepresentacionEstadoDelJuego error;
+    EstadoDelJuego error;
     if ((int)codigo == -1 || (int)codigo != ESTADO) {
         return error;
     }
@@ -465,7 +465,7 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    accion.tipoAccion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
+    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE_CUERPO;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
