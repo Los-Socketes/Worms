@@ -285,6 +285,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             std::pair<coordX, coordY> posicionRecibida;
             posicionRecibida.enX = toFloat(ntohl(posicion[0]));
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+            posicionRecibida.enY = maxYEnMapa - posicionRecibida.enY;
 
             int8_t dir;
             bool was_closed = false;
@@ -293,7 +294,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
                 return error;
             }
 
-            // TODO: recibir arma equipada
+            // TODO: recibir arma equipada y estado
 
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
@@ -311,29 +312,10 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     EstadoDelJuego estado;
     estado.gusanos = gusanos;
     return estado;
+}
 
-    // int8_t dir;
-    // bool was_closed = false;
-    // socket.recvall(&dir, sizeof(dir), &was_closed);
-    // if (was_closed) {
-    //     return error;
-    // }
-    // EstadoDelJuego estado;
-    // estado.dir = (DireccionGusano)dir;
-
-    // std::vector<int32_t> posicion(2,0);
-    // socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
-    // if (was_closed) {
-    //     return error;
-    // }
-
-    // std::pair<coordX, coordY> posicionRecibida;
-    // posicionRecibida.first = toFloat(ntohl(posicion[0]));
-    // posicionRecibida.second = toFloat(ntohl(posicion[1]));
-
-    // estado.posicion = posicionRecibida;
-    // return estado;
-
+void Protocolo::setMaxY(int y) {
+    this->maxYEnMapa = y;
 }
 //Endif de la macro de CLIENT
 #endif

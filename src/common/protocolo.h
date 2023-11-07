@@ -12,6 +12,7 @@
 class Protocolo {
 private:
     Socket socket;
+    int maxYEnMapa;
 
     id obtenerId();
     int8_t obtenerCodigo();
@@ -38,6 +39,8 @@ public:
     // bool equiparArma(id gusano, Arma arma);
     bool atacar(id idGusano);
     EstadoDelJuego obtenerEstadoDelJuego();
+
+    void setMaxY(int y);
 #endif
 
 #ifdef SERVER
