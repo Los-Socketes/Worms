@@ -58,7 +58,11 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
         // std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
+
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
+        int idGusano;
+        idGusano = this->gusanos.size();
+        nuevoGusano->giveId(idGusano);
 
         //Anadimos los gusanos del cliente a la partida
         // this->gusanos.push_back(nuevoGusano);

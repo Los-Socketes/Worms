@@ -23,7 +23,9 @@ private:
     void setDireccion(DireccionGusano nuevaDireccion);
 
 public:
-    Gusano(b2Body& cuerpo, int idGusano);
+    Gusano(b2Body& cuerpo);
+
+    void giveId(int idGusano);
 
     [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
     // [[nodiscard]] DireccionGusano getDireccion();

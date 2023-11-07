@@ -3,19 +3,21 @@
 // #include "defs.h"
 // #include "protocolo.h"
 
-Gusano::Gusano(b2Body &cuerpo, int idGusano)
+Gusano::Gusano(b2Body &cuerpo)
     : cuerpo(cuerpo)
       {
     // this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
-    this->idGusano = idGusano;
 
     //ATTENTION: Hacemos que el cuerpo sea dinamico
     /*
       arma en mano
       equipo
     */
+}
+void Gusano::giveId(int idGusano) {
+    this->idGusano = idGusano;
 }
 
 std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
