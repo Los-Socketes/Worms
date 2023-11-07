@@ -120,6 +120,4 @@ jobs:
       working-directory: ${{github.workspace}}/build
 
       # Genero el compile_commands
-      run: cmake ../
-
-      run: iwyu_tool.py -p .
+      run: cmake ../ ; iwyu_tool.py -p .
