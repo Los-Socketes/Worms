@@ -4,7 +4,7 @@
 // #include "protocolo.h"
 #include <box2d/box2d.h>
 #include <sys/types.h>
-// #include "defs.h"
+#include "defs.h"
 
 // typedef uint hp;
 

@@ -233,7 +233,7 @@ bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
     return !was_closed;
 }
 
-RepresentacionEstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
+EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     RepresentacionEstadoDelJuego error;
     if ((int)codigo == -1 || (int)codigo != ESTADO) {
@@ -309,7 +309,7 @@ RepresentacionEstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
         
     }
     
-    RepresentacionEstadoDelJuego estado;
+    EstadoDelJuego estado;
     estado.gusanos = gusanos;
     return estado;
 
@@ -504,16 +504,16 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
         }
 
         for (int32_t i = 0; i < cantGusanos; i++) {
-            Gusano* gusano = listaGusanos[i];
+            RepresentacionGusano gusano = listaGusanos[i];
             // envio el id del gusano
-            int32_t idGusano = htonl((int32_t)gusano->getId());
+            int32_t idGusano = htonl((int32_t)gusano.idGusano);
             socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
             if (was_closed) {
                 return false;
             }
             
             // envio vida del gusano
-            uint32_t vida = htonl((uint32_t)gusano->getVida());
+            uint32_t vida = htonl((uint32_t)gusano.vida);
             socket.sendall(&vida, sizeof(vida), &was_closed);
             if (was_closed) {
                 return false;
@@ -521,8 +521,8 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             
             // envio posicion
             std::vector<int32_t> posAEnviar;
-            posAEnviar.push_back(htonl((int32_t)toInt(gusano->posicion.enX)));
-            posAEnviar.push_back(htonl((int32_t)toInt(gusano->posicion.enY)));
+            posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enX)));
+            posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enY)));
 
             socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
             if (was_closed) {
@@ -530,7 +530,7 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             }
 
             // envio direccion
-            int8_t dir = gusano->getDireccion();
+            int8_t dir = gusano.dir;
             socket.sendall(&dir, sizeof(dir), &was_closed);
             if (was_closed) {
                 return false;
