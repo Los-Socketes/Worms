@@ -32,15 +32,33 @@ TEST_CASE( "Tests de pedirInforamcion", "[pedirInformacion]" ) {
 
 
 // // TEST 2
-// Direccion moverGusano(id gusano, Direccion dir) {
-//     protocolo.moverGusano(gusano, dir);
-//     return protocoloServer.obtenerAccion();
-// }
+Accion moverGusano(id gusano, Direccion dir) {
+    protocolo.moverGusano(gusano, dir);
+    return protocoloServer.obtenerAccion();
+}
 
-// TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
-//     REQUIRE( moverGusano((id)0, INICIO_DER) == INICIO_DER);
-//     REQUIRE( moverGusano((id)1, INICIO_IZQ) == INICIO_IZQ);
-// }
+TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
+    Direccion moverseA = INICIO_DER;
+    Accion moverseDerecha;
+    moverseDerecha.idGusano = (id)0;
+    moverseDerecha.accion = MOVERSE;
+    moverseDerecha.dir = moverseA;
+
+    Accion resultado = moverGusano((id)0, moverseA);
+    REQUIRE(resultado.idGusano == moverseDerecha.idGusano);
+    REQUIRE(resultado.accion == moverseDerecha.accion);
+    REQUIRE(resultado.dir == moverseDerecha.dir);
+
+    moverseA = INICIO_IZQ;
+    Accion moverseIzquierda;
+    moverseIzquierda.idGusano = (id)1;
+    moverseIzquierda.accion = MOVERSE;
+    moverseIzquierda.dir = moverseA;
+    resultado = moverGusano((id)1, moverseA);
+    REQUIRE(resultado.idGusano == moverseIzquierda.idGusano);
+    REQUIRE(resultado.accion == moverseIzquierda.accion);
+    REQUIRE(resultado.dir == moverseIzquierda.dir);
+}
 
 // TEST 3
 

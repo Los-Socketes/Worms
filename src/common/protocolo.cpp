@@ -437,7 +437,7 @@ bool Protocolo::enviarError() {
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     Accion accion;
-    if (codigo != MOV || codigo != ATACAR || codigo != EQUIPAR) {
+    if (codigo != MOV && codigo != ATACAR && codigo != EQUIPAR) {
         return accion;
     }
 
