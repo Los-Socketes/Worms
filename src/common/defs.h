@@ -85,7 +85,7 @@ struct EstadoDelJuego {
 
 struct Accion {
     id idGusano;
-    tipoAccion tipoAccion;
+    tipoAccion accion;
     Direccion dir;
 };
 

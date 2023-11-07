@@ -102,15 +102,25 @@ void Partida::enviarEstadoAJugadores() {
     //     direccionPresente = gusano->getDireccion(); 
     //     estadoActual.dir = direccionPresente;
     // }
-    for (Gusano *gusanoActual : this->gusanos) {
-        std::pair<coordX, coordY> coords;
-        coords = gusanoActual->getCoords();
+    std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
+    for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
+        Jugador *jugadorActual;
+        jugadorActual = this->jugadores.at(jugador);
 
-        estadoActual.posicion = coords;
+        std::vector<RepresentacionGusano> gusanosJugActual;
 
-        DireccionGusano direccionPresente;
-        direccionPresente = gusanoActual->getDireccion(); 
-        estadoActual.dir = direccionPresente;
+        gusanosJugActual = jugadorActual->getRepresentacionGusanos();
+
+        representacionPartida.insert({jugador, gusanosJugActual});
+        
+        // std::pair<coordX, coordY> coords;
+        // coords = gusanoActual->getCoords();
+
+        // estadoActual.posicion = coords;
+
+        // DireccionGusano direccionPresente;
+        // direccionPresente = gusanoActual->getDireccion(); 
+        // estadoActual.dir = direccionPresente;
     }
 
 

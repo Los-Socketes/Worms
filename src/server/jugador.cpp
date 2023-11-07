@@ -1,4 +1,6 @@
 #include "jugador.h"
+#include "defs.h"
+#include "gusano.h"
 #include "partida.h"
 #include <cstdlib>
 
@@ -70,3 +72,16 @@ Gusano *Jugador::getGusanoActual() {
 // void Jugador::enviarEstadoJuego(EstadoDelJuego estado) {
 //     this->enviador.anadirEstado(estado);
 // }
+
+//Flatmap
+std::vector<RepresentacionGusano> Jugador::getRepresentacionGusanos() {
+    std::vector<RepresentacionGusano> misGusanos;
+
+    for (Gusano *gusano : this->gusanos) {
+        RepresentacionGusano repreActual;
+        repreActual = gusano->getRepresentacion();
+        misGusanos.push_back(repreActual);
+    }
+
+    return misGusanos;
+}

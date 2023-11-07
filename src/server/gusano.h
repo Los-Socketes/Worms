@@ -13,6 +13,8 @@ class Gusano {
 private:
     hp vida;
     DireccionGusano direccion;
+
+    int idGusano;
     // std::pair<coordX, coordY> coords;
 
     //Conceptos de b2box
@@ -21,16 +23,15 @@ private:
     void setDireccion(DireccionGusano nuevaDireccion);
 
 public:
-    Gusano(b2Body& cuerpo);
+    Gusano(b2Body& cuerpo, int idGusano);
 
-    std::pair<cambioX, cambioY> cambio(Accion accion);
-    [[nodiscard]] DireccionGusano getDireccion();
+    [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
+    // [[nodiscard]] DireccionGusano getDireccion();
 
-    std::pair<coordX, coordY> getCoords();
+    [[nodiscard]] std::pair<coordX, coordY> getCoords();
     // void setCoords(std::pair<coordX, coordY> nuevasCoords);
 
-    void detener();
-    void ponerEnMovimiento();
+    [[nodiscard]] RepresentacionGusano getRepresentacion();
 };
 
 

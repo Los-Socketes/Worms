@@ -26,6 +26,7 @@ public:
     // void obtenerAccesoAAcciones(Queue<Direccion>* acciones);
 
     // bool obtenerAccion(Direccion& primeraAccion);
+    std::vector<RepresentacionGusano> getRepresentacionGusanos();
 
 };
 

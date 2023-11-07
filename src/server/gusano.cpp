@@ -1,13 +1,15 @@
 #include "gusano.h"
+#include "defs.h"
 // #include "defs.h"
 // #include "protocolo.h"
 
-Gusano::Gusano(b2Body &cuerpo)
+Gusano::Gusano(b2Body &cuerpo, int idGusano)
     : cuerpo(cuerpo)
       {
     // this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
+    this->idGusano = idGusano;
 
     //ATTENTION: Hacemos que el cuerpo sea dinamico
     /*
@@ -79,9 +81,13 @@ void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
 }
 
-DireccionGusano Gusano::getDireccion() {
-    DireccionGusano direccionActual;
-    direccionActual = this->direccion;
 
-    return direccionActual;
+RepresentacionGusano Gusano::getRepresentacion() {
+    RepresentacionGusano repre;
+    repre.idGusano = this->idGusano;
+    repre.vida = this->vida;
+    repre.dir = this->direccion;
+    repre.posicion = this->getCoords();;
+
+    return repre;
 }
