@@ -176,18 +176,19 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 }
 
 
-bool Protocolo::unirseAPartida(id id) {
+bool Protocolo::unirseAPartida(id idPartida) {
     bool is_open = enviarCodigo(UNIRSE);
     if (!is_open) {
         return false;
     }
 
-    is_open = enviarId(id);
+    is_open = enviarId(idPartida);
     if (!is_open) {
         return false;
     }
 
-    return verificarConexion();
+    id idPartidaUnida = verificarConexion();
+    return !(idPartidaUnida == INVAL_ID);
 }
 
 

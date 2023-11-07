@@ -34,7 +34,7 @@ public:
     std::vector<RepresentacionMapa> obtenerMapas();
     std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
-    bool unirseAPartida(id id);
+    bool unirseAPartida(id idPartida);
     bool moverGusano(id gusano, Direccion direccion);
     bool equiparArma(id gusano, ArmaProtocolo arma);
     bool atacar(id idGusano);

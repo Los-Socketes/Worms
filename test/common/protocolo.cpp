@@ -135,6 +135,28 @@ TEST_CASE("Test de crear partidas (Caso error)", "[crearPartidaCasoError]") {
 
 // TEST 8
 
+bool unirsePartidaCasoFeliz(id partida) {
+    protocoloServer.enviarConfirmacion((id)0);
+    return protocolo.unirseAPartida(partida);
+}
+
+TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") {
+    REQUIRE(unirsePartidaCasoFeliz((id)0));
+}
+
+// TEST 9
+
+bool unirsePartidaCasoError(id partida) {
+    protocoloServer.enviarError();
+    return protocolo.unirseAPartida(partida);
+}
+
+TEST_CASE("Test de unirse a partidas (Caso error)", "[unirsePartidaCasoError]") {
+    REQUIRE(!unirsePartidaCasoError((id)0));
+}
+
+// TEST 10
+
 // EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
 //     protocoloServer.enviarEstadoDelJuego(estado);
 //     return protocolo.recibirEstadoDelJuego();
