@@ -113,6 +113,28 @@ TEST_CASE( "Tests de enviar partidas", "[enviarPartidas]" ) {
 
 // TEST 6
 
+id crearPartidaCasoFeliz(id mapa) {
+    protocoloServer.enviarConfirmacion((id)0);
+    return protocolo.crearPartida(mapa);
+}
+
+TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
+    REQUIRE(crearPartidaCasoFeliz((id)0) == 0);
+}
+
+// TEST 7
+
+id crearPartidaCasoError(id mapa) {
+    protocoloServer.enviarError();
+    return protocolo.crearPartida(mapa);
+}
+
+TEST_CASE("Test de crear partidas (Caso error)", "[crearPartidaCasoError]") {
+    REQUIRE(crearPartidaCasoError((id)0) == INVAL_ID);
+}
+
+// TEST 8
+
 // EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
 //     protocoloServer.enviarEstadoDelJuego(estado);
 //     return protocolo.recibirEstadoDelJuego();
