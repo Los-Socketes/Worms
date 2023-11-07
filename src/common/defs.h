@@ -3,6 +3,12 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <list>
+
+#ifdef SERVER
+#include "gusano.h"
+#endif
 
 
 typedef int32_t id;
@@ -65,19 +71,27 @@ struct RepresentacionMapa {
 #define enY second
 
 struct RepresentacionGusano {
+    id idGusano;
     hp vida;
     DireccionGusano dir;
     std::pair<coordX, coordY> posicion;
     // TODO: agregar arma en mano
-    idJugador idJugador;
+    // idJugador idJugador;
 };
 
-// Tiene la info del estado del juego
-// Por ahora solo un gusano con posicion y direccion
-struct EstadoDelJuego {
-    DireccionGusano dir;
-    std::pair<coordX, coordY> posicion;
+struct RepresentacionEstadoDelJuego {
+    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
 };
+
+
+// Tiene la info del estado del juego
+#ifdef SERVER
+struct EstadoDelJuego {
+    std::map<idJugador, std::vector<Gusano*>> gusanos;
+    // DireccionGusano dir;
+    // std::pair<coordX, coordY> posicion;
+};
+#endif
 
 struct Accion {
     id idGusano;

@@ -36,7 +36,7 @@ public:
     bool unirseAPartida(id id);
     bool moverGusano(id gusano, Direccion direccion);
     bool ataqueBate(id idGusano, DireccionGusano direccion);
-    EstadoDelJuego obtenerEstadoDelJuego();
+    RepresentacionEstadoDelJuego obtenerEstadoDelJuego();
 #endif
 
 #ifdef SERVER

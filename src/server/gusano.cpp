@@ -1,6 +1,6 @@
 #include "gusano.h"
-#include "defs.h"
-#include "protocolo.h"
+// #include "defs.h"
+// #include "protocolo.h"
 
 Gusano::Gusano(b2Body &cuerpo)
     : cuerpo(cuerpo)

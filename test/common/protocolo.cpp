@@ -95,25 +95,25 @@ TEST_CASE( "Tests de enviar partidas", "[enviarPartidas]" ) {
 
 // TEST 6
 
-EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
-    protocoloServer.enviarEstadoDelJuego(estado);
-    return protocolo.recibirEstadoDelJuego();
-}
+// EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
+//     protocoloServer.enviarEstadoDelJuego(estado);
+//     return protocolo.recibirEstadoDelJuego();
+// }
 
-TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
-    EstadoDelJuego estado1;
-    estado1.dir = DERECHA;
-    std::pair<int,int> posicion1(1,2);
-    estado1.posicion = posicion1;
-    REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-    REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
+// TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
+//     EstadoDelJuego estado1;
+//     estado1.dir = DERECHA;
+//     std::pair<int,int> posicion1(1,2);
+//     estado1.posicion = posicion1;
+//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
+//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
 
-    estado1.dir = IZQUIERDA;
-    REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-    REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
+//     estado1.dir = IZQUIERDA;
+//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
+//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
 
-    std::pair<int,int> posicion2(20,50);
-    estado1.posicion = posicion2;
-    REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-    REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
-}
+//     std::pair<int,int> posicion2(20,50);
+//     estado1.posicion = posicion2;
+//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
+//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
+// }
