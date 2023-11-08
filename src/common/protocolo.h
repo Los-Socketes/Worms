@@ -27,6 +27,7 @@ private:
 public:
 
     Protocolo(Socket&& socket);
+    void cerrarConexion(int forma);
 
 #ifdef CLIENT
     // METODOS DEL CLIENTE

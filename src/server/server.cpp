@@ -16,7 +16,9 @@ void Server::esperarQueSeCierre() {
             break;
         }
     };
+    std::cout << "antes join aceptador\n";
     this->aceptador.join();
+    std::cout << "despues join aceptador\n";
 }
 
 //TODO Pide partidas en vez de mapas || TODO (Anto): preguntar que es este todo
