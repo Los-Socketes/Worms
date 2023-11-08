@@ -232,6 +232,7 @@ TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
 // TEST 12
 
 EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
+    protocolo.setMaxY(0);
     protocoloServer.enviarEstadoDelJuego(estado);
     return protocolo.obtenerEstadoDelJuego();
 }
