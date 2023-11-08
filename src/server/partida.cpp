@@ -91,6 +91,7 @@ void Partida::enviarEstadoAJugadores() {
 
         representacionPartida.insert({jugador, gusanosJugActual});
     }
+    estadoActual.gusanos = representacionPartida;
 
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
