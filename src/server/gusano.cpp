@@ -33,7 +33,8 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
         // std::pair<coordX, coordY> coordsIniciales;
         // this->cuerpo.SetLinearVelocity;
         
-        b2Vec2 fuerzamovimiento(500.0f, 0.0f); 
+        b2Vec2 fuerzamovimiento(100.0f, 0.0f); 
+        this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
 
         break;
         }

@@ -62,6 +62,12 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
+
+    idJugador idNuevoJugador;
+    idNuevoJugador = (idJugador) this->jugadores.size();
+
+    clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
+
     this->jugadores.push_back(jugadorNuevo);
 
     //Anadimos al jugador a la partida
@@ -69,8 +75,7 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
 
-    idJugador idNuevoJugador;
-    idNuevoJugador = (idJugador) this->jugadores.size();
+    //TODO Mover arriba
     return idNuevoJugador;
 }
 
@@ -156,43 +161,54 @@ void Partida::gameLoop() {
     jugadorActual = this->jugadores.at(0);
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
-    for (int32 i = 0; i < 600; ++i)
-    {
-        world.Step(timeStep, velocityIterations, positionIterations);
-        // b2Vec2 position = body->GetPosition();
-        // float angle = body->GetAngle();
-        // printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-        std::pair<coordX, coordY> coords;
-        coords = gusanoActual->getCoords();
-        printf("%4.2f %4.2f \n", coords.enX, coords.enY);
-        this->enviarEstadoAJugadores();
+    // for (int32 i = 0; i < 600; ++i)
+    // {
+    //     world.Step(timeStep, velocityIterations, positionIterations);
+    //     // b2Vec2 position = body->GetPosition();
+    //     // float angle = body->GetAngle();
+    //     // printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+    //     std::pair<coordX, coordY> coords;
+    //     coords = gusanoActual->getCoords();
+    //     printf("%4.2f %4.2f \n", coords.enX, coords.enY);
+    //     this->enviarEstadoAJugadores();
 
-        std::this_thread::sleep_for(frameDuration);
-    }
+    //     std::this_thread::sleep_for(frameDuration);
+    // }
 
 
     
-    abort();
+    // abort();
 
     Accion ultimaAccion;
 
     while (true) {
+        this->world.Step(timeStep, velocityIterations, positionIterations);
         this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
+        // accionRecibida = acciones.pop();
 
         Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        std::pair<cambioX, cambioY> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
+        gusanoActual->cambio(accionAEjecutar);
 
-        std::pair<coordX, coordY> coordenadasIniciales = gusanoActual->getCoords();
-        std::pair<coordX, coordY> coordenadasFinales;
-        coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
-        coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
+
+
+
+
+
+
+
+        // std::pair<cambioX, cambioY> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
+
+        // std::pair<coordX, coordY> coordenadasIniciales = gusanoActual->getCoords();
+        // std::pair<coordX, coordY> coordenadasFinales;
+        // coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
+        // coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
         std::this_thread::sleep_for(frameDuration);
     }

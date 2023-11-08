@@ -21,7 +21,9 @@ public:
 
     void giveId(int idGusano);
 
-    [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
+    // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
+
+    std::pair<cambioX, cambioY> cambio(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 
