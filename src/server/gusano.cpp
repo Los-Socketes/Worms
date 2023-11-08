@@ -1,5 +1,6 @@
 #include "gusano.h"
 #include <iostream>
+#include "box2dDefs.h"
 
 Gusano::Gusano(b2Body &cuerpo)
     : cuerpo(cuerpo)
@@ -16,11 +17,11 @@ b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
     b2Vec2 direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
-        direccion.x = 10.0f;
+        direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         break;
     case INICIO_IZQ:
-        direccion.x = -10.0f;
+        direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         break;
     case FIN_DER:
