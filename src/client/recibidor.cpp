@@ -7,7 +7,7 @@ void Recibidor::run() {
     try {
         cont = true;
         while (cont) {
-            EstadoDelJuego estado_juego = protocolo.recibirEstadoDelJuego();
+            EstadoDelJuego estado_juego = protocolo.obtenerEstadoDelJuego();
             recepcion_estados.push(estado_juego);                                              
         }
     } catch (const ClosedQueue& e) {
