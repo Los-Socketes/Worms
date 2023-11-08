@@ -1,5 +1,4 @@
 #include "partida.h"
-
 #include <map>
 
 #define fuerzaGravitariaX 0.0f
@@ -37,6 +36,9 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.friction = 0.3f;
 
     body->CreateFixture(&fixtureDef);
+
+    b2Vec2 fuerza(500.0f, 0.0f); 
+    body->ApplyForceToCenter(fuerza, true);
 
     Gusano *nuevoGusano = new Gusano(REFERENCE body);
 
