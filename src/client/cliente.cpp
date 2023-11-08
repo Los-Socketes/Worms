@@ -10,9 +10,9 @@ Cliente::Cliente(Socket&& skt):
     recibidor(protocolo, recepcion_estados),
     enviador(protocolo, envio_comandos) {
         // Inicializo el estado del juego.
-        estado_juego.posicion.first = 50;
-        estado_juego.posicion.second = 250;
-        estado_juego.dir = DERECHA;
+        // estado_juego.posicion.first = 50;
+        // estado_juego.posicion.second = 250;
+        // estado_juego.dir = DERECHA;
     }
 
 void Cliente::iniciar() {
@@ -24,7 +24,13 @@ void Cliente::iniciar() {
 void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, int it) {
     renderizador.Clear();
 
-    caminar.siguiente_frame(estado_juego.posicion.first, estado_juego.posicion.second, estado_juego.dir, it);
+
+    //WARNING: Hicimos estos cambios simplemente para que compile y poder
+    //seguir desarrollando el server. Dejamos el codigo original comentado
+    // caminar.siguiente_frame(estado_juego.posicion.first, estado_juego.posicion.second, estado_juego.dir, it);
+    RepresentacionGusano gusano;
+    gusano = estado_juego.gusanos[0].at(0);
+    caminar.siguiente_frame(gusano.posicion.first, gusano.posicion.second, gusano.dir, it);
 
     // Actualizo ventana.
     renderizador.Present();
