@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <iostream>
+
 Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
@@ -33,12 +35,17 @@ int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    return (was_closed)? (int8_t)-1 : codigo;
+    if (was_closed) {
+        return (int8_t)-1;
+    }
+    // codigo = ntohs(codigo);
+    return codigo;
 }
 
 
 bool Protocolo::enviarCodigo(int codigo) {
     int8_t codigoAEnviar = codigo;
+    // codigoAEnviar = htons(codigoAEnviar);
     bool was_closed = false;
     socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
     return !was_closed;
@@ -78,7 +85,7 @@ std::vector<id> Protocolo::obtenerVector() {
 
 id Protocolo::verificarConexion() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo == -1 || (int)codigo == ERROR) {
+    if (codigo == -1 || codigo == ERROR) {
         return INVAL_ID;
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
@@ -113,7 +120,7 @@ bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
 std::vector<RepresentacionMapa> Protocolo::obtenerMapas() {
     int8_t codigo = obtenerCodigo();
     std::vector<RepresentacionMapa> error;
-    if ((int)codigo != MAPAS) {
+    if (codigo != MAPAS) {
         return error;
     }
 
@@ -176,18 +183,19 @@ id Protocolo::crearPartida(id mapaSeleccionado) {
 }
 
 
-bool Protocolo::unirseAPartida(id id) {
+bool Protocolo::unirseAPartida(id idPartida) {
     bool is_open = enviarCodigo(UNIRSE);
     if (!is_open) {
         return false;
     }
 
-    is_open = enviarId(id);
+    is_open = enviarId(idPartida);
     if (!is_open) {
         return false;
     }
 
-    return verificarConexion();
+    id idPartidaUnida = verificarConexion();
+    return !(idPartidaUnida == INVAL_ID);
 }
 
 
@@ -211,60 +219,64 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
     return !was_closed;
 }
 
-// Este metodo tendra que mutar cuando tenga toda la implementacion
-// del bate, pero para esta semana con esto nos sirve
-bool Protocolo::ataqueBate(id idGusano, DireccionGusano direccion) {
-    bool is_open = enviarCodigo(ATAQUE);
+
+bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
+    bool is_open = enviarCodigo(EQUIPAR);
     if (!is_open) {
         return false;
     }
-
-    is_open = enviarId(idGusano);
+    is_open = enviarId(gusano);
     if (!is_open) {
         return false;
     }
-
-    int8_t dir = direccion;
+    int8_t armaAEnviar = arma;
     bool was_closed = false;
-    socket.sendall(&dir, sizeof(dir), &was_closed);
-    if (was_closed) {
+    socket.sendall(&armaAEnviar, sizeof(armaAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::atacar(id idGusano) {
+    bool is_open = enviarCodigo(ATACAR);
+    if (!is_open) {
         return false;
     }
-    return !was_closed;
+
+    return enviarId(idGusano);
 }
 
 EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     EstadoDelJuego error;
-    if ((int)codigo == -1 || (int)codigo != ESTADO) {
+    if (codigo == -1 || codigo != ESTADO) {
         return error;
     }
 
-    int32_t cantJugadores;
+    int16_t cantJugadores;
     bool was_closed = false;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
         return error;
     }
-    cantJugadores = ntohl(cantJugadores);
+    cantJugadores = ntohs(cantJugadores);
 
     std::map<idJugador,std::vector<RepresentacionGusano>> gusanos;
-    for (int32_t i = 0; i < cantJugadores; i++) {
+    for (int16_t i = 0; i < cantJugadores; i++) {
         id idJugador = obtenerId();
         if (idJugador == INVAL_ID) {
             return error;
         }
 
-        int32_t cantGusanos;
+        int16_t cantGusanos;
         was_closed = false;
         socket.recvall(&cantGusanos, sizeof(cantGusanos), &was_closed);
         if (was_closed) {
             return error;
         }
-        cantGusanos = ntohl(cantGusanos);
+        cantGusanos = ntohs(cantGusanos);
 
         std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
-        for (int32_t j = 0; j < cantGusanos; j++) {
+        for (int16_t j = 0; j < cantGusanos; j++) {
             id idGusano = obtenerId();
             if (idJugador == INVAL_ID) {
                 return error;
@@ -286,6 +298,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             std::pair<coordX, coordY> posicionRecibida;
             posicionRecibida.enX = toFloat(ntohl(posicion[0]));
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+            posicionRecibida.enY = maxYEnMapa - posicionRecibida.enY;
 
             int8_t dir;
             bool was_closed = false;
@@ -294,13 +307,20 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
                 return error;
             }
 
-            // TODO: recibir arma equipada
+            int8_t arma;
+            socket.recvall(&arma, sizeof(arma), &was_closed);
+            if (was_closed) {
+                return error;
+            }
+
+            // TODO: recibir estado
 
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
             gusanoActual.idGusano = idGusano;
             gusanoActual.dir = (DireccionGusano)dir;
             gusanoActual.posicion = posicionRecibida;
+            gusanoActual.armaEquipada = (ArmaProtocolo)arma;
 
             listaGusanos[i] = gusanoActual;
         }   
@@ -312,29 +332,10 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     EstadoDelJuego estado;
     estado.gusanos = gusanos;
     return estado;
+}
 
-    // int8_t dir;
-    // bool was_closed = false;
-    // socket.recvall(&dir, sizeof(dir), &was_closed);
-    // if (was_closed) {
-    //     return error;
-    // }
-    // EstadoDelJuego estado;
-    // estado.dir = (DireccionGusano)dir;
-
-    // std::vector<int32_t> posicion(2,0);
-    // socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
-    // if (was_closed) {
-    //     return error;
-    // }
-
-    // std::pair<coordX, coordY> posicionRecibida;
-    // posicionRecibida.first = toFloat(ntohl(posicion[0]));
-    // posicionRecibida.second = toFloat(ntohl(posicion[1]));
-
-    // estado.posicion = posicionRecibida;
-    // return estado;
-
+void Protocolo::setMaxY(int y) {
+    this->maxYEnMapa = y;
 }
 //Endif de la macro de CLIENT
 #endif
@@ -415,7 +416,7 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo != CREAR) {
+    if (codigo != CREAR) {
         return INVAL_ID;
     }
     return obtenerId();
@@ -424,7 +425,7 @@ id Protocolo::obtenerMapaDeseado() {
 
 id Protocolo::obtenerPartidaDeseada() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo != PARTIDAS) {
+    if (codigo != UNIRSE) {
         return INVAL_ID;
     }
     return obtenerId();
@@ -449,7 +450,7 @@ bool Protocolo::enviarError() {
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     Accion accion;
-    if (codigo != MOV || codigo != ATAQUE) { //MOV = 9 
+    if (codigo != MOV && codigo != ATACAR && codigo != EQUIPAR) {
         return accion;
     }
 
@@ -457,7 +458,25 @@ Accion Protocolo::obtenerAccion() {
     if (idGusano == INVAL_ID) {
         return accion;
     }
+    if (codigo == EQUIPAR) {
+        bool was_closed = false;
+        int8_t arma;
+        socket.recvall(&arma, sizeof(arma), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
 
+        accion.accion = EQUIPARSE;
+        accion.idGusano = idGusano;
+        accion.armaAEquipar = (ArmaProtocolo)arma;
+        return accion;
+    }
+
+    if (codigo == ATACAR) {
+        accion.accion = ATAQUE;
+        accion.idGusano = idGusano;
+        return accion;
+    }
     bool was_closed = false;
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
@@ -465,7 +484,8 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE;
+    // TODO: ampliar a los otros tipos de accion
+    accion.accion = MOVERSE;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
@@ -480,39 +500,53 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     }
     int cant = estado.gusanos.size();
     //envio cantJugadores
-    int32_t sz = htonl((int32_t)cant);
-    bool was_closed = false;
-    socket.sendall(&sz, sizeof(sz), &was_closed);
-    if (was_closed) {
+    is_open = enviarCantidad(cant);
+    if (!is_open) {
         return false;
     }
+    // int32_t sz = htonl((int32_t)cant);
+    // bool was_closed = false;
+    // socket.sendall(&sz, sizeof(sz), &was_closed);
+    // if (was_closed) {
+    //     return false;
+    // }
 
     for (auto const& [idJugador, listaGusanos] : estado.gusanos) {
         // envio idJugador
-        int32_t id = htonl((int32_t)idJugador);
-        socket.sendall(&id, sizeof(id), &was_closed);
-        if (was_closed) {
+        is_open = enviarId(idJugador);
+        // int32_t id = htonl((int32_t)idJugador);
+        // socket.sendall(&id, sizeof(id), &was_closed);
+        if (!is_open) {
             return false;
         }
 
         // envio cant de gusanos
         int cantGusanos = listaGusanos.size();
-        int32_t szGusanos = htonl((int32_t)cantGusanos);
-        socket.sendall(&szGusanos, sizeof(szGusanos), &was_closed);
-        if (was_closed) {
+        is_open = enviarCantidad(cantGusanos);
+        if (!is_open) {
             return false;
         }
+        // int32_t szGusanos = htonl((int32_t)cantGusanos);
+        // socket.sendall(&szGusanos, sizeof(szGusanos), &was_closed);
+        // if (was_closed) {
+        //     return false;
+        // }
 
         for (int32_t i = 0; i < cantGusanos; i++) {
             RepresentacionGusano gusano = listaGusanos[i];
             // envio el id del gusano
-            int32_t idGusano = htonl((int32_t)gusano.idGusano);
-            socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
-            if (was_closed) {
+            is_open = enviarId(gusano.idGusano);
+            if (!is_open) {
                 return false;
             }
+            // int32_t idGusano = htonl((int32_t)gusano.idGusano);
+            // socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
+            // if (was_closed) {
+            //     return false;
+            // }
             
             // envio vida del gusano
+            bool was_closed = false;
             uint32_t vida = htonl((uint32_t)gusano.vida);
             socket.sendall(&vida, sizeof(vida), &was_closed);
             if (was_closed) {
@@ -528,6 +562,7 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             if (was_closed) {
                 return false;
             }
+            // TODO: enviar estado del gusano
 
             // envio direccion
             int8_t dir = gusano.dir;
@@ -536,26 +571,18 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
                 return false;
             }
 
-            // TODO: enviar arma equipada
+            int8_t arma = gusano.armaEquipada;
+            socket.sendall(&arma, sizeof(arma), &was_closed);
+            if (was_closed) {
+                return false;
+            }
         }
         
         
     }
     
 
-    // int8_t dir = estado.dir;
-    // bool was_closed = false;
-    // socket.sendall(&dir, sizeof(dir), &was_closed);
-    // if (was_closed) {
-    //     return false;
-    // }
-
-    // std::vector<int32_t> estadoAEnviar;
-    // estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.first)));
-    // estadoAEnviar.push_back(htonl((int32_t)toInt(estado.posicion.second)));
-
-    // socket.sendall(estadoAEnviar.data(), sizeof(int32_t)*estadoAEnviar.size(), &was_closed);
-    return !was_closed;
+    return true;
 }
 
 //Endif de la macro de SERVER

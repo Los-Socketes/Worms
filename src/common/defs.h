@@ -27,13 +27,14 @@ typedef float cambioY;
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-// enum class AccionServer { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA,
-// MOV_QUIETO };
 enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
+// Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
+enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
+                    GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
+                    TELETRANSPORTACION_P};
 
 /*
  *0. El gusano esta quieto
@@ -42,7 +43,7 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
  *3. El gusano prepara/calibra el arma equipada
  *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
-//                  0        1          2        3
+//                    0         1         2        3          4
 enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
@@ -57,9 +58,10 @@ enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 9
-// este se usa para ataques cuerpo a cuerpo
-#define ATACAR 10
-#define DISPARAR 11
+#define EQUIPAR 10
+#define CALIBRAR 11
+#define ATACAR 11
+
 
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {
@@ -85,7 +87,7 @@ struct RepresentacionGusano {
     // TODO: Agregar recibir y enviar estado
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
-    // TODO: agregar arma en mano
+    ArmaProtocolo armaEquipada;
 };
 
 
@@ -102,7 +104,9 @@ struct Accion {
     tipoAccion accion;
     // union Argumento{
         Direccion dir;
+        ArmaProtocolo armaAEquipar;
     // };
+
 };
 
 #endif
