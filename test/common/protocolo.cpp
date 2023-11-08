@@ -233,7 +233,6 @@ TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
 
 EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
     protocoloServer.enviarEstadoDelJuego(estado);
-    std::cerr << "envie\n";
     return protocolo.obtenerEstadoDelJuego();
 }
 
@@ -268,7 +267,6 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     REQUIRE(resultadoGusanos.size() == listaGusanos.size());
     
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
-        std::cerr << "Vuelta: " << i << "\n";
         RepresentacionGusano resultadoGusano = resultadoGusanos[i];
         RepresentacionGusano baseGusano = listaGusanos[i];
         REQUIRE(resultadoGusano.vida == baseGusano.vida);
