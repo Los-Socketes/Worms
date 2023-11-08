@@ -11,6 +11,12 @@ Protocolo::Protocolo(Socket &&socket)
       };
 
 
+void Protocolo::cerrarConexion(int forma) {
+    this->socket.shutdown(forma);
+    this->socket.close();
+}
+
+
 // METODOS PRIVADOS
 
 id Protocolo::obtenerId() {

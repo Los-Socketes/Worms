@@ -22,6 +22,8 @@ public:
     Sender(Protocolo& protocolo);
 
     void anadirEstado(EstadoDelJuego estado);
+
+    void stop() override;
     // //Logica de lobby
     // void enviarMapas(std::vector<std::string> mapasDisponibles);
     // void enviarConfirmacion(id idPartida);
