@@ -16,6 +16,8 @@ private:
 
     void setDireccion(DireccionGusano nuevaDireccion);
 
+    b2Vec2 getVectorDeDireccion(Direccion direccionDeseada);
+
 public:
     Gusano(b2Body& cuerpo);
 

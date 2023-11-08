@@ -1,8 +1,7 @@
 #include "partida.h"
 #include <map>
+#include "box2dDefs.h"
 
-#define fuerzaGravitariaX 0.0f
-#define fuerzaGravitariaY -10.0f 
 #define SLEEPSEGS 1
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
