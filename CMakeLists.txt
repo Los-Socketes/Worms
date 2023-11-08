@@ -66,8 +66,8 @@ add_compile_options(
 include(CTest)
 
 # Hace que genere el archivo compile_commands.json. Este es usado para
-# algunos editores de texto, llamese Emacs. Ese archivo generado
-# deberia estar en .gitignore
+# algunos editores de texto, llamese Emacs o programas como
+# include-what-you-use. Ese archivo generado deberia estar en .gitignore
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Creamos unas variables para facilitar el uso de directorios en el

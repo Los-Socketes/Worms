@@ -1,47 +1,10 @@
 #include "jugador.h"
-#include "defs.h"
-#include "gusano.h"
-#include "partida.h"
-#include <cstdlib>
-
-// class MonitorPartida {
-// public:
-//     [[nodiscard]] id anadirPartida(std::string mapaNombre);
-
-//     void anadirJugadorAPartida(Jugador *nuevoJugador, id partidaEspecifica);
-
-//     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
-// };
 
 Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
 
     this->gusanos = gusanos;
-
-    // MOVIMOS A RECIEVER + CLIENTE
-    //A partir de aca hasta el final esta la logica de "lobby".
-    //No usamos los threads enviador y recibidor porque la comunicacion
-    //es sincronica
-    
-
-    //Ahora que el jugador se unio a una partida, creo los dos threads
-    //comunicadores
-    // this->enviador.start();
-    // this->recibidor.start();
 }
-
-
-// void Jugador::obtenerGusanosIniciales(std::vector<Gusano*> gusanos) {
-//     this->gusanos = gusanos;
-// }
-
-
-// bool Jugador::obtenerAccion(Direccion& primeraAccion) {
-//     bool pudeObtenerla;
-//     pudeObtenerla = this->acciones->try_pop(primeraAccion);
-
-//     return pudeObtenerla;
-// }
 
 Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
@@ -61,17 +24,6 @@ Gusano *Jugador::getGusanoActual() {
 
     return gusanoActual;
 }
-
-// void Jugador::obtenerAccesoAAcciones(Queue<Direccion>* acciones){
-//     //TODO Sacar tal vez?
-//     this->acciones = acciones;
-//     this->recibidor.darAcceso(acciones);
-// }
-
-
-// void Jugador::enviarEstadoJuego(EstadoDelJuego estado) {
-//     this->enviador.anadirEstado(estado);
-// }
 
 //Flatmap
 std::vector<RepresentacionGusano> Jugador::getRepresentacionGusanos() {
