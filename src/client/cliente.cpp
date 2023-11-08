@@ -10,9 +10,29 @@ Cliente::Cliente(Socket&& skt):
     recibidor(protocolo, recepcion_estados),
     enviador(protocolo, envio_comandos) {
         // Inicializo el estado del juego.
-        // estado_juego.posicion.first = 50;
-        // estado_juego.posicion.second = 250;
-        // estado_juego.dir = DERECHA;
+
+    //WARNING todo esto es momentaneo para que compile
+    std::vector<RepresentacionGusano> listaGusanosIniciales;
+    RepresentacionGusano gusi;
+    gusi.idGusano = 0;
+    gusi.vida = 100;
+    gusi.dir = DERECHA;
+    // gusi.estado = 
+    gusi.posicion = std::pair<int, int>(0,0);
+    // gusi.armaEquipada = NADA_P;
+    listaGusanosIniciales.push_back(gusi);
+
+    std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
+    gusanosNuevos.insert({0, listaGusanosIniciales});
+
+    estado_juego.gusanos = gusanosNuevos;
+    // listaGusanosIniciales.
+    
+    // estado_juego.gusanos
+    // estado_juego.gusanos.insert({0, RepresentacionGusano()})
+    //     estado_juego.posicion.first = 50;
+    //     estado_juego.posicion.second = 250;
+    //     estado_juego.dir = DERECHA;
     }
 
 void Cliente::iniciar() {
