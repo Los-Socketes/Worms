@@ -37,9 +37,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 
     body->CreateFixture(&fixtureDef);
 
-    b2Vec2 fuerza(500.0f, 0.0f); 
-    body->ApplyForceToCenter(fuerza, true);
-
     Gusano *nuevoGusano = new Gusano(REFERENCE body);
 
     return nuevoGusano;

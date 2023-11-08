@@ -4,8 +4,11 @@
 
 #include <iostream>
 
-Protocolo::Protocolo(Socket&& socket):
-    socket(std::move(socket)){};
+Protocolo::Protocolo(Socket &&socket)
+    : socket(std::move(socket))
+      {
+	this->maxYEnMapa = 100;
+      };
 
 
 // METODOS PRIVADOS

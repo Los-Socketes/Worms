@@ -30,7 +30,8 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
         break;
     case MOVERSE:
         {
-        std::pair<coordX, coordY> coordsIniciales;
+        // std::pair<coordX, coordY> coordsIniciales;
+        // this->cuerpo.SetLinearVelocity;
         
         b2Vec2 fuerzamovimiento(500.0f, 0.0f); 
 
