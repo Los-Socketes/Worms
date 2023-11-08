@@ -86,7 +86,6 @@ struct RepresentacionGusano {
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
     ArmaProtocolo armaEquipada;
-    // TODO: agregar arma en mano
 };
 
 

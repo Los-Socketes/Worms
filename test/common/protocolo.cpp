@@ -229,27 +229,59 @@ TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
     REQUIRE(resultado.accion == atacar.accion);
 }
 
-// TEST ?
+// TEST 12
 
-// EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
-//     protocoloServer.enviarEstadoDelJuego(estado);
-//     return protocolo.recibirEstadoDelJuego();
-// }
+EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
+    protocoloServer.enviarEstadoDelJuego(estado);
+    std::cerr << "envie\n";
+    return protocolo.obtenerEstadoDelJuego();
+}
 
-// TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
-//     EstadoDelJuego estado1;
-//     estado1.dir = DERECHA;
-//     std::pair<int,int> posicion1(1,2);
-//     estado1.posicion = posicion1;
-//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
+TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
+    idJugador jugador = 0;
+    EstadoDelJuego estado1;
+    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    RepresentacionGusano gusano1;
+    gusano1.idGusano = (id)2;
+    gusano1.vida = (hp)20;
+    gusano1.dir = DERECHA;
+    std::pair<coordX, coordY> posicion1(2.0345, 5.6789);
+    gusano1.posicion = posicion1;
+    gusano1.armaEquipada = NADA_P;
+    
+    RepresentacionGusano gusano2;
+    gusano2.idGusano = (id)3;
+    gusano2.vida = (hp)25;
+    gusano2.dir = DERECHA;
+    std::pair<coordX, coordY> posicion2(2.0345, 5.6789);
+    gusano2.posicion = posicion2;
+    gusano2.armaEquipada = GRANADA_VERDE_P;
+    std::vector<RepresentacionGusano> listaGusanos;
+    listaGusanos.push_back(gusano1);
+    listaGusanos.push_back(gusano2);
+    gusanos.insert({jugador, listaGusanos});
+    estado1.gusanos = gusanos;
+    
+    EstadoDelJuego resultado = enviarEstadoDelJuego(estado1);
+    REQUIRE(resultado.gusanos.size() == estado1.gusanos.size());
+    std::vector<RepresentacionGusano> resultadoGusanos = resultado.gusanos[jugador];
+    REQUIRE(resultadoGusanos.size() == listaGusanos.size());
+    
+    for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
+        std::cerr << "Vuelta: " << i << "\n";
+        RepresentacionGusano resultadoGusano = resultadoGusanos[i];
+        RepresentacionGusano baseGusano = listaGusanos[i];
+        REQUIRE(resultadoGusano.vida == baseGusano.vida);
+        REQUIRE(resultadoGusano.idGusano == baseGusano.idGusano);
+        REQUIRE(resultadoGusano.dir == baseGusano.dir);
+        REQUIRE(resultadoGusano.posicion.first == baseGusano.posicion.first);
+        REQUIRE(resultadoGusano.posicion.second == -baseGusano.posicion.second);
+        REQUIRE(resultadoGusano.armaEquipada == baseGusano.armaEquipada);
 
-//     estado1.dir = IZQUIERDA;
-//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
+    }
 
-//     std::pair<int,int> posicion2(20,50);
-//     estado1.posicion = posicion2;
-//     REQUIRE( enviarEstadoDelJuego(estado1).posicion == estado1.posicion);
-//     REQUIRE( enviarEstadoDelJuego(estado1).dir == estado1.dir);
-// }
+
+    
+
+    
+}
