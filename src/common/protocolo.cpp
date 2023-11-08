@@ -38,14 +38,12 @@ int8_t Protocolo::obtenerCodigo() {
     if (was_closed) {
         return (int8_t)-1;
     }
-    // codigo = ntohs(codigo);
     return codigo;
 }
 
 
 bool Protocolo::enviarCodigo(int codigo) {
     int8_t codigoAEnviar = codigo;
-    // codigoAEnviar = htons(codigoAEnviar);
     bool was_closed = false;
     socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
     return !was_closed;
@@ -322,7 +320,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             gusanoActual.posicion = posicionRecibida;
             gusanoActual.armaEquipada = (ArmaProtocolo)arma;
 
-            listaGusanos[i] = gusanoActual;
+            listaGusanos[j] = gusanoActual;
         }   
 
         gusanos.insert({idJugador, listaGusanos});
@@ -394,10 +392,6 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
         paraEnviar.push_back(idMapa);
     }
 
-    /* TODO: mover estos sendall a otro metodo
-            hacer que este metodo devuelva 1 string/algo con toda la info para hacer
-                mas facil el testeo
-    */
     bool is_open = enviarCodigo(PARTIDAS);
     if (!is_open) {
         return false;
@@ -504,18 +498,10 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
     if (!is_open) {
         return false;
     }
-    // int32_t sz = htonl((int32_t)cant);
-    // bool was_closed = false;
-    // socket.sendall(&sz, sizeof(sz), &was_closed);
-    // if (was_closed) {
-    //     return false;
-    // }
 
     for (auto const& [idJugador, listaGusanos] : estado.gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
-        // int32_t id = htonl((int32_t)idJugador);
-        // socket.sendall(&id, sizeof(id), &was_closed);
         if (!is_open) {
             return false;
         }
@@ -526,11 +512,6 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
         if (!is_open) {
             return false;
         }
-        // int32_t szGusanos = htonl((int32_t)cantGusanos);
-        // socket.sendall(&szGusanos, sizeof(szGusanos), &was_closed);
-        // if (was_closed) {
-        //     return false;
-        // }
 
         for (int32_t i = 0; i < cantGusanos; i++) {
             RepresentacionGusano gusano = listaGusanos[i];
@@ -539,11 +520,6 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             if (!is_open) {
                 return false;
             }
-            // int32_t idGusano = htonl((int32_t)gusano.idGusano);
-            // socket.sendall(&idGusano, sizeof(idGusano), &was_closed);
-            // if (was_closed) {
-            //     return false;
-            // }
             
             // envio vida del gusano
             bool was_closed = false;
