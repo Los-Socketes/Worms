@@ -30,8 +30,7 @@ TEST_CASE( "Tests de pedirInforamcion", "[pedirInformacion]" ) {
     REQUIRE( pedirInformacion(PARTIDA) == PARTIDA);
 }
 
-
-// // TEST 2
+// TEST 2
 Accion moverGusano(id gusano, Direccion dir) {
     protocolo.moverGusano(gusano, dir);
     return protocoloServer.obtenerAccion();
@@ -113,49 +112,124 @@ TEST_CASE( "Tests de enviar partidas", "[enviarPartidas]" ) {
 
 // TEST 6
 
-id crearPartidaCasoFeliz(id mapa) {
-    protocoloServer.enviarConfirmacion((id)0);
-    return protocolo.crearPartida(mapa);
+std::pair<id,id> crearPartidaCasoFeliz(id mapa, id partida) {
+    protocoloServer.enviarConfirmacion(partida);
+    id idPartida = protocolo.crearPartida(mapa);
+    id idMapa = protocoloServer.obtenerMapaDeseado();
+    std::pair<id,id> ids(idPartida, idMapa);
+    return ids;
 }
 
 TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
-    REQUIRE(crearPartidaCasoFeliz((id)0) == 0);
+    std::pair<id,id> resultado = crearPartidaCasoFeliz((id)0, (id)1);
+    REQUIRE( resultado.first == (id)1);
+    REQUIRE( resultado.second == (id)0);
 }
 
 // TEST 7
 
-id crearPartidaCasoError(id mapa) {
+std::pair<id,id> crearPartidaCasoError(id mapa) {
     protocoloServer.enviarError();
-    return protocolo.crearPartida(mapa);
+    id idPartida = protocolo.crearPartida(mapa);
+    id idMapa = protocoloServer.obtenerMapaDeseado();
+    std::pair<id,id> ids(idPartida, idMapa);
+    return ids;
 }
 
 TEST_CASE("Test de crear partidas (Caso error)", "[crearPartidaCasoError]") {
-    REQUIRE(crearPartidaCasoError((id)0) == INVAL_ID);
+    std::pair<id,id> resultado = crearPartidaCasoError((id)0);
+    REQUIRE(resultado.first == INVAL_ID);
+    REQUIRE(resultado.second == (id)0);
 }
 
 // TEST 8
 
-bool unirsePartidaCasoFeliz(id partida) {
+std::pair<bool,id> unirsePartidaCasoFeliz(id partida) {
     protocoloServer.enviarConfirmacion((id)0);
-    return protocolo.unirseAPartida(partida);
+    bool res = protocolo.unirseAPartida(partida);
+    id idPartida = protocoloServer.obtenerPartidaDeseada();
+    std::pair<bool,id> resultado(res, idPartida);
+    return resultado;
 }
 
 TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") {
-    REQUIRE(unirsePartidaCasoFeliz((id)0));
+    std::pair<bool,id> resultado = unirsePartidaCasoFeliz((id)0);
+    REQUIRE(resultado.first);
+    REQUIRE(resultado.second == (id)0);
 }
 
 // TEST 9
 
-bool unirsePartidaCasoError(id partida) {
+std::pair<bool,id> unirsePartidaCasoError(id partida) {
     protocoloServer.enviarError();
-    return protocolo.unirseAPartida(partida);
+    bool res = protocolo.unirseAPartida(partida);
+    id idPartida = protocoloServer.obtenerPartidaDeseada();
+    std::pair<bool,id> resultado(res, idPartida);
+    return resultado;
 }
 
 TEST_CASE("Test de unirse a partidas (Caso error)", "[unirsePartidaCasoError]") {
-    REQUIRE(!unirsePartidaCasoError((id)0));
+    std::pair<bool,id> resultado = unirsePartidaCasoError((id)0);
+    REQUIRE(!resultado.first);
+    REQUIRE(resultado.second == (id)0);
 }
 
 // TEST 10
+
+Accion obtenerAccionDeEquipar(id gusano, ArmaProtocolo arma) {
+    protocolo.equiparArma(gusano, arma);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de equipar arma a gusano", "[obtenerAccionDeEquipar]" ) {
+    ArmaProtocolo armaAEquipar = BATE_P;
+    id idGusano = 0;
+    Accion equipar;
+    equipar.idGusano = idGusano;
+    equipar.accion = EQUIPARSE;
+    equipar.armaAEquipar = armaAEquipar;
+    Accion resultado = obtenerAccionDeEquipar(idGusano, armaAEquipar);
+    REQUIRE(resultado.idGusano == equipar.idGusano);
+    REQUIRE(resultado.accion == equipar.accion);
+    REQUIRE(resultado.armaAEquipar == equipar.armaAEquipar);
+
+    armaAEquipar = BAZOOKA_P;
+    idGusano = 1;
+    equipar.idGusano = idGusano;
+    equipar.accion = EQUIPARSE;
+    equipar.armaAEquipar = armaAEquipar;
+    resultado = obtenerAccionDeEquipar(idGusano, armaAEquipar);
+    REQUIRE(resultado.idGusano == equipar.idGusano);
+    REQUIRE(resultado.accion == equipar.accion);
+    REQUIRE(resultado.armaAEquipar == equipar.armaAEquipar);
+}
+
+// TEST 11
+
+Accion obtenerAccionDeAtacar(id gusano) {
+    protocolo.atacar(gusano);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
+    id idGusano = 0;
+    Accion atacar;
+    atacar.idGusano = idGusano;
+    atacar.accion = ATAQUE;
+
+    Accion resultado = obtenerAccionDeAtacar(idGusano);
+    REQUIRE(resultado.idGusano == atacar.idGusano);
+    REQUIRE(resultado.accion == atacar.accion);
+
+    idGusano = 1;
+    atacar.idGusano = idGusano;
+    atacar.accion = ATAQUE;
+    resultado = obtenerAccionDeAtacar(idGusano);
+    REQUIRE(resultado.idGusano == atacar.idGusano);
+    REQUIRE(resultado.accion == atacar.accion);
+}
+
+// TEST ?
 
 // EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
 //     protocoloServer.enviarEstadoDelJuego(estado);

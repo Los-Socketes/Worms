@@ -57,7 +57,6 @@ enum tipoAccion {MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 9
-// este se usa para ataques cuerpo a cuerpo
 #define EQUIPAR 10
 #define CALIBRAR 11
 #define ATACAR 11

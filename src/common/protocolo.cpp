@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <iostream>
+
 Protocolo::Protocolo(Socket&& socket):
     socket(std::move(socket)){};
 
@@ -33,12 +35,17 @@ int8_t Protocolo::obtenerCodigo() {
     bool was_closed = false;
     int8_t codigo;
     socket.recvall(&codigo, sizeof(codigo), &was_closed);
-    return (was_closed)? (int8_t)-1 : codigo;
+    if (was_closed) {
+        return (int8_t)-1;
+    }
+    // codigo = ntohs(codigo);
+    return codigo;
 }
 
 
 bool Protocolo::enviarCodigo(int codigo) {
     int8_t codigoAEnviar = codigo;
+    // codigoAEnviar = htons(codigoAEnviar);
     bool was_closed = false;
     socket.sendall(&codigoAEnviar, sizeof(codigoAEnviar), &was_closed);
     return !was_closed;
@@ -78,7 +85,7 @@ std::vector<id> Protocolo::obtenerVector() {
 
 id Protocolo::verificarConexion() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo == -1 || (int)codigo == ERROR) {
+    if (codigo == -1 || codigo == ERROR) {
         return INVAL_ID;
     }
     // TODO: quizas ver si no es exito -> tirar excepcion
@@ -113,7 +120,7 @@ bool Protocolo::pedirInformacion(tipoInfo infoAPedir) {
 std::vector<RepresentacionMapa> Protocolo::obtenerMapas() {
     int8_t codigo = obtenerCodigo();
     std::vector<RepresentacionMapa> error;
-    if ((int)codigo != MAPAS) {
+    if (codigo != MAPAS) {
         return error;
     }
 
@@ -229,8 +236,6 @@ bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
 }
 
 
-// Este metodo tendra que mutar cuando tenga toda la implementacion
-// del bate, pero para esta semana con esto nos sirve
 bool Protocolo::atacar(id idGusano) {
     bool is_open = enviarCodigo(ATACAR);
     if (!is_open) {
@@ -243,7 +248,7 @@ bool Protocolo::atacar(id idGusano) {
 EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     EstadoDelJuego error;
-    if ((int)codigo == -1 || (int)codigo != ESTADO) {
+    if (codigo == -1 || codigo != ESTADO) {
         return error;
     }
 
@@ -404,7 +409,7 @@ bool Protocolo::enviarPartidas(std::vector<RepresentacionPartida> partidasDispon
 
 id Protocolo::obtenerMapaDeseado() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo != CREAR) {
+    if (codigo != CREAR) {
         return INVAL_ID;
     }
     return obtenerId();
@@ -413,7 +418,7 @@ id Protocolo::obtenerMapaDeseado() {
 
 id Protocolo::obtenerPartidaDeseada() {
     int8_t codigo = obtenerCodigo();
-    if ((int)codigo != PARTIDAS) {
+    if (codigo != UNIRSE) {
         return INVAL_ID;
     }
     return obtenerId();
@@ -446,7 +451,6 @@ Accion Protocolo::obtenerAccion() {
     if (idGusano == INVAL_ID) {
         return accion;
     }
-
     if (codigo == EQUIPAR) {
         bool was_closed = false;
         int8_t arma;
@@ -461,6 +465,11 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
+    if (codigo == ATACAR) {
+        accion.accion = ATAQUE;
+        accion.idGusano = idGusano;
+        return accion;
+    }
     bool was_closed = false;
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
@@ -469,7 +478,7 @@ Accion Protocolo::obtenerAccion() {
     }
 
     // TODO: ampliar a los otros tipos de accion
-    accion.accion = (codigo == MOV) ? MOVERSE : ATAQUE;
+    accion.accion = MOVERSE;
     accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
