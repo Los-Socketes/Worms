@@ -13,7 +13,7 @@ void Aceptador::aceptarClientes() {
         Cliente* cliente = new Cliente(std::move(conexionEntrante), this->escenariosDisponibles, std::ref(this->partidas));
 
         // Primero el reap_dead para que la lista tenga un elemento menos
-        // reap_dead();
+        reap_dead();
         this->listaClientes.push_back(cliente);
     }
 
@@ -23,17 +23,25 @@ void Aceptador::asignar(std::vector<std::string> escenariosDisponibles) {
     this->escenariosDisponibles = escenariosDisponibles;
 }
 
-// void Aceptador::reap_dead() {
-//     this->listaClientes.remove_if([](Jugador* c) {
-//         if (!c->get_is_alive()) {
-//             delete c;
-//             return true;
-//         }
-//         return false;
-//     });
-// }
+void Aceptador::reap_dead() {
+    this->listaClientes.remove_if([](Cliente* c) {
+        if (c->estaMuerto()) {
+            delete c;
+            return true;
+        }
+        return false;
+    });
+}
 
 void Aceptador::kill() {
+    for (auto &&cliente : this->listaClientes) {
+        if (!cliente->estaMuerto()) {
+            cliente->cerrarSocket(SHUT_RDWR);
+            std::cout << "delete\n";
+            delete cliente;
+        }
+    }
+    
     this->socket.shutdown(SHUT_RDWR);
     this->socket.close();
 }

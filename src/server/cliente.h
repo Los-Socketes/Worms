@@ -21,6 +21,10 @@ public:
 
     void enviarEstadoJuego(EstadoDelJuego estado);
 
+    bool estaMuerto();
+    void cerrarSocket(int forma);
+    ~Cliente();
+
 };
 
 #endif

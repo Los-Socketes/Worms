@@ -48,8 +48,9 @@ void Reciever::lobby() {
         case INVAL_TIPO:
 	  {
 	  //TODO: _hacer algo_
-	  abort();
-	  break;
+	//   abort();
+	//   break;
+      return;
 	  }
     }
 
@@ -71,12 +72,19 @@ void Reciever::obtener(Queue<Accion> *accionesRecibidas) {
 
 void Reciever::run() {
     //TODO Cambiar a socket vivo o algo
-    lobby();
-    while (true) {
-        Accion accionDeseada;
-        accionDeseada = this->protocolo.obtenerAccion();
-        accionDeseada.jugador = this->miId;
+    try {
+        lobby();
+        while (true) {
+            Accion accionDeseada;
+            accionDeseada = this->protocolo.obtenerAccion();
+            accionDeseada.jugador = this->miId;
 
-        this->acciones->push(accionDeseada);
+            this->acciones->push(accionDeseada);
+        }
     }
+    catch( ... ) {
+        return;
+    }
+    
 }
+
