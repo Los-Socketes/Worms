@@ -37,13 +37,14 @@ enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_
                     TELETRANSPORTACION_P};
 
 /*
- *0. El gusano se mueve
- *1. El gusano equipa un arma
- *2. El gusano prepara/calibra el arma equipada
- *3. El gusano realiza el ataque con la calibracion previamente establecida
+ *0. El gusano esta quieto
+ *1. El gusano se mueve
+ *2. El gusano equipa un arma
+ *3. El gusano prepara/calibra el arma equipada
+ *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
-//                  0        1        2        3
-enum tipoAccion {MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
+//                    0         1         2        3          4
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -60,6 +61,7 @@ enum tipoAccion {MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 #define EQUIPAR 10
 #define CALIBRAR 11
 #define ATACAR 11
+
 
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {
@@ -100,8 +102,11 @@ struct Accion {
     id idGusano;
     idJugador jugador;
     tipoAccion accion;
-    Direccion dir;
-    ArmaProtocolo armaAEquipar;
+    // union Argumento{
+        Direccion dir;
+        ArmaProtocolo armaAEquipar;
+    // };
+
 };
 
 #endif

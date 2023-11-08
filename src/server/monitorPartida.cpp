@@ -12,11 +12,10 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     id idPartidaNueva;
     idPartidaNueva = this->contador;
 
-    //TODO: Check new
+    //TODO: Check new for no memory
     Partida *partidaNueva = new Partida(mapaNombre);
     partidaNueva->start();
 
-    // this->mapa.insert(idPartidaNueva, partidaNueva);
     this->mapa.insert({idPartidaNueva, partidaNueva});
 
     this->contador += 1;

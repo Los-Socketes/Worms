@@ -1,26 +1,17 @@
 #include "gusano.h"
-#include "defs.h"
-// #include "defs.h"
-// #include "protocolo.h"
+#include <iostream>
 
 Gusano::Gusano(b2Body &cuerpo)
     : cuerpo(cuerpo)
       {
-    // this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
-
-    //ATTENTION: Hacemos que el cuerpo sea dinamico
-    /*
-      arma en mano
-      equipo
-    */
 }
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<cambioX, cambioY> Gusano::cambio(AccionServer accion) {
+std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
     std::pair<cambioX, cambioY> cambio(0.0f,0.0f);
     /*Arranca abajo a la izquierda.
      *X:
@@ -30,33 +21,57 @@ std::pair<cambioX, cambioY> Gusano::cambio(AccionServer accion) {
      *	^: +1
      *	v: -1
     */
+    //WARNING Pongo este std::out solamente para que compile
+    std::cout << accion.idGusano;
+    tipoAccion accionDeseada;
+    accionDeseada = accion.accion;
+    switch (accionDeseada) {
+    case ESTAQUIETO:
+        break;
+    case MOVERSE:
+        {
+        std::pair<coordX, coordY> coordsIniciales;
+        
+        b2Vec2 fuerzamovimiento(500.0f, 0.0f); 
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    switch (accion) {
-    case AccionServer::MOV_IZQ:
-        this->setDireccion(DERECHA);
-        cambio.first = -1.0f;
-        cambio.second = 0.0f;
         break;
-    case AccionServer::MOV_DER:
-        this->setDireccion(IZQUIERDA);
-        cambio.first = 1.0f;
-        cambio.second = 0.0f;
+        }
+    case EQUIPARSE:
         break;
-        //TODO Esto no se si es 100% correcto. Por ahora funca
-    case AccionServer::MOV_SALTO:
-        cambio.first = 1.0f;
-        cambio.second = 1.0f;
+    case PREPARAR:
         break;
-    case AccionServer::MOV_PIRUETA:
-        cambio.first = -1.0f;
-        cambio.second = 1.0f;
-        break;
-    case AccionServer::MOV_QUIETO:
-        cambio.first = 0.0f;
-        cambio.second = 0.0f;
+    case ATAQUE:
         break;
     }
+
+    b2Vec2 fuerza; 
+
+//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
+    // switch (accion) {
+    // case AccionServer::MOV_IZQ:
+    //     this->setDireccion(DERECHA);
+    //     cambio.first = -1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // case AccionServer::MOV_DER:
+    //     this->setDireccion(IZQUIERDA);
+    //     cambio.first = 1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    //     //TODO Esto no se si es 100% correcto. Por ahora funca
+    // case AccionServer::MOV_SALTO:
+    //     cambio.first = 1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_PIRUETA:
+    //     cambio.first = -1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_QUIETO:
+    //     cambio.first = 0.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // }
 
     return cambio;
     
@@ -71,13 +86,6 @@ std::pair<coordX, coordY> Gusano::getCoords() {
 
     return representacionPair;
 }
-// void Gusano::setCoords(std::pair<coordX, coordY> nuevasCoords) {
-//     b2Vec2 position;
-//     nuevasCoords.enX = position.x;
-//     nuevasCoords.enY = position.y;
-
-//     this->cuerpo. = nuevasCoords;
-// }
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
