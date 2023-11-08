@@ -102,10 +102,10 @@ struct Accion {
     id idGusano;
     idJugador jugador;
     tipoAccion accion;
-    // union Argumento{
+    union {
         Direccion dir;
         ArmaProtocolo armaAEquipar;
-    // };
+    };
 
 };
 
