@@ -23,6 +23,28 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
     */
     //WARNING Pongo este std::out solamente para que compile
     std::cout << accion.idGusano;
+    tipoAccion accionDeseada;
+    accionDeseada = accion.accion;
+    switch (accionDeseada) {
+    case ESTAQUIETO:
+        break;
+    case MOVERSE:
+        {
+        std::pair<coordX, coordY> coordsIniciales;
+        
+        b2Vec2 fuerzamovimiento(500.0f, 0.0f); 
+
+        break;
+        }
+    case EQUIPARSE:
+        break;
+    case PREPARAR:
+        break;
+    case ATAQUE:
+        break;
+    }
+
+    b2Vec2 fuerza; 
 
 //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
     // switch (accion) {

@@ -117,7 +117,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        }
        else {
 	  accionAEjecutar = ultimaAccion;
-	  accionAEjecutar.accion = NOMOVERSE;
+	  accionAEjecutar.accion = ESTAQUIETO;
        }
 
        return accionAEjecutar;

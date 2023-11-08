@@ -36,13 +36,14 @@ enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 
 /*
- *0. El gusano se mueve
- *1. El gusano equipa un arma
- *2. El gusano prepara/calibra el arma equipada
- *3. El gusano realiza el ataque con la calibracion previamente establecida
+ *0. El gusano esta quieto
+ *1. El gusano se mueve
+ *2. El gusano equipa un arma
+ *3. El gusano prepara/calibra el arma equipada
+ *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                  0        1          2        3
-enum tipoAccion {NOMOVERSE, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
