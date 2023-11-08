@@ -1,13 +1,6 @@
 #include "partida.h"
-#include "defs.h"
-#include "gusano.h"
-#include "jugador.h"
-#include "protocolo.h"
-#include <cstdlib>
-#include <iostream>
-#include <unistd.h>
-#include <utility>
-#include <chrono>
+
+#include <map>
 
 #define fuerzaGravitariaX 0.0f
 #define fuerzaGravitariaY -10.0f 
@@ -65,12 +58,6 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
         idGusano = this->gusanos.size();
         nuevoGusano->giveId(idGusano);
 
-        //Anadimos los gusanos del cliente a la partida
-        // this->gusanos.push_back(nuevoGusano);
-
-        //TODO No soy fan de que tenga que guardar las coordenadas
-        //en dos lados distintos. Es lo que hay (?.
-        // this->coordsGusanos.insert({coordsIniciales,nuevoGusano});
         this->gusanos.push_back(nuevoGusano);
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
@@ -88,25 +75,9 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     return idNuevoJugador;
 }
 
-
-// std::pair<coordX, coordY> Partida::gravedad(
-// 				    std::pair<cambioX, cambioY> cambioDeseado,
-// 				    std::pair<coordX, coordY> posInicial
-// 				    ) {
-//     return cambioDeseado;
-// }
-
 void Partida::enviarEstadoAJugadores() {
     EstadoDelJuego estadoActual;
-    // for (auto const& [posicion, gusano] : this->coordsGusanos) {
-    //     if (gusano == nullptr)
-    // 	  continue;
-    //     estadoActual.posicion = posicion;
 
-    //     DireccionGusano direccionPresente;
-    //     direccionPresente = gusano->getDireccion(); 
-    //     estadoActual.dir = direccionPresente;
-    // }
     std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
@@ -117,23 +88,8 @@ void Partida::enviarEstadoAJugadores() {
         gusanosJugActual = jugadorActual->getRepresentacionGusanos();
 
         representacionPartida.insert({jugador, gusanosJugActual});
-        
-        // std::pair<coordX, coordY> coords;
-        // coords = gusanoActual->getCoords();
-
-        // estadoActual.posicion = coords;
-
-        // DireccionGusano direccionPresente;
-        // direccionPresente = gusanoActual->getDireccion(); 
-        // estadoActual.dir = direccionPresente;
     }
 
-
-
-    // TODO: cambiar a clientes
-    // for(Jugador *jugador : this->jugadores) {
-    //     jugador->enviarEstadoJuego(estadoActual);
-    // }
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
     }
@@ -192,34 +148,10 @@ void Partida::gameLoop() {
 
     groundBody->CreateFixture(&groundBox, 0.0f);
 
-
-    /*
-      Creamos un cuerpo dinamico
-    */
-    // b2BodyDef bodyDef;
-    // //ATTENTION: Hacemos que el cuerpo sea dinamico
-    // bodyDef.type = b2_dynamicBody;
-    // bodyDef.position.Set(0.0f, 4.0f);
-    // b2Body* body = world.CreateBody(&bodyDef);
-
-    // b2PolygonShape dynamicBox;
-    // dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    // b2FixtureDef fixtureDef;
-    // fixtureDef.shape = &dynamicBox;
-    // fixtureDef.density = 1.0f;
-    // fixtureDef.friction = 0.3f;
-
-    // body->CreateFixture(&fixtureDef);
-
-
-
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
 
-    // Cliente *clienteActual;
-    // clienteActual = this->clientes.at(0);
     Jugador *jugadorActual;
     jugadorActual = this->jugadores.at(0);
     Gusano *gusanoActual;
@@ -242,16 +174,6 @@ void Partida::gameLoop() {
     
     abort();
 
-    // int posJugadorActual = 0;
-
-    //TODO Como cambiar de jugador
-    // Cliente *clienteActual;
-    // clienteActual = this->clientes.at(posJugadorActual);
-    // Jugador *jugadorActual;
-    // jugadorActual = clienteActual->getJugador();
-    // Gusano *gusanoActual;
-    // gusanoActual = jugadorActual->getGusanoActual();
-
     Accion ultimaAccion;
 
     while (true) {
@@ -272,16 +194,6 @@ void Partida::gameLoop() {
         coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
         coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
-        // gusanoActual->setCoords(coordenadasFinales);
-        // this->coordsGusanos[coordenadasFinales] = gusanoActual;
-
-        //TODO Borrar
-        //Tengo que poner el if, porque sino se pisaria el puntero en
-        //el caso donde ambas posiciones sean iguales aka el gusano
-        //no se movio
-        // if (coordenadasIniciales != coordenadasFinales)
-        // 	  this->coordsGusanos[coordenadasIniciales] = nullptr;
-      
         std::this_thread::sleep_for(frameDuration);
     }
 

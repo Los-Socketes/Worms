@@ -1,21 +1,11 @@
 #include "gusano.h"
-#include "defs.h"
 #include <iostream>
-// #include "defs.h"
-// #include "protocolo.h"
 
 Gusano::Gusano(b2Body &cuerpo)
     : cuerpo(cuerpo)
       {
-    // this->coords = coords;
     this->direccion = DERECHA;
     this->vida = 100;
-
-    //ATTENTION: Hacemos que el cuerpo sea dinamico
-    /*
-      arma en mano
-      equipo
-    */
 }
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
@@ -74,13 +64,6 @@ std::pair<coordX, coordY> Gusano::getCoords() {
 
     return representacionPair;
 }
-// void Gusano::setCoords(std::pair<coordX, coordY> nuevasCoords) {
-//     b2Vec2 position;
-//     nuevasCoords.enX = position.x;
-//     nuevasCoords.enY = position.y;
-
-//     this->cuerpo. = nuevasCoords;
-// }
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;

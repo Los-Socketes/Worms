@@ -5,9 +5,6 @@
 #include "defs.h"
 #include "gusano.h"
 #include "thread.h"
-#include <cstdint>
-#include <map>
-#include <sys/types.h>
 #include <utility>
 #include <vector>
 #include "jugador.h"

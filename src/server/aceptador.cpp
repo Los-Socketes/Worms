@@ -1,5 +1,4 @@
 #include "aceptador.h"
-#include "jugador.h"
 
 
 Aceptador::Aceptador(const char *puerto)
@@ -12,7 +11,6 @@ void Aceptador::aceptarClientes() {
 
         //TODO Anadir un reap dead ACA que busque en una lista de jugadores
         Cliente* cliente = new Cliente(std::move(conexionEntrante), this->escenariosDisponibles, std::ref(this->partidas));
-        // Jugador *jugadorNuevo = new Jugador(std::move(conexionEntrante), this->escenariosDisponibles, this->partidas);
 
         // Primero el reap_dead para que la lista tenga un elemento menos
         // reap_dead();
