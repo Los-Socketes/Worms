@@ -11,6 +11,8 @@ private:
 
     int idGusano;
 
+    ArmaProtocolo armaEquipada;
+
     //Conceptos de b2box
     b2Body& cuerpo;
 

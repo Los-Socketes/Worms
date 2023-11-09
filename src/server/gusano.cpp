@@ -7,6 +7,7 @@ Gusano::Gusano(b2Body &cuerpo)
       {
     this->direccion = DERECHA;
     this->vida = 100;
+    this->armaEquipada = NADA_P;
 }
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
@@ -50,8 +51,6 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
      *	^: +1
      *	v: -1
     */
-    //WARNING Pongo este std::out solamente para que compile
-    std::cout << accion.idGusano;
     tipoAccion accionDeseada;
     accionDeseada = accion.accion;
     switch (accionDeseada) {
@@ -73,6 +72,9 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
         break;
         }
     case EQUIPARSE:
+        ArmaProtocolo armaDeseada;
+        armaDeseada = accion.armaAEquipar;
+        this->armaEquipada = armaDeseada;
         break;
     case PREPARAR:
         break;
