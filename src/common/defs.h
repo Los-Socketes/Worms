@@ -80,6 +80,14 @@ struct RepresentacionMapa {
 #define enX first
 #define enY second
 
+
+struct RepresentacionArma {
+    // RADIANES ?!
+    float anguloRad;
+    float potencia;
+    ArmaProtocolo arma;
+};
+
 struct RepresentacionGusano {
     id idGusano;
     hp vida;

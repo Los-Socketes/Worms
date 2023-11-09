@@ -109,6 +109,7 @@ Bate de Baseball:
     Radio: 0
   Cantidad de fragmentos: 0
 
+# Agregar cant de misiles
 Ataque Aereo:
   Arma con mira: false
   Combate cuerpo a cuerpo: false
