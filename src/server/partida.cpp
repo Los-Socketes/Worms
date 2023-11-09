@@ -124,23 +124,23 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        }
 
        //WARNING Debug
-       switch (accionAEjecutar.accion) {
-       case ESTAQUIETO:
-	 std::cout << "Quieto" << "\n";
-	 break;
-       case MOVERSE:
-	 std::cout << "Moverse" << "\n";
-	 break;
-       case EQUIPARSE:
-	 std::cout << "Equiparse" << "\n";
-	 break;
-       case PREPARAR:
-	 std::cout << "Preparar" << "\n";
-	 break;
-       case ATAQUE:
-	 std::cout << "Ataque" << "\n";
-	 break;
-       }
+       // switch (accionAEjecutar.accion) {
+       // case ESTAQUIETO:
+       // 	 std::cout << "Quieto" << "\n";
+       // 	 break;
+       // case MOVERSE:
+       // 	 std::cout << "Moverse" << "\n";
+       // 	 break;
+       // case EQUIPARSE:
+       // 	 std::cout << "Equiparse" << "\n";
+       // 	 break;
+       // case PREPARAR:
+       // 	 std::cout << "Preparar" << "\n";
+       // 	 break;
+       // case ATAQUE:
+       // 	 std::cout << "Ataque" << "\n";
+       // 	 break;
+       // }
 
        return accionAEjecutar;
 }
@@ -214,6 +214,7 @@ void Partida::gameLoop() {
 				      ultimaAccion);
 
         gusanoActual->cambio(accionAEjecutar);
+        std::cout << gusanoActual->getCoords().enX << " " << gusanoActual->getCoords().enY << "\n";
 
 
 

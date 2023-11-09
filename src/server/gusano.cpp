@@ -14,7 +14,7 @@ void Gusano::giveId(int idGusano) {
 }
 
 
-b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
+void Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
     b2Vec2 direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
@@ -22,27 +22,34 @@ b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
         direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         this->setDireccion(DERECHA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
     case INICIO_IZQ:
         std::cout << "Inicio izq" << "\n";
         direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         this->setDireccion(IZQUIERDA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
     case FIN_DER:
         std::cout << "Fin der" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
         this->setDireccion(DERECHA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
     case FIN_IZQ:
         std::cout << "Fin izq" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
         this->setDireccion(IZQUIERDA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
     case SALTO:
         std::cout << "Salto" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->cuerpo.ApplyLinearImpulseToCenter(b2Vec2(0.0f, 105.0f), false);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -52,7 +59,6 @@ b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
         abort();
         break;
     }
-    return direccion;
 }
 
 std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
@@ -76,12 +82,14 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
         // this->cuerpo.SetLinearVelocity;
         
         // b2Vec2 fuerzamovimiento(100.0f, 0.0f);
-        b2Vec2 fuerzamovimiento;
+        // b2Vec2 fuerzamovimiento;
         Direccion direccionDeseada;
         direccionDeseada = accion.dir;
-        fuerzamovimiento = getVectorDeDireccion(direccionDeseada);
+        // fuerzamovimiento =
+        // WARNING: Aca se ejecuta el movimiento
+        getVectorDeDireccion(direccionDeseada);
 
-        this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
+        // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
 
         break;
         }
