@@ -94,6 +94,37 @@ void Partida::enviarEstadoAJugadores() {
     }
     estadoActual.gusanos = representacionPartida;
 
+    std::vector<RepresentacionViga> vigasEnMapa;
+
+    //Fuente: https://www.iforce2d.net/b2dtut/bodies
+    for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
+    {
+
+        b2BodyType tipoDelCuerpo;
+        tipoDelCuerpo = b->GetType();
+        /*
+        b2_staticBody = 0,
+        b2_kinematicBody,
+        b2_dynamicBody
+        */
+        //Ignoramos los que no son estaticos porque los gusanos los
+        //sacamos de los jugadores
+        if (tipoDelCuerpo != b2_staticBody)
+	  continue;
+
+        RepresentacionViga vigaActual;
+        vigaActual.angulo = b->GetAngle();
+        //TODO Desharcodear
+        vigaActual.longitud = 8;
+        b2Vec2 posicion = b->GetPosition();
+        std::pair<coordX, coordY> posicionProtocolo;
+        posicionProtocolo.enX = posicion.x;
+        posicionProtocolo.enY = posicion.y;
+        vigaActual.posicionInicial = posicionProtocolo;
+    }
+
+    estadoActual.vigas = vigasEnMapa;
+
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
     }
@@ -165,7 +196,7 @@ void Partida::gameLoop() {
     //WARNING:*Los cuerpos estaticos no chocan con otros cuerpos y son
     //inmovibles*
     b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f);
+    groundBodyDef.position.Set(0.0f, 10.0f);
 
     //Hacemos que el world cree un cuerpo basado en nuestra definicion
     b2Body* groundBody = world.CreateBody(&groundBodyDef);
