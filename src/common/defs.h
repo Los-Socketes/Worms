@@ -28,7 +28,7 @@ typedef float cambioY;
 #define noIgn [[nodiscard]]
 
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO};
+enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
@@ -92,7 +92,6 @@ struct RepresentacionGusano {
     id idGusano;
     hp vida;
     DireccionGusano dir;
-    // TODO: Agregar recibir y enviar estado
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
     ArmaProtocolo armaEquipada;
@@ -102,8 +101,6 @@ struct RepresentacionGusano {
 // Tiene la info del estado del juego
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
-    // DireccionGusano dir;
-    // std::pair<coordX, coordY> posicion;
 };
 
 struct Accion {
