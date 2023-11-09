@@ -7,7 +7,9 @@
 enum TipoComando{
     INVALIDO,
     SALIR,
-    MOVER_CAMARA
+    MOVER_CAMARA,
+    TOGGLE_CAMARA,
+    TAMAÑO_VENTANA
 };
 
 struct Comando{

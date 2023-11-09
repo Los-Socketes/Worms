@@ -37,6 +37,10 @@ void EntradaTeclado::run() {
                         comandos_teclado.push(Comando(SALIR));
                         cont = false;
                         break;
+                    case SDLK_ESCAPE:
+                        if(evento.key.repeat == 0)
+                            comandos_teclado.push(Comando(TOGGLE_CAMARA));
+                        break;
                     default:
                         break;
                 }
@@ -53,6 +57,10 @@ void EntradaTeclado::run() {
                 }
             } else if (evento.type == SDL_MOUSEMOTION) {
                 comandos_teclado.push(Comando(MOVER_CAMARA, evento.motion.xrel, evento.motion.yrel));
+            } else if (evento.type == SDL_WINDOWEVENT) {
+                if (evento.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    comandos_teclado.push(Comando(TAMAÑO_VENTANA, evento.window.data1, evento.window.data2));
+                }
             }
         }
     } catch (const ClosedQueue& e) {

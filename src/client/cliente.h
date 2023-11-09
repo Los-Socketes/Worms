@@ -23,6 +23,10 @@ using namespace SDL2pp;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+// A reemplazar cuando reciba datos del mapa.
+const int MAPA_ANCHO = 1500;
+const int MAPA_ALTO = 700;
+
 class Cliente {
  private:
     SDL sdl;
@@ -41,7 +45,7 @@ class Cliente {
     void iniciar();
 
     // Renderiza el estado del juego.
-    void renderizar(Renderer& renderizador, Animacion& caminar, int itq);
+    void renderizar(Renderer& renderizador, Animacion& caminar, Animacion& agua, int itq);
  public:
     Cliente(Socket&& skt);
     

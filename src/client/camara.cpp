@@ -1,23 +1,24 @@
 #include "camara.h"
 
-Camara::Camara(int x, int y, int ancho, int alto) :
+Camara::Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa) :
     posicion(x, y),
-    dimension(ancho, alto) {}
+    dimension(ancho, alto),
+    dimension_mapa(ancho_mapa, alto_mapa) {}
 
-void Camara::mover(int deltaX, int deltaY, int ancho_mapa, int alto_mapa) {
+void Camara::mover(int deltaX, int deltaY) {
     int nueva_pos_x = posicion.first + deltaX;
     int nueva_pos_y = posicion.second + deltaY;
 
     if (nueva_pos_x < 0) {
         nueva_pos_x = 0;
-    } else if (nueva_pos_x + dimension.first > ancho_mapa) {
-        nueva_pos_x = ancho_mapa - dimension.first;
+    } else if (nueva_pos_x + dimension.first > dimension_mapa.first) {
+        nueva_pos_x = dimension_mapa.first - dimension.first;
     }
 
     if (nueva_pos_y < 0) {
         nueva_pos_y = 0;
-    } else if (nueva_pos_y + dimension.second > alto_mapa) {
-        nueva_pos_y = alto_mapa - dimension.second;
+    } else if (nueva_pos_y + dimension.second > dimension_mapa.second) {
+        nueva_pos_y = dimension_mapa.second - dimension.second;
     }
 
     posicion.first = nueva_pos_x;
@@ -48,6 +49,11 @@ void Camara::setPosicion(int x, int y) {
 void Camara::setDimension(int ancho, int alto) {
     dimension.first = ancho;
     dimension.second = alto;
+}
+
+void Camara::setDimensionMapa(int ancho, int alto) {
+    dimension_mapa.first = ancho;
+    dimension_mapa.second = alto;
 }
 
 Rect Camara::getRectangulo() {
