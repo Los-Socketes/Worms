@@ -19,10 +19,12 @@ b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
     case INICIO_DER:
         direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
+        this->setDireccion(DERECHA);
         break;
     case INICIO_IZQ:
         direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
+        this->setDireccion(IZQUIERDA);
         break;
     case FIN_DER:
         break;
