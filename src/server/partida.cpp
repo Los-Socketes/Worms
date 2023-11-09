@@ -41,6 +41,24 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
+void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
+    b2BodyDef vigaDef;
+    vigaDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    vigaDef.angle = angulo;
+
+    //ATTENTION Dividimos a la mitad porque box2d pide la mitad de
+    // la longitud
+    longitud /= 2;
+
+    b2PolygonShape viga;
+    viga.SetAsBox(longitud, anchoViga);
+
+    b2Body* groundBody = world.CreateBody(&vigaDef);
+
+    groundBody->CreateFixture(&viga, masaCuerpoEstatico);
+
+}
+
 idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
@@ -187,24 +205,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    /*
-      Creamos un cuerpo rigidoo
-    */
-
-    //Esto crea un cuerpo, el cual despues se lo vamos a pasar al
-    //mundo. Los cuerpos por default, son estaticos
-    //WARNING:*Los cuerpos estaticos no chocan con otros cuerpos y son
-    //inmovibles*
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, 10.0f);
-
-    //Hacemos que el world cree un cuerpo basado en nuestra definicion
-    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(800.0f, 10.0f);
-
-    groundBody->CreateFixture(&groundBox, 0.0f);
+    this->anadirViga(0, 6, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
