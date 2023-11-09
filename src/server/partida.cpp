@@ -115,11 +115,14 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 	 ultimaAccion = accionAEjecutar;
        }
        //Si entra en estos otros if es porque NO se obtuvo algo nuevo
-       else if (tipoUltimaAccion == MOVERSE) {
+       else if (tipoUltimaAccion == MOVERSE &&
+	      (ultimaAccion.dir != SALTO &&
+	       ultimaAccion.dir != PIRUETA)
+	      ) {
 	  accionAEjecutar = ultimaAccion;
        }
        else {
-	  accionAEjecutar = ultimaAccion;
+	  // accionAEjecutar = ultimaAccion;
 	  accionAEjecutar.accion = ESTAQUIETO;
        }
 
