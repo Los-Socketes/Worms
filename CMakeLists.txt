@@ -19,6 +19,32 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
 
+# Catch2 tiene versiones relativamente distintas entre Gentoo y Debian
+# Como solo usamos la libreria para correr tests, vamos a usar una
+# version u otra dependiendo de la distro. Los includes van a ser
+# reemplazados con macros
+set (grep_cmd "grep")
+set (grep_arg "^NAME=")
+set (grep_file "/etc/os-release")
+execute_process(COMMAND ${grep_cmd} ${grep_arg} ${grep_file}
+    OUTPUT_VARIABLE infoOS
+)
+string(REPLACE NAME= "" infoOS ${infoOS})
+string(REPLACE \n "" infoOS ${infoOS})
+
+string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
+string(COMPARE EQUAL ${infoOS} "\"Debian GNU/Linux\"" esDebian)
+if(${esGentoo}) 
+  message("Estas en " ${infoOS})
+  find_package(Catch2 3.4.0 REQUIRED)
+elseif(${esDebian})
+  message("Estas en " ${infoOS})
+  find_package(Catch2 2.13.10 REQUIRED)
+endif()
+
+#Incluimos codigo de box2d
+find_package(box2d REQUIRED)
+
 # Seteamos las flags de compilacion
 add_compile_options(
   
@@ -30,8 +56,8 @@ add_compile_options(
 
   # Seteamos esta flag porque muchas veces dejamos algo "en camino"
   # TODO Sacar estos Wno ASAP
-  -Wno-unused-variable
-  -Wno-unused-parameter
+  # -Wno-unused-variable
+  # -Wno-unused-parameter
 
  )
 
@@ -40,8 +66,8 @@ add_compile_options(
 include(CTest)
 
 # Hace que genere el archivo compile_commands.json. Este es usado para
-# algunos editores de texto, llamese Emacs. Ese archivo generado
-# deberia estar en .gitignore
+# algunos editores de texto, llamese Emacs o programas como
+# include-what-you-use. Ese archivo generado deberia estar en .gitignore
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Creamos unas variables para facilitar el uso de directorios en el
@@ -54,12 +80,13 @@ set(CLIENTDIR src/client)
 # se puede incluir (sin contar el directorio propio). 
 include_directories("${COMMONDIR}")
 
+
 # Creacion de los ejecutables -- Notas Incluir archivo a archivo.
 ## Ejecutable del server
 add_executable(server
   "${SERVERDIR}/main.cpp"
   "${SERVERDIR}/server.cpp"
-  # "${SERVERDIR}/cliente.cpp"
+  "${SERVERDIR}/cliente.cpp"
   "${SERVERDIR}/jugador.cpp"
   "${SERVERDIR}/partida.cpp"
   "${SERVERDIR}/gusano.cpp"
@@ -87,6 +114,10 @@ add_executable(server
 target_compile_definitions(server PUBLIC
   SERVER
 )
+
+# Linkeo box2d
+target_include_directories(server PRIVATE ${box2d_INCLUDE_DIRS})
+target_link_libraries(server PRIVATE box2d::box2d)
 
 #Ejecutable del cliente
 add_executable(client
@@ -160,9 +191,20 @@ target_compile_definitions(testprotocolo PUBLIC
 target_compile_definitions(testprotocolo PUBLIC
   SERVER
 )
+if(${esGentoo})
+  target_compile_definitions(testprotocolo PUBLIC
+    DISTRO=1
+  )
+elseif(${esDebian})
+  target_compile_definitions(testprotocolo PUBLIC
+    DISTRO=2
+  )
+endif()
+
 add_test(NAME protocolotest
   COMMAND testprotocolo
 )
+target_link_libraries(testprotocolo PRIVATE Catch2::Catch2WithMain)
 
 ## TESTS DE THREAD SAFE LIST
 

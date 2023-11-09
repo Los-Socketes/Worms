@@ -25,7 +25,7 @@ public:
     void run() override;
 
     // Para cerrar el hilo.
-    void stop();
+    void stop() override;
 
 };
 

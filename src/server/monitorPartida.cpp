@@ -1,4 +1,5 @@
 #include "monitorPartida.h"
+#include "defs.h"
 #include "partida.h"
 
 MonitorPartida::MonitorPartida() {
@@ -11,11 +12,10 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     id idPartidaNueva;
     idPartidaNueva = this->contador;
 
-    //TODO: Check new
+    //TODO: Check new for no memory
     Partida *partidaNueva = new Partida(mapaNombre);
     partidaNueva->start();
 
-    // this->mapa.insert(idPartidaNueva, partidaNueva);
     this->mapa.insert({idPartidaNueva, partidaNueva});
 
     this->contador += 1;
@@ -23,11 +23,14 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     return idPartidaNueva;
 }
 
-void MonitorPartida::anadirJugadorAPartida(Jugador *nuevoJugador, id partidaEspecifica) {
+idJugador MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
     Partida *partidaRecibidora;
     partidaRecibidora = this->mapa.at(partidaEspecifica);
 
-    partidaRecibidora->anadirJugador(nuevoJugador);
+    idJugador nuevoJugdor;
+    nuevoJugdor = partidaRecibidora->anadirCliente(nuevoCliente);
+
+    return nuevoJugdor;
 }
 
 std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
@@ -49,5 +52,12 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
 }
 
 MonitorPartida::~MonitorPartida() {
-    //TODO free
+    for (auto const& [idPartida, partida] : this->mapa) {
+        if (partida == nullptr) {
+            continue;
+        }
+
+        // TODO: verificar que el destructor de partida esta bien y no leakea memoria
+        delete partida;
+    }
 }

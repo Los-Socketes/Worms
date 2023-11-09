@@ -1,26 +1,18 @@
 #include "gusano.h"
-#include "defs.h"
-#include "protocolo.h"
+#include <iostream>
 
-typedef int cambioX;
-typedef int cambioY;
-
-Gusano::Gusano(std::pair<int, int> coords) {
-    this->coords = coords;
+Gusano::Gusano(b2Body &cuerpo)
+    : cuerpo(cuerpo)
+      {
     this->direccion = DERECHA;
     this->vida = 100;
 }
+void Gusano::giveId(int idGusano) {
+    this->idGusano = idGusano;
+}
 
-// void Gusano::detener(){
-//     this->moviendose = false;
-// }
-// void Gusano::ponerEnMovimiento(){
-//     this->moviendose = true;
-// }
-
-
-std::pair<int, int> Gusano::cambio(Accion accion) {
-    std::pair<cambioX, cambioY> cambio(0,0);
+std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
+    std::pair<cambioX, cambioY> cambio(0.0f,0.0f);
     /*Arranca abajo a la izquierda.
      *X:
      *	>: +1
@@ -29,53 +21,85 @@ std::pair<int, int> Gusano::cambio(Accion accion) {
      *	^: +1
      *	v: -1
     */
+    //WARNING Pongo este std::out solamente para que compile
+    std::cout << accion.idGusano;
+    tipoAccion accionDeseada;
+    accionDeseada = accion.accion;
+    switch (accionDeseada) {
+    case ESTAQUIETO:
+        break;
+    case MOVERSE:
+        {
+        // std::pair<coordX, coordY> coordsIniciales;
+        // this->cuerpo.SetLinearVelocity;
+        
+        b2Vec2 fuerzamovimiento(100.0f, 0.0f); 
+        this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    switch (accion) {
-    case Accion::MOV_IZQ:
-        this->setDireccion(DERECHA);
-        cambio.first = -1;
-        cambio.second = 0;
         break;
-    case Accion::MOV_DER:
-        this->setDireccion(IZQUIERDA);
-        cambio.first = 1;
-        cambio.second = 0;
+        }
+    case EQUIPARSE:
         break;
-        //TODO Esto no se si es 100% correcto. Por ahora funca
-    case Accion::MOV_SALTO:
-        cambio.first = 1;
-        cambio.second = 1;
+    case PREPARAR:
         break;
-    case Accion::MOV_PIRUETA:
-        cambio.first = -1;
-        cambio.second = 1;
-        break;
-    case Accion::MOV_QUIETO:
-        cambio.first = 0;
-        cambio.second = 0;
+    case ATAQUE:
         break;
     }
+
+    b2Vec2 fuerza; 
+
+//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
+    // switch (accion) {
+    // case AccionServer::MOV_IZQ:
+    //     this->setDireccion(DERECHA);
+    //     cambio.first = -1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // case AccionServer::MOV_DER:
+    //     this->setDireccion(IZQUIERDA);
+    //     cambio.first = 1.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    //     //TODO Esto no se si es 100% correcto. Por ahora funca
+    // case AccionServer::MOV_SALTO:
+    //     cambio.first = 1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_PIRUETA:
+    //     cambio.first = -1.0f;
+    //     cambio.second = 1.0f;
+    //     break;
+    // case AccionServer::MOV_QUIETO:
+    //     cambio.first = 0.0f;
+    //     cambio.second = 0.0f;
+    //     break;
+    // }
 
     return cambio;
     
 
 }
 
-std::pair<int, int> Gusano::getCoords() {
-    return this->coords;
-}
-void Gusano::setCoords(std::pair<int, int> nuevasCoords) {
-    this->coords = nuevasCoords;
+std::pair<coordX, coordY> Gusano::getCoords() {
+    b2Vec2 position = this->cuerpo.GetPosition();
+    std::pair<coordX, coordY> representacionPair;
+    representacionPair.enX = position.x;
+    representacionPair.enY = position.y;
+
+    return representacionPair;
 }
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
 }
 
-DireccionGusano Gusano::getDireccion() {
-    DireccionGusano direccionActual;
-    direccionActual = this->direccion;
 
-    return direccionActual;
+RepresentacionGusano Gusano::getRepresentacion() {
+    RepresentacionGusano repre;
+    repre.idGusano = this->idGusano;
+    repre.vida = this->vida;
+    repre.dir = this->direccion;
+    repre.posicion = this->getCoords();;
+
+    return repre;
 }

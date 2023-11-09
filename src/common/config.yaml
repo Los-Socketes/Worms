@@ -1,0 +1,141 @@
+# # Armas # #
+Bazooka:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: false
+  Teledirigido: false
+  Trayectoria afectada por el viento: true
+  Municiones: -1
+  Daño:
+    Epicentro: 50 
+    Radio: 2
+  Cantidad de fragmentos: 0
+
+Mortero:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: false
+  Teledirigido: false
+  Trayectoria afectada por el viento: true
+  Municiones: 10
+  Daño: 
+    Epicentro: 50
+    Radio: 2
+  Cantidad de fragmentos: 6
+  Daño de fragmento: 
+    Epicentro: 10
+    Radio: 2
+
+Granada Verde:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: true
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: -1
+  Daño: 
+    Epicentro: 30
+    Radio: 2
+  Cantidad de fragmentos: 0
+
+Granada Roja:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: true
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: 10
+  Daño (del estallido principal): 
+    Epicentro: 30
+    Radio: 2
+  Cantidad de fragmentos: 6
+  Daño de fragmentos: 
+    Epicentro: 10
+    Radio: 2
+
+Banana:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: true
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: 5
+  Daño: 
+    Epicentro: 70
+    Radio: 4
+  Cantidad de fragmentos: 0
+
+Granada Santa:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: true
+  Cuenta regresiva: true
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: 2
+  Daño: 
+    Epicentro: 110
+    Radio: 8
+  Cantidad de fragmentos: 0 
+  
+Dinamita:
+  Arma con mira: false
+  Combate cuerpo a cuerpo: true
+  Disparo con potencia variable: false
+  Cuenta regresiva: true
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: 5
+  Daño: 
+    Epicentro: 50
+    Radio: 4
+  Cantidad de fragmentos: 0
+
+Bate de Baseball:
+  Arma con mira: true
+  Combate cuerpo a cuerpo: true
+  Disparo con potencia variable: false
+  Cuenta regresiva: false
+  Teledirigido: false
+  Trayectoria afectada por el viento: false
+  Municiones: -1
+  Daño: 
+    Epicentro: 10
+    Radio: 0
+  Cantidad de fragmentos: 0
+
+# Agregar cant de misiles
+Ataque Aereo:
+  Arma con mira: false
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: false
+  Cuenta regresiva: false
+  Teledirigido: true
+  Trayectoria afectada por el viento: true
+  Municiones: 2
+  Daño (por cada misil): 
+    Epicentro: 40
+    Radio: 2
+  Cantidad de fragmentos: 0
+
+Teletransportación:
+  Arma con mira: false
+  Combate cuerpo a cuerpo: false
+  Disparo con potencia variable: false
+  Cuenta regresiva: false
+  Teledirigido: true
+  Trayectoria afectada por el viento: false
+  Municiones: -1
+  Daño: 
+    Epicentro: 0
+    Radio: 0
+  Cantidad de fragmentos: 0
+
+
+# # Caracteristicas de gusano # #
+Vida: 50

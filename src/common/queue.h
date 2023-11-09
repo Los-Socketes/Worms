@@ -128,6 +128,7 @@ public:
         closed = true;
         is_not_empty.notify_all();
     }
+    bool is_closed() const { return closed; }
 
 private:
     Queue(const Queue&) = delete;

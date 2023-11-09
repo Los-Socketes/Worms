@@ -11,7 +11,24 @@ Cliente::Cliente(Socket&& skt):
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {}
+    enviador(protocolo, envio_comandos) {
+        //WARNING todo esto es momentaneo para que compile
+        std::vector<RepresentacionGusano> listaGusanosIniciales;
+        RepresentacionGusano gusi;
+        gusi.idGusano = 0;
+        gusi.vida = 100;
+        gusi.dir = DERECHA;
+        // gusi.estado = 
+        gusi.posicion = std::pair<int, int>(0,0);
+        // gusi.armaEquipada = NADA_P;
+        listaGusanosIniciales.push_back(gusi);
+
+        std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
+        gusanosNuevos.insert({0, listaGusanosIniciales});
+
+        estado_juego.gusanos = gusanosNuevos;
+        // listaGusanosIniciales.
+    }
 
 void Cliente::iniciar() {
     entrada_teclado.start();
@@ -24,6 +41,8 @@ void Cliente::iniciar() {
 void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, Animacion& agua, int it) {
     renderizador.Clear();
 
+    // TODO: dibujar fondo.
+
     // Dibujo el agua, tiene dimensiones 128 * 50, así que tendré que 
     // dibujarla varias veces para que ocupe toda la parte inferior de la pantalla
     // en varias filas. TODO: Encapsular en una clase?
@@ -33,11 +52,12 @@ void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, Animacion& 
         }
     }
 
-    bool flip = false;
-    if (estado_juego.dir == IZQUIERDA) {
-        flip = true;
+    // Dibujo todos los gusanos.
+    for (auto& par : estado_juego.gusanos) {
+        for (auto& gusano : par.second) {
+            caminar.dibujar(camara, gusano.posicion.enX, gusano.posicion.enY, gusano.dir == DERECHA, it, 1);
+        }
     }
-    caminar.dibujar(camara, estado_juego.posicion.first, estado_juego.posicion.second, flip, it, 1);
     
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < (MAPA_ANCHO / 128 + 1); j++) {
@@ -65,8 +85,6 @@ void Cliente::loop_principal() {
     camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
 
     iniciar();
-
-    SDL_Event evento;
 
     int it = 0;
     int tick_anterior = SDL_GetTicks();

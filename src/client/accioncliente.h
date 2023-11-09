@@ -45,7 +45,7 @@ class AccionDisparar : public AccionCliente {
         void enviar(Protocolo& protocolo) override;
         ~AccionDisparar() override = default;
 };
-/*
+
 class AccionEquiparArma : public AccionCliente {
     private:
         int id_gusano;
@@ -55,6 +55,6 @@ class AccionEquiparArma : public AccionCliente {
         void enviar(Protocolo& protocolo) override;
         ~AccionEquiparArma() override = default;
 };
-*/
+
 
 #endif  // ACCIONCLIENTE_H_
