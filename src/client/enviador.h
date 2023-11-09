@@ -6,6 +6,7 @@
 #include <string>
 #include <syslog.h>
 
+#include "accioncliente.h"
 #include "thread.h"
 #include "queue.h"
 #include "protocolo.h"
@@ -14,12 +15,11 @@
 class Enviador: public Thread {
 private:
     Protocolo& protocolo;
-    Queue<std::string>& envio_comandos;
+    Queue<std::shared_ptr<AccionCliente>>& envio_comandos;
     std::atomic<bool> cont;
 
 public:
-    Enviador(Protocolo& protocolo, Queue<std::string>& envio_comandos);
-    // Enviador(Queue<std::string>& envio_comandos);
+    Enviador(Protocolo& protocolo, Queue<std::shared_ptr<AccionCliente>>& envio_comandos);
 
     // Hilo que se encarga de enviar los comandos al servidor.
     void run() override;

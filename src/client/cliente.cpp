@@ -3,18 +3,15 @@
 Cliente::Cliente(Socket&& skt):
     sdl(SDL_INIT_VIDEO),
     protocolo(std::move(skt)),
+    estado_juego(),
+    camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {
-        // Inicializo el estado del juego.
-        estado_juego.posicion.first = 0;
-        estado_juego.posicion.second = 0;
-        estado_juego.dir = DERECHA;
-    }
+    enviador(protocolo, envio_comandos) {}
 
 void Cliente::iniciar() {
     entrada_teclado.start();
@@ -25,7 +22,7 @@ void Cliente::iniciar() {
 void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, int it) {
     renderizador.Clear();
 
-    caminar.siguiente_frame(estado_juego.posicion.first, estado_juego.posicion.second, estado_juego.dir, it);
+    caminar.siguiente_frame(camara, estado_juego.posicion.first, estado_juego.posicion.second, estado_juego.dir, it);
 
     // Actualizo ventana.
     renderizador.Present();
@@ -45,6 +42,8 @@ void Cliente::loop_principal() {
 
     iniciar();
 
+    SDL_Event evento;
+
     int it = 0;
     int tick_anterior = SDL_GetTicks();
     int rate = 1000 / FPS;
@@ -54,10 +53,13 @@ void Cliente::loop_principal() {
         recepcion_estados.try_pop(estado_juego);
 
         // Chequeo comandos de teclado.
-        std::string comando;
-        if (comandos_teclado.try_pop(comando)) {
-            if (comando == "q" || comando == "salir") {
+        Comando comando;
+        while (comandos_teclado.try_pop(comando)) {
+            if (comando.tipo == SALIR) {
                 continuar = false;
+            }
+            else if (comando.tipo == MOVER_CAMARA) {
+                camara.mover(comando.parametros.first, comando.parametros.second, 2000, 2000);
             }
         }
 

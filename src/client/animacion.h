@@ -5,6 +5,7 @@
 #include <SDL2pp/SDL2pp.hh>
 
 #include "defs.h"
+#include "camara.h"
 
 using namespace SDL2pp;
 
@@ -17,7 +18,7 @@ class Animacion {
  public:
     Animacion(Renderer& render, std::string ruta_textura, int frames);
 
-    void siguiente_frame(int pos_x, int pos_y, DireccionGusano dir, int it);
+    void siguiente_frame(Camara& camara, int pos_x, int pos_y, DireccionGusano dir, int it);
 };
 
 #endif // ANIMACION_H_

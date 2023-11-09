@@ -6,12 +6,14 @@
 #include "entradateclado.h"
 #include "recibidor.h"
 #include "enviador.h"
+#include "camara.h"
 #include "socket.h"
 #include "protocolo.h"
 #include "queue.h"
 #include "menu.h"
 #include "animacion.h"
 #include "defs.h"
+#include "accioncliente.h"
 
 using namespace SDL2pp;
 
@@ -26,10 +28,11 @@ class Cliente {
     SDL sdl;
     Protocolo protocolo;
     EstadoDelJuego estado_juego;
+    Camara camara;
     Menu menu;
     Queue<EstadoDelJuego> recepcion_estados;
-    Queue<std::string> envio_comandos;
-    Queue<std::string> comandos_teclado;
+    Queue<std::shared_ptr<AccionCliente>> envio_comandos;
+    Queue<Comando> comandos_teclado;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;

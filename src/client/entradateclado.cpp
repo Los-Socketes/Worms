@@ -1,6 +1,6 @@
 #include "entradateclado.h"
 
-EntradaTeclado::EntradaTeclado(Queue<std::string>& envio_comandos, Queue<std::string>& comandos_teclado)
+EntradaTeclado::EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos, Queue<Comando>& comandos_teclado)
     : envio_comandos(envio_comandos), comandos_teclado(comandos_teclado), cont(true) {}
 
 void EntradaTeclado::run() {
@@ -12,31 +12,29 @@ void EntradaTeclado::run() {
             // de salida hacia al servidor, o bien a la cola
             // de comandos locales de teclado para que se encargue
             // el loop principal de procesarlos.
-
-            // TODO: Crear clase Accion para generalizar el envío de comandos.
             if (evento.type == SDL_QUIT) {
-                comandos_teclado.push("salir");
+                comandos_teclado.push(Comando(SALIR));
                 cont = false;
             } else if (evento.type == SDL_KEYDOWN) {
                 switch (evento.key.keysym.sym) {
                     case SDLK_LEFT:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push("Presionando izquierda");
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(0, INICIO_IZQ));
                         break;
                     case SDLK_RIGHT:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push("Presionando derecha");
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(0, INICIO_DER));
                         break;
                     case SDLK_RETURN:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push("Enter");
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(0, SALTO));
                         break;
                     case SDLK_BACKSPACE:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push("Retroceso");
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(0, PIRUETA));
                         break;
                     case SDLK_q:
-                        comandos_teclado.push("q");
+                        comandos_teclado.push(Comando(SALIR));
                         cont = false;
                         break;
                     default:
@@ -45,14 +43,16 @@ void EntradaTeclado::run() {
             } else if (evento.type == SDL_KEYUP) {
                 switch (evento.key.keysym.sym) {
                     case SDLK_LEFT:
-                        envio_comandos.push("Soltando izquierda");
+                        envio_comandos.push(std::make_shared<AccionMoverGusano>(0, FIN_IZQ));
                         break;
                     case SDLK_RIGHT:
-                        envio_comandos.push("Soltando derecha");
+                        envio_comandos.push(std::make_shared<AccionMoverGusano>(0, FIN_DER));
                         break;
                     default:
                         break;
                 }
+            } else if (evento.type == SDL_MOUSEMOTION) {
+                comandos_teclado.push(Comando(MOVER_CAMARA, evento.motion.xrel, evento.motion.yrel));
             }
         }
     } catch (const ClosedQueue& e) {
