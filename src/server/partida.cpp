@@ -148,7 +148,7 @@ void Partida::gameLoop() {
     b2Body* groundBody = world.CreateBody(&groundBodyDef);
 
     b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
+    groundBox.SetAsBox(800.0f, 10.0f);
 
     groundBody->CreateFixture(&groundBox, 0.0f);
 
