@@ -1,17 +1,45 @@
 #include "animacion.h"
 
-Animacion::Animacion(Renderer& render, std::string ruta_textura, int frames) :
+Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int tam_y, int frames, bool fix) :
     renderizador(render),
     frames(frames),
-    textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)) {}
+    dimensiones(tam_x, tam_y),
+    textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
+    fix(fix) {}
 
-void Animacion::siguiente_frame(int pos_x, int pos_y, DireccionGusano dir, int it) {
-    int frame_actual = it % frames;  
-    if (dir == DERECHA){
+void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
+    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, dimensiones.first, dimensiones.second));
+    
+    int coord_x = pos_x - camara.getPosicionX();
+    int coord_y = pos_y - camara.getPosicionY();
+    
+    // Si no hay interseccion no se renderiza.
+    if (!rect_interseccion) {
+        return;
+    }
+
+    int frame_actual = (it / velocidad) % frames;  
+    int fix_x = 0;
+    if(fix){
+        fix_x = -frame_actual;
+    }
+    if (flip){
         // Si camina a la derecha.
-        renderizador.Copy(textura, Rect(-frame_actual, frame_actual * 60, 60, 60), Rect(pos_x, pos_y, 60, 60));
+        renderizador.Copy( 
+            textura,
+            Rect(fix_x, frame_actual * dimensiones.second, dimensiones.first, dimensiones.second),
+            Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
+            0,
+            NullOpt,
+            SDL_FLIP_HORIZONTAL);
     } else {
         // Si camina a la izquierda se invierte la imagen.
-        renderizador.Copy(textura, Rect(-frame_actual, frame_actual * 60, 60, 60), Rect(pos_x, pos_y, 60, 60), 0, NullOpt, SDL_FLIP_HORIZONTAL);
-    }  
+        renderizador.Copy( 
+            textura,
+            Rect(fix_x, frame_actual * dimensiones.second, dimensiones.first, dimensiones.second),
+            Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
+            0,
+            NullOpt,
+            SDL_FLIP_NONE);
+    }
 }
