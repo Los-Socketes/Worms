@@ -112,6 +112,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        tipoUltimaAccion = ultimaAccion.accion;
        if (obtuvoNueva == true) {
 	 accionAEjecutar = accionObtenida;
+	 ultimaAccion = accionAEjecutar;
        }
        //Si entra en estos otros if es porque NO se obtuvo algo nuevo
        else if (tipoUltimaAccion == MOVERSE) {
