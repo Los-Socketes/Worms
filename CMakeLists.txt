@@ -114,7 +114,6 @@ add_executable(server
   "${COMMONDIR}/queue.h"
   
   #Armas
-  "${SERVERDIR}/bate.cpp"
 )
 ## Macros para pasarle al server
 target_compile_definitions(server PUBLIC
