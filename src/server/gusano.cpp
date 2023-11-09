@@ -18,24 +18,38 @@ b2Vec2 Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
     b2Vec2 direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
+        std::cout << "Inicio der" << "\n";
         direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         this->setDireccion(DERECHA);
         break;
     case INICIO_IZQ:
+        std::cout << "Inicio izq" << "\n";
         direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
         this->setDireccion(IZQUIERDA);
         break;
     case FIN_DER:
+        std::cout << "Fin der" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->setDireccion(DERECHA);
         break;
     case FIN_IZQ:
+        std::cout << "Fin izq" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->setDireccion(IZQUIERDA);
         break;
     case SALTO:
+        std::cout << "Salto" << "\n";
         break;
     case PIRUETA:
+        std::cout << "PIRUETA" << "\n";
         break;
     case INVAL_DIR:
+        std::cout << "Invalid dir" << "\n";
+        abort();
         break;
     }
     return direccion;
