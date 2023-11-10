@@ -1,0 +1,12 @@
+* Cuarta reunion
+Fecha: <2023-11-10 Fri>
+
+** TODO
+- Jugabilidad
+- Tener 2 gusanos
+- Que los gusanos se peguen
+- 3 o 4 armas
+- Que se puedan elegir las armas y que haya algun menu de armas
+- Cuidar valgrind en el servidor
+- Sacar idGusano del protocolo del cliente
+- Shared pointers para estadoDelJuego
