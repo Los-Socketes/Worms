@@ -8,6 +8,7 @@ Gusano::Gusano(b2Body &cuerpo)
     this->direccion = DERECHA;
     this->vida = 100;
     this->armaEquipada = NADA_P;
+    this->estado = CAYENDO;
 }
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
@@ -21,6 +22,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Inicio der" << "\n";
         direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
+        this->estado = CAMINANDO;
         this->setDireccion(DERECHA);
         this->cuerpo.SetLinearVelocity(direccion);
         break;
@@ -28,6 +30,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Inicio izq" << "\n";
         direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
+        this->estado = CAMINANDO;
         this->setDireccion(IZQUIERDA);
         this->cuerpo.SetLinearVelocity(direccion);
         break;
@@ -35,6 +38,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Fin der" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
+        this->estado = QUIETO;
         this->setDireccion(DERECHA);
         this->cuerpo.SetLinearVelocity(direccion);
         break;
@@ -42,6 +46,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Fin izq" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
+        this->estado = QUIETO;
         this->setDireccion(IZQUIERDA);
         this->cuerpo.SetLinearVelocity(direccion);
         break;
@@ -135,7 +140,9 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.idGusano = this->idGusano;
     repre.vida = this->vida;
     repre.dir = this->direccion;
-    repre.posicion = this->getCoords();;
+    repre.estado = this->estado;
+    repre.posicion = this->getCoords();
+    repre.armaEquipada = this->armaEquipada;
 
     return repre;
 }

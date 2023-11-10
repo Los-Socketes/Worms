@@ -18,6 +18,8 @@ private:
     //Arma armaequipada;
     ArmaProtocolo armaEquipada;
 
+    EstadoGusano estado;
+
     //Conceptos de b2box
     b2Body& cuerpo;
 
