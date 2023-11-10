@@ -7,7 +7,7 @@
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 Partida::Partida(std::string mapa)
-    :world(b2Vec2(fuerzaGravitariaX, fuerzaGravitariaY)){
+    :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
 }
@@ -75,11 +75,11 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     longitud /= 2;
 
     b2PolygonShape viga;
-    viga.SetAsBox(longitud, anchoViga);
+    viga.SetAsBox(longitud, ANCHOVIGA);
 
     b2Body* groundBody = world.CreateBody(&vigaDef);
 
-    groundBody->CreateFixture(&viga, masaCuerpoEstatico);
+    groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
 
 }
 

@@ -14,15 +14,15 @@
 
 // Constantes de gravedad.
 // WARNING: Originalmente valia 10 no 100. Ver que onda.
-#define fuerzaGravitariaX 0.0f
-#define fuerzaGravitariaY -10.0f
+#define FUERZAGRAVITARIAX 0.0F
+#define FUERZAGRAVITARIAY -10.0F
 
-#define anchoViga 0.8f
-#define longitudVigaGrande 6.0f
-#define longitudVigaChica 3.0f
+#define ANCHOVIGA 0.8F
+#define LONGITUDVIGAGRANDE 6.0F
+#define LONGITUDVIGACHICA 3.0F
 
-#define VELOCIDADMOVIMIENTO 10.0f
+#define VELOCIDADMOVIMIENTO 10.0F
 
-#define masaCuerpoEstatico 0.0f
+#define MASACUERPOESTATICO 0.0F
 
 #endif
