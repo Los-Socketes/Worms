@@ -5,6 +5,7 @@ Cliente::Cliente(Socket&& skt):
     protocolo(std::move(skt)),
     estado_juego(),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
+    dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT, MAPA_ANCHO, MAPA_ALTO),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -18,9 +19,9 @@ Cliente::Cliente(Socket&& skt):
         gusi.idGusano = 0;
         gusi.vida = 100;
         gusi.dir = DERECHA;
-        // gusi.estado = 
+        gusi.estado = QUIETO;
         gusi.posicion = std::pair<int, int>(0,0);
-        // gusi.armaEquipada = NADA_P;
+        gusi.armaEquipada = NADA_P;
         listaGusanosIniciales.push_back(gusi);
 
         std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
@@ -36,38 +37,6 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-// TODO: pasar el grupo de entidades a reenderizar. Estas deberían tener asignadas
-// las animaciones correspondientes.
-void Cliente::renderizar(Renderer& renderizador, Animacion& caminar, Animacion& agua, int it) {
-    renderizador.Clear();
-
-    // TODO: dibujar fondo.
-
-    // Dibujo el agua, tiene dimensiones 128 * 50, así que tendré que 
-    // dibujarla varias veces para que ocupe toda la parte inferior de la pantalla
-    // en varias filas. TODO: Encapsular en una clase?
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < (MAPA_ANCHO / 128 + 1); j++) {
-            agua.dibujar(camara, j * 128, MAPA_ALTO - 100 + 10 * (i + 1), false, it + 3*(i+1), 2);
-        }
-    }
-
-    // Dibujo todos los gusanos.
-    for (auto& par : estado_juego.gusanos) {
-        for (auto& gusano : par.second) {
-            caminar.dibujar(camara, gusano.posicion.enX, gusano.posicion.enY, gusano.dir == DERECHA, it, 1);
-        }
-    }
-    
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < (MAPA_ANCHO / 128 + 1); j++) {
-            agua.dibujar(camara, j * 128, MAPA_ALTO - 80 + 10 * (i + 1), false, it + 3*(i+3), 2);
-        }
-    }
-    // Actualizo ventana.
-    renderizador.Present();
-}
-
 bool Cliente::ejecutar_menu() {
     return menu.ejecutar();
 }
@@ -77,9 +46,8 @@ void Cliente::loop_principal() {
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
 
-    // TODO: tener un mapa de texturas y/o animaciones ya inicializadas.
-    Animacion agua(renderizador, "assets/sprites/water.png", 128, 100, 12, false);
-    Animacion caminar(renderizador, "assets/sprites/wwalk.png", 60, 60, 15, true);
+    // Inicializar animaciones.
+    dibujador.inicializarAnimaciones(renderizador);
 
     // TODO: obtener info del mapa desde el menu.
     camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
@@ -105,14 +73,13 @@ void Cliente::loop_principal() {
                     continuar = false;
                     break;
                 case MOVER_CAMARA:
-                    if (mover_camara) {
+                    if (mover_camara)
                         camara.mover(comando.parametros.first, comando.parametros.second);
-                    }
                     break;
                 case TOGGLE_CAMARA:
                     mover_camara = !mover_camara;
                     break;
-                case TAMAÑO_VENTANA:
+                case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
                 default:
@@ -121,7 +88,7 @@ void Cliente::loop_principal() {
         }
 
         // Renderizo.
-        renderizar(renderizador, caminar, agua, it);
+        dibujador.dibujar(renderizador, it);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();
