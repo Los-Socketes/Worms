@@ -14,7 +14,7 @@ void Gusano::giveId(int idGusano) {
 }
 
 
-void Gusano::getVectorDeDireccion(Direccion direccionDeseada) {
+void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     b2Vec2 direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
@@ -87,7 +87,7 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
         direccionDeseada = accion.dir;
         // fuerzamovimiento =
         // WARNING: Aca se ejecuta el movimiento
-        getVectorDeDireccion(direccionDeseada);
+        realizarMovimiento(direccionDeseada);
 
         // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
 

@@ -19,7 +19,7 @@ private:
     void setDireccion(DireccionGusano nuevaDireccion);
 
     //TODO Cambiar nombre
-    void getVectorDeDireccion(Direccion direccionDeseada);
+    void realizarMovimiento(Direccion direccionDeseada);
 
 public:
     Gusano(b2Body& cuerpo);
