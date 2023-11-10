@@ -14,6 +14,7 @@
 #include "animacion.h"
 #include "defs.h"
 #include "accioncliente.h"
+#include "dibujador.h"
 
 using namespace SDL2pp;
 
@@ -33,6 +34,7 @@ class Cliente {
     Protocolo protocolo;
     EstadoDelJuego estado_juego;
     Camara camara;
+    Dibujador dibujador;
     Menu menu;
     Queue<EstadoDelJuego> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;

@@ -130,6 +130,7 @@ add_executable(client
   "${CLIENTDIR}/animacion.cpp"
   "${CLIENTDIR}/camara.cpp"
   "${CLIENTDIR}/accioncliente.cpp"
+  "${CLIENTDIR}/dibujador.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
