@@ -23,9 +23,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
   b2Fixture* a = contact->GetFixtureA();
   b2Fixture* b = contact->GetFixtureB();
   std::cout << "HUBO CONTACTO\n";
-  //TODO Hacer algo mejor que esta mierda, no tengo ni idea cuales son
-  //las mejores putas practicas de esta libreria. Estoy caminando en la
-  //oscuridad, es inevitable pegarse contra un mueble
+
   float densidadA, densidadB;
   densidadB = b->GetDensity();
   densidadA = a->GetDensity();
@@ -48,6 +46,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     //ya que los gusanos se van a mover
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
+    // bodyDef.userData
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
@@ -121,6 +120,7 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
 }
 
 void Partida::enviarEstadoAJugadores() {
+    //TODO esto deberia ser un puntero
     EstadoDelJuego estadoActual;
 
     std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;

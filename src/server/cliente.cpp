@@ -13,7 +13,7 @@ void Cliente::obtenerAccesoAAcciones(Queue<Accion>* acciones) {
 }
 
 
-inline void Cliente::enviarEstadoJuego(EstadoDelJuego estado) {
+void Cliente::enviarEstadoJuego(EstadoDelJuego estado) {
     this->sender.anadirEstado(estado);
 }
 
