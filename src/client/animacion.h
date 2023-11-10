@@ -14,6 +14,7 @@ class Animacion {
  private:
     Renderer& renderizador;
     int frames;
+    std::pair<int, int> tam;
     std::pair<int, int> dimensiones;
     Texture textura;
     bool fix;
@@ -22,6 +23,8 @@ class Animacion {
     Animacion(Renderer& render, std::string ruta_textura, int tam_x, int tam_y, int frames, bool fix);
 
     void dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad);
+
+    void setDimensiones(int tam_x, int tam_y);
 };
 
 #endif // ANIMACION_H_

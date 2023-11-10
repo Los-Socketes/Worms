@@ -73,7 +73,7 @@ void EntradaTeclado::run() {
                 comandos_teclado.push(Comando(MOVER_CAMARA, evento.motion.xrel, evento.motion.yrel));
             } else if (evento.type == SDL_WINDOWEVENT) {
                 if (evento.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    comandos_teclado.push(Comando(TAMAÑO_VENTANA, evento.window.data1, evento.window.data2));
+                    comandos_teclado.push(Comando(TAMANIO_VENTANA, evento.window.data1, evento.window.data2));
                 }
             }
         }

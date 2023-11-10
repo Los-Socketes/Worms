@@ -80,10 +80,12 @@ struct RepresentacionMapa {
 #define enX first
 #define enY second
 
+typedef float radianes; 
+
 
 struct RepresentacionArma {
     // RADIANES ?!
-    float anguloRad;
+    radianes anguloRad;
     float potencia;
     ArmaProtocolo arma;
 };
@@ -97,10 +99,22 @@ struct RepresentacionGusano {
     ArmaProtocolo armaEquipada;
 };
 
+struct RepresentacionViga {
+    radianes angulo;
+    //WARNING: En teoria esto solo pueden valer 6 o 3. Mepa que
+    //es mas facil hacer una longitud generia y pasar el int
+    int longitud;
+    //ATTENTION: Esta es la posicion INICIAL,  
+    std::pair<coordX, coordY> posicionInicial;
+};
+
 
 // Tiene la info del estado del juego
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::vector<RepresentacionViga> vigas;
+    // DireccionGusano dir;
+    // std::pair<coordX, coordY> posicion;
 };
 
 struct Accion {

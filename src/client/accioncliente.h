@@ -9,7 +9,7 @@ enum TipoComando{
     SALIR,
     MOVER_CAMARA,
     TOGGLE_CAMARA,
-    TAMAÑO_VENTANA
+    TAMANIO_VENTANA
 };
 
 struct Comando{

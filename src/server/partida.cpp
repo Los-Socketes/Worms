@@ -9,6 +9,7 @@ const std::chrono::duration<double> frameDuration(1.0 / 30);
 Partida::Partida(std::string mapa)
     :world(b2Vec2(fuerzaGravitariaX, fuerzaGravitariaY)){
     this->mapa = mapa;
+    this->world.SetContactListener(&this->colisiones);
 }
 
 //Esto tendria que estar en el YAML?
@@ -17,6 +18,29 @@ Partida::Partida(std::string mapa)
 // Usado para castear un puntero a una reference y hacer
 // el codigo mas explicito
 #define REFERENCE *
+
+void ResolvedorColisiones::BeginContact(b2Contact *contact) {
+  b2Fixture* a = contact->GetFixtureA();
+  b2Fixture* b = contact->GetFixtureB();
+  std::cout << "HUBO CONTACTO\n";
+  //TODO Hacer algo mejor que esta mierda, no tengo ni idea cuales son
+  //las mejores putas practicas de esta libreria. Estoy caminando en la
+  //oscuridad, es inevitable pegarse contra un mueble
+  float densidadA, densidadB;
+  densidadB = b->GetDensity();
+  densidadA = a->GetDensity();
+  if (a->GetBody()->GetType() == b2_staticBody)
+      return;
+  if (b->GetBody()->GetType() == b2_staticBody)
+      return;
+
+  if (densidadA == 1.0f) {
+      b2Body *cuerpoA = a->GetBody();
+      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+  }
+      
+  // abort();
+}
 
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     b2BodyDef bodyDef;
@@ -39,6 +63,24 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Gusano *nuevoGusano = new Gusano(REFERENCE body);
 
     return nuevoGusano;
+}
+
+void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
+    b2BodyDef vigaDef;
+    vigaDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    vigaDef.angle = angulo;
+
+    //ATTENTION Dividimos a la mitad porque box2d pide la mitad de
+    // la longitud
+    longitud /= 2;
+
+    b2PolygonShape viga;
+    viga.SetAsBox(longitud, anchoViga);
+
+    b2Body* groundBody = world.CreateBody(&vigaDef);
+
+    groundBody->CreateFixture(&viga, masaCuerpoEstatico);
+
 }
 
 idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
@@ -94,11 +136,43 @@ void Partida::enviarEstadoAJugadores() {
     }
     estadoActual.gusanos = representacionPartida;
 
+    std::vector<RepresentacionViga> vigasEnMapa;
+
+    //Fuente: https://www.iforce2d.net/b2dtut/bodies
+    for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
+    {
+
+        b2BodyType tipoDelCuerpo;
+        tipoDelCuerpo = b->GetType();
+        /*
+        b2_staticBody = 0,
+        b2_kinematicBody,
+        b2_dynamicBody
+        */
+        //Ignoramos los que no son estaticos porque los gusanos los
+        //sacamos de los jugadores
+        if (tipoDelCuerpo != b2_staticBody)
+	  continue;
+
+        RepresentacionViga vigaActual;
+        vigaActual.angulo = b->GetAngle();
+        //TODO Desharcodear
+        vigaActual.longitud = 8;
+        b2Vec2 posicion = b->GetPosition();
+        std::pair<coordX, coordY> posicionProtocolo;
+        posicionProtocolo.enX = posicion.x;
+        posicionProtocolo.enY = posicion.y;
+        vigaActual.posicionInicial = posicionProtocolo;
+    }
+
+    estadoActual.vigas = vigasEnMapa;
+
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
     }
 
 }
+
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Accion& ultimaAccion) {
@@ -115,11 +189,14 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 	 ultimaAccion = accionAEjecutar;
        }
        //Si entra en estos otros if es porque NO se obtuvo algo nuevo
-       else if (tipoUltimaAccion == MOVERSE) {
+       else if (tipoUltimaAccion == MOVERSE &&
+	      (ultimaAccion.dir != SALTO &&
+	       ultimaAccion.dir != PIRUETA)
+	      ) {
 	  accionAEjecutar = ultimaAccion;
        }
        else {
-	  accionAEjecutar = ultimaAccion;
+	  // accionAEjecutar = ultimaAccion;
 	  accionAEjecutar.accion = ESTAQUIETO;
        }
 
@@ -145,6 +222,33 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
+void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
+    //Si no quiere equiparse nada, no hacemos nada
+    if (arma == NADA_P)
+        return;
+
+    std::pair<coordX, coordY> coords;
+    coords = gusano->getCoords();
+
+    std::cout << "Le doy el arma\n";
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(coords.enX, coords.enY);
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture(&fixtureDef);
+
+    
+}
+
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
@@ -153,24 +257,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    /*
-      Creamos un cuerpo rigidoo
-    */
-
-    //Esto crea un cuerpo, el cual despues se lo vamos a pasar al
-    //mundo. Los cuerpos por default, son estaticos
-    //WARNING:*Los cuerpos estaticos no chocan con otros cuerpos y son
-    //inmovibles*
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f);
-
-    //Hacemos que el world cree un cuerpo basado en nuestra definicion
-    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(800.0f, 10.0f);
-
-    groundBody->CreateFixture(&groundBox, 0.0f);
+    this->anadirViga(0, 6, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
@@ -195,6 +282,21 @@ void Partida::gameLoop() {
     // }
 
 
+    //WARNING: Creamos esto para testear las colisiones
+    // b2BodyDef bodyDef;
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(0.0f, 110.0f);
+    // b2Body* body = world.CreateBody(&bodyDef);
+
+    // b2PolygonShape dynamicBox;
+    // dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &dynamicBox;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
+
+    // body->CreateFixture(&fixtureDef);
     
     // abort();
 
@@ -213,12 +315,20 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        gusanoActual->cambio(accionAEjecutar);
-        std::cout << gusanoActual->getCoords().enX << " " << gusanoActual->getCoords().enY << "\n";
+        ArmaDeseada armaQueQuiere;
+        armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
+
+        this->darArmaA(gusanoActual, armaQueQuiere);
 
 
 
+        printf("\n");
+        std::pair<coordX, coordY> posicionamiento = gusanoActual->getCoords();
+        printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
 
+
+        // b2Vec2 position = body->GetPosition();
+        // printf("Otro: %4.2f %4.2f \n", position.x, position.y);
 
 
 
