@@ -61,20 +61,14 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
-    std::pair<cambioX, cambioY> cambio(0.0f,0.0f);
-    /*Arranca abajo a la izquierda.
-     *X:
-     *	>: +1
-     *	<: -1
-     *Y:
-     *	^: +1
-     *	v: -1
-    */
+ArmaDeseada Gusano::ejecutar(Accion accion) {
+    ArmaDeseada armaQueQuiero;
+
     tipoAccion accionDeseada;
     accionDeseada = accion.accion;
     switch (accionDeseada) {
     case ESTAQUIETO:
+        armaQueQuiero = NADA_P;
         break;
     case MOVERSE:
         {
@@ -91,49 +85,28 @@ std::pair<cambioX, cambioY> Gusano::cambio(Accion accion) {
 
         // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
 
+        armaQueQuiero = NADA_P;
         break;
         }
     case EQUIPARSE:
-        ArmaProtocolo armaDeseada;
-        armaDeseada = accion.armaAEquipar;
-        this->armaEquipada = armaDeseada;
+        std::cout << "EQUIPO EL ARMA\n";
+        ArmaProtocolo armaElegida;
+        armaElegida = accion.armaAEquipar;
+        this->armaEquipada = armaElegida;
+
+        armaQueQuiero = armaElegida;
         break;
     case PREPARAR:
+        armaQueQuiero = NADA_P;
         break;
     case ATAQUE:
+        armaQueQuiero = NADA_P;
+        std::cout << "ATACO\n";
         break;
     }
 
-    b2Vec2 fuerza; 
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    // switch (accion) {
-    // case AccionServer::MOV_IZQ:
-    //     this->setDireccion(DERECHA);
-    //     cambio.first = -1.0f;
-    //     cambio.second = 0.0f;
-    //     break;
-    // case AccionServer::MOV_DER:
-    //     this->setDireccion(IZQUIERDA);
-    //     cambio.first = 1.0f;
-    //     cambio.second = 0.0f;
-    //     break;
-    //     //TODO Esto no se si es 100% correcto. Por ahora funca
-    // case AccionServer::MOV_SALTO:
-    //     cambio.first = 1.0f;
-    //     cambio.second = 1.0f;
-    //     break;
-    // case AccionServer::MOV_PIRUETA:
-    //     cambio.first = -1.0f;
-    //     cambio.second = 1.0f;
-    //     break;
-    // case AccionServer::MOV_QUIETO:
-    //     cambio.first = 0.0f;
-    //     cambio.second = 0.0f;
-    //     break;
-    // }
-
-    return cambio;
+    return armaQueQuiero;
     
 
 }

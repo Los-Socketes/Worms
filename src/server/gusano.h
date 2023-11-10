@@ -4,6 +4,9 @@
 #include <box2d/box2d.h>
 #include "defs.h"
 
+//Arma que el gusano quiere crear
+#define ArmaDeseada ArmaProtocolo
+
 class Gusano {
 private:
     hp vida;
@@ -11,6 +14,7 @@ private:
 
     int idGusano;
 
+    //Arma armaequipada;
     ArmaProtocolo armaEquipada;
 
     //Conceptos de b2box
@@ -28,7 +32,7 @@ public:
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
-    std::pair<cambioX, cambioY> cambio(Accion accion);
+    [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 

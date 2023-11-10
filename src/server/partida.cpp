@@ -149,6 +149,7 @@ void Partida::enviarEstadoAJugadores() {
 
 }
 
+
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Accion& ultimaAccion) {
        Accion accionAEjecutar;
@@ -248,8 +249,8 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        gusanoActual->cambio(accionAEjecutar);
-        std::cout << gusanoActual->getCoords().enX << " " << gusanoActual->getCoords().enY << "\n";
+        ArmaDeseada armaQueQuiere;
+        armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
 
 
 
