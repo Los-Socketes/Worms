@@ -12,36 +12,51 @@
 //     EstadoArma 
 // }
 
-class Arma {
-private: 
-    ArmaProtocolo idArma;
+struct CaracteristicasArma {
     bool tieneMira;
     bool esCuerpoACuerpo;
     bool tienePotenciaVariable;
     bool tieneCuentaRegresiva;
     bool esTeledirigido;
     bool esAfectadoPorViento;
+};
+
+struct Danio {
+    int epicentro;
+    int radio;
+};
+
+class Arma {
+private: 
+    ArmaProtocolo idArma;
+    CaracteristicasArma caracteristicas;
     int municiones;
     int fragmentos;
 
-    std::pair<int,int> danio;
-    std::pair<int,int> danioFragmento;
+    Danio danio;
+    Danio danioFragmento;
     float potencia;
     int cuentaRegresiva;
+
+    float angulo;
 
 public:
     Arma(ArmaProtocolo idArma);
 
     // TODO: devolver cosas a configurar
+    CaracteristicasArma getCaracteristicas();
 
-    std::pair<int,int> getDanio();
-    std::pair<int,int> getDanioFragmento();
+    Danio getDanio();
+    Danio getDanioFragmento();
 
     // -1 es equivalente a infinitas
     int getMuniciones();
 
     float getPotencia();
     void setPotencia(float potencia);
+
+    float getAngulo();
+    void setAngulo(float angulo);
 
     int getFragmentos();
 

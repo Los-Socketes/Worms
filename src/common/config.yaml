@@ -1,140 +1,140 @@
 # # Armas # #
 Bazooka:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: false
-  Teledirigido: false
-  Trayectoria afectada por el viento: true
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: true
   Municiones: -1
-  Daño:
+  Danio:
     Epicentro: 50 
     Radio: 2
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 Mortero:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: false
-  Teledirigido: false
-  Trayectoria afectada por el viento: true
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: true
   Municiones: 10
-  Daño: 
+  Danio: 
     Epicentro: 50
     Radio: 2
-  Cantidad de fragmentos: 6
-  Daño de fragmento: 
+  CantidadFragmentos: 6
+  DanioFragmento: 
     Epicentro: 10
     Radio: 2
 
 Granada Verde:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: true
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: -1
-  Daño: 
+  Danio: 
     Epicentro: 30
     Radio: 2
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 Granada Roja:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: true
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: 10
-  Daño (del estallido principal): 
+  Danio (del estallido principal): 
     Epicentro: 30
     Radio: 2
-  Cantidad de fragmentos: 6
-  Daño de fragmentos: 
+  CantidadFragmentos: 6
+  DanioFragmentos: 
     Epicentro: 10
     Radio: 2
 
 Banana:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: true
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: 5
-  Daño: 
+  Danio: 
     Epicentro: 70
     Radio: 4
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 Granada Santa:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: true
-  Cuenta regresiva: true
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: 2
-  Daño: 
+  Danio: 
     Epicentro: 110
     Radio: 8
-  Cantidad de fragmentos: 0 
+  CantidadFragmentos: 0 
   
 Dinamita:
-  Arma con mira: false
-  Combate cuerpo a cuerpo: true
-  Disparo con potencia variable: false
-  Cuenta regresiva: true
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: false
+  EsCuerpoACuerpo: true
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: 5
-  Daño: 
+  Danio: 
     Epicentro: 50
     Radio: 4
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 Bate de Baseball:
-  Arma con mira: true
-  Combate cuerpo a cuerpo: true
-  Disparo con potencia variable: false
-  Cuenta regresiva: false
-  Teledirigido: false
-  Trayectoria afectada por el viento: false
+  ConMira: true
+  EsCuerpoACuerpo: true
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
   Municiones: -1
-  Daño: 
+  Danio: 
     Epicentro: 10
     Radio: 0
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 # Agregar cant de misiles
 Ataque Aereo:
-  Arma con mira: false
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: false
-  Cuenta regresiva: false
-  Teledirigido: true
-  Trayectoria afectada por el viento: true
+  ConMira: false
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: true
+  EsAfectadaPorViento: true
   Municiones: 2
-  Daño (por cada misil): 
+  Danio (por cada misil): 
     Epicentro: 40
     Radio: 2
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 Teletransportación:
-  Arma con mira: false
-  Combate cuerpo a cuerpo: false
-  Disparo con potencia variable: false
-  Cuenta regresiva: false
-  Teledirigido: true
-  Trayectoria afectada por el viento: false
+  ConMira: false
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: true
+  EsAfectadaPorViento: false
   Municiones: -1
-  Daño: 
+  Danio: 
     Epicentro: 0
     Radio: 0
-  Cantidad de fragmentos: 0
+  CantidadFragmentos: 0
 
 
 # # Caracteristicas de gusano # #
