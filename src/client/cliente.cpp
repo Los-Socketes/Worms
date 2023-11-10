@@ -19,9 +19,9 @@ Cliente::Cliente(Socket&& skt):
         gusi.idGusano = 0;
         gusi.vida = 100;
         gusi.dir = DERECHA;
-        // gusi.estado = 
+        gusi.estado = QUIETO;
         gusi.posicion = std::pair<int, int>(0,0);
-        // gusi.armaEquipada = NADA_P;
+        gusi.armaEquipada = NADA_P;
         listaGusanosIniciales.push_back(gusi);
 
         std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;

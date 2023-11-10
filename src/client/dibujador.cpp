@@ -60,7 +60,10 @@ void Dibujador::dibujarGusanos(int it) {
         for (auto& gusano : jugador.second) {
             switch (gusano.estado) {
                 case QUIETO:
-                    animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1);
+                    if (gusano.armaEquipada == BATE_P)
+                        animaciones["apuntando bate"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 16, 1);
+                    else
+                        animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1); 
                     break;
                 case CAMINANDO:
                     animaciones["caminando"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, it, 1);
@@ -70,6 +73,12 @@ void Dibujador::dibujarGusanos(int it) {
                     break;
                 case CAYENDO:
                     animaciones["cayendo"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, it, 1);
+                    break;
+                case DISPARANDO:
+                    if (gusano.armaEquipada == BATE_P)
+                        animaciones["batiendo"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 16, 1);
+                    else
+                        animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1); 
                     break;
                 default:
                     animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1);
