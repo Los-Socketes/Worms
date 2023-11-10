@@ -94,7 +94,6 @@ struct RepresentacionGusano {
     id idGusano;
     hp vida;
     DireccionGusano dir;
-    // TODO: Agregar recibir y enviar estado
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
     ArmaProtocolo armaEquipada;

@@ -245,6 +245,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     gusano1.idGusano = (id)2;
     gusano1.vida = (hp)20;
     gusano1.dir = DERECHA;
+    gusano1.estado = SALTANDO;
     std::pair<coordX, coordY> posicion1(2.0345, 5.6789);
     gusano1.posicion = posicion1;
     gusano1.armaEquipada = NADA_P;
@@ -253,6 +254,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     gusano2.idGusano = (id)3;
     gusano2.vida = (hp)25;
     gusano2.dir = DERECHA;
+    gusano2.estado = CAYENDO;
     std::pair<coordX, coordY> posicion2(2.0345, 5.6789);
     gusano2.posicion = posicion2;
     gusano2.armaEquipada = GRANADA_VERDE_P;
@@ -276,6 +278,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
         REQUIRE(resultadoGusano.posicion.first == baseGusano.posicion.first);
         REQUIRE(resultadoGusano.posicion.second == -baseGusano.posicion.second);
         REQUIRE(resultadoGusano.armaEquipada == baseGusano.armaEquipada);
+        REQUIRE(resultadoGusano.estado == baseGusano.estado);
 
     }
 

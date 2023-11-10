@@ -307,8 +307,14 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
             posicionRecibida.enY = maxYEnMapa - posicionRecibida.enY;
 
-            int8_t dir;
+            int8_t estadoGusano;
             bool was_closed = false;
+            socket.recvall(&estadoGusano, sizeof(estadoGusano), &was_closed);
+            if (was_closed) {
+                return error;
+            }
+
+            int8_t dir;
             socket.recvall(&dir, sizeof(dir), &was_closed);
             if (was_closed) {
                 return error;
@@ -325,6 +331,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
             gusanoActual.idGusano = idGusano;
+            gusanoActual.estado = (EstadoGusano)estadoGusano;
             gusanoActual.dir = (DireccionGusano)dir;
             gusanoActual.posicion = posicionRecibida;
             gusanoActual.armaEquipada = (ArmaProtocolo)arma;
@@ -547,7 +554,13 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             if (was_closed) {
                 return false;
             }
-            // TODO: enviar estado del gusano
+            // enviar estado del gusano
+            int8_t estadoGusano = gusano.estado;
+            socket.sendall(&estadoGusano, sizeof(estadoGusano), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
 
             // envio direccion
             int8_t dir = gusano.dir;
