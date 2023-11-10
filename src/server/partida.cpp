@@ -1,8 +1,7 @@
 #include "partida.h"
 #include <map>
+#include "box2dDefs.h"
 
-#define fuerzaGravitariaX 0.0f
-#define fuerzaGravitariaY -10.0f 
 #define SLEEPSEGS 1
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
@@ -40,6 +39,24 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Gusano *nuevoGusano = new Gusano(REFERENCE body);
 
     return nuevoGusano;
+}
+
+void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
+    b2BodyDef vigaDef;
+    vigaDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    vigaDef.angle = angulo;
+
+    //ATTENTION Dividimos a la mitad porque box2d pide la mitad de
+    // la longitud
+    longitud /= 2;
+
+    b2PolygonShape viga;
+    viga.SetAsBox(longitud, anchoViga);
+
+    b2Body* groundBody = world.CreateBody(&vigaDef);
+
+    groundBody->CreateFixture(&viga, masaCuerpoEstatico);
+
 }
 
 idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
@@ -95,6 +112,37 @@ void Partida::enviarEstadoAJugadores() {
     }
     estadoActual.gusanos = representacionPartida;
 
+    std::vector<RepresentacionViga> vigasEnMapa;
+
+    //Fuente: https://www.iforce2d.net/b2dtut/bodies
+    for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
+    {
+
+        b2BodyType tipoDelCuerpo;
+        tipoDelCuerpo = b->GetType();
+        /*
+        b2_staticBody = 0,
+        b2_kinematicBody,
+        b2_dynamicBody
+        */
+        //Ignoramos los que no son estaticos porque los gusanos los
+        //sacamos de los jugadores
+        if (tipoDelCuerpo != b2_staticBody)
+	  continue;
+
+        RepresentacionViga vigaActual;
+        vigaActual.angulo = b->GetAngle();
+        //TODO Desharcodear
+        vigaActual.longitud = 8;
+        b2Vec2 posicion = b->GetPosition();
+        std::pair<coordX, coordY> posicionProtocolo;
+        posicionProtocolo.enX = posicion.x;
+        posicionProtocolo.enY = posicion.y;
+        vigaActual.posicionInicial = posicionProtocolo;
+    }
+
+    estadoActual.vigas = vigasEnMapa;
+
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
     }
@@ -113,15 +161,38 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        tipoUltimaAccion = ultimaAccion.accion;
        if (obtuvoNueva == true) {
 	 accionAEjecutar = accionObtenida;
+	 ultimaAccion = accionAEjecutar;
        }
        //Si entra en estos otros if es porque NO se obtuvo algo nuevo
-       else if (tipoUltimaAccion == MOVERSE) {
+       else if (tipoUltimaAccion == MOVERSE &&
+	      (ultimaAccion.dir != SALTO &&
+	       ultimaAccion.dir != PIRUETA)
+	      ) {
 	  accionAEjecutar = ultimaAccion;
        }
        else {
-	  accionAEjecutar = ultimaAccion;
+	  // accionAEjecutar = ultimaAccion;
 	  accionAEjecutar.accion = ESTAQUIETO;
        }
+
+       //WARNING Debug
+       // switch (accionAEjecutar.accion) {
+       // case ESTAQUIETO:
+       // 	 std::cout << "Quieto" << "\n";
+       // 	 break;
+       // case MOVERSE:
+       // 	 std::cout << "Moverse" << "\n";
+       // 	 break;
+       // case EQUIPARSE:
+       // 	 std::cout << "Equiparse" << "\n";
+       // 	 break;
+       // case PREPARAR:
+       // 	 std::cout << "Preparar" << "\n";
+       // 	 break;
+       // case ATAQUE:
+       // 	 std::cout << "Ataque" << "\n";
+       // 	 break;
+       // }
 
        return accionAEjecutar;
 }
@@ -134,24 +205,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    /*
-      Creamos un cuerpo rigidoo
-    */
-
-    //Esto crea un cuerpo, el cual despues se lo vamos a pasar al
-    //mundo. Los cuerpos por default, son estaticos
-    //WARNING:*Los cuerpos estaticos no chocan con otros cuerpos y son
-    //inmovibles*
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f);
-
-    //Hacemos que el world cree un cuerpo basado en nuestra definicion
-    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
-
-    groundBody->CreateFixture(&groundBox, 0.0f);
+    this->anadirViga(0, 6, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
@@ -195,6 +249,7 @@ void Partida::gameLoop() {
 				      ultimaAccion);
 
         gusanoActual->cambio(accionAEjecutar);
+        std::cout << gusanoActual->getCoords().enX << " " << gusanoActual->getCoords().enY << "\n";
 
 
 

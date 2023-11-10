@@ -11,10 +11,15 @@ private:
 
     int idGusano;
 
+    ArmaProtocolo armaEquipada;
+
     //Conceptos de b2box
     b2Body& cuerpo;
 
     void setDireccion(DireccionGusano nuevaDireccion);
+
+    //TODO Cambiar nombre
+    void getVectorDeDireccion(Direccion direccionDeseada);
 
 public:
     Gusano(b2Body& cuerpo);

@@ -10,15 +10,6 @@ project(worms VERSION 0.1 HOMEPAGE_URL
 # Usamos el estandar iso 17 porque lo dice la consigna
 set(CMAKE_CXX_STANDARD 17)
 
-# Anadimos debug symbols
-set(CMAKE_BUILD_TYPE Debug)
-
-# Busco codigo para el sdl
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer 2.6.3 REQUIRED)
-find_package(SDL2pp REQUIRED)
-
 # Catch2 tiene versiones relativamente distintas entre Gentoo y Debian
 # Como solo usamos la libreria para correr tests, vamos a usar una
 # version u otra dependiendo de la distro. Los includes van a ser
@@ -34,6 +25,18 @@ string(REPLACE \n "" infoOS ${infoOS})
 
 string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
 string(COMPARE EQUAL ${infoOS} "\"Debian GNU/Linux\"" esDebian)
+
+# Anadimos debug symbols
+if(${esGentoo})
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+# Busco codigo para el sdl
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_mixer 2.6.3 REQUIRED)
+find_package(SDL2pp REQUIRED)
+
 if(${esGentoo}) 
   message("Estas en " ${infoOS})
   find_package(Catch2 3.4.0 REQUIRED)
@@ -109,6 +112,8 @@ add_executable(server
 
   #Thread safe queue
   "${COMMONDIR}/queue.h"
+  
+  #Armas
 )
 ## Macros para pasarle al server
 target_compile_definitions(server PUBLIC

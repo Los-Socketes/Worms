@@ -41,6 +41,8 @@ class Partida : public Thread {
 
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
+    void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
 public:
     Partida(const std::string mapa);
 
