@@ -227,10 +227,13 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
     if (arma == NADA_P)
         return;
 
+    std::pair<coordX, coordY> coords;
+    coords = gusano->getCoords();
+
     std::cout << "Le doy el arma\n";
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 100.0f);
+    bodyDef.position.Set(coords.enX, coords.enY);
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
