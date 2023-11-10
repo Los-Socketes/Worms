@@ -9,6 +9,7 @@ const std::chrono::duration<double> frameDuration(1.0 / 30);
 Partida::Partida(std::string mapa)
     :world(b2Vec2(fuerzaGravitariaX, fuerzaGravitariaY)){
     this->mapa = mapa;
+    this->world.SetContactListener(&this->colisiones);
 }
 
 //Esto tendria que estar en el YAML?
@@ -17,6 +18,15 @@ Partida::Partida(std::string mapa)
 // Usado para castear un puntero a una reference y hacer
 // el codigo mas explicito
 #define REFERENCE *
+
+void ResolvedorColisiones::BeginContact(b2Contact *contact) {
+  b2Fixture* a = contact->GetFixtureA();
+  b2Fixture* b = contact->GetFixtureB();
+  std::cout << "MIERDA\n";
+  std::cout << b->GetDensity() << "\n";
+  std::cout << a->GetDensity() << "\n";
+  abort();
+}
 
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     b2BodyDef bodyDef;
@@ -198,6 +208,29 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
+// void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
+//     //Si no quiere equiparse nada, no hacemos nada
+//     if (arma == NADA_P)
+//         return;
+
+//     // b2BodyDef bodyDef;
+//     // bodyDef.type = b2_dynamicBody;
+//     // bodyDef.position.Set(0.0f, 0.0f);
+//     // b2Body* body = world.CreateBody(&bodyDef);
+
+//     // b2PolygonShape dynamicBox;
+//     // dynamicBox.SetAsBox(1.0f, 1.0f);
+
+//     // b2FixtureDef fixtureDef;
+//     // fixtureDef.shape = &dynamicBox;
+//     // fixtureDef.density = 1.0f;
+//     // fixtureDef.friction = 0.3f;
+
+//     // body->CreateFixture(&fixtureDef);
+
+    
+// }
+
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
@@ -231,6 +264,21 @@ void Partida::gameLoop() {
     // }
 
 
+    //WARNING: Creamos esto para testear las colisiones
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 110.0f);
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture(&fixtureDef);
     
     // abort();
 
@@ -252,9 +300,17 @@ void Partida::gameLoop() {
         ArmaDeseada armaQueQuiere;
         armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
 
+        // this->darArmaA(gusanoActual, armaQueQuiere);
 
 
 
+        printf("\n");
+        std::pair<coordX, coordY> posicionamiento = gusanoActual->getCoords();
+        printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
+
+
+        b2Vec2 position = body->GetPosition();
+        printf("Otro: %4.2f %4.2f \n", position.x, position.y);
 
 
 

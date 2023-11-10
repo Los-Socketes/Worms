@@ -59,8 +59,9 @@ add_compile_options(
 
   # Seteamos esta flag porque muchas veces dejamos algo "en camino"
   # TODO Sacar estos Wno ASAP
-  # -Wno-unused-variable
-  # -Wno-unused-parameter
+  -Wno-unused-variable
+  -Wno-unused-parameter
+  -Wno-unused-but-set-variable
 
  )
 

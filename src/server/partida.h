@@ -18,11 +18,23 @@
 
 #define MINJUGADORES 1
 
+class ResolvedorColisiones : public b2ContactListener {
+public:
+    void BeginContact(b2Contact* contact);
+ 
+    // void EndContact(b2Contact* contact);
+ 
+    // void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+ 
+    // void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+};
+
 class Partida : public Thread {
     Queue<Accion> acciones;
 
     //World de box2d de la partida
     b2World world;
+    ResolvedorColisiones colisiones;
 
     std::string mapa;
 
@@ -42,6 +54,8 @@ class Partida : public Thread {
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
+    void darArmaA(Gusano *gusano, ArmaDeseada arma);
 
 public:
     Partida(const std::string mapa);

@@ -92,7 +92,6 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         std::cout << "EQUIPO EL ARMA\n";
         ArmaProtocolo armaElegida;
         armaElegida = accion.armaAEquipar;
-        this->armaEquipada = armaElegida;
 
         armaQueQuiero = armaElegida;
         break;
@@ -109,6 +108,11 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
     return armaQueQuiero;
     
 
+}
+
+
+void Gusano::giveGun(ArmaProtocolo arma) {
+    this->armaEquipada = arma;
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {

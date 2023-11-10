@@ -7,6 +7,7 @@
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
 
+
 class Gusano {
 private:
     hp vida;
@@ -30,6 +31,8 @@ public:
 
     void giveId(int idGusano);
 
+    void giveGun(ArmaProtocolo arma);
+
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
     [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
@@ -37,6 +40,8 @@ public:
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
+
+    [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
 };
 
 #endif
