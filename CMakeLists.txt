@@ -25,9 +25,10 @@ string(REPLACE \n "" infoOS ${infoOS})
 
 string(COMPARE EQUAL ${infoOS} "Gentoo" esGentoo)
 string(COMPARE EQUAL ${infoOS} "\"Debian GNU/Linux\"" esDebian)
+string(COMPARE EQUAL ${infoOS} "\"Ubuntu\"" esUbuntu)
 
 # Anadimos debug symbols
-if(${esGentoo})
+if(${esGentoo} OR ${esUbuntu})
   set(CMAKE_BUILD_TYPE Debug)
 endif()
 
@@ -37,7 +38,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
 
-if(${esGentoo}) 
+if(${esGentoo} OR ${esUbuntu}) 
   message("Estas en " ${infoOS})
   find_package(Catch2 3.4.0 REQUIRED)
 elseif(${esDebian})
@@ -197,7 +198,7 @@ target_compile_definitions(testprotocolo PUBLIC
 target_compile_definitions(testprotocolo PUBLIC
   SERVER
 )
-if(${esGentoo})
+if(${esGentoo} OR ${esUbuntu})
   target_compile_definitions(testprotocolo PUBLIC
     DISTRO=1
   )
