@@ -22,10 +22,24 @@ Partida::Partida(std::string mapa)
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
   b2Fixture* a = contact->GetFixtureA();
   b2Fixture* b = contact->GetFixtureB();
-  std::cout << "MIERDA\n";
-  std::cout << b->GetDensity() << "\n";
-  std::cout << a->GetDensity() << "\n";
-  abort();
+  std::cout << "HUBO CONTACTO\n";
+  //TODO Hacer algo mejor que esta mierda, no tengo ni idea cuales son
+  //las mejores putas practicas de esta libreria. Estoy caminando en la
+  //oscuridad, es inevitable pegarse contra un mueble
+  float densidadA, densidadB;
+  densidadB = b->GetDensity();
+  densidadA = a->GetDensity();
+  if (a->GetBody()->GetType() == b2_staticBody)
+      return;
+  if (b->GetBody()->GetType() == b2_staticBody)
+      return;
+
+  if (densidadA == 1.0f) {
+      b2Body *cuerpoA = a->GetBody();
+      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+  }
+      
+  // abort();
 }
 
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
@@ -208,28 +222,29 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
-// void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
-//     //Si no quiere equiparse nada, no hacemos nada
-//     if (arma == NADA_P)
-//         return;
+void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
+    //Si no quiere equiparse nada, no hacemos nada
+    if (arma == NADA_P)
+        return;
 
-//     // b2BodyDef bodyDef;
-//     // bodyDef.type = b2_dynamicBody;
-//     // bodyDef.position.Set(0.0f, 0.0f);
-//     // b2Body* body = world.CreateBody(&bodyDef);
+    std::cout << "Le doy el arma\n";
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 100.0f);
+    b2Body* body = world.CreateBody(&bodyDef);
 
-//     // b2PolygonShape dynamicBox;
-//     // dynamicBox.SetAsBox(1.0f, 1.0f);
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
 
-//     // b2FixtureDef fixtureDef;
-//     // fixtureDef.shape = &dynamicBox;
-//     // fixtureDef.density = 1.0f;
-//     // fixtureDef.friction = 0.3f;
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
 
-//     // body->CreateFixture(&fixtureDef);
+    body->CreateFixture(&fixtureDef);
 
     
-// }
+}
 
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
@@ -265,20 +280,20 @@ void Partida::gameLoop() {
 
 
     //WARNING: Creamos esto para testear las colisiones
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 110.0f);
-    b2Body* body = world.CreateBody(&bodyDef);
+    // b2BodyDef bodyDef;
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(0.0f, 110.0f);
+    // b2Body* body = world.CreateBody(&bodyDef);
 
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
+    // b2PolygonShape dynamicBox;
+    // dynamicBox.SetAsBox(1.0f, 1.0f);
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &dynamicBox;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
 
-    body->CreateFixture(&fixtureDef);
+    // body->CreateFixture(&fixtureDef);
     
     // abort();
 
@@ -300,7 +315,7 @@ void Partida::gameLoop() {
         ArmaDeseada armaQueQuiere;
         armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
 
-        // this->darArmaA(gusanoActual, armaQueQuiere);
+        this->darArmaA(gusanoActual, armaQueQuiere);
 
 
 
@@ -309,8 +324,8 @@ void Partida::gameLoop() {
         printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
 
 
-        b2Vec2 position = body->GetPosition();
-        printf("Otro: %4.2f %4.2f \n", position.x, position.y);
+        // b2Vec2 position = body->GetPosition();
+        // printf("Otro: %4.2f %4.2f \n", position.x, position.y);
 
 
 

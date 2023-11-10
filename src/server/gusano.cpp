@@ -93,13 +93,14 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         ArmaProtocolo armaElegida;
         armaElegida = accion.armaAEquipar;
 
-        armaQueQuiero = armaElegida;
+        this->armaEquipada = armaElegida;
+        armaQueQuiero = NADA_P;
         break;
     case PREPARAR:
         armaQueQuiero = NADA_P;
         break;
     case ATAQUE:
-        armaQueQuiero = NADA_P;
+        armaQueQuiero = this->armaEquipada;
         std::cout << "ATACO\n";
         break;
     }
