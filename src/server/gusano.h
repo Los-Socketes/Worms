@@ -1,37 +1,49 @@
 #ifndef GUSANO_HEADER
 #define GUSANO_HEADER
 
-#include "protocolo.h"
-#include <sys/types.h>
+#include <box2d/box2d.h>
 #include "defs.h"
 
-// hp = healt points
-typedef uint hp;
+//Arma que el gusano quiere crear
+#define ArmaDeseada ArmaProtocolo
+
 
 class Gusano {
 private:
     hp vida;
     DireccionGusano direccion;
-    std::pair<int, int> coords;
 
-    //Representa que el gusano se esta moviendo aka esta en un estado
-    //de moverser
-    // bool moviendose = false;
+    int idGusano;
+
+    //Arma armaequipada;
+    ArmaProtocolo armaEquipada;
+
+    EstadoGusano estado;
+
+    //Conceptos de b2box
+    b2Body& cuerpo;
+
     void setDireccion(DireccionGusano nuevaDireccion);
 
+    //TODO Cambiar nombre
+    void realizarMovimiento(Direccion direccionDeseada);
+
 public:
-    Gusano(std::pair<int, int> coords);
+    Gusano(b2Body& cuerpo);
 
-    std::pair<int, int> cambio(Accion accion);
-    [[nodiscard]] DireccionGusano getDireccion();
+    void giveId(int idGusano);
 
-    std::pair<int, int> getCoords();
-    void setCoords(std::pair<int, int> nuevasCoords);
+    void giveGun(ArmaProtocolo arma);
 
-    void detener();
-    void ponerEnMovimiento();
+    // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
+
+    [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
+
+    [[nodiscard]] std::pair<coordX, coordY> getCoords();
+
+    [[nodiscard]] RepresentacionGusano getRepresentacion();
+
+    [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
 };
-
-
 
 #endif

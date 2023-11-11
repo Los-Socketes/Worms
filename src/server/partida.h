@@ -1,54 +1,66 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include "cliente.h"
 #include "defs.h"
 #include "gusano.h"
 #include "thread.h"
-#include <cstdint>
-#include <map>
-#include <sys/types.h>
 #include <utility>
 #include <vector>
-#include "comunes.h"
-#include "threadSafeList.h"
 #include "jugador.h"
+#include "queue.h"
 #include <condition_variable>
 #include <mutex>
+#include <box2d/box2d.h>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
 #define MINJUGADORES 1
 
-// enum class Accion { Mover, Saltar, Disparar };
+class ResolvedorColisiones : public b2ContactListener {
+public:
+    void BeginContact(b2Contact* contact);
+ 
+    // void EndContact(b2Contact* contact);
+ 
+    // void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+ 
+    // void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+};
 
 class Partida : public Thread {
-    Queue<Direccion> acciones;
+    Queue<Accion> acciones;
+
+    //World de box2d de la partida
+    b2World world;
+    ResolvedorColisiones colisiones;
 
     std::string mapa;
 
-    std::vector<Jugador *> jugadores;
+    std::vector<Cliente *> clientes;
     std::mutex mtx;
     std::condition_variable seUnioJugador;
 
-    // std::vector<Gusano *> gusanos;
+    std::vector<Gusano *> gusanos;
 
-    std::map<std::pair<int, int>, Gusano *> coordsGusanos;
-
-    //TODO: Aca estaria Box2d
-    std::pair<int, int> gravedad(std::pair<int, int> cambioDeseado,
-			   std::pair<int, int> posInicial
-			   );
+    std::vector<Jugador *> jugadores;
 
     void enviarEstadoAJugadores();
 
-    Accion obtenerAccion(Direccion accionObtenida, bool obtuvoNueva,
+    [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
+
+    [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
+
+    void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
+    void darArmaA(Gusano *gusano, ArmaDeseada arma);
 
 public:
     Partida(const std::string mapa);
 
-    void anadirJugador(Jugador  *jugadorNuevo);
+    [[nodiscard]] idJugador anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
 };

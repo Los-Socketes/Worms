@@ -1,0 +1,141 @@
+# # Armas # #
+Bazooka:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: true
+  Municiones: -1
+  Danio:
+    Epicentro: 50 
+    Radio: 2
+  CantidadFragmentos: 0
+
+Mortero:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: true
+  Municiones: 10
+  Danio: 
+    Epicentro: 50
+    Radio: 2
+  CantidadFragmentos: 6
+  DanioFragmento: 
+    Epicentro: 10
+    Radio: 2
+
+Granada Verde:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: -1
+  Danio: 
+    Epicentro: 30
+    Radio: 2
+  CantidadFragmentos: 0
+
+Granada Roja:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: 10
+  Danio (del estallido principal): 
+    Epicentro: 30
+    Radio: 2
+  CantidadFragmentos: 6
+  DanioFragmentos: 
+    Epicentro: 10
+    Radio: 2
+
+Banana:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: 5
+  Danio: 
+    Epicentro: 70
+    Radio: 4
+  CantidadFragmentos: 0
+
+Granada Santa:
+  ConMira: true
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: true
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: 2
+  Danio: 
+    Epicentro: 110
+    Radio: 8
+  CantidadFragmentos: 0 
+  
+Dinamita:
+  ConMira: false
+  EsCuerpoACuerpo: true
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: true
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: 5
+  Danio: 
+    Epicentro: 50
+    Radio: 4
+  CantidadFragmentos: 0
+
+Bate de Baseball:
+  ConMira: true
+  EsCuerpoACuerpo: true
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: false
+  EsAfectadaPorViento: false
+  Municiones: -1
+  Danio: 
+    Epicentro: 10
+    Radio: 0
+  CantidadFragmentos: 0
+
+# Agregar cant de misiles
+Ataque Aereo:
+  ConMira: false
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: true
+  EsAfectadaPorViento: true
+  Municiones: 2
+  Danio (por cada misil): 
+    Epicentro: 40
+    Radio: 2
+  CantidadFragmentos: 0
+
+Teletransportación:
+  ConMira: false
+  EsCuerpoACuerpo: false
+  TienePotenciaVariable: false
+  TieneCuentaRegresiva: false
+  EsTeledirigido: true
+  EsAfectadaPorViento: false
+  Municiones: -1
+  Danio: 
+    Epicentro: 0
+    Radio: 0
+  CantidadFragmentos: 0
+
+
+# # Caracteristicas de gusano # #
+Vida: 50

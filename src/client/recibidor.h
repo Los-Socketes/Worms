@@ -13,6 +13,7 @@ class Recibidor: public Thread {
 private:
     Protocolo& protocolo;
     Queue<EstadoDelJuego>& recepcion_estados;
+    EstadoDelJuego estado_juego;
     std::atomic<bool> cont;
 
 public:
@@ -22,7 +23,7 @@ public:
     void run() override;
 
     // Para cerrar el hilo.
-    void stop();
+    void stop() override;
 
 };
 

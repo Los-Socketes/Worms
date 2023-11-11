@@ -1,0 +1,140 @@
+* Git
+- <>: Representa una "variable". No hay que ponerlas.
+- La gran mayoria de las opciones de un mismo comando se pueden combinar!
+
+** Checkout
+*** Ir a una rama
+#+begin_src shell
+  git checkout <branch>
+#+end_src
+
+*** Ir a un commit en particular
+#+begin_src shell
+  git checkout <hash>
+#+end_src
+
+** Switch
+*** Ir a una rama
+#+begin_src shell
+  git switch <branch>
+#+end_src
+*** Crear una rama nueva
+#+begin_src shell
+  git switch -c <branch>
+#+end_src
+
+** Status
+*** Ver el estado general
+#+begin_src shell
+  git status
+#+end_src
+
+** Log
+*** Ver el historial de commits
+#+begin_src shell
+  git log
+#+end_src
+
+*** Ver el ultimo commit
+#+begin_src shell
+  git log -1
+#+end_src
+
+*** Ver el grafo de commits
+Para recordarlo esta buena la regla mnemotécnica "A DOG". 
+#+begin_src shell
+  git log --all --decorate --oneline --graph
+#+end_src
+
+*** Ver los cambios del commit
+#+begin_src shell
+  git log --patch
+#+end_src
+
+*** Grepear los mensajes de commits
+#+begin_src shell
+  git log --grep=<texto>
+#+end_src
+
+*** Grepear los diffs de commits
+#+begin_src shell
+  git log -G <texto> --patch
+#+end_src
+
+*** Diferencias de commits entre dos ramas
+#+begin_src shell
+  git log <branchX>..<branchY>
+#+end_src
+
+** Diff
+*** Ver diferencias entre ultimo commit y el estado actual
+#+begin_src shell
+  git diff
+#+end_src
+
+*** Ver diferencias entre ultimo commit y el estado actual de un archivo particular
+#+begin_src shell
+  git diff <archivo>
+#+end_src
+
+*** Ver diferencias de patches entre dos ramas
+#+begin_src shell
+  git diff <branchX>..<branchY>
+#+end_src
+
+*** Ver diferencias de patches entre dos ramas en un archivo especifico
+#+begin_src shell
+  git diff <branchX>..<branchY> -- <archivo>
+#+end_src
+
+** Show
+*** Mostrar el commit de un hash en particular
+#+begin_src shell
+  git show <hash>
+#+end_src
+
+** Bisect
+Git de alto nivel!! Realiza una busqueda binaria interactivamente, preguntandote en cada paso. Te permite encontrar el commit "que lo rompe" de una manera re piola.
+
+*** Arranca el modo bisect
+#+begin_src shell
+  git bisect start
+#+end_src
+
+*** Marcar el primer commit bueno
+#+begin_src shell
+  git bisect good <hash>
+#+end_src
+
+*** Marcar el commit en el que estas como bueno
+#+begin_src shell
+  git bisect good
+#+end_src
+
+*** Marcar el commit en el que estas como malo
+#+begin_src shell
+  git bisect malo
+#+end_src
+
+*** Finalizar el modo bisect
+#+begin_src shell
+  git bisect reset
+#+end_src
+
+** Blame
+*** Ver linea a linea quien es el autor del ultimo commit
+#+begin_src shell
+  git blame <archivo>
+#+end_src
+
+** Stash
+Este esta re bueno. Si tenes cosas sin commitear y tenes que cambiar de rama o lo que sea esto te sirve para "guardar" tus cosas momentaneamente
+*** Guardar el estado de git sin necesidad de commitear
+#+begin_src shell
+  git stash
+#+end_src
+
+*** Restaurar lo guardado
+#+begin_src shell
+  git stash pop
+#+end_src

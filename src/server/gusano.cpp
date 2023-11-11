@@ -1,81 +1,148 @@
 #include "gusano.h"
-#include "defs.h"
-#include "protocolo.h"
+#include <iostream>
+#include "box2dDefs.h"
 
-typedef int cambioX;
-typedef int cambioY;
-
-Gusano::Gusano(std::pair<int, int> coords) {
-    this->coords = coords;
+Gusano::Gusano(b2Body &cuerpo)
+    : cuerpo(cuerpo)
+      {
     this->direccion = DERECHA;
     this->vida = 100;
+    this->armaEquipada = NADA_P;
+    this->estado = CAYENDO;
+}
+void Gusano::giveId(int idGusano) {
+    this->idGusano = idGusano;
 }
 
-// void Gusano::detener(){
-//     this->moviendose = false;
-// }
-// void Gusano::ponerEnMovimiento(){
-//     this->moviendose = true;
-// }
 
-
-std::pair<int, int> Gusano::cambio(Accion accion) {
-    std::pair<cambioX, cambioY> cambio(0,0);
-    /*Arranca abajo a la izquierda.
-     *X:
-     *	>: +1
-     *	<: -1
-     *Y:
-     *	^: +1
-     *	v: -1
-    */
-
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
-    switch (accion) {
-    case Accion::MOV_IZQ:
+void Gusano::realizarMovimiento(Direccion direccionDeseada) {
+    b2Vec2 direccion;
+    switch (direccionDeseada) {
+    case INICIO_DER:
+        std::cout << "Inicio der" << "\n";
+        direccion.x = VELOCIDADMOVIMIENTO;
+        direccion.y = 0.0f;
+        this->estado = CAMINANDO;
         this->setDireccion(DERECHA);
-        cambio.first = -1;
-        cambio.second = 0;
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
-    case Accion::MOV_DER:
+    case INICIO_IZQ:
+        std::cout << "Inicio izq" << "\n";
+        direccion.x = -VELOCIDADMOVIMIENTO;
+        direccion.y = 0.0f;
+        this->estado = CAMINANDO;
         this->setDireccion(IZQUIERDA);
-        cambio.first = 1;
-        cambio.second = 0;
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
-        //TODO Esto no se si es 100% correcto. Por ahora funca
-    case Accion::MOV_SALTO:
-        cambio.first = 1;
-        cambio.second = 1;
+    case FIN_DER:
+        std::cout << "Fin der" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->estado = QUIETO;
+        this->setDireccion(DERECHA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
-    case Accion::MOV_PIRUETA:
-        cambio.first = -1;
-        cambio.second = 1;
+    case FIN_IZQ:
+        std::cout << "Fin izq" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->estado = QUIETO;
+        this->setDireccion(IZQUIERDA);
+        this->cuerpo.SetLinearVelocity(direccion);
         break;
-    case Accion::MOV_QUIETO:
-        cambio.first = 0;
-        cambio.second = 0;
+    case SALTO:
+        std::cout << "Salto" << "\n";
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->cuerpo.ApplyLinearImpulseToCenter(b2Vec2(0.0f, 105.0f), false);
+        break;
+    case PIRUETA:
+        std::cout << "PIRUETA" << "\n";
+        break;
+    case INVAL_DIR:
+        std::cout << "Invalid dir" << "\n";
+        abort();
+        break;
+    }
+}
+
+ArmaDeseada Gusano::ejecutar(Accion accion) {
+    ArmaDeseada armaQueQuiero;
+
+    tipoAccion accionDeseada;
+    accionDeseada = accion.accion;
+    switch (accionDeseada) {
+    case ESTAQUIETO:
+        armaQueQuiero = NADA_P;
+        break;
+    case MOVERSE:
+        {
+        // std::pair<coordX, coordY> coordsIniciales;
+        // this->cuerpo.SetLinearVelocity;
+        
+        // b2Vec2 fuerzamovimiento(100.0f, 0.0f);
+        // b2Vec2 fuerzamovimiento;
+        Direccion direccionDeseada;
+        direccionDeseada = accion.dir;
+        // fuerzamovimiento =
+        // WARNING: Aca se ejecuta el movimiento
+        realizarMovimiento(direccionDeseada);
+
+        // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
+
+        armaQueQuiero = NADA_P;
+        break;
+        }
+    case EQUIPARSE:
+        std::cout << "EQUIPO EL ARMA\n";
+        ArmaProtocolo armaElegida;
+        armaElegida = accion.armaAEquipar;
+
+        this->armaEquipada = armaElegida;
+        armaQueQuiero = NADA_P;
+        break;
+    case PREPARAR:
+        armaQueQuiero = NADA_P;
+        break;
+    case ATAQUE:
+        armaQueQuiero = this->armaEquipada;
+        std::cout << "ATACO\n";
         break;
     }
 
-    return cambio;
+
+    return armaQueQuiero;
     
 
 }
 
-std::pair<int, int> Gusano::getCoords() {
-    return this->coords;
+
+void Gusano::giveGun(ArmaProtocolo arma) {
+    this->armaEquipada = arma;
 }
-void Gusano::setCoords(std::pair<int, int> nuevasCoords) {
-    this->coords = nuevasCoords;
+
+std::pair<coordX, coordY> Gusano::getCoords() {
+    b2Vec2 position = this->cuerpo.GetPosition();
+    std::pair<coordX, coordY> representacionPair;
+    representacionPair.enX = position.x;
+    representacionPair.enY = position.y;
+
+    return representacionPair;
 }
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
 }
 
-DireccionGusano Gusano::getDireccion() {
-    DireccionGusano direccionActual;
-    direccionActual = this->direccion;
 
-    return direccionActual;
+RepresentacionGusano Gusano::getRepresentacion() {
+    RepresentacionGusano repre;
+    repre.idGusano = this->idGusano;
+    repre.vida = this->vida;
+    repre.dir = this->direccion;
+    repre.estado = this->estado;
+    repre.posicion = this->getCoords();
+    repre.armaEquipada = this->armaEquipada;
+
+    return repre;
 }

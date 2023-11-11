@@ -1,0 +1,91 @@
+* Box 2d apuntes
+
+** Conceptos
+*** Shape
+Figura 2D
+Tambien conocido como fixture?
+*** Rigid body
+Tambien conocido como body.
+Cuerpos rigidos?
+*** Fixture
+Une un shape con un rigid body y añade propiedades materiales como densidad, friccion y restitucion.
+Esta es la que pone a una shape en el sistema de colision; asi logrando que pueda colisionar con otros objetos.
+*** Constraint
+Coneccion fisica que remueve grados de libertad de cuerpos.
+*Un cuerpo 2d tiene 3 grados de libertad*. 
+*** Contact constraint
+Constraint especialmente diseñada para prevenir la penetracion de rigid bodys y para simular *friccion y restitucion*.
+*Son creadas automaticamente por Box2d*.
+*** Joint
+Constraint usada para mantener a dos cuerpos juntos.
+Hay muchos tipos:
+- revolute
+- prismatic
+- distance
+- Y mas
+Alguna de estas tienen limit y motor (ver mas abajo)
+
+*** Joint limit
+Limita el rango de movimiento de un joint. 
+*** Joint motor
+Es el encargado de manejar el moviemiento del joint segun el grado de libertad de la joint. 
+*** World
+Colleccion de bodys, shapes y constraints que interactuan juntos. 
+Se pueden crear varios mundos, pero no suele ser necesario.
+*** Solver
+El world tiene un solver que es usado para avanzar el tiempo y calcular contancto y joint constraints.
+Es O(n) siendo n la cantidad de constraints.
+*** Continuous collision
+Nada un socotroco que evita las cosas se teletransporten.
+** Modulos
+Box2d esta compuesto de 3 modulos
+*** Common
+Codigo para allocacion(?, matematica y configuraicones
+*** Collision
+Define shapes, "broad phase"y las funciones de collision
+*** Dynamics
+Define el el world, bodies, shapes y joints
+** Units
+Box2d usa floats.
+Tiene que trabajar con tolerancias medidas en metros, kilogramos y segundos (GOATed)
+*Esta optimizado para mover figuras entre 0.1 y 10 metros*.
+En teoria, puede representar cosas hasta 50 metros.
+*Usa radianes* para los angulos. NO ANGULOS.
+
+*NO es recomendado usar pixeles como unidad de medida*.
+*Los worlds deberian ser de 2km o menos*
+
+** Factories
+Si vos queres crear un b2Body o b2Joint tenes que llamar a las funciones factory EN b2World.
+*NO* crear a los objetos de otra forma.
+
+Funciones de creacion:
+#+begin_src c++
+  b2Body* b2World::CreateBody(const b2BodyDef* def);
+
+  b2Joint* b2World::CreateJoint(const b2JointDef* def);
+#+end_src
+
+Funciones de destruccion:
+#+begin_src c++
+  void b2World::DestroyBody(b2Body* body);
+
+  void b2World::DestroyJoint(b2Joint* joint);
+
+#+end_src
+
+
+Cuando creas un body o joint tenes que dar una definicion. Esta definicion tiene que tener *toda* la infomacion necesaria  para crear un body o joint.
+
+Como las shapes (fixtures) estan atadas a un cuerpo, son creadas y destruidas usando una factory.
+#+begin_src c++
+  b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def);
+
+  void b2Body::DestroyFixture(b2Fixture* fixture);
+
+    //Tambien una funcion mas corta
+  b2Fixture* b2Body::CreateFixture(const b2Shape* shape, float density);
+    
+
+
+#+end_src

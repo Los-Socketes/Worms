@@ -3,17 +3,48 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <list>
 
+
+//TODO: Anadir fucniones de conversion de coordenadas box2d a sdl
 
 typedef int32_t id;
+typedef int idJugador;
+typedef uint hp;
+
+#define strings std::vector<std::string>
+
+// Estos dos typedefs representan las COORDENADAS de un objeto en la
+// partida
+typedef float coordX;
+typedef float coordY;
+
+// Estos dos typedefs representan el CAMBIO deseado por un objeto
+typedef float cambioX;
+typedef float cambioY;
+
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 
-//INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-enum class Accion { MOV_IZQ, MOV_DER, MOV_SALTO, MOV_PIRUETA, MOV_QUIETO };
+enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
+// Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
+enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
+                    GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
+                    TELETRANSPORTACION_P};
+
+/*
+ *0. El gusano esta quieto
+ *1. El gusano se mueve
+ *2. El gusano equipa un arma
+ *3. El gusano prepara/calibra el arma equipada
+ *4. El gusano realiza el ataque con la calibracion previamente establecida
+ */
+//                    0         1         2        3          4
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -27,6 +58,10 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Codigos para acciones 
 // mov + direccion -> izq, der, salto, pirueta
 #define MOV 9
+#define EQUIPAR 10
+#define CALIBRAR 11
+#define ATACAR 11
+
 
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {
@@ -45,11 +80,52 @@ struct RepresentacionMapa {
 #define enX first
 #define enY second
 
-// Tiene la info del estado del juego
-// Por ahora solo un gusano con posicion y direccion
-struct EstadoDelJuego {
+typedef float radianes; 
+
+
+struct RepresentacionArma {
+    // RADIANES ?!
+    radianes anguloRad;
+    float potencia;
+    ArmaProtocolo arma;
+};
+
+struct RepresentacionGusano {
+    id idGusano;
+    hp vida;
     DireccionGusano dir;
-    std::pair<int, int> posicion;
+    EstadoGusano estado;
+    std::pair<coordX, coordY> posicion;
+    ArmaProtocolo armaEquipada;
+};
+
+struct RepresentacionViga {
+    radianes angulo;
+    //WARNING: En teoria esto solo pueden valer 6 o 3. Mepa que
+    //es mas facil hacer una longitud generia y pasar el int
+    int longitud;
+    //ATTENTION: Esta es la posicion INICIAL,  
+    std::pair<coordX, coordY> posicionInicial;
+};
+
+
+// Tiene la info del estado del juego
+struct EstadoDelJuego {
+    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::vector<RepresentacionViga> vigas;
+    // DireccionGusano dir;
+    // std::pair<coordX, coordY> posicion;
+};
+
+struct Accion {
+    id idGusano;
+    idJugador jugador;
+    tipoAccion accion;
+    union {
+        Direccion dir;
+        ArmaProtocolo armaAEquipar;
+    };
+
 };
 
 #endif
