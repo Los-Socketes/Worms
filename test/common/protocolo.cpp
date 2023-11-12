@@ -211,7 +211,7 @@ TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
 
 // TEST 12
 
-EstadoDelJuego enviarEstadoDelJuego(EstadoDelJuego estado) {
+std::shared_ptr<EstadoDelJuego> enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     protocolo.setMaxY(0);
     protocoloServer.enviarEstadoDelJuego(estado);
     return protocolo.obtenerEstadoDelJuego();
@@ -243,10 +243,13 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     listaGusanos.push_back(gusano2);
     gusanos.insert({jugador, listaGusanos});
     estado1.gusanos = gusanos;
+
+    std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
+    estado->gusanos = estado1.gusanos;
     
-    EstadoDelJuego resultado = enviarEstadoDelJuego(estado1);
-    REQUIRE(resultado.gusanos.size() == estado1.gusanos.size());
-    std::vector<RepresentacionGusano> resultadoGusanos = resultado.gusanos[jugador];
+    std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
+    REQUIRE(resultado->gusanos.size() == estado1.gusanos.size());
+    std::vector<RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == listaGusanos.size());
     
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {

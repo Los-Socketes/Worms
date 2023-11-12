@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 
 class Protocolo {
@@ -39,7 +40,7 @@ public:
     bool moverGusano(Direccion direccion);
     bool equiparArma(ArmaProtocolo arma);
     bool atacar();
-    EstadoDelJuego obtenerEstadoDelJuego();
+    std::shared_ptr<EstadoDelJuego> obtenerEstadoDelJuego();
 
     void setMaxY(int y);
 #endif
@@ -56,7 +57,7 @@ public:
     bool enviarError();
 
     Accion obtenerAccion();
-    bool enviarEstadoDelJuego(EstadoDelJuego estado);
+    bool enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado);
 #endif
 
 
