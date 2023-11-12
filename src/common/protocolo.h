@@ -36,9 +36,9 @@ public:
     std::vector<id> obtenerPartidas();
     id crearPartida(id mapaSeleccionado);
     bool unirseAPartida(id idPartida);
-    bool moverGusano(id gusano, Direccion direccion);
-    bool equiparArma(id gusano, ArmaProtocolo arma);
-    bool atacar(id idGusano);
+    bool moverGusano(Direccion direccion);
+    bool equiparArma(ArmaProtocolo arma);
+    bool atacar();
     EstadoDelJuego obtenerEstadoDelJuego();
 
     void setMaxY(int y);

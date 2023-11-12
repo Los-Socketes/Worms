@@ -31,30 +31,26 @@ TEST_CASE( "Tests de pedirInforamcion", "[pedirInformacion]" ) {
 }
 
 // TEST 2
-Accion moverGusano(id gusano, Direccion dir) {
-    protocolo.moverGusano(gusano, dir);
+Accion moverGusano(Direccion dir) {
+    protocolo.moverGusano(dir);
     return protocoloServer.obtenerAccion();
 }
 
 TEST_CASE( "Tests de mover gusano", "[moverGusano]" ) {
     Direccion moverseA = INICIO_DER;
     Accion moverseDerecha;
-    moverseDerecha.idGusano = (id)0;
     moverseDerecha.accion = MOVERSE;
     moverseDerecha.dir = moverseA;
 
-    Accion resultado = moverGusano((id)0, moverseA);
-    REQUIRE(resultado.idGusano == moverseDerecha.idGusano);
+    Accion resultado = moverGusano(moverseA);
     REQUIRE(resultado.accion == moverseDerecha.accion);
     REQUIRE(resultado.dir == moverseDerecha.dir);
 
     moverseA = INICIO_IZQ;
     Accion moverseIzquierda;
-    moverseIzquierda.idGusano = (id)1;
     moverseIzquierda.accion = MOVERSE;
     moverseIzquierda.dir = moverseA;
-    resultado = moverGusano((id)1, moverseA);
-    REQUIRE(resultado.idGusano == moverseIzquierda.idGusano);
+    resultado = moverGusano(moverseA);
     REQUIRE(resultado.accion == moverseIzquierda.accion);
     REQUIRE(resultado.dir == moverseIzquierda.dir);
 }
@@ -176,56 +172,40 @@ TEST_CASE("Test de unirse a partidas (Caso error)", "[unirsePartidaCasoError]") 
 
 // TEST 10
 
-Accion obtenerAccionDeEquipar(id gusano, ArmaProtocolo arma) {
-    protocolo.equiparArma(gusano, arma);
+Accion obtenerAccionDeEquipar(ArmaProtocolo arma) {
+    protocolo.equiparArma(arma);
     return protocoloServer.obtenerAccion();
 }
 
 TEST_CASE( "Tests de equipar arma a gusano", "[obtenerAccionDeEquipar]" ) {
     ArmaProtocolo armaAEquipar = BATE_P;
-    id idGusano = 0;
     Accion equipar;
-    equipar.idGusano = idGusano;
     equipar.accion = EQUIPARSE;
     equipar.armaAEquipar = armaAEquipar;
-    Accion resultado = obtenerAccionDeEquipar(idGusano, armaAEquipar);
-    REQUIRE(resultado.idGusano == equipar.idGusano);
+    Accion resultado = obtenerAccionDeEquipar(armaAEquipar);
     REQUIRE(resultado.accion == equipar.accion);
     REQUIRE(resultado.armaAEquipar == equipar.armaAEquipar);
 
     armaAEquipar = BAZOOKA_P;
-    idGusano = 1;
-    equipar.idGusano = idGusano;
     equipar.accion = EQUIPARSE;
     equipar.armaAEquipar = armaAEquipar;
-    resultado = obtenerAccionDeEquipar(idGusano, armaAEquipar);
-    REQUIRE(resultado.idGusano == equipar.idGusano);
+    resultado = obtenerAccionDeEquipar(armaAEquipar);
     REQUIRE(resultado.accion == equipar.accion);
     REQUIRE(resultado.armaAEquipar == equipar.armaAEquipar);
 }
 
 // TEST 11
 
-Accion obtenerAccionDeAtacar(id gusano) {
-    protocolo.atacar(gusano);
+Accion obtenerAccionDeAtacar() {
+    protocolo.atacar();
     return protocoloServer.obtenerAccion();
 }
 
 TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
-    id idGusano = 0;
     Accion atacar;
-    atacar.idGusano = idGusano;
     atacar.accion = ATAQUE;
 
-    Accion resultado = obtenerAccionDeAtacar(idGusano);
-    REQUIRE(resultado.idGusano == atacar.idGusano);
-    REQUIRE(resultado.accion == atacar.accion);
-
-    idGusano = 1;
-    atacar.idGusano = idGusano;
-    atacar.accion = ATAQUE;
-    resultado = obtenerAccionDeAtacar(idGusano);
-    REQUIRE(resultado.idGusano == atacar.idGusano);
+    Accion resultado = obtenerAccionDeAtacar();
     REQUIRE(resultado.accion == atacar.accion);
 }
 

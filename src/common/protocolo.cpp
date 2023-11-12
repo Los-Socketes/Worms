@@ -206,13 +206,8 @@ bool Protocolo::unirseAPartida(id idPartida) {
 }
 
 
-bool Protocolo::moverGusano(id gusano, Direccion direccion) {
+bool Protocolo::moverGusano(Direccion direccion) {
     bool is_open = enviarCodigo(MOV);
-    if (!is_open) {
-        return false;
-    }
-
-    is_open = enviarId(gusano);
     if (!is_open) {
         return false;
     }
@@ -227,15 +222,12 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 }
 
 
-bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
+bool Protocolo::equiparArma(ArmaProtocolo arma) {
     bool is_open = enviarCodigo(EQUIPAR);
     if (!is_open) {
         return false;
     }
-    is_open = enviarId(gusano);
-    if (!is_open) {
-        return false;
-    }
+
     int8_t armaAEnviar = arma;
     bool was_closed = false;
     socket.sendall(&armaAEnviar, sizeof(armaAEnviar), &was_closed);
@@ -243,13 +235,14 @@ bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
 }
 
 
-bool Protocolo::atacar(id idGusano) {
-    bool is_open = enviarCodigo(ATACAR);
-    if (!is_open) {
-        return false;
-    }
+bool Protocolo::atacar() {
+    // bool is_open = enviarCodigo(ATACAR);
+    // if (!is_open) {
+    //     return false;
+    // }
 
-    return enviarId(idGusano);
+    // return enviarId(idGusano);
+    return enviarCodigo(ATACAR);
 }
 
 EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
@@ -325,8 +318,6 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             if (was_closed) {
                 return error;
             }
-
-            // TODO: recibir estado
 
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
@@ -464,10 +455,6 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    id idGusano = obtenerId();
-    if (idGusano == INVAL_ID) {
-        return accion;
-    }
     if (codigo == EQUIPAR) {
         bool was_closed = false;
         int8_t arma;
@@ -477,14 +464,12 @@ Accion Protocolo::obtenerAccion() {
         }
 
         accion.accion = EQUIPARSE;
-        accion.idGusano = idGusano;
         accion.armaAEquipar = (ArmaProtocolo)arma;
         return accion;
     }
 
     if (codigo == ATACAR) {
         accion.accion = ATAQUE;
-        accion.idGusano = idGusano;
         return accion;
     }
     bool was_closed = false;
@@ -496,7 +481,6 @@ Accion Protocolo::obtenerAccion() {
 
     // TODO: ampliar a los otros tipos de accion
     accion.accion = MOVERSE;
-    accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
 }
