@@ -236,12 +236,6 @@ bool Protocolo::equiparArma(ArmaProtocolo arma) {
 
 
 bool Protocolo::atacar() {
-    // bool is_open = enviarCodigo(ATACAR);
-    // if (!is_open) {
-    //     return false;
-    // }
-
-    // return enviarId(idGusano);
     return enviarCodigo(ATACAR);
 }
 
