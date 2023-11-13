@@ -34,32 +34,44 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
   if (densidadA == 1.0f) {
       b2Body *cuerpoA = a->GetBody();
+      
+      b2BodyUserData ah = cuerpoA->GetUserData();
+      Gusano *ad = (Gusano *) ah.pointer;
+      std::cout << "CACACACACA\n";
+      std::cout << ad->getCoords().enX << " " << ad->getCoords().enY << "\n";
+
       cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
   }
       
   // abort();
 }
 
+void ResolvedorColisiones::EndContact(b2Contact *contact) {
+    std::cout << "FIN CONTACTO\n";
+}
+
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
-    b2BodyDef bodyDef;
+    Gusano *nuevoGusano = new Gusano();
     //ATTENTION: Hacemos que el cuerpo sea dinamico
     //ya que los gusanos se van a mover
+
+    b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
-    // bodyDef.userData
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevoGusano);
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
     dynamicBox.SetAsBox(1.0f, 1.0f);
-
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
 
     body->CreateFixture(&fixtureDef);
+    nuevoGusano->setCuerpo(body);
 
-    Gusano *nuevoGusano = new Gusano(REFERENCE body);
+    this->gusanos.push_back(nuevoGusano);
 
     return nuevoGusano;
 }
@@ -97,7 +109,6 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
         idGusano = this->gusanos.size();
         nuevoGusano->giveId(idGusano);
 
-        this->gusanos.push_back(nuevoGusano);
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones

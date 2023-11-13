@@ -21,7 +21,7 @@ private:
     EstadoGusano estado;
 
     //Conceptos de b2box
-    b2Body& cuerpo;
+    b2Body* cuerpo;
 
     void setDireccion(DireccionGusano nuevaDireccion);
 
@@ -29,13 +29,19 @@ private:
     void realizarMovimiento(Direccion direccionDeseada);
 
 public:
-    Gusano(b2Body& cuerpo);
+
+    Gusano();
 
     void giveId(int idGusano);
 
     void giveGun(ArmaProtocolo arma);
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
+
+    //WARNING: Esta funcion tiene que se ser llamada CERCA, sino AL
+    //AL LADO del constructor. Gracias por nada c++, null pointers para
+    //todos >:(
+    void setCuerpo(b2Body* nuevoCuerpo);
 
     [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
 

@@ -2,14 +2,18 @@
 #include <iostream>
 #include "box2dDefs.h"
 
-Gusano::Gusano(b2Body &cuerpo)
-    : cuerpo(cuerpo)
+Gusano::Gusano()
       {
     this->direccion = DERECHA;
     this->vida = 100;
     this->armaEquipada = NADA_P;
     this->estado = CAYENDO;
 }
+
+void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
+    this->cuerpo = nuevoCuerpo;
+}
+
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
@@ -24,7 +28,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         direccion.y = 0.0f;
         this->estado = CAMINANDO;
         this->setDireccion(DERECHA);
-        this->cuerpo.SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(direccion);
         break;
     case INICIO_IZQ:
         std::cout << "Inicio izq" << "\n";
@@ -32,7 +36,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         direccion.y = 0.0f;
         this->estado = CAMINANDO;
         this->setDireccion(IZQUIERDA);
-        this->cuerpo.SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(direccion);
         break;
     case FIN_DER:
         std::cout << "Fin der" << "\n";
@@ -40,7 +44,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         direccion.y = 0.0f;
         this->estado = QUIETO;
         this->setDireccion(DERECHA);
-        this->cuerpo.SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(direccion);
         break;
     case FIN_IZQ:
         std::cout << "Fin izq" << "\n";
@@ -48,13 +52,13 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         direccion.y = 0.0f;
         this->estado = QUIETO;
         this->setDireccion(IZQUIERDA);
-        this->cuerpo.SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(direccion);
         break;
     case SALTO:
         std::cout << "Salto" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
-        this->cuerpo.ApplyLinearImpulseToCenter(b2Vec2(0.0f, 105.0f), false);
+        this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 105.0f), false);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -122,7 +126,7 @@ void Gusano::giveGun(ArmaProtocolo arma) {
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {
-    b2Vec2 position = this->cuerpo.GetPosition();
+    b2Vec2 position = this->cuerpo->GetPosition();
     std::pair<coordX, coordY> representacionPair;
     representacionPair.enX = position.x;
     representacionPair.enY = position.y;
