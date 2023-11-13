@@ -228,7 +228,20 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     gusano1.estado = SALTANDO;
     std::pair<coordX, coordY> posicion1(2.0345, 5.6789);
     gusano1.posicion = posicion1;
-    gusano1.armaEquipada = NADA_P;
+    RepresentacionArma arma1;
+    arma1.tieneMira = true;
+    arma1.tienePotenciaVariable = true;
+    arma1.tieneCuentaRegresiva = false;
+    arma1.municiones = -1;
+    arma1.fragmentos = 0;
+    arma1.danio.epicentro = 50;
+    arma1.danio.radio = 2;
+    arma1.anguloRad = 0;
+    arma1.potencia = 1;
+    arma1.cuentaRegresiva = 0;
+    arma1.arma = BAZOOKA_P;
+
+    gusano1.armaEquipada = arma1;
     
     RepresentacionGusano gusano2;
     gusano2.idGusano = (id)3;
@@ -237,7 +250,22 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     gusano2.estado = CAYENDO;
     std::pair<coordX, coordY> posicion2(2.0345, 5.6789);
     gusano2.posicion = posicion2;
-    gusano2.armaEquipada = GRANADA_VERDE_P;
+
+    RepresentacionArma arma2;
+    arma2.tieneMira = true;
+    arma2.tienePotenciaVariable = true;
+    arma2.tieneCuentaRegresiva = true;
+    arma2.municiones = 10;
+    arma2.fragmentos = 6;
+    arma2.danio.epicentro = 30;
+    arma2.danio.radio = 2;
+    arma2.danioFragmento.epicentro = 10;
+    arma2.danioFragmento.radio = 2;
+    arma2.anguloRad = 0;
+    arma2.potencia = 1;
+    arma2.cuentaRegresiva = 0;
+    arma2.arma = GRANADA_ROJA_P;
+    gusano2.armaEquipada = arma2;
     std::vector<RepresentacionGusano> listaGusanos;
     listaGusanos.push_back(gusano1);
     listaGusanos.push_back(gusano2);
@@ -255,14 +283,30 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
         RepresentacionGusano resultadoGusano = resultadoGusanos[i];
         RepresentacionGusano baseGusano = listaGusanos[i];
+        RepresentacionArma resultadoArma = resultadoGusano.armaEquipada;
+        RepresentacionArma baseArma = baseGusano.armaEquipada;
         REQUIRE(resultadoGusano.vida == baseGusano.vida);
         REQUIRE(resultadoGusano.idGusano == baseGusano.idGusano);
         REQUIRE(resultadoGusano.dir == baseGusano.dir);
         REQUIRE(resultadoGusano.posicion.first == baseGusano.posicion.first);
         REQUIRE(resultadoGusano.posicion.second == -baseGusano.posicion.second);
-        REQUIRE(resultadoGusano.armaEquipada == baseGusano.armaEquipada);
         REQUIRE(resultadoGusano.estado == baseGusano.estado);
 
+        REQUIRE(resultadoArma.tieneMira ==baseArma.tieneMira);
+        REQUIRE(resultadoArma.tienePotenciaVariable ==baseArma.tienePotenciaVariable);
+        REQUIRE(resultadoArma.tieneCuentaRegresiva ==baseArma.tieneCuentaRegresiva);
+        REQUIRE(resultadoArma.municiones ==baseArma.municiones);
+        REQUIRE(resultadoArma.fragmentos ==baseArma.fragmentos);
+        REQUIRE(resultadoArma.danio.epicentro ==baseArma.danio.epicentro);
+        REQUIRE(resultadoArma.danio.radio ==baseArma.danio.radio);
+        if (baseArma.fragmentos > 0) {
+            REQUIRE(resultadoArma.danioFragmento.epicentro ==baseArma.danioFragmento.epicentro);
+            REQUIRE(resultadoArma.danioFragmento.radio ==baseArma.danioFragmento.radio);
+        }
+        REQUIRE(resultadoArma.anguloRad ==baseArma.anguloRad);
+        REQUIRE(resultadoArma.potencia ==baseArma.potencia);
+        REQUIRE(resultadoArma.cuentaRegresiva ==baseArma.cuentaRegresiva);
+        REQUIRE(resultadoArma.arma ==baseArma.arma);
     }  
 }
 
