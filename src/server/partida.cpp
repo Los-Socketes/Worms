@@ -20,27 +20,32 @@ Partida::Partida(std::string mapa)
 #define REFERENCE *
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
-  b2Fixture* a = contact->GetFixtureA();
-  b2Fixture* b = contact->GetFixtureB();
-  std::cout << "HUBO CONTACTO\n";
+    b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
+    b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
-  float densidadA, densidadB;
-  densidadB = b->GetDensity();
-  densidadA = a->GetDensity();
-  if (a->GetBody()->GetType() == b2_staticBody)
-      return;
-  if (b->GetBody()->GetType() == b2_staticBody)
-      return;
+    Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+    Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-  if (densidadA == 1.0f) {
-      b2Body *cuerpoA = a->GetBody();
-      
-      b2BodyUserData ah = cuerpoA->GetUserData();
-      Gusano *ad = (Gusano *) ah.pointer;
-      std::cout << "CACACACACA\n";
-      std::cout << ad->getCoords().enX << " " << ad->getCoords().enY << "\n";
+    //A priori, si es alguno de los dos son estaticos, signifca que
+    //algun gusano o algo toco el piso. Si ese es caso queremos ignorarlo
+    // if (cuerpoA->GetType() == b2_staticBody)
+    //     return;
+    // if (cuerpoB->GetType() == b2_staticBody)
+    //     return;
 
-      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+    if(entidadA->tipo == TipoEntidad::VIGA) {
+        entidadB->gusano->setEstado(QUIETO);
+    }
+
+    if(entidadB->tipo == TipoEntidad::VIGA) {
+        entidadA->gusano->setEstado(QUIETO);
+    }
+
+    if (entidadA->tipo == TipoEntidad::GUSANO
+        &&
+        entidadB->tipo == TipoEntidad::ARMA) {
+
+        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
   }
       
   // abort();
@@ -51,14 +56,18 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
 }
 
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::GUSANO;
     Gusano *nuevoGusano = new Gusano();
+    nuevaEntidad->gusano = nuevoGusano;
+
     //ATTENTION: Hacemos que el cuerpo sea dinamico
     //ya que los gusanos se van a mover
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
-    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevoGusano);
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
@@ -77,9 +86,13 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 }
 
 void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::VIGA;
+
     b2BodyDef vigaDef;
     vigaDef.position.Set(posicionInicial.enX, posicionInicial.enY);
     vigaDef.angle = angulo;
+    vigaDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 
     //ATTENTION Dividimos a la mitad porque box2d pide la mitad de
     // la longitud
@@ -237,14 +250,20 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::ARMA;
+    // Arma *nuevaArma = new Arma();
+    // nuevaEntidad->arma = nuevaArma;
 
     std::pair<coordX, coordY> coords;
     coords = gusano->getCoords();
 
     std::cout << "Le doy el arma\n";
+
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;

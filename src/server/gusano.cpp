@@ -14,6 +14,10 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
     this->cuerpo = nuevoCuerpo;
 }
 
+void Gusano::setEstado(EstadoGusano nuevoEstado) {
+    this->estado = nuevoEstado;
+}
+
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
@@ -26,7 +30,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Inicio der" << "\n";
         direccion.x = VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
-        this->estado = CAMINANDO;
+        this->setEstado(CAMINANDO);
         this->setDireccion(DERECHA);
         this->cuerpo->SetLinearVelocity(direccion);
         break;
@@ -34,7 +38,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Inicio izq" << "\n";
         direccion.x = -VELOCIDADMOVIMIENTO;
         direccion.y = 0.0f;
-        this->estado = CAMINANDO;
+        this->setEstado(CAMINANDO);
         this->setDireccion(IZQUIERDA);
         this->cuerpo->SetLinearVelocity(direccion);
         break;
@@ -42,7 +46,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Fin der" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
-        this->estado = QUIETO;
+        this->setEstado(QUIETO);
         this->setDireccion(DERECHA);
         this->cuerpo->SetLinearVelocity(direccion);
         break;
@@ -50,7 +54,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Fin izq" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
-        this->estado = QUIETO;
+        this->setEstado(QUIETO);
         this->setDireccion(IZQUIERDA);
         this->cuerpo->SetLinearVelocity(direccion);
         break;

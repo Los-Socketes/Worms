@@ -43,6 +43,8 @@ public:
     //todos >:(
     void setCuerpo(b2Body* nuevoCuerpo);
 
+    void setEstado(EstadoGusano nuevoEstado);
+
     [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
