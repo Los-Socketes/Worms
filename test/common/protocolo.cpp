@@ -287,3 +287,25 @@ TEST_CASE( "Tests de configurar angulo", "[obtenerAccionDeConfigurarAngulo]" ) {
     REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
     REQUIRE(resultado.configARealizar.angulo == config.angulo);
 }
+
+// TEST 14
+
+Accion obtenerAccionDeConfigurarPotencia(float potencia) {
+    protocolo.configurarPotencia(potencia);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de configurar potencia", "[obtenerAccionDeConfigurarPotencia]" ) {
+    Accion configurar;
+    float angulo = 0.7;
+    configurar.accion = PREPARAR;
+    Configuracion config;
+    config.caracteristica = POTENCIA;
+    config.angulo = angulo;
+    configurar.configARealizar = config;
+
+    Accion resultado = obtenerAccionDeConfigurarPotencia(angulo);
+    REQUIRE(resultado.accion == configurar.accion);
+    REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
+    REQUIRE(resultado.configARealizar.angulo == config.angulo);
+}
