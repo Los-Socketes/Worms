@@ -241,7 +241,7 @@ bool Protocolo::atacar() {
 
 
 bool Protocolo::configurarAngulo(float angulo) {
-    bool is_open = enviarCodigo(PREPARAR);
+    bool is_open = enviarCodigo(CALIBRAR);
     if (!is_open) {
         return false;
     }
@@ -260,7 +260,7 @@ bool Protocolo::configurarAngulo(float angulo) {
 
 
 bool Protocolo::configurarPotencia(float potencia) {
-    bool is_open = enviarCodigo(PREPARAR);
+    bool is_open = enviarCodigo(CALIBRAR);
     if (!is_open) {
         return false;
     }
@@ -279,7 +279,7 @@ bool Protocolo::configurarPotencia(float potencia) {
 
 
 bool Protocolo::configurarCuentaRegresiva(int valor) {
-    bool is_open = enviarCodigo(PREPARAR);
+    bool is_open = enviarCodigo(CALIBRAR);
     if (!is_open) {
         return false;
     }
@@ -504,7 +504,7 @@ Accion Protocolo::obtenerAccion() {
     bool was_closed = false;
     Accion accion;
     if (codigo != MOV && codigo != ATACAR && 
-        codigo != EQUIPAR && codigo != PREPARAR) {
+        codigo != EQUIPAR && codigo != CALIBRAR) {
         return accion;
     }
 
@@ -525,7 +525,7 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    if (codigo == EQUIPAR) {
+    if (codigo == CALIBRAR) {
         int8_t valorAConfigurar;
         socket.recvall(&valorAConfigurar, sizeof(valorAConfigurar), &was_closed);
         if (was_closed) {
@@ -538,7 +538,7 @@ Accion Protocolo::obtenerAccion() {
             return accion;
         }
 
-        accion.accion = EQUIPARSE;
+        accion.accion = PREPARAR;
         Configuracion config;
         config.caracteristica = (ValorAConfigurar)valorAConfigurar;
         if (config.caracteristica == POTENCIA) {
@@ -549,7 +549,7 @@ Accion Protocolo::obtenerAccion() {
             config.cuentaRegresiva = valor;
         }
 
-        accion.configuracionARealizar = config;
+        accion.configARealizar = config;
         return accion;
         
     }

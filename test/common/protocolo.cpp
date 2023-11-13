@@ -263,10 +263,27 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
         REQUIRE(resultadoGusano.armaEquipada == baseGusano.armaEquipada);
         REQUIRE(resultadoGusano.estado == baseGusano.estado);
 
-    }
+    }  
+}
 
+// TEST 13
 
-    
+Accion obtenerAccionDeConfigurarAngulo(float angulo) {
+    protocolo.configurarAngulo(angulo);
+    return protocoloServer.obtenerAccion();
+}
 
-    
+TEST_CASE( "Tests de configurar angulo", "[obtenerAccionDeConfigurarAngulo]" ) {
+    Accion configurar;
+    float angulo = 45.7;
+    configurar.accion = PREPARAR;
+    Configuracion config;
+    config.caracteristica = ANGULO;
+    config.angulo = angulo;
+    configurar.configARealizar = config;
+
+    Accion resultado = obtenerAccionDeConfigurarAngulo(angulo);
+    REQUIRE(resultado.accion == configurar.accion);
+    REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
+    REQUIRE(resultado.configARealizar.angulo == config.angulo);
 }

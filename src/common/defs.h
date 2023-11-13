@@ -62,7 +62,7 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA};
 #define MOV 9
 #define EQUIPAR 10
 #define CALIBRAR 11
-#define ATACAR 11
+#define ATACAR 12
 
 
 // Tiene la info de una partida para unirse
@@ -150,7 +150,7 @@ struct Accion {
     union {
         Direccion dir;
         ArmaProtocolo armaAEquipar;
-        Configuracion configuracionARealizar;
+        Configuracion configARealizar;
     };
 
 };
