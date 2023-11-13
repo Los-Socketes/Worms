@@ -297,15 +297,37 @@ Accion obtenerAccionDeConfigurarPotencia(float potencia) {
 
 TEST_CASE( "Tests de configurar potencia", "[obtenerAccionDeConfigurarPotencia]" ) {
     Accion configurar;
-    float angulo = 0.7;
+    float potencia = 0.7;
     configurar.accion = PREPARAR;
     Configuracion config;
     config.caracteristica = POTENCIA;
-    config.angulo = angulo;
+    config.potencia = potencia;
     configurar.configARealizar = config;
 
-    Accion resultado = obtenerAccionDeConfigurarPotencia(angulo);
+    Accion resultado = obtenerAccionDeConfigurarPotencia(potencia);
     REQUIRE(resultado.accion == configurar.accion);
     REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
-    REQUIRE(resultado.configARealizar.angulo == config.angulo);
+    REQUIRE(resultado.configARealizar.potencia == config.potencia);
+}
+
+// TEST 15
+
+Accion obtenerAccionDeConfigurarCuentaRegresiva(int cuentaRegresiva) {
+    protocolo.configurarCuentaRegresiva(cuentaRegresiva);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de configurar cuenta regresiva", "[obtenerAccionDeConfigurarCuentaRegresiva]" ) {
+    Accion configurar;
+    int cuenta = 4;
+    configurar.accion = PREPARAR;
+    Configuracion config;
+    config.caracteristica = CUENTA_REGRESIVA;
+    config.cuentaRegresiva = cuenta;
+    configurar.configARealizar = config;
+
+    Accion resultado = obtenerAccionDeConfigurarCuentaRegresiva(cuenta);
+    REQUIRE(resultado.accion == configurar.accion);
+    REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
+    REQUIRE(resultado.configARealizar.cuentaRegresiva == config.cuentaRegresiva);
 }
