@@ -24,6 +24,9 @@ void Gusano::giveId(int idGusano) {
 
 
 void Gusano::realizarMovimiento(Direccion direccionDeseada) {
+    if (this->estado == CAYENDO)
+        return;
+
     b2Vec2 direccion;
     switch (direccionDeseada) {
     case INICIO_DER:

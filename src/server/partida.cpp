@@ -26,13 +26,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-    //A priori, si es alguno de los dos son estaticos, signifca que
-    //algun gusano o algo toco el piso. Si ese es caso queremos ignorarlo
-    // if (cuerpoA->GetType() == b2_staticBody)
-    //     return;
-    // if (cuerpoB->GetType() == b2_staticBody)
-    //     return;
-
     if(entidadA->tipo == TipoEntidad::VIGA) {
         entidadB->gusano->setEstado(QUIETO);
     }
@@ -52,6 +45,21 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
+    b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
+    b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
+
+    Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+    Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
+
+    if(entidadA->tipo == TipoEntidad::VIGA) {
+        std::cout << "AAAAAAAAAAAAAAAA\n";
+        entidadB->gusano->setEstado(CAYENDO);
+    }
+
+    if(entidadB->tipo == TipoEntidad::VIGA) {
+        std::cout << "BBBBBBBBBBBBB\n";
+        entidadA->gusano->setEstado(CAYENDO);
+    }
     std::cout << "FIN CONTACTO\n";
 }
 
@@ -287,7 +295,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    this->anadirViga(0, 6, std::pair<coordX,coordY>(0.0f, 10.0f));
+    this->anadirViga(0, 60, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
