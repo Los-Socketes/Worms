@@ -25,4 +25,6 @@
 
 #define MASACUERPOESTATICO 0.0f
 
+#define TAMANOGUSANO 20    
+
 #endif

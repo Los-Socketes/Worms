@@ -16,6 +16,10 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     this->estado = nuevoEstado;
+
+    //Si se esta cayendo queremos cancelar todo tipo de velocidad y
+    //que caiga directo. TODO: Esto lo hace "re duro". Podriamos hacer
+    //que se conserve ALGO de la velocidad
     if (this->estado == CAYENDO) {
         b2Vec2 direccion;
         direccion.x = 0.0f;
@@ -27,6 +31,13 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
+
+DireccionGusano Gusano::getDondeMira() {
+    DireccionGusano dondeMira;
+    dondeMira = this->direccion;
+    return dondeMira;
+}
+
 
 
 void Gusano::realizarMovimiento(Direccion direccionDeseada) {

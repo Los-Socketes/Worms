@@ -52,12 +52,10 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
     if(entidadA->tipo == TipoEntidad::VIGA) {
-        std::cout << "AAAAAAAAAAAAAAAA\n";
         entidadB->gusano->setEstado(CAYENDO);
     }
 
     if(entidadB->tipo == TipoEntidad::VIGA) {
-        std::cout << "BBBBBBBBBBBBB\n";
         entidadA->gusano->setEstado(CAYENDO);
     }
     std::cout << "FIN CONTACTO\n";
@@ -265,6 +263,15 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
 
     std::pair<coordX, coordY> coords;
     coords = gusano->getCoords();
+    //TODO Hacer metodo?
+    DireccionGusano dondeMira;
+    dondeMira = gusano->getDondeMira();
+    coordX offset = 0;
+    if (dondeMira == DERECHA)
+        offset = TAMANOGUSANO;
+    else
+        offset = -TAMANOGUSANO;
+    coords.enX += offset;
 
     std::cout << "Le doy el arma\n";
 

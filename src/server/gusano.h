@@ -52,6 +52,8 @@ public:
     [[nodiscard]] RepresentacionGusano getRepresentacion();
 
     [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
+
+    [[nodiscard]] DireccionGusano getDondeMira();
 };
 
 #endif
