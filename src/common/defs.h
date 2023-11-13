@@ -45,6 +45,8 @@ enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_
  */
 //                    0         1         2        3          4
 enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
+enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA};
+
 
 #define PARTIDAS 1
 #define MAPAS 2
@@ -82,11 +84,26 @@ struct RepresentacionMapa {
 
 typedef float radianes; 
 
+struct RepresentacionDanio {
+    int epicentro;
+    int radio;
+};
 
 struct RepresentacionArma {
+    bool tieneMira;
+    bool tienePotenciaVariable;
+    bool tieneCuentaRegresiva;
+
+    int municiones;
+    int fragmentos;
+
+    RepresentacionDanio danio;
+    RepresentacionDanio danioFragmento;
+
     // RADIANES ?!
     radianes anguloRad;
     float potencia;
+    int cuentaRegresiva;
     ArmaProtocolo arma;
 };
 
@@ -117,6 +134,15 @@ struct EstadoDelJuego {
     // std::pair<coordX, coordY> posicion;
 };
 
+struct Configuracion {
+    ValorAConfigurar caracteristica;
+    union {
+        float potencia;
+        float angulo;
+        int cuentaRegresiva;
+    };
+};
+
 struct Accion {
     id idGusano;
     idJugador jugador;
@@ -124,6 +150,7 @@ struct Accion {
     union {
         Direccion dir;
         ArmaProtocolo armaAEquipar;
+        Configuracion configuracionARealizar;
     };
 
 };

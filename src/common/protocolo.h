@@ -39,6 +39,9 @@ public:
     bool unirseAPartida(id idPartida);
     bool moverGusano(Direccion direccion);
     bool equiparArma(ArmaProtocolo arma);
+    bool configurarAngulo(float angulo);
+    bool configurarPotencia(float potencia);
+    bool configurarCuentaRegresiva(int valor);
     bool atacar();
     std::shared_ptr<EstadoDelJuego> obtenerEstadoDelJuego();
 
@@ -57,6 +60,7 @@ public:
     bool enviarError();
 
     Accion obtenerAccion();
+    // TODO: enviar representacion arma
     bool enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado);
 #endif
 

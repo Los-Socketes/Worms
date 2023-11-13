@@ -239,6 +239,64 @@ bool Protocolo::atacar() {
     return enviarCodigo(ATACAR);
 }
 
+
+bool Protocolo::configurarAngulo(float angulo) {
+    bool is_open = enviarCodigo(PREPARAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = ANGULO; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valor = toInt(angulo);
+    socket.sendall(&valor, sizeof(valor), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::configurarPotencia(float potencia) {
+    bool is_open = enviarCodigo(PREPARAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = POTENCIA; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valor = toInt(potencia);
+    socket.sendall(&valor, sizeof(valor), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::configurarCuentaRegresiva(int valor) {
+    bool is_open = enviarCodigo(PREPARAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = CUENTA_REGRESIVA; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valorAEnviar = valor;
+    socket.sendall(&valorAEnviar, sizeof(valorAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
 std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
@@ -443,13 +501,14 @@ bool Protocolo::enviarError() {
 
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
+    bool was_closed = false;
     Accion accion;
-    if (codigo != MOV && codigo != ATACAR && codigo != EQUIPAR) {
+    if (codigo != MOV && codigo != ATACAR && 
+        codigo != EQUIPAR && codigo != PREPARAR) {
         return accion;
     }
 
     if (codigo == EQUIPAR) {
-        bool was_closed = false;
         int8_t arma;
         socket.recvall(&arma, sizeof(arma), &was_closed);
         if (was_closed) {
@@ -465,7 +524,37 @@ Accion Protocolo::obtenerAccion() {
         accion.accion = ATAQUE;
         return accion;
     }
-    bool was_closed = false;
+
+    if (codigo == EQUIPAR) {
+        int8_t valorAConfigurar;
+        socket.recvall(&valorAConfigurar, sizeof(valorAConfigurar), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
+
+        int32_t valor;
+        socket.recvall(&valor, sizeof(valor), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
+
+        accion.accion = EQUIPARSE;
+        Configuracion config;
+        config.caracteristica = (ValorAConfigurar)valorAConfigurar;
+        if (config.caracteristica == POTENCIA) {
+            config.potencia = toFloat(valor);
+        } else if (config.caracteristica == ANGULO) {
+            config.angulo = toFloat(valor);
+        } else {
+            config.cuentaRegresiva = valor;
+        }
+
+        accion.configuracionARealizar = config;
+        return accion;
+        
+    }
+    // caso de moverse
+    
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
     if (was_closed) {
