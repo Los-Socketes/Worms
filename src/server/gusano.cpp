@@ -16,6 +16,12 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     this->estado = nuevoEstado;
+    if (this->estado == CAYENDO) {
+        b2Vec2 direccion;
+        direccion.x = 0.0f;
+        direccion.y = 0.0f;
+        this->cuerpo->SetLinearVelocity(direccion);
+    }
 }
 
 void Gusano::giveId(int idGusano) {
