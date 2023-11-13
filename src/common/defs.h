@@ -113,7 +113,7 @@ struct RepresentacionGusano {
     DireccionGusano dir;
     EstadoGusano estado;
     std::pair<coordX, coordY> posicion;
-    ArmaProtocolo armaEquipada;
+    RepresentacionArma armaEquipada;
 };
 
 struct RepresentacionViga {

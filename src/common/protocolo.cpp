@@ -253,7 +253,7 @@ bool Protocolo::configurarAngulo(float angulo) {
         return false;
     }
 
-    int32_t valor = toInt(angulo);
+    int32_t valor = htonl(toInt(angulo));
     socket.sendall(&valor, sizeof(valor), &was_closed);
     return !was_closed;
 }
@@ -272,7 +272,7 @@ bool Protocolo::configurarPotencia(float potencia) {
         return false;
     }
 
-    int32_t valor = toInt(potencia);
+    int32_t valor = htonl(toInt(potencia));
     socket.sendall(&valor, sizeof(valor), &was_closed);
     return !was_closed;
 }
@@ -291,7 +291,7 @@ bool Protocolo::configurarCuentaRegresiva(int valor) {
         return false;
     }
 
-    int32_t valorAEnviar = valor;
+    int32_t valorAEnviar = htonl(valor);
     socket.sendall(&valorAEnviar, sizeof(valorAEnviar), &was_closed);
     return !was_closed;
 }
@@ -365,11 +365,111 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
                 return estado;
             }
 
+            int8_t mira;
+            socket.recvall(&mira, sizeof(mira), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int8_t potenciaVariable;
+            socket.recvall(&potenciaVariable, sizeof(potenciaVariable), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int8_t tieneCuentaRegresiva;
+            socket.recvall(&tieneCuentaRegresiva, sizeof(tieneCuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int32_t municiones;
+            socket.recvall(&municiones, sizeof(municiones), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            municiones = ntohl(municiones);
+
+            int32_t fragmentos;
+            socket.recvall(&fragmentos, sizeof(fragmentos), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            fragmentos = ntohl(fragmentos);
+
+            int32_t danioEpicentro;
+            socket.recvall(&danioEpicentro, sizeof(danioEpicentro), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            danioEpicentro = ntohl(danioEpicentro);
+
+            int32_t danioRadio;
+            socket.recvall(&danioRadio, sizeof(danioRadio), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            danioRadio = ntohl(danioRadio);
+
+            int32_t danioFragEpicentro;
+            int32_t danioFragRadio;
+            if (fragmentos > 0) {
+                socket.recvall(&danioFragEpicentro, sizeof(danioFragEpicentro), &was_closed);
+                if (was_closed) {
+                    return estado;
+                }
+                danioFragEpicentro = ntohl(danioFragEpicentro);
+
+                socket.recvall(&danioFragRadio, sizeof(danioFragRadio), &was_closed);
+                if (was_closed) {
+                    return estado;
+                }
+                danioFragRadio = ntohl(danioFragRadio);
+            }
+            int32_t angulo;
+            socket.recvall(&angulo, sizeof(angulo), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            angulo = toFloat(ntohl(angulo));
+
+            int32_t potencia;
+            socket.recvall(&potencia, sizeof(potencia), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            potencia = toFloat(ntohl(potencia));
+
+            int32_t cuentaRegresiva;
+            socket.recvall(&cuentaRegresiva, sizeof(cuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            cuentaRegresiva = ntohl(cuentaRegresiva);
+
+
             int8_t arma;
             socket.recvall(&arma, sizeof(arma), &was_closed);
             if (was_closed) {
                 return estado;
             }
+
+
+            RepresentacionArma armaEquipada;
+            armaEquipada.tieneMira = mira;
+            armaEquipada.tienePotenciaVariable = potenciaVariable;
+            armaEquipada.tieneCuentaRegresiva = tieneCuentaRegresiva;
+            armaEquipada.municiones = municiones;
+            armaEquipada.fragmentos = fragmentos;
+
+            armaEquipada.danio.epicentro = danioEpicentro;
+            armaEquipada.danio.radio = danioRadio;
+
+            if (fragmentos > 0) {
+                armaEquipada.danioFragmento.epicentro = danioFragEpicentro;
+                armaEquipada.danioFragmento.radio = danioFragRadio;
+            }
+            armaEquipada.anguloRad = angulo;
+            armaEquipada.potencia = potencia;
+            armaEquipada.cuentaRegresiva = cuentaRegresiva;
+            armaEquipada.arma = (ArmaProtocolo)arma;
 
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
@@ -377,7 +477,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             gusanoActual.estado = (EstadoGusano)estadoGusano;
             gusanoActual.dir = (DireccionGusano)dir;
             gusanoActual.posicion = posicionRecibida;
-            gusanoActual.armaEquipada = (ArmaProtocolo)arma;
+            gusanoActual.armaEquipada = armaEquipada;
 
             listaGusanos[j] = gusanoActual;
         }   
@@ -537,6 +637,7 @@ Accion Protocolo::obtenerAccion() {
         if (was_closed) {
             return accion;
         }
+        valor = ntohl(valor);
 
         accion.accion = PREPARAR;
         Configuracion config;
@@ -635,14 +736,80 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
                 return false;
             }
 
-            int8_t arma = gusano.armaEquipada;
+            // envio datos de arma
+            RepresentacionArma armaEquipada = gusano.armaEquipada;
+            int8_t mira = armaEquipada.tieneMira;
+            socket.sendall(&mira, sizeof(mira), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int8_t potenciaVariable = armaEquipada.tienePotenciaVariable;
+            socket.sendall(&potenciaVariable, sizeof(potenciaVariable), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int8_t tieneCuentaRegresiva = armaEquipada.tieneCuentaRegresiva;
+            socket.sendall(&tieneCuentaRegresiva, sizeof(tieneCuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t municiones = htonl(armaEquipada.municiones);
+            socket.sendall(&municiones, sizeof(municiones), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t fragmentos = htonl(armaEquipada.fragmentos);
+            socket.sendall(&fragmentos, sizeof(fragmentos), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t danioEpicentro = htonl(armaEquipada.danio.epicentro);
+            socket.sendall(&danioEpicentro, sizeof(danioEpicentro), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t danioRadio = htonl(armaEquipada.danio.radio);
+            socket.sendall(&danioRadio, sizeof(danioRadio), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            if (fragmentos > 0) {
+                int32_t danioFragEpicentro = htonl(armaEquipada.danioFragmento.epicentro);
+                socket.sendall(&danioFragEpicentro, sizeof(danioFragEpicentro), &was_closed);
+                if (was_closed) {
+                    return false;
+                }
+                int32_t danioFragRadio = htonl(armaEquipada.danioFragmento.radio);
+                socket.sendall(&danioFragRadio, sizeof(danioFragRadio), &was_closed);
+                if (was_closed) {
+                    return false;
+                }
+            }
+
+            int32_t angulo = htonl(toInt(armaEquipada.anguloRad));
+            socket.sendall(&angulo, sizeof(angulo), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t potencia = htonl(toInt(armaEquipada.potencia));
+            socket.sendall(&potencia, sizeof(potencia), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            int32_t cuentaRegresiva = htonl(armaEquipada.cuentaRegresiva);
+            socket.sendall(&cuentaRegresiva, sizeof(cuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            int8_t arma = armaEquipada.arma;
             socket.sendall(&arma, sizeof(arma), &was_closed);
             if (was_closed) {
                 return false;
             }
-        }
-        
-        
+        }  
     }
     
 
