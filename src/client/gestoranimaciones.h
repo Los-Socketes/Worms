@@ -15,7 +15,8 @@ enum ItemEscenario{
     AGUA,
     FONDO,
     PANORAMA,
-    RETICULA
+    RETICULA,
+    EXPLOSION
 };
 
 class GestorAnimaciones {
@@ -23,6 +24,7 @@ class GestorAnimaciones {
     Camara& camara;
     std::map<std::pair<EstadoGusano, ArmaProtocolo>, std::shared_ptr<Animacion>> gusanos;
     std::map<ItemEscenario, std::shared_ptr<Animacion>> escenario;
+    std::map<ArmaProtocolo, std::shared_ptr<Animacion>> iconos;
     //std::map<ProyectilProtocolo, std::shared_ptr<Animacion>> proyectiles; ???
     int ancho_mapa;
     int alto_mapa;
@@ -34,6 +36,7 @@ class GestorAnimaciones {
     void dibujarPanorama(int pos_x, int pos_y);
     void dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo);
     void dibujarReticula(int pos_x, int pos_y, int it);
+    void dibujarIconoArma(ArmaProtocolo arma, int pos_x, int pos_y);
     //void dibujarProyectil(ProyectilProtocolo protectil??, radianes angulo??, int pos_x, int pos_y, int it);
     //void dibujarExplosion(int pos_x, int pos_y, int it);
 };

@@ -1,36 +1,38 @@
 #include "animacion.h"
 
-Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int tam_y, int frames, bool fix) :
+Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int tam_y, int frames, bool seguir_camara) :
     renderizador(render),
     frames(frames),
     tam(tam_x, tam_y),
     dimensiones(tam_x, tam_y),
     textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
-    fix(fix) {
+    seguir_camara(seguir_camara){
     textura.SetBlendMode(SDL_BLENDMODE_BLEND);
     }
 
 void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, bool flip, int frame_actual) {
-    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tam.first, tam.second));
-    
-    int coord_x = pos_x - camara.getPosicionX();
-    int coord_y = pos_y - camara.getPosicionY();
-    
-    // Si no hay interseccion no se renderiza.
-    if (!rect_interseccion) {
-        return;
+    int coord_x = pos_x;
+    int coord_y = pos_y;
+
+    if (seguir_camara) {
+        std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tam.first, tam.second));
+
+        coord_x -= camara.getPosicionX();
+        coord_y -= camara.getPosicionY();
+
+        // Si no hay interseccion no se renderiza.
+        if (!rect_interseccion) {
+            return;
+        }
     }
 
-    int fix_x = 0;
     int flip_flag = SDL_FLIP_NONE;
-    if(fix)
-        fix_x = -frame_actual;
     if (flip)
         flip_flag = SDL_FLIP_HORIZONTAL;
 
     renderizador.Copy( 
         textura,
-        Rect(fix_x, frame_actual * tam.second, tam.first, tam.second),
+        Rect(0, frame_actual * tam.second, tam.first, tam.second),
         Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
         0,
         NullOpt,

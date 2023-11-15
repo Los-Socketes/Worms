@@ -100,7 +100,8 @@ void Cliente::loop_principal() {
         }
 
         // Renderizo.
-        dibujador.dibujar(renderizador, it, angulo);
+        // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
+        dibujador.dibujar(renderizador, it, angulo, estado_juego.gusanos[0][0].armaEquipada);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

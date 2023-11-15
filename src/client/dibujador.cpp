@@ -27,6 +27,8 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int> posicion
     renderizador.SetDrawBlendMode(SDL_BLENDMODE_BLEND);
     renderizador.SetDrawColor(0, 0, 0, 50);
     renderizador.FillRect(coord_x - 2, coord_y - 2, coord_x + 18, coord_y + 14);
+    renderizador.SetDrawColor(255, 255, 255, 100);
+    renderizador.DrawRect(coord_x - 2, coord_y - 2, coord_x + 18, coord_y + 14);
 
     // Dibujo el borde de la vida.
     fuente.SetOutline(2);
@@ -45,7 +47,7 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
     gestor_animaciones.inicializar(renderizador);    
 }
 
-void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo) {
+void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada) {
     renderizador.Clear();
 
     dibujarMapa();
@@ -53,6 +55,7 @@ void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo) {
     dibujarGusanos(renderizador, it, angulo);
     //dibujarProyectiles(it);
     dibujarAguaDelante(it);
+    dibujarBarraArmas(renderizador, arma_equipada);
 
     renderizador.Present();
 }
@@ -108,4 +111,26 @@ void Dibujador::dibujarAguaDelante(int it) {
             gestor_animaciones.dibujarAgua(j * 128, alto_mapa - 100 + 10 * (i + 1), it + 3*(i+3));
         }
     }
+}
+
+void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada) {
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    // Dibujo barra de armas abajo a la derecha.
+    for (int i = 0; i < 11; i++) {
+        // Dibujo el icono del arma.
+        gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), ancho_pantalla - 32 * (11 - i) - 30, alto_pantalla - 62);
+        // Dibujo el borde del icono.
+        if (static_cast<ArmaProtocolo>(i) == arma_equipada) {
+            renderizador.SetDrawColor(255, 255, 255, 255);
+        } else {
+            renderizador.SetDrawColor(0, 0, 0, 255);
+        }
+        renderizador.DrawRect(
+            ancho_pantalla - 32 * (11 - i) - 30 + 1,
+            alto_pantalla - 62 + 1,
+            ancho_pantalla - 32 * (10 - i) - 30 - 1,
+            alto_pantalla - 30 - 1);   
+    }
+        
 }

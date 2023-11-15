@@ -55,7 +55,7 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionDisparar>(id_gusano));
                         break;
-                    case SDLK_1:
+                    case SDLK_8:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, BATE_P));
                         break;

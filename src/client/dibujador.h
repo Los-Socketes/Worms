@@ -26,12 +26,13 @@ class Dibujador {
  public:
       Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa);
       void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int it, radianes angulo);
+      void dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada);
       void dibujarMapa();
       void dibujarGusanos(Renderer& renderizador, int it, radianes angulo);
       // void dibujarProyectiles(int it);
       void dibujarAguaDetras(int it);
       void dibujarAguaDelante(int it);
+      void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada);
 };
 
 #endif // DIBUJADOR_H_
