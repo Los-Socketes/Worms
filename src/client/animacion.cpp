@@ -6,7 +6,9 @@ Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int 
     tam(tam_x, tam_y),
     dimensiones(tam_x, tam_y),
     textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
-    fix(fix) {}
+    fix(fix) {
+    textura.SetBlendMode(SDL_BLENDMODE_BLEND);
+    }
 
 void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, bool flip, int frame_actual) {
     std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tam.first, tam.second));

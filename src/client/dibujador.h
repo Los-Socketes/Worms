@@ -11,6 +11,8 @@
 #include "defs.h"
 #include "gestoranimaciones.h"
 
+using namespace SDL2pp;
+
 class Dibujador {
  private:
       Camara& camara;
@@ -18,12 +20,15 @@ class Dibujador {
       int ancho_mapa;
       int alto_mapa;
       GestorAnimaciones gestor_animaciones;
+      Font fuente;
+
+      void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
  public:
       Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa);
       void inicializarAnimaciones(Renderer& renderizador);
       void dibujar(Renderer& renderizador, int it, radianes angulo);
       void dibujarMapa();
-      void dibujarGusanos(int it, radianes angulo);
+      void dibujarGusanos(Renderer& renderizador, int it, radianes angulo);
       // void dibujarProyectiles(int it);
       void dibujarAguaDetras(int it);
       void dibujarAguaDelante(int it);

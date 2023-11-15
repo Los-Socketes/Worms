@@ -31,6 +31,7 @@ const int MAPA_ALTO = 700;
 class Cliente {
  private:
     SDL sdl;
+    SDLTTF ttf;
     Protocolo protocolo;
     EstadoDelJuego estado_juego;
     Camara camara;

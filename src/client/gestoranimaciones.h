@@ -14,7 +14,8 @@
 enum ItemEscenario{
     AGUA,
     FONDO,
-    PANORAMA
+    PANORAMA,
+    RETICULA
 };
 
 class GestorAnimaciones {
@@ -32,6 +33,7 @@ class GestorAnimaciones {
     void dibujarFondo();
     void dibujarPanorama(int pos_x, int pos_y);
     void dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo);
+    void dibujarReticula(int pos_x, int pos_y, int it);
     //void dibujarProyectil(ProyectilProtocolo protectil??, radianes angulo??, int pos_x, int pos_y, int it);
     //void dibujarExplosion(int pos_x, int pos_y, int it);
 };

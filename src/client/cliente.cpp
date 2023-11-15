@@ -2,6 +2,7 @@
 
 Cliente::Cliente(Socket&& skt):
     sdl(SDL_INIT_VIDEO),
+    ttf(),
     protocolo(std::move(skt)),
     estado_juego(),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
@@ -13,7 +14,7 @@ Cliente::Cliente(Socket&& skt):
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
     enviador(protocolo, envio_comandos),
-    angulo(0) {
+    angulo(M_PI / 2) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;

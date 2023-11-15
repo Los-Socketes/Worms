@@ -12,6 +12,8 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
     escenario[PANORAMA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backforest.png", 640, 159, 1, false);
     escenario[FONDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, false);
     escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
+    escenario[RETICULA] = std::make_shared<Animacion>(renderizador, "assets/sprites/crshairc.png", 60, 60, 32, false);
+
 
     // Animaciones de gusanos.
 
@@ -58,6 +60,10 @@ void GestorAnimaciones::dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, D
     } else {
         gusanos[std::make_pair(estado, arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, it, 1);
     }
+}
+
+void GestorAnimaciones::dibujarReticula(int pos_x, int pos_y, int it) {
+    escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
 // TODO: implementar.
