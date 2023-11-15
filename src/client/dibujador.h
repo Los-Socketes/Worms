@@ -9,22 +9,21 @@
 #include "animacion.h"
 #include "camara.h"
 #include "defs.h"
+#include "gestoranimaciones.h"
 
 class Dibujador {
  private:
-      std::map<std::string, std::shared_ptr<Animacion>> animaciones;
       Camara& camara;
       EstadoDelJuego& estado_juego;
-      int ancho_pantalla;
-      int alto_pantalla;
       int ancho_mapa;
       int alto_mapa;
+      GestorAnimaciones gestor_animaciones;
  public:
-      Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_pantalla, int alto_pantalla, int ancho_mapa, int alto_mapa);
+      Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa);
       void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int it);
+      void dibujar(Renderer& renderizador, int it, radianes angulo);
       void dibujarMapa();
-      void dibujarGusanos(int it);
+      void dibujarGusanos(int it, radianes angulo);
       // void dibujarProyectiles(int it);
       void dibujarAguaDetras(int it);
       void dibujarAguaDelante(int it);

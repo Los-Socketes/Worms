@@ -8,7 +8,7 @@ Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int 
     textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
     fix(fix) {}
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
+void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, bool flip, int frame_actual) {
     std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tam.first, tam.second));
     
     int coord_x = pos_x - camara.getPosicionX();
@@ -19,31 +19,35 @@ void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it,
         return;
     }
 
-    int frame_actual = (it / velocidad) % frames;  
     int fix_x = 0;
-    if(fix){
+    int flip_flag = SDL_FLIP_NONE;
+    if(fix)
         fix_x = -frame_actual;
-    }
-    if (flip){
-        renderizador.Copy( 
-            textura,
-            Rect(fix_x, frame_actual * tam.second, tam.first, tam.second),
-            Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
-            0,
-            NullOpt,
-            SDL_FLIP_HORIZONTAL);
-    } else {
-        renderizador.Copy( 
-            textura,
-            Rect(fix_x, frame_actual * tam.second, tam.first, tam.second),
-            Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
-            0,
-            NullOpt,
-            SDL_FLIP_NONE);
-    }
+    if (flip)
+        flip_flag = SDL_FLIP_HORIZONTAL;
+
+    renderizador.Copy( 
+        textura,
+        Rect(fix_x, frame_actual * tam.second, tam.first, tam.second),
+        Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
+        0,
+        NullOpt,
+        flip_flag);
+}
+
+void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
+    int frame_actual = (it / velocidad) % frames;
+    dibujarComun(camara, pos_x, pos_y, flip, frame_actual);
+}
+
+void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, radianes angulo) {
+    // El angulo 0 corresponde al primer frame y el angulo 180 al ultimo.
+    int frame_actual = floor((frames * angulo) / M_PI);
+    dibujarComun(camara, pos_x, pos_y, flip, frame_actual);
 }
 
 void Animacion::setDimensiones(int tam_x, int tam_y){
     dimensiones.first = tam_x;
     dimensiones.second = tam_y;
 }
+

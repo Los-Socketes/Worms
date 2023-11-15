@@ -5,14 +5,15 @@ Cliente::Cliente(Socket&& skt):
     protocolo(std::move(skt)),
     estado_juego(),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
-    dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT, MAPA_ANCHO, MAPA_ALTO),
+    dibujador(camara, estado_juego, MAPA_ANCHO, MAPA_ALTO),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {
+    enviador(protocolo, envio_comandos),
+    angulo(0) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -49,7 +50,7 @@ void Cliente::loop_principal() {
     // Inicializar animaciones.
     dibujador.inicializarAnimaciones(renderizador);
 
-    // TODO: obtener info del mapa desde el menu.
+    // TODO: obtener info del mapa desde el servidor.
     camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
 
     iniciar();
@@ -82,13 +83,23 @@ void Cliente::loop_principal() {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
+                case ARRIBA:
+                    // Temporalmente para probar.
+                    if (angulo < M_PI - 0.1)
+                        angulo += 0.1;
+                    break;
+                case ABAJO:
+                    // Temporalmente para probar.
+                    if (angulo > 0 + 0.1)
+                        angulo -= 0.1;                
+                    break;
                 default:
                     break;
             }
         }
 
         // Renderizo.
-        dibujador.dibujar(renderizador, it);
+        dibujador.dibujar(renderizador, it, angulo);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

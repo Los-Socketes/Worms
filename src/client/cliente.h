@@ -42,6 +42,8 @@ class Cliente {
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
+    // Valor temporal, angulo global para probar.
+    radianes angulo;
 
     // Inicia los hilos.
     void iniciar();

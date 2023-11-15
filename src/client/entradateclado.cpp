@@ -27,6 +27,14 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, INICIO_DER));
                         break;
+                    case SDLK_UP:
+                        // TODO: enviar como accion.
+                        comandos_teclado.push(Comando(ARRIBA));
+                        break;
+                    case SDLK_DOWN:
+                        // TODO: enviar como accion.
+                        comandos_teclado.push(Comando(ABAJO));
+                        break;
                     case SDLK_RETURN:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, SALTO));
