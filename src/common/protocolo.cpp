@@ -370,6 +370,16 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         return estado;
     }
 
+    idJugador jugadorDeTurno = obtenerId();
+    if (jugadorDeTurno == INVAL_ID) {
+        return estado;
+    }
+
+    id gusanoDeTurno = obtenerId();
+    if (gusanoDeTurno == INVAL_ID) {
+        return estado;
+    }
+
     int16_t cantJugadores;
     bool was_closed = false;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
@@ -612,9 +622,10 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         proyectiles.push_back(proyectil);
     }
     
-    
     estado->gusanos = gusanos;
     estado->proyectiles = proyectiles;
+    estado->jugadorDeTurno = jugadorDeTurno;
+    estado->gusanoDeTurno = gusanoDeTurno;
     return estado;
 }
 
@@ -848,13 +859,23 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (!is_open) {
         return false;
     }
-    int cant = estado->gusanos.size();
-    //envio cantJugadores
-    is_open = enviarCantidad(cant);
+
+    is_open = enviarId(estado->jugadorDeTurno);
     if (!is_open) {
         return false;
     }
 
+    is_open = enviarId(estado->gusanoDeTurno);
+    if (!is_open) {
+        return false;
+    }
+    
+    //envio cantJugadores
+    int cant = estado->gusanos.size();
+    is_open = enviarCantidad(cant);
+    if (!is_open) {
+        return false;
+    }
     bool was_closed = false;
     for (auto const& [idJugador, listaGusanos] : estado->gusanos) {
         // envio idJugador

@@ -143,6 +143,8 @@ struct RepresentacionProyectil {
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
     std::vector<RepresentacionProyectil> proyectiles;
+    idJugador jugadorDeTurno;
+    id gusanoDeTurno;
 };
 
 struct Configuracion {
