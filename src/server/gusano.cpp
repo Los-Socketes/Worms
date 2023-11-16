@@ -32,10 +32,30 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-DireccionGusano Gusano::getDondeMira() {
+std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
+    std::pair<coordX, coordY> coords;
+    coords = this->getCoords();
+
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
-    return dondeMira;
+
+    coordX offset = 0;
+    if (dondeMira == DERECHA)
+        offset = TAMANOGUSANO;
+    else
+        offset = -TAMANOGUSANO;
+    coords.enX += offset;
+
+    std::pair<inicioCaja, finCaja> vecs;
+    b2Vec2 vectorCoordInicio = deCoordAb2Vec(coords);
+    b2Vec2 vectorCoordFin;
+    vectorCoordFin.x += vectorCoordInicio.x + offset;
+    vectorCoordFin.y += vectorCoordInicio.y + offset;
+
+    vecs.inicio = vectorCoordInicio;
+    vecs.fin = vectorCoordFin;
+
+    return vecs;
 }
 
 

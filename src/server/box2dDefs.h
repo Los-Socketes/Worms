@@ -1,6 +1,9 @@
 #ifndef BOX2DDEFS_HEADER
 #define BOX2DDEFS_HEADER
 
+#include <box2d/box2d.h>
+#include "defs.h"
+
     /*
      *Coordenadas en Box2d:
      *Arranca abajo a la izquierda.
@@ -25,6 +28,28 @@
 
 #define MASACUERPOESTATICO 0.0f
 
-#define TAMANOGUSANO 20    
+#define TAMANOGUSANO 20
+
+typedef b2Vec2 inicioCaja;
+typedef b2Vec2 finCaja;
+
+#define inicio first
+#define fin second
+
+[[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2& vec) {
+    std::pair<coordX, coordY> representacionCoord;
+    representacionCoord.enX = vec.x;
+    representacionCoord.enY = vec.y;
+
+    return representacionCoord;
+}
+
+[[nodiscard]] inline b2Vec2 deCoordAb2Vec(std::pair<coordX, coordY>& coord) {
+    b2Vec2 representacionVec;
+    representacionVec.x = coord.enX;
+    representacionVec.y = coord.enY;
+
+    return representacionVec;
+}
 
 #endif

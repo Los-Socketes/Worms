@@ -61,6 +61,14 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     std::cout << "FIN CONTACTO\n";
 }
 
+
+bool ResolvedorQuery::ReportFixture(b2Fixture* fixture) {
+    foundBodies.push_back( fixture->GetBody() ); 
+    return true;//keep going to find all fixtures in the query area
+}
+
+
+
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::GUSANO;
@@ -256,40 +264,53 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
-    Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::ARMA;
+    // Entidad *nuevaEntidad = new Entidad;
+    // nuevaEntidad->tipo = TipoEntidad::ARMA;
     // Arma *nuevaArma = new Arma();
     // nuevaEntidad->arma = nuevaArma;
 
-    std::pair<coordX, coordY> coords;
-    coords = gusano->getCoords();
-    //TODO Hacer metodo?
-    DireccionGusano dondeMira;
-    dondeMira = gusano->getDondeMira();
-    coordX offset = 0;
-    if (dondeMira == DERECHA)
-        offset = TAMANOGUSANO;
-    else
-        offset = -TAMANOGUSANO;
-    coords.enX += offset;
+    std::pair<inicioCaja, finCaja> coordsGolpe;
+    coordsGolpe = gusano->getAreaGolpe();
 
-    std::cout << "Le doy el arma\n";
+    ResolvedorQuery query;
+    b2AABB aabb;
+    aabb.lowerBound = coordsGolpe.inicio;
+    aabb.upperBound = coordsGolpe.fin;
+    this->world.QueryAABB( &query, aabb );
 
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(coords.enX, coords.enY);
-    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-    b2Body* body = world.CreateBody(&bodyDef);
+    for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+        b2Body* cuerpoA = query.foundBodies[i];
+        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+        // printf("Otro: %4.2f %4.2f \n", pos.x, pos.y);
+    }
+    
+      
+    // DireccionGusano dondeMira;
+    // dondeMira = gusano->getDondeMira();
+    // coordX offset = 0;
+    // if (dondeMira == DERECHA)
+    //     offset = TAMANOGUSANO;
+    // else
+    //     offset = -TAMANOGUSANO;
+    // coords.enX += offset;
 
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
+    // std::cout << "Le doy el arma\n";
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    // b2BodyDef bodyDef;
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(coords.enX, coords.enY);
+    // bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+    // b2Body* body = world.CreateBody(&bodyDef);
 
-    body->CreateFixture(&fixtureDef);
+    // b2PolygonShape dynamicBox;
+    // dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &dynamicBox;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
+
+    // body->CreateFixture(&fixtureDef);
 
     
 }
@@ -302,7 +323,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    this->anadirViga(0, 60, std::pair<coordX,coordY>(0.0f, 10.0f));
+    this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;

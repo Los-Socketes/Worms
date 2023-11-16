@@ -3,9 +3,11 @@
 
 #include <box2d/box2d.h>
 #include "defs.h"
+#include "box2dDefs.h"
 
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
+
 
 
 class Gusano {
@@ -53,7 +55,7 @@ public:
 
     [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
 
-    [[nodiscard]] DireccionGusano getDondeMira();
+    [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
 };
 
 #endif
