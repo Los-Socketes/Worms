@@ -374,3 +374,26 @@ TEST_CASE( "Tests de configurar cuenta regresiva", "[obtenerAccionDeConfigurarCu
     REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
     REQUIRE(resultado.configARealizar.cuentaRegresiva == config.cuentaRegresiva);
 }
+
+// TEST 16
+
+Accion obtenerAccionDeConfigurarCoordenadas(std::pair<coordX, coordY> coordenadas) {
+    protocolo.configurarCoordenadas(coordenadas);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de configurar coordenadas", "[obtenerAccionDeConfigurarCoordenadas]" ) {
+    Accion configurar;
+    std::pair<coordX,coordY> coordenadas(1.5,4.6);
+    configurar.accion = PREPARAR;
+    Configuracion config;
+    config.caracteristica = COORDENADAS;
+    config.coordenadas = coordenadas;
+    configurar.configARealizar = config;
+
+    Accion resultado = obtenerAccionDeConfigurarCoordenadas(coordenadas);
+    REQUIRE(resultado.accion == configurar.accion);
+    REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
+    REQUIRE(resultado.configARealizar.coordenadas.enX == config.coordenadas.enX);
+    REQUIRE(resultado.configARealizar.coordenadas.enY == config.coordenadas.enY);
+}
