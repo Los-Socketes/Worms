@@ -297,6 +297,28 @@ bool Protocolo::configurarCuentaRegresiva(int valor) {
 }
 
 
+bool Protocolo::configurarCoordenadas(std::pair<coordX,coordY> coordenadas) {
+    bool is_open = enviarCodigo(CALIBRAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = COORDENADAS; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    std::vector<int32_t> posAEnviar;
+    posAEnviar.push_back(htonl((int32_t)toInt(coordenadas.enX)));
+    posAEnviar.push_back(htonl((int32_t)toInt(coordenadas.enY)));
+
+    socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
+    return !was_closed;
+}
+
+
 std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
@@ -631,25 +653,37 @@ Accion Protocolo::obtenerAccion() {
         if (was_closed) {
             return accion;
         }
-
-        int32_t valor;
-        socket.recvall(&valor, sizeof(valor), &was_closed);
-        if (was_closed) {
-            return accion;
-        }
-        valor = ntohl(valor);
-
-        accion.accion = PREPARAR;
         Configuracion config;
         config.caracteristica = (ValorAConfigurar)valorAConfigurar;
-        if (config.caracteristica == POTENCIA) {
-            config.potencia = toFloat(valor);
-        } else if (config.caracteristica == ANGULO) {
-            config.angulo = toFloat(valor);
+        if (config.caracteristica == COORDENADAS) {
+            std::vector<int32_t> posicion(2,0);
+            socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+            if (was_closed) {
+                return accion;
+            }
+
+            std::pair<coordX, coordY> posicionRecibida;
+            posicionRecibida.enX = toFloat(ntohl(posicion[0]));
+            posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+            config.coordenadas = posicionRecibida;
         } else {
-            config.cuentaRegresiva = valor;
+            int32_t valor;
+            socket.recvall(&valor, sizeof(valor), &was_closed);
+            if (was_closed) {
+                return accion;
+            }
+            valor = ntohl(valor);
+            
+            if (config.caracteristica == POTENCIA) {
+                config.potencia = toFloat(valor);
+            } else if (config.caracteristica == ANGULO) {
+                config.angulo = toFloat(valor);
+            } else {
+                config.cuentaRegresiva = valor;
+            }
         }
 
+        accion.accion = PREPARAR;
         accion.configARealizar = config;
         return accion;
         

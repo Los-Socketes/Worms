@@ -45,7 +45,7 @@ enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_
  */
 //                    0         1         2        3          4
 enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
-enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA};
+enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 
 
 #define PARTIDAS 1
@@ -130,28 +130,25 @@ struct RepresentacionViga {
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
     std::vector<RepresentacionViga> vigas;
-    // DireccionGusano dir;
-    // std::pair<coordX, coordY> posicion;
 };
 
 struct Configuracion {
     ValorAConfigurar caracteristica;
-    union {
-        float potencia;
-        float angulo;
-        int cuentaRegresiva;
-    };
+    // WARNING: saco el union porque rompia con el std::pair
+    float potencia;
+    float angulo;
+    int cuentaRegresiva;
+    std::pair<coordX, coordY> coordenadas;
 };
 
 struct Accion {
     id idGusano;
     idJugador jugador;
     tipoAccion accion;
-    union {
-        Direccion dir;
-        ArmaProtocolo armaAEquipar;
-        Configuracion configARealizar;
-    };
+    // WARNING: saco el union porque rompia con el std::pair
+    Direccion dir;
+    ArmaProtocolo armaAEquipar;
+    Configuracion configARealizar;
 
 };
 

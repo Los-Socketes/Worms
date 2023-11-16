@@ -42,6 +42,7 @@ public:
     bool configurarAngulo(float angulo);
     bool configurarPotencia(float potencia);
     bool configurarCuentaRegresiva(int valor);
+    bool configurarCoordenadas(std::pair<coordX,coordY> coordenadas);
     bool atacar();
     std::shared_ptr<EstadoDelJuego> obtenerEstadoDelJuego();
 
