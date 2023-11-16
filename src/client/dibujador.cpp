@@ -55,15 +55,17 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
     gestor_animaciones.inicializar(renderizador);    
 }
 
-void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada, std::vector<RepresentacionViga> vigas) {
+void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas) {
     renderizador.Clear();
+
+    RepresentacionGusano gusano_actual = estado_juego->gusanos[estado_juego->jugadorDeTurno][estado_juego->gusanoDeTurno];
 
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
-    dibujarGusanos(renderizador, it, angulo);
+    dibujarGusanos(renderizador, it, gusano_actual.armaEquipada.anguloRad);
     //dibujarProyectiles(it);
     dibujarAguaDelante(it);
-    dibujarBarraArmas(renderizador, arma_equipada);
+    dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
     renderizador.Present();
 }

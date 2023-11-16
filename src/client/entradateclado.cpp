@@ -26,12 +26,10 @@ void EntradaTeclado::run() {
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(INICIO_DER));
                         break;
                     case SDLK_UP:
-                        // TODO: enviar como accion.
                         // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ARRIBA));
                         comandos_teclado.push(Comando(ARRIBA));
                         break;
                     case SDLK_DOWN:
-                        // TODO: enviar como accion.
                         // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ABAJO));
                         comandos_teclado.push(Comando(ABAJO));
                         break;

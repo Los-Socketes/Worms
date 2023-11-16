@@ -13,8 +13,7 @@ Cliente::Cliente(Socket&& skt):
     comandos_teclado(TAM_QUEUE),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos),
-    angulo(M_PI / 2) {
+    enviador(protocolo, envio_comandos) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -84,6 +83,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
+                /*
                 case ARRIBA:
                     // Temporalmente para probar.
                     if (angulo < M_PI - 0.1)
@@ -94,6 +94,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                     if (angulo > 0 + 0.1)
                         angulo -= 0.1;                
                     break;
+                */
                 default:
                     break;
             }
@@ -101,7 +102,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
         // Renderizo.
         // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, angulo, estado_juego->gusanos[0][0].armaEquipada.arma, info_inicial.vigas);
+        dibujador.dibujar(renderizador, it, info_inicial.vigas);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

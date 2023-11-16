@@ -28,7 +28,7 @@ class Dibujador {
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego> estado_juego, int ancho_mapa, int alto_mapa);
       void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada, std::vector<RepresentacionViga> vigas);
+      void dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas);
       void dibujarMapa(std::vector<RepresentacionViga> vigas);
       void dibujarGusanos(Renderer& renderizador, int it, radianes angulo);
       // void dibujarProyectiles(int it);
