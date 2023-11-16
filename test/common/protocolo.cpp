@@ -108,65 +108,117 @@ TEST_CASE( "Tests de enviar partidas", "[enviarPartidas]" ) {
 
 // TEST 6
 
-std::pair<id,id> crearPartidaCasoFeliz(id mapa, id partida) {
+std::pair<InformacionInicial,id> crearPartidaCasoFeliz(id mapa, InformacionInicial partida) {
     protocoloServer.enviarConfirmacion(partida);
-    id idPartida = protocolo.crearPartida(mapa);
+    InformacionInicial partidaRecibida = protocolo.crearPartida(mapa);
     id idMapa = protocoloServer.obtenerMapaDeseado();
-    std::pair<id,id> ids(idPartida, idMapa);
+    std::pair<InformacionInicial,id> ids(partidaRecibida, idMapa);
     return ids;
 }
 
 TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
-    std::pair<id,id> resultado = crearPartidaCasoFeliz((id)0, (id)1);
-    REQUIRE( resultado.first == (id)1);
+    InformacionInicial info;
+    info.jugador = 1;
+
+    RepresentacionViga viga1;
+    viga1.angulo = 45.2;
+    viga1.longitud = 3;
+    viga1.posicionInicial.enX = 2.3;
+    viga1.posicionInicial.enY = 4.2;
+
+    RepresentacionViga viga2;
+    viga2.angulo = 38.3;
+    viga2.longitud = 6;
+    viga2.posicionInicial.enX = 20.6;
+    viga2.posicionInicial.enY = 5.4;
+
+    std::vector<RepresentacionViga> vigas = {viga1, viga2};
+    info.vigas = vigas;
+    std::pair<InformacionInicial,id> resultado = crearPartidaCasoFeliz((id)0, info);
+    for (int i = 0; i < (int)vigas.size(); i++) {
+        RepresentacionViga vigaObtenida = resultado.first.vigas[i];
+        RepresentacionViga vigaBase = vigas[i];
+        REQUIRE(vigaObtenida.angulo == vigaBase.angulo);
+        REQUIRE(vigaObtenida.longitud == vigaBase.longitud);
+        REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
+        REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
+    }
+    REQUIRE(resultado.first.jugador ==  1);
     REQUIRE( resultado.second == (id)0);
+
 }
 
 // TEST 7
 
-std::pair<id,id> crearPartidaCasoError(id mapa) {
+std::pair<InformacionInicial,id> crearPartidaCasoError(id mapa) {
     protocoloServer.enviarError();
-    id idPartida = protocolo.crearPartida(mapa);
+    InformacionInicial partida = protocolo.crearPartida(mapa);
     id idMapa = protocoloServer.obtenerMapaDeseado();
-    std::pair<id,id> ids(idPartida, idMapa);
+    std::pair<InformacionInicial,id> ids(partida, idMapa);
     return ids;
 }
 
 TEST_CASE("Test de crear partidas (Caso error)", "[crearPartidaCasoError]") {
-    std::pair<id,id> resultado = crearPartidaCasoError((id)0);
-    REQUIRE(resultado.first == INVAL_ID);
+    std::pair<InformacionInicial,id> resultado = crearPartidaCasoError((id)0);
+    REQUIRE(resultado.first.jugador == INVAL_ID);
     REQUIRE(resultado.second == (id)0);
 }
 
 // TEST 8
 
-std::pair<bool,id> unirsePartidaCasoFeliz(id partida) {
-    protocoloServer.enviarConfirmacion((id)0);
-    bool res = protocolo.unirseAPartida(partida);
+std::pair<InformacionInicial,id> unirsePartidaCasoFeliz(id partida, InformacionInicial infoPartida) {
+    protocoloServer.enviarConfirmacion(infoPartida);
+    InformacionInicial res = protocolo.unirseAPartida(partida);
     id idPartida = protocoloServer.obtenerPartidaDeseada();
-    std::pair<bool,id> resultado(res, idPartida);
+    std::pair<InformacionInicial,id> resultado(res, idPartida);
     return resultado;
 }
 
 TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") {
-    std::pair<bool,id> resultado = unirsePartidaCasoFeliz((id)0);
-    REQUIRE(resultado.first);
+    InformacionInicial info;
+    info.jugador = 1;
+
+    RepresentacionViga viga1;
+    viga1.angulo = 45;
+    viga1.longitud = 3;
+    viga1.posicionInicial.enX = 2.3;
+    viga1.posicionInicial.enY = 4.2;
+
+    RepresentacionViga viga2;
+    viga2.angulo = 38.5;
+    viga2.longitud = 6;
+    viga2.posicionInicial.enX = 20.6;
+    viga2.posicionInicial.enY = 5.4;
+
+    std::vector<RepresentacionViga> vigas = {viga1, viga2};
+    info.vigas = vigas;
+    std::pair<InformacionInicial,id> resultado = unirsePartidaCasoFeliz((id)0, info);
+    REQUIRE(resultado.first.jugador == 1);
+    REQUIRE(resultado.first.vigas.size() == vigas.size());
+    for (int i = 0; i < (int)vigas.size(); i++) {
+        RepresentacionViga vigaObtenida = resultado.first.vigas[i];
+        RepresentacionViga vigaBase = vigas[i];
+        REQUIRE(vigaObtenida.angulo == vigaBase.angulo);
+        REQUIRE(vigaObtenida.longitud == vigaBase.longitud);
+        REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
+        REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
+    }
     REQUIRE(resultado.second == (id)0);
 }
 
 // TEST 9
 
-std::pair<bool,id> unirsePartidaCasoError(id partida) {
+std::pair<InformacionInicial,id> unirsePartidaCasoError(id partida) {
     protocoloServer.enviarError();
-    bool res = protocolo.unirseAPartida(partida);
+    InformacionInicial res = protocolo.unirseAPartida(partida);
     id idPartida = protocoloServer.obtenerPartidaDeseada();
-    std::pair<bool,id> resultado(res, idPartida);
+    std::pair<InformacionInicial,id> resultado(res, idPartida);
     return resultado;
 }
 
 TEST_CASE("Test de unirse a partidas (Caso error)", "[unirsePartidaCasoError]") {
-    std::pair<bool,id> resultado = unirsePartidaCasoError((id)0);
-    REQUIRE(!resultado.first);
+    std::pair<InformacionInicial,id> resultado = unirsePartidaCasoError((id)0);
+    REQUIRE(resultado.first.jugador == INVAL_ID);
     REQUIRE(resultado.second == (id)0);
 }
 

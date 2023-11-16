@@ -88,6 +88,7 @@ std::vector<id> Protocolo::obtenerVector() {
 
 InformacionInicial Protocolo::verificarConexion() {
     InformacionInicial info;
+    info.jugador = INVAL_ID;
     int8_t codigo = obtenerCodigo();
     if (codigo == -1 || codigo == ERROR) {
         return info;
@@ -111,8 +112,8 @@ InformacionInicial Protocolo::verificarConexion() {
         if (was_closed) {
             return info;
         }
-        angulo = toFloat(ntohl(angulo));
-
+        float anguloRecibido = toFloat(ntohl(angulo));
+        
         int32_t largo;
         socket.recvall(&largo, sizeof(largo), &was_closed);
         if (was_closed) {
@@ -131,7 +132,7 @@ InformacionInicial Protocolo::verificarConexion() {
         posicionRecibida.enY = toFloat(ntohl(posicion[1]));
 
         RepresentacionViga vigaActual;
-        vigaActual.angulo = angulo;
+        vigaActual.angulo = anguloRecibido;
         vigaActual.longitud = largo;
         vigaActual.posicionInicial = posicionRecibida;
         vigas.push_back(vigaActual);
@@ -492,7 +493,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             if (was_closed) {
                 return estado;
             }
-            angulo = toFloat(ntohl(angulo));
+            float anguloRecibido = toFloat(ntohl(angulo));
 
             int32_t potencia;
             socket.recvall(&potencia, sizeof(potencia), &was_closed);
@@ -530,7 +531,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
                 armaEquipada.danioFragmento.epicentro = danioFragEpicentro;
                 armaEquipada.danioFragmento.radio = danioFragRadio;
             }
-            armaEquipada.anguloRad = angulo;
+            armaEquipada.anguloRad = anguloRecibido;
             armaEquipada.potencia = potencia;
             armaEquipada.cuentaRegresiva = cuentaRegresiva;
             armaEquipada.arma = (ArmaProtocolo)arma;
