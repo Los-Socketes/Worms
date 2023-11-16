@@ -5,7 +5,7 @@
 
 class MonitorPartida {public: [[nodiscard]] id anadirPartida(std::string mapaNombre);
 
-    [[nodiscard]] idJugador anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+    [[nodiscard]] InformacionInicial anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
 
     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 };
@@ -54,11 +54,12 @@ void Reciever::lobby() {
 	  }
     }
 
-    this->protocolo.enviarConfirmacion(partidaElegida);
+    InformacionInicial infoInicial;
+    infoInicial = partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
+
+    this->protocolo.enviarConfirmacion(infoInicial);
     // TODO: cambiar a que sea de cliente o algo idk
-    idJugador idDelNuevoJugador;
-    idDelNuevoJugador = partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
-    this->miId = idDelNuevoJugador;
+    this->miId = infoInicial.jugador;
 }
 
 

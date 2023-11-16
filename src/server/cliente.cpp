@@ -13,7 +13,7 @@ void Cliente::obtenerAccesoAAcciones(Queue<Accion>* acciones) {
 }
 
 
-void Cliente::enviarEstadoJuego(EstadoDelJuego estado) {
+void Cliente::enviarEstadoJuego(std::shared_ptr<EstadoDelJuego> estado) {
     this->sender.anadirEstado(estado);
 }
 

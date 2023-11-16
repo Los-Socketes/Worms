@@ -14,14 +14,14 @@ class Sender: public Thread {
     // Queue<Mensaje>& queue;
     Protocolo& protocol;
 
-    Queue<EstadoDelJuego> estadoAEnviar;
+    Queue<std::shared_ptr<EstadoDelJuego>> estadoAEnviar;
 
     void enviarEstado() override;
 public:
     //Sender(Queue<Mensaje>& msg_queue, Protocol& protocol_ref, std::atomic<bool>& is_alive);
     Sender(Protocolo& protocolo);
 
-    void anadirEstado(EstadoDelJuego estado);
+    void anadirEstado(std::shared_ptr<EstadoDelJuego> estado);
 
     void stop() override;
     // //Logica de lobby

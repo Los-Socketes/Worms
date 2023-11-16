@@ -10,6 +10,9 @@ Partida::Partida(std::string mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
+
+
+    this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
 }
 
 //Esto tendria que estar en el YAML?
@@ -121,7 +124,7 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
 }
 
-idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
+InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
@@ -141,6 +144,9 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
 
+    InformacionInicial infoInicial;
+
+    //Creo el id del nuevo jugador
     idJugador idNuevoJugador;
     idNuevoJugador = (idJugador) this->jugadores.size();
 
@@ -153,27 +159,7 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
 
-    //TODO Mover arriba
-    return idNuevoJugador;
-}
-
-void Partida::enviarEstadoAJugadores() {
-    //TODO esto deberia ser un puntero
-    EstadoDelJuego estadoActual;
-
-    std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
-    for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
-        Jugador *jugadorActual;
-        jugadorActual = this->jugadores.at(jugador);
-
-        std::vector<RepresentacionGusano> gusanosJugActual;
-
-        gusanosJugActual = jugadorActual->getRepresentacionGusanos();
-
-        representacionPartida.insert({jugador, gusanosJugActual});
-    }
-    estadoActual.gusanos = representacionPartida;
-
+    //Leo las vigas
     std::vector<RepresentacionViga> vigasEnMapa;
 
     //Fuente: https://www.iforce2d.net/b2dtut/bodies
@@ -201,9 +187,35 @@ void Partida::enviarEstadoAJugadores() {
         posicionProtocolo.enX = posicion.x;
         posicionProtocolo.enY = posicion.y;
         vigaActual.posicionInicial = posicionProtocolo;
+
+        vigasEnMapa.push_back(vigaActual);
     }
 
-    estadoActual.vigas = vigasEnMapa;
+    //TODO Mover arriba
+    infoInicial.jugador = idNuevoJugador;
+    infoInicial.vigas = vigasEnMapa;
+    return infoInicial;
+}
+
+void Partida::enviarEstadoAJugadores() {
+    //TODO esto deberia ser un puntero
+    std::shared_ptr<EstadoDelJuego> estadoActual;
+
+    std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
+    for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
+        Jugador *jugadorActual;
+        jugadorActual = this->jugadores.at(jugador);
+
+        std::vector<RepresentacionGusano> gusanosJugActual;
+
+        gusanosJugActual = jugadorActual->getRepresentacionGusanos();
+
+        representacionPartida.insert({jugador, gusanosJugActual});
+    }
+    estadoActual->gusanos = representacionPartida;
+
+
+    // estadoActual.vigas = vigasEnMapa;
 
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
@@ -323,7 +335,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
+    // this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;

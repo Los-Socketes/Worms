@@ -84,7 +84,7 @@ class Partida : public Thread {
 public:
     Partida(const std::string mapa);
 
-    [[nodiscard]] idJugador anadirCliente(Cliente *clienteNuevo);
+    [[nodiscard]] InformacionInicial anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
 };

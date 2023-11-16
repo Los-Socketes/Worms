@@ -102,7 +102,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Salto" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
-        this->cuerpo.ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), false);
+        this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), false);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -191,7 +191,24 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.dir = this->direccion;
     repre.estado = this->estado;
     repre.posicion = this->getCoords();
-    repre.armaEquipada = this->armaEquipada;
+    //TODO Ahora est hardcodeado. Hacer algo generico.
+    //Esto solo aplica al bate
+    RepresentacionArma arma;
+    arma.tieneMira = false;
+    arma.tienePotenciaVariable = false;
+    arma.tieneCuentaRegresiva = false;
+    arma.municiones = 100000;
+    arma.fragmentos = 0;
+    RepresentacionDanio danio;
+    danio.epicentro = 9;
+    danio.radio = 0;
+    arma.danio = danio;
+    arma.danioFragmento = danio;
+    arma.anguloRad = 1;
+    arma.potencia = 0;
+    arma.cuentaRegresiva = 0;
+    arma.arma = BATE_P;
+    repre.armaEquipada = arma;
 
     return repre;
 }
