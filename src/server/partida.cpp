@@ -199,7 +199,7 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
 
 void Partida::enviarEstadoAJugadores() {
     //TODO esto deberia ser un puntero
-    std::shared_ptr<EstadoDelJuego> estadoActual;
+    std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
     std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
@@ -213,6 +213,9 @@ void Partida::enviarEstadoAJugadores() {
         representacionPartida.insert({jugador, gusanosJugActual});
     }
     estadoActual->gusanos = representacionPartida;
+    // TODO: actualizar para que sea el posta
+    estadoActual->jugadorDeTurno = 0;
+    estadoActual->gusanoDeTurno = 0;
 
 
     // estadoActual.vigas = vigasEnMapa;
