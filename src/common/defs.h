@@ -125,11 +125,15 @@ struct RepresentacionViga {
     std::pair<coordX, coordY> posicionInicial;
 };
 
+struct InformacionInicial {
+    idJugador jugador;
+    std::vector<RepresentacionViga> vigas;
+};
+
 
 // Tiene la info del estado del juego
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
-    std::vector<RepresentacionViga> vigas;
 };
 
 struct Configuracion {

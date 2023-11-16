@@ -17,7 +17,7 @@ private:
     id obtenerId();
     int8_t obtenerCodigo();
     std::vector<id> obtenerVector();
-    id verificarConexion();
+    InformacionInicial verificarConexion();
     bool enviarCodigo(int codigo);
     bool enviarCantidad(int cant);
     bool enviarId(id id);
@@ -34,8 +34,8 @@ public:
     bool pedirInformacion(tipoInfo infoAPedir);
     std::vector<RepresentacionMapa> obtenerMapas();
     std::vector<id> obtenerPartidas();
-    id crearPartida(id mapaSeleccionado);
-    bool unirseAPartida(id idPartida);
+    InformacionInicial crearPartida(id mapaSeleccionado);
+    InformacionInicial unirseAPartida(id idPartida);
     bool moverGusano(Direccion direccion);
     bool equiparArma(ArmaProtocolo arma);
     bool configurarAngulo(float angulo);
@@ -54,7 +54,7 @@ public:
     noIgn id obtenerMapaDeseado();
     noIgn id obtenerPartidaDeseada();
 
-    bool enviarConfirmacion(id idPartida);
+    bool enviarConfirmacion(InformacionInicial idPartida);
     bool enviarError();
 
     Accion obtenerAccion();

@@ -86,14 +86,60 @@ std::vector<id> Protocolo::obtenerVector() {
 }
 
 
-id Protocolo::verificarConexion() {
+InformacionInicial Protocolo::verificarConexion() {
+    InformacionInicial info;
     int8_t codigo = obtenerCodigo();
     if (codigo == -1 || codigo == ERROR) {
-        return INVAL_ID;
+        return info;
     }
-    // TODO: quizas ver si no es exito -> tirar excepcion
+    idJugador idEnviada = obtenerId();
+    if (idEnviada == INVAL_ID) {
+        return info;
+    }
 
-    return obtenerId();
+    int16_t cantVigas;
+    bool was_closed = false;
+    socket.recvall(&cantVigas, sizeof(cantVigas), &was_closed);
+    if (was_closed) {
+        return info;
+    }
+    cantVigas = ntohs(cantVigas);
+    std::vector<RepresentacionViga> vigas;
+    for (int16_t i = 0; i < cantVigas; i++) {
+        int32_t angulo;
+        socket.recvall(&angulo, sizeof(angulo), &was_closed);
+        if (was_closed) {
+            return info;
+        }
+        angulo = toFloat(ntohl(angulo));
+
+        int32_t largo;
+        socket.recvall(&largo, sizeof(largo), &was_closed);
+        if (was_closed) {
+            return info;
+        }
+        largo = ntohl(largo);
+
+        std::vector<int32_t> posicion(2,0);
+        socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+        if (was_closed) {
+            return info;
+        }
+
+        std::pair<coordX, coordY> posicionRecibida;
+        posicionRecibida.enX = toFloat(ntohl(posicion[0]));
+        posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+
+        RepresentacionViga vigaActual;
+        vigaActual.angulo = angulo;
+        vigaActual.longitud = largo;
+        vigaActual.posicionInicial = posicionRecibida;
+        vigas.push_back(vigaActual);
+    } 
+    info.jugador = idEnviada;
+    info.vigas = vigas;
+    return info;
+
 }
 
 
@@ -171,34 +217,35 @@ std::vector<id> Protocolo::obtenerPartidas() {
 }
 
 
-id Protocolo::crearPartida(id mapaSeleccionado) {
+InformacionInicial Protocolo::crearPartida(id mapaSeleccionado) {
+    InformacionInicial error;
     bool is_open = enviarCodigo(CREAR);
     if (!is_open) {
-        return INVAL_ID;
+        return error;
     }
 
     is_open = enviarId(mapaSeleccionado);
     if (!is_open) {
-        return INVAL_ID;
+        return error;
     }
 
     return verificarConexion();
 }
 
 
-bool Protocolo::unirseAPartida(id idPartida) {
+InformacionInicial Protocolo::unirseAPartida(id idPartida) {
+    InformacionInicial error;
     bool is_open = enviarCodigo(UNIRSE);
     if (!is_open) {
-        return false;
+        return error;
     }
 
     is_open = enviarId(idPartida);
     if (!is_open) {
-        return false;
+        return error;
     }
 
-    id idPartidaUnida = verificarConexion();
-    return !(idPartidaUnida == INVAL_ID);
+    return verificarConexion();
 }
 
 
@@ -598,13 +645,49 @@ id Protocolo::obtenerPartidaDeseada() {
 }
 
 
-bool Protocolo::enviarConfirmacion(id idPartida) {
+bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
     bool is_open = enviarCodigo(EXITO);
     if (!is_open) {
         return false;
     }
 
-    return enviarId(idPartida);
+    is_open = enviarId(informacion.jugador);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarCantidad(informacion.vigas.size());
+    if (!is_open) {
+        return false;
+    }
+
+    for (auto &&viga : informacion.vigas) {
+        // angulo
+        bool was_closed = false;
+        int32_t angulo = htonl(toInt(viga.angulo));
+        socket.sendall(&angulo, sizeof(angulo), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        // largo
+        int32_t largo = htonl(viga.longitud);
+        socket.sendall(&largo, sizeof(largo), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        //posicion
+        std::vector<int32_t> posAEnviar;
+        posAEnviar.push_back(htonl((int32_t)toInt(viga.posicionInicial.enX)));
+        posAEnviar.push_back(htonl((int32_t)toInt(viga.posicionInicial.enY)));
+
+        socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+    }
+
+    return true;
+    
 }
 
 
