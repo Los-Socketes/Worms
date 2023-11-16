@@ -4,7 +4,7 @@ Cliente::Cliente(Socket&& skt):
     sdl(SDL_INIT_VIDEO),
     ttf(),
     protocolo(std::move(skt)),
-    estado_juego(),
+    estado_juego(std::make_shared<EstadoDelJuego>()),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
     dibujador(camara, estado_juego, MAPA_ANCHO, MAPA_ALTO),
     menu(protocolo),
