@@ -34,7 +34,7 @@ void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angu
         textura,
         Rect(0, frame_actual * tam.second, tam.first, tam.second),
         Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
-        angulo,
+        angulo * 180 / M_PI,
         NullOpt,
         flip_flag);
 }

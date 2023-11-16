@@ -11,6 +11,8 @@
 #include "defs.h"
 #include "camara.h"
 
+#define PIXELS_POR_METRO 20
+
 enum ItemEscenario{
     AGUA,
     FONDO,
@@ -36,6 +38,7 @@ class GestorAnimaciones {
     void dibujarAgua(int pos_x, int pos_y, int it);
     void dibujarFondo();
     void dibujarPanorama(int pos_x, int pos_y);
+    void dibujarViga(int pos_x, int pos_y, int largo, radianes angulo);
     void dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo);
     void dibujarReticula(int pos_x, int pos_y, int it);
     void dibujarIconoArma(ArmaProtocolo arma, int pos_x, int pos_y);

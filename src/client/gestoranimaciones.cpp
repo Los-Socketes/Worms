@@ -8,6 +8,7 @@ GestorAnimaciones::GestorAnimaciones(Camara& camara, int ancho_mapa, int alto_ma
 void GestorAnimaciones::inicializar(Renderer& renderizador) {
 
     // Animaciones de escenario/interfaz.
+
     escenario[AGUA] = std::make_shared<Animacion>(renderizador, "assets/sprites/water.png", 128, 100, 12, true);
     escenario[PANORAMA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backforest.png", 640, 159, 1, true);
     escenario[FONDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, true);
@@ -36,8 +37,6 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
         renderizador, "assets/sprites/wblink1.png", 60, 60, 1, true);
     gusanos[std::make_pair(CAMINANDO, NADA_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wwalk.png", 60, 60, 15, true);
-    //gusanos[std::make_pair(INICIO_SALTO, NADA_P)] = std::make_shared<Animacion>(
-        //renderizador, "assets/sprites/wjump.png", 60, 60, 10, true);
     gusanos[std::make_pair(SALTANDO, NADA_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wflyup.png", 60, 60, 2, true);
     gusanos[std::make_pair(CAYENDO, NADA_P)] = std::make_shared<Animacion>(
@@ -48,11 +47,87 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
     gusanos[std::make_pair(QUIETO, BATE_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wbsbaim.png", 60, 60, 32, true);
     gusanos[std::make_pair(CAMINANDO, BATE_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
-    //gusanos[std::make_pair(INICIO_SALTO, BATE_P)] = gusanos[std::make_pair(INICIO_SALTO, NADA_P)];
     gusanos[std::make_pair(SALTANDO, BATE_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
     gusanos[std::make_pair(CAYENDO, BATE_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
     gusanos[std::make_pair(DISPARANDO, BATE_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wbsbswn.png", 60, 60, 32, true);
+
+    // Gusano con bazooka.
+    gusanos[std::make_pair(QUIETO, BAZOOKA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wbaz.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, BAZOOKA_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, BAZOOKA_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, BAZOOKA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, BAZOOKA_P)] = gusanos[std::make_pair(QUIETO, BAZOOKA_P)];
+
+    // Gusano con mortero.
+    gusanos[std::make_pair(QUIETO, MORTERO_P)] = gusanos[std::make_pair(QUIETO, BAZOOKA_P)];
+    gusanos[std::make_pair(CAMINANDO, MORTERO_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, MORTERO_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, MORTERO_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, MORTERO_P)] = gusanos[std::make_pair(QUIETO, BAZOOKA_P)];
+
+    // Gusano con granada verde.
+    gusanos[std::make_pair(QUIETO, GRANADA_VERDE_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wthrgrn.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, GRANADA_VERDE_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, GRANADA_VERDE_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, GRANADA_VERDE_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, GRANADA_VERDE_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+
+    // Gusano con granada roja.
+    gusanos[std::make_pair(QUIETO, GRANADA_ROJA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wthrcls.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, GRANADA_ROJA_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, GRANADA_ROJA_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, GRANADA_ROJA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, GRANADA_ROJA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+
+    // Gusano con granada santa.
+    gusanos[std::make_pair(QUIETO, GRANADA_SANTA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wthrhgr.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, GRANADA_SANTA_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, GRANADA_SANTA_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, GRANADA_SANTA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, GRANADA_SANTA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+
+    // Gusano con dinamita.
+    gusanos[std::make_pair(QUIETO, DINAMITA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wdynbak.png", 60, 60, 1, true);
+    gusanos[std::make_pair(CAMINANDO, DINAMITA_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, DINAMITA_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, DINAMITA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, DINAMITA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+
+    // Gusano con banana.
+    gusanos[std::make_pair(QUIETO, BANANA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wthrban.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, BANANA_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, BANANA_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, BANANA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, BANANA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+
+    // Gusano con ataque aereo.
+    gusanos[std::make_pair(QUIETO, ATAQUE_AEREO_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wairtlk.png", 60, 60, 1, true);
+    gusanos[std::make_pair(CAMINANDO, ATAQUE_AEREO_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, ATAQUE_AEREO_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, ATAQUE_AEREO_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, ATAQUE_AEREO_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wairtlk.png", 60, 60, 10, true);
+
+    // Gusano con teletransportacion.
+    gusanos[std::make_pair(QUIETO, TELETRANSPORTACION_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wteltlk.png", 60, 60, 10, true);
+    gusanos[std::make_pair(CAMINANDO, TELETRANSPORTACION_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, TELETRANSPORTACION_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, TELETRANSPORTACION_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, TELETRANSPORTACION_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wteldsv.png", 60, 60, 48, true);
+
+    // Proyectiles.    
+    
+
 
 }
 
@@ -68,9 +143,15 @@ void GestorAnimaciones::dibujarPanorama(int pos_x, int pos_y) {
     escenario[PANORAMA]->dibujar(camara, pos_x, pos_y, false, 0, 1);
 }
 
-//void GestorAnimaciones::dibujarViga(int pos_x, int pos_y, int largo, radianes angulo) {
-    //
-//}
+void GestorAnimaciones::dibujarViga(int pos_x, int pos_y, int largo, radianes angulo) {
+    if (largo > 3) {
+        escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
+        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);
+    } else {
+        escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
+        escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);
+    }    
+}
 
 void GestorAnimaciones::dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo) {
     if(arma != NADA_P && (estado == QUIETO || estado == DISPARANDO)) {

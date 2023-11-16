@@ -34,7 +34,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
   if (densidadA == 1.0f) {
       b2Body *cuerpoA = a->GetBody();
-      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 100.0f), true);
   }
       
   // abort();
@@ -87,7 +87,7 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        std::pair<coordX, coordY> coordsIniciales(0.0f,100.0f);
+        std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
         // std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);

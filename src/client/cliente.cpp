@@ -36,19 +36,19 @@ Cliente::Cliente(Socket&& skt):
         RepresentacionViga viga1;
         viga1.angulo = 0;
         viga1.longitud = 6;
-        viga1.posicionInicial = std::pair<int, int>(300, 300);
+        viga1.posicionInicial = std::pair<int, int>(15, 15);
         vigas.push_back(viga1);
 
         RepresentacionViga viga2;
         viga2.angulo = M_PI / 2;
         viga2.longitud = 3;
-        viga2.posicionInicial = std::pair<int, int>(500, 300);
+        viga2.posicionInicial = std::pair<int, int>(25, 15);
         vigas.push_back(viga2);
 
         RepresentacionViga viga3;
         viga3.angulo = M_PI / 4;
         viga3.longitud = 3;
-        viga3.posicionInicial = std::pair<int, int>(700, 300);
+        viga3.posicionInicial = std::pair<int, int>(35, 15);
         vigas.push_back(viga3);
     }
 
@@ -120,7 +120,7 @@ void Cliente::loop_principal() {
 
         // Renderizo.
         // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, angulo, estado_juego.gusanos[0][0].armaEquipada);
+        dibujador.dibujar(renderizador, it, angulo, estado_juego.gusanos[0][0].armaEquipada, vigas);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

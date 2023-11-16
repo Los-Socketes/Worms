@@ -10,9 +10,9 @@ Dibujador::Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_map
 
 std::pair<int, int> Dibujador::traducirCoordenadas(coordX x, coordY y) {
     // Paso de coordenadas en metros a coordenadas en pixeles.
-    // TODO: ver como hacerlo bien.
-    int coord_x = x;
-    int coord_y = alto_mapa - y;
+    // TODO: ver como hacerlo bien. Pruebo con 20 pixeles por metro.
+    int coord_x = x * PIXELS_POR_METRO;
+    int coord_y = alto_mapa - y * PIXELS_POR_METRO;
     return std::make_pair(coord_x, coord_y);
 }
 
@@ -55,10 +55,10 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
     gestor_animaciones.inicializar(renderizador);    
 }
 
-void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada) {
+void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada, std::vector<RepresentacionViga> vigas) {
     renderizador.Clear();
 
-    dibujarMapa();
+    dibujarMapa(vigas);
     dibujarAguaDetras(it);
     dibujarGusanos(renderizador, it, angulo);
     //dibujarProyectiles(it);
@@ -68,12 +68,18 @@ void Dibujador::dibujar(Renderer& renderizador, int it, radianes angulo, ArmaPro
     renderizador.Present();
 }
 
-void Dibujador::dibujarMapa() {
+void Dibujador::dibujarMapa(std::vector<RepresentacionViga> vigas) {
     // Dibujo la imagen de fondo.
     gestor_animaciones.dibujarFondo();
     // Dibujo el panorama del fondo.
     for (int i = 0; i < (ancho_mapa / 640 + 1); i++) {
         gestor_animaciones.dibujarPanorama(i * 640, alto_mapa - 179);
+    }
+    // Dibujo las vigas.
+    for (auto& viga : vigas) {
+        // Traduzco las coordenadas de la viga.
+        std::pair<int, int> posicion = traducirCoordenadas(viga.posicionInicial.first, viga.posicionInicial.second);
+        gestor_animaciones.dibujarViga(posicion.first, posicion.second, viga.longitud, viga.angulo);
     }
 }
 
