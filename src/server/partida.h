@@ -18,15 +18,37 @@
 
 #define MINJUGADORES 1
 
+enum class TipoEntidad { GUSANO, VIGA, ARMA };
+
+// Este struct se usa para asociar facilmente un body de box2d a
+// alguna de nuestras clases. En teoria se podria usar solo el puntero,
+// pero esto nos evita casteos falopas y hace que todas los bodies tengan
+// lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
+struct Entidad {
+    TipoEntidad tipo;
+    union {
+        Gusano *gusano;
+        // Viga *viga;
+        // Arma *arma;
+    };
+};
+
 class ResolvedorColisiones : public b2ContactListener {
 public:
     void BeginContact(b2Contact* contact);
  
-    // void EndContact(b2Contact* contact);
+    void EndContact(b2Contact* contact);
  
     // void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
  
     // void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+};
+
+class ResolvedorQuery : public b2QueryCallback {
+public:
+    std::vector<b2Body*> foundBodies;
+      
+    bool ReportFixture(b2Fixture* fixture);
 };
 
 class Partida : public Thread {
@@ -35,6 +57,8 @@ class Partida : public Thread {
     //World de box2d de la partida
     b2World world;
     ResolvedorColisiones colisiones;
+    // ResolvedorQuery query;
+    ResolvedorQuery query;
 
     std::string mapa;
 

@@ -20,54 +20,93 @@ Partida::Partida(std::string mapa)
 #define REFERENCE *
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
-  b2Fixture* a = contact->GetFixtureA();
-  b2Fixture* b = contact->GetFixtureB();
-  std::cout << "HUBO CONTACTO\n";
+    b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
+    b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
-  float densidadA, densidadB;
-  densidadB = b->GetDensity();
-  densidadA = a->GetDensity();
-  if (a->GetBody()->GetType() == b2_staticBody)
-      return;
-  if (b->GetBody()->GetType() == b2_staticBody)
-      return;
+    Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+    Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-  if (densidadA == 1.0f) {
-      b2Body *cuerpoA = a->GetBody();
-      cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 100.0f), true);
+    if(entidadA->tipo == TipoEntidad::VIGA) {
+        entidadB->gusano->setEstado(QUIETO);
+    }
+
+    if(entidadB->tipo == TipoEntidad::VIGA) {
+        entidadA->gusano->setEstado(QUIETO);
+    }
+
+    if (entidadA->tipo == TipoEntidad::GUSANO
+        &&
+        entidadB->tipo == TipoEntidad::ARMA) {
+
+        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
   }
       
   // abort();
 }
 
+void ResolvedorColisiones::EndContact(b2Contact *contact) {
+    b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
+    b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
+
+    Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+    Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
+
+    if(entidadA->tipo == TipoEntidad::VIGA) {
+        entidadB->gusano->setEstado(CAYENDO);
+    }
+
+    if(entidadB->tipo == TipoEntidad::VIGA) {
+        entidadA->gusano->setEstado(CAYENDO);
+    }
+    std::cout << "FIN CONTACTO\n";
+}
+
+
+bool ResolvedorQuery::ReportFixture(b2Fixture* fixture) {
+    foundBodies.push_back( fixture->GetBody() ); 
+    return true;//keep going to find all fixtures in the query area
+}
+
+
+
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
-    b2BodyDef bodyDef;
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::GUSANO;
+    Gusano *nuevoGusano = new Gusano();
+    nuevaEntidad->gusano = nuevoGusano;
+
     //ATTENTION: Hacemos que el cuerpo sea dinamico
     //ya que los gusanos se van a mover
+
+    b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
-    // bodyDef.userData
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
     dynamicBox.SetAsBox(1.0f, 1.0f);
-
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
 
     body->CreateFixture(&fixtureDef);
+    nuevoGusano->setCuerpo(body);
 
-    Gusano *nuevoGusano = new Gusano(REFERENCE body);
+    this->gusanos.push_back(nuevoGusano);
 
     return nuevoGusano;
 }
 
 void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::VIGA;
+
     b2BodyDef vigaDef;
     vigaDef.position.Set(posicionInicial.enX, posicionInicial.enY);
     vigaDef.angle = angulo;
+    vigaDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 
     //ATTENTION Dividimos a la mitad porque box2d pide la mitad de
     // la longitud
@@ -97,7 +136,6 @@ idJugador Partida::anadirCliente(Cliente *clienteNuevo) {
         idGusano = this->gusanos.size();
         nuevoGusano->giveId(idGusano);
 
-        this->gusanos.push_back(nuevoGusano);
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
@@ -226,25 +264,53 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
+    // Entidad *nuevaEntidad = new Entidad;
+    // nuevaEntidad->tipo = TipoEntidad::ARMA;
+    // Arma *nuevaArma = new Arma();
+    // nuevaEntidad->arma = nuevaArma;
 
-    std::pair<coordX, coordY> coords;
-    coords = gusano->getCoords();
+    std::pair<inicioCaja, finCaja> coordsGolpe;
+    coordsGolpe = gusano->getAreaGolpe();
 
-    std::cout << "Le doy el arma\n";
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(coords.enX, coords.enY);
-    b2Body* body = world.CreateBody(&bodyDef);
+    ResolvedorQuery query;
+    b2AABB aabb;
+    aabb.lowerBound = coordsGolpe.inicio;
+    aabb.upperBound = coordsGolpe.fin;
+    this->world.QueryAABB( &query, aabb );
 
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
+    for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+        b2Body* cuerpoA = query.foundBodies[i];
+        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+        // printf("Otro: %4.2f %4.2f \n", pos.x, pos.y);
+    }
+    
+      
+    // DireccionGusano dondeMira;
+    // dondeMira = gusano->getDondeMira();
+    // coordX offset = 0;
+    // if (dondeMira == DERECHA)
+    //     offset = TAMANOGUSANO;
+    // else
+    //     offset = -TAMANOGUSANO;
+    // coords.enX += offset;
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    // std::cout << "Le doy el arma\n";
 
-    body->CreateFixture(&fixtureDef);
+    // b2BodyDef bodyDef;
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(coords.enX, coords.enY);
+    // bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+    // b2Body* body = world.CreateBody(&bodyDef);
+
+    // b2PolygonShape dynamicBox;
+    // dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &dynamicBox;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
+
+    // body->CreateFixture(&fixtureDef);
 
     
 }
@@ -257,7 +323,7 @@ void Partida::gameLoop() {
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
 
-    this->anadirViga(0, 6, std::pair<coordX,coordY>(0.0f, 10.0f));
+    this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
