@@ -344,9 +344,13 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
     estado->gusanos = gusanos;
     estado->proyectiles = proyectiles;
+    estado->jugadorDeTurno = jugador;
+    estado->gusanoDeTurno = (id)2;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());
+    REQUIRE(resultado->jugadorDeTurno == estado->jugadorDeTurno);
+    REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
     std::vector<RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == listaGusanos.size());
 
