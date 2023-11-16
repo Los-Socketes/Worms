@@ -102,7 +102,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         std::cout << "Salto" << "\n";
         direccion.x = 0.0f;
         direccion.y = 0.0f;
-        this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 105.0f), false);
+        this->cuerpo.ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), false);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -154,6 +154,7 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         break;
     case ATAQUE:
         armaQueQuiero = this->armaEquipada;
+        this->estado = DISPARANDO;
         std::cout << "ATACO\n";
         break;
     }

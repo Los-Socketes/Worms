@@ -12,12 +12,12 @@
 class Recibidor: public Thread {
 private:
     Protocolo& protocolo;
-    Queue<EstadoDelJuego>& recepcion_estados;
-    EstadoDelJuego estado_juego;
+    Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados;
+    std::shared_ptr<EstadoDelJuego> estado_juego;
     std::atomic<bool> cont;
 
 public:
-    Recibidor(Protocolo& protocolo, Queue<EstadoDelJuego>& recepcion_estados);
+    Recibidor(Protocolo& protocolo, Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados);
 
     // Hilo que se encarga de recibir los estados del juego.
     void run() override;

@@ -2,10 +2,11 @@
 
 Cliente::Cliente(Socket&& skt):
     sdl(SDL_INIT_VIDEO),
+    ttf(),
     protocolo(std::move(skt)),
     estado_juego(),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
-    dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT, MAPA_ANCHO, MAPA_ALTO),
+    dibujador(camara, estado_juego, MAPA_ANCHO, MAPA_ALTO),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -21,13 +22,13 @@ Cliente::Cliente(Socket&& skt):
         gusi.dir = DERECHA;
         gusi.estado = QUIETO;
         gusi.posicion = std::pair<int, int>(0,0);
-        gusi.armaEquipada = NADA_P;
+        gusi.armaEquipada.arma = NADA_P;
         listaGusanosIniciales.push_back(gusi);
 
         std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
         gusanosNuevos.insert({0, listaGusanosIniciales});
 
-        estado_juego.gusanos = gusanosNuevos;
+        estado_juego->gusanos = gusanosNuevos;
         // listaGusanosIniciales.
     }
 
@@ -37,11 +38,11 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-bool Cliente::ejecutar_menu() {
+InformacionInicial Cliente::ejecutar_menu() {
     return menu.ejecutar();
 }
 
-void Cliente::loop_principal() {
+void Cliente::loop_principal(InformacionInicial& info_inicial) {
     // Inicializar SDL.  
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
@@ -49,7 +50,7 @@ void Cliente::loop_principal() {
     // Inicializar animaciones.
     dibujador.inicializarAnimaciones(renderizador);
 
-    // TODO: obtener info del mapa desde el menu.
+    // TODO: obtener info del mapa desde el servidor.
     camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
 
     iniciar();
@@ -82,13 +83,26 @@ void Cliente::loop_principal() {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
+                /*
+                case ARRIBA:
+                    // Temporalmente para probar.
+                    if (angulo < M_PI - 0.1)
+                        angulo += 0.1;
+                    break;
+                case ABAJO:
+                    // Temporalmente para probar.
+                    if (angulo > 0 + 0.1)
+                        angulo -= 0.1;                
+                    break;
+                */
                 default:
                     break;
             }
         }
 
         // Renderizo.
-        dibujador.dibujar(renderizador, it);
+        // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
+        dibujador.dibujar(renderizador, it, info_inicial.vigas);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

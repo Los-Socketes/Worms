@@ -123,7 +123,7 @@ Ataque Aereo:
     Radio: 2
   CantidadFragmentos: 0
 
-Teletransportación:
+Teletransportacion:
   ConMira: false
   EsCuerpoACuerpo: false
   TienePotenciaVariable: false

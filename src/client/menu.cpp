@@ -2,8 +2,9 @@
 
 Menu::Menu(Protocolo& protocolo) : protocolo(protocolo) {}
 
-bool Menu::ejecutar() {
-    bool continuar = true;
+InformacionInicial Menu::ejecutar() {
+    InformacionInicial informacion;
+    informacion.jugador = -1;
     bool continuar_menu = true;
     while(continuar_menu) {
         std::cout << "Eliga una opción:" << std::endl;
@@ -26,7 +27,7 @@ bool Menu::ejecutar() {
                     pos++;
                 }
                 std::cin >> sub_opcion;
-                protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
+                informacion = protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
                 continuar_menu = false;
                 break;
             case 2:
@@ -38,15 +39,14 @@ bool Menu::ejecutar() {
                     pos++;
                 }
                 std::cin >> sub_opcion;
-                protocolo.unirseAPartida(opciones_partida[sub_opcion]);
+                informacion = protocolo.unirseAPartida(opciones_partida[sub_opcion]);
                 continuar_menu = false;
                 break;
             default:
                 continuar_menu = false;
-                continuar = false;
                 break;
         }
     }
-    return continuar;
+    return informacion;
 }
 

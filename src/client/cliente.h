@@ -25,23 +25,26 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 // A reemplazar cuando reciba datos del mapa.
+// Mapa de 75 metros de ancho por 40 de alto. (se multiplica por 20)
 const int MAPA_ANCHO = 1500;
-const int MAPA_ALTO = 700;
+const int MAPA_ALTO = 800;
 
 class Cliente {
  private:
     SDL sdl;
+    SDLTTF ttf;
     Protocolo protocolo;
-    EstadoDelJuego estado_juego;
+    std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
     Menu menu;
-    Queue<EstadoDelJuego> recepcion_estados;
+    Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
     Queue<Comando> comandos_teclado;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
+
 
     // Inicia los hilos.
     void iniciar();
@@ -52,10 +55,10 @@ class Cliente {
     Cliente(Socket&& skt);
     
     // Ejecuta el menu.
-    bool ejecutar_menu();
+    InformacionInicial ejecutar_menu();
 
     // Loop principal del cliente.
-    void loop_principal();
+    void loop_principal(InformacionInicial& info_inicial);
 
     // Destructor.
     ~Cliente();

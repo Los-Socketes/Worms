@@ -1,99 +1,125 @@
 #include "dibujador.h"
 
-Dibujador::Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_pantalla, int alto_pantalla, int ancho_mapa, int alto_mapa) :
+Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego> estado_juego, int ancho_mapa, int alto_mapa) :
     camara(camara),
     estado_juego(estado_juego),
-    ancho_pantalla(ancho_pantalla),
-    alto_pantalla(alto_pantalla),
     ancho_mapa(ancho_mapa),
-    alto_mapa(alto_mapa) {}
+    alto_mapa(alto_mapa),
+    gestor_animaciones(camara, ancho_mapa, alto_mapa),
+    fuente("assets/fonts/AdLibRegular.ttf", 12) {}
 
-void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
-
-    // Animaciones de agua y fondo.
-    animaciones["gradiente"] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, false);
-    animaciones["gradiente"]->setDimensiones(ancho_mapa, alto_mapa);
-    animaciones["agua"] = std::make_shared<Animacion>(renderizador, "assets/sprites/water.png", 128, 100, 12, false);
-    animaciones["fondo"] = std::make_shared<Animacion>(renderizador, "assets/sprites/backforest.png", 640, 159, 1, true);
-
-    // Animaciones de gusanos.
-    animaciones["quieto"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wblink1.png", 60, 60, 6, false);
-    animaciones["caminando"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wwalk.png", 60, 60, 15, true);
-    animaciones["inicio salto"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wjump.png", 60, 60, 10, false);
-    animaciones["saltando"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wflyup.png", 60, 60, 2, false);
-    animaciones["cayendo"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wfall.png", 60, 60, 2, false);
-
-    // Animaciones de armas.
-
-    // Bate de baseball.
-    animaciones["sacando bate"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wbsblnk.png", 60, 60, 10, false);
-    animaciones["apuntando bate"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wbsbaim.png", 60, 60, 32, false);
-    animaciones["batiendo"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wbsbswn.png", 60, 60, 32, false);
-    animaciones["guardando bate"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wbsbbak.png", 60, 60, 10, false);
-    animaciones["guardando bate batido"] = std::make_shared<Animacion>(renderizador, "assets/sprites/wbsbbk2.png", 60, 60, 10, false);
-
+std::pair<int, int> Dibujador::traducirCoordenadas(coordX x, coordY y) {
+    // Paso de coordenadas en metros a coordenadas en pixeles.
+    // TODO: ver como hacerlo bien. Pruebo con 20 pixeles por metro.
+    int coord_x = x * PIXELS_POR_METRO;
+    int coord_y = alto_mapa - y * PIXELS_POR_METRO;
+    return std::make_pair(coord_x, coord_y);
 }
 
-void Dibujador::dibujar(Renderer& renderizador, int it) {
+void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida) {
+    // Acomodo la posicion para que quede centrada en el gusano.
+    int pos_x = posicion.first - 8;
+    int pos_y = posicion.second - 30;
+
+    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, 16, 16));
+    
+    int coord_x = pos_x - camara.getPosicionX();
+    int coord_y = pos_y - camara.getPosicionY();
+    
+    // Si no hay interseccion no se renderiza.
+    if (!rect_interseccion) {
+        return;
+    }
+
+    // Dibujo un rectangulo negro transparente detrás de la vida.
+    renderizador.SetDrawBlendMode(SDL_BLENDMODE_BLEND);
+    renderizador.SetDrawColor(0, 0, 0, 50);
+    renderizador.FillRect(coord_x - 2, coord_y - 2, coord_x + 18, coord_y + 14);
+    renderizador.SetDrawColor(255, 255, 255, 100);
+    renderizador.DrawRect(coord_x - 2, coord_y - 2, coord_x + 18, coord_y + 14);
+
+    // Dibujo el borde de la vida.
+    fuente.SetOutline(2);
+    Texture textura_vida_outline(renderizador, fuente.RenderText_Blended(std::to_string(vida), {0, 0, 0, 255}));
+    renderizador.Copy(textura_vida_outline, NullOpt, Rect(coord_x, coord_y, 16, 16));
+
+    // Dibujo la vida.
+    // TODO: colores segun jugador.
+    fuente.SetOutline(0);
+    Texture textura_vida(renderizador, fuente.RenderText_Blended(std::to_string(vida), {255, 255, 0, 255}));
+    renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 16, 16));
+}
+
+
+void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
+    gestor_animaciones.inicializar(renderizador);    
+}
+
+void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas) {
     renderizador.Clear();
 
-    dibujarMapa();
+    RepresentacionGusano gusano_actual = estado_juego->gusanos[estado_juego->jugadorDeTurno][estado_juego->gusanoDeTurno];
+
+    dibujarMapa(vigas);
     dibujarAguaDetras(it);
-    dibujarGusanos(it);
+    dibujarGusanos(renderizador, it, gusano_actual.armaEquipada.anguloRad);
     //dibujarProyectiles(it);
     dibujarAguaDelante(it);
+    dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
     renderizador.Present();
 }
 
-void Dibujador::dibujarMapa() {
+void Dibujador::dibujarMapa(std::vector<RepresentacionViga> vigas) {
     // Dibujo la imagen de fondo.
-    animaciones["gradiente"]->dibujar(camara, 0, 0, false, 0, 1);
+    gestor_animaciones.dibujarFondo();
     // Dibujo el panorama del fondo.
     for (int i = 0; i < (ancho_mapa / 640 + 1); i++) {
-        animaciones["fondo"]->dibujar(camara, i * 640, alto_mapa - 210, false, 0, 1);
+        gestor_animaciones.dibujarPanorama(i * 640, alto_mapa - 179);
+    }
+    // Dibujo las vigas.
+    for (auto& viga : vigas) {
+        // Traduzco las coordenadas de la viga.
+        std::pair<int, int> posicion = traducirCoordenadas(viga.posicionInicial.first, viga.posicionInicial.second);
+        gestor_animaciones.dibujarViga(posicion.first, posicion.second, viga.longitud, viga.angulo);
     }
 }
 
-void Dibujador::dibujarGusanos(int it) {
-    for (auto& jugador : estado_juego.gusanos) {
+
+void Dibujador::dibujarGusanos(Renderer& renderizador, int it, radianes angulo) {
+    // Recorro el mapa de jugador -> gusanos.
+    for (auto& jugador : estado_juego->gusanos) {
+        // Recorro los gusanos del jugador.
         for (auto& gusano : jugador.second) {
-            switch (gusano.estado) {
-                case QUIETO:
-                    if (gusano.armaEquipada == BATE_P)
-                        animaciones["apuntando bate"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 16, 1);
-                    else
-                        animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1); 
-                    break;
-                case CAMINANDO:
-                    animaciones["caminando"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, it, 1);
-                    break;
-                case SALTANDO:
-                    animaciones["saltando"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, it, 1);
-                    break;
-                case CAYENDO:
-                    animaciones["cayendo"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, it, 1);
-                    break;
-                case DISPARANDO:
-                    if (gusano.armaEquipada == BATE_P)
-                        animaciones["batiendo"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 16, 1);
-                    else
-                        animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1); 
-                    break;
-                default:
-                    animaciones["quieto"]->dibujar(camara, gusano.posicion.first, gusano.posicion.second, gusano.dir == DERECHA, 0, 1);
-                    break;
+            // TODO: dibujar barra de potencia si esta disparando.
+            // Dibujo al gusano.
+            // Traduzco las coordenadas del gusano.
+            std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
+            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada.arma, gusano.dir, posicion.first, posicion.second, it, angulo);
+            // Dibujo la vida del gusano.
+            dibujarVida(renderizador, posicion, gusano.vida);
+            // Dibujo la reticula del gusano si esta apuntando.
+            int direccion = gusano.dir == DERECHA ? 1 : -1;
+            if (gusano.estado == QUIETO && gusano.armaEquipada.arma != NADA_P) {
+                gestor_animaciones.dibujarReticula(
+                    posicion.first + (sin(angulo) * 60) * direccion,
+                    posicion.second + (cos(angulo) * 60),
+                    it);
             }
+                
         }
     }
+
 }
+
 // TODO: implementar.
 // void Dibujador::dibujarProyectiles(int it) {}
+
 
 void Dibujador::dibujarAguaDetras(int it) {
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
-            animaciones["agua"]->dibujar(camara, j * 128, alto_mapa - 100 + 10 * (i + 1), false, it + 3*(i+1), 2);
+            gestor_animaciones.dibujarAgua(j * 128 + 64, alto_mapa - 70 + 10 * (i + 1), it + 3*(i+1));
         }
     }
 }
@@ -101,7 +127,29 @@ void Dibujador::dibujarAguaDetras(int it) {
 void Dibujador::dibujarAguaDelante(int it) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
-            animaciones["agua"]->dibujar(camara, j * 128, alto_mapa - 80 + 10 * (i + 1), false, it + 3*(i+3), 2);
+            gestor_animaciones.dibujarAgua(j * 128 + 64, alto_mapa - 50 + 10 * (i + 1), it + 3*(i+3));
         }
     }
+}
+
+void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada) {
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    // Dibujo barra de armas abajo a la derecha.
+    for (int i = 0; i < 11; i++) {
+        // Dibujo el icono del arma.
+        gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), ancho_pantalla - 32 * (11 - i) - 14, alto_pantalla - 46);
+        // Dibujo el borde del icono.
+        if (static_cast<ArmaProtocolo>(i) == arma_equipada) {
+            renderizador.SetDrawColor(255, 255, 255, 255);
+        } else {
+            renderizador.SetDrawColor(0, 0, 0, 255);
+        }
+        renderizador.DrawRect(
+            ancho_pantalla - 32 * (11 - i) - 30,
+            alto_pantalla - 62,
+            ancho_pantalla - 32 * (10 - i) - 30 - 1,
+            alto_pantalla - 30 - 1);   
+    }
+        
 }
