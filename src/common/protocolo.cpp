@@ -113,7 +113,7 @@ InformacionInicial Protocolo::verificarConexion() {
             return info;
         }
         float anguloRecibido = toFloat(ntohl(angulo));
-        
+
         int32_t largo;
         socket.recvall(&largo, sizeof(largo), &was_closed);
         if (was_closed) {
@@ -418,7 +418,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
 
             int8_t estadoGusano;
-            bool was_closed = false;
+            // bool was_closed = false;
             socket.recvall(&estadoGusano, sizeof(estadoGusano), &was_closed);
             if (was_closed) {
                 return estado;
@@ -550,8 +550,71 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         gusanos.insert({idJugador, listaGusanos});
         
     }
+
+    int16_t cantProyectiles;
+    socket.recvall(&cantProyectiles, sizeof(cantProyectiles), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    cantProyectiles = ntohs(cantProyectiles);
+
+    std::vector<RepresentacionProyectil> proyectiles;
+    for (int i = 0; i < cantProyectiles; i++) {
+        int8_t tipoProyectil;
+        socket.recvall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        int8_t esFragmento;
+        socket.recvall(&esFragmento, sizeof(esFragmento), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        std::vector<int32_t> posicionProyectiles(2,0);
+        socket.recvall(posicionProyectiles.data(), sizeof(int32_t)*2, &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        std::pair<coordX, coordY> posicionRecibidaProy;
+        posicionRecibidaProy.enX = toFloat(ntohl(posicionProyectiles[0]));
+        posicionRecibidaProy.enY = toFloat(ntohl(posicionProyectiles[1]));
+
+        int32_t anguloProyectos;
+        socket.recvall(&anguloProyectos, sizeof(anguloProyectos), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        float anguloRecibidoProy = toFloat(ntohl(anguloProyectos));
+
+        int32_t cuentaRegresivaProy;
+        socket.recvall(&cuentaRegresivaProy, sizeof(cuentaRegresivaProy), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        cuentaRegresivaProy = ntohl(cuentaRegresivaProy);
+
+        int8_t exploto;
+        socket.recvall(&exploto, sizeof(exploto), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        RepresentacionProyectil proyectil;
+        proyectil.proyectil = (ArmaProtocolo)tipoProyectil;
+        proyectil.esFragmento = esFragmento;
+        proyectil.posicion = posicionRecibidaProy;
+        proyectil.angulo = anguloRecibidoProy;
+        proyectil.cuentaRegresiva = cuentaRegresivaProy;
+        proyectil.exploto = exploto;
+
+        proyectiles.push_back(proyectil);
+    }
+    
     
     estado->gusanos = gusanos;
+    estado->proyectiles = proyectiles;
     return estado;
 }
 
@@ -792,6 +855,7 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
         return false;
     }
 
+    bool was_closed = false;
     for (auto const& [idJugador, listaGusanos] : estado->gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
@@ -815,7 +879,6 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
             }
             
             // envio vida del gusano
-            bool was_closed = false;
             uint32_t vida = htonl((uint32_t)gusano.vida);
             socket.sendall(&vida, sizeof(vida), &was_closed);
             if (was_closed) {
@@ -920,6 +983,54 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
                 return false;
             }
         }  
+    }
+    
+
+    // envio proyectiles
+    is_open = enviarCantidad(estado->proyectiles.size());
+    if (!is_open) {
+        return false;
+    }
+
+    for (auto &&proyectil : estado->proyectiles) {
+        int8_t tipoProyectil = proyectil.proyectil;
+        socket.sendall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t esFragmento = proyectil.esFragmento;
+        socket.sendall(&esFragmento, sizeof(esFragmento), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        std::vector<int32_t> posProyectil;
+        posProyectil.push_back(htonl((int32_t)toInt(proyectil.posicion.enX)));
+        posProyectil.push_back(htonl((int32_t)toInt(proyectil.posicion.enY)));
+
+        socket.sendall(posProyectil.data(), sizeof(int32_t)*posProyectil.size(), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int32_t anguloProyectil = htonl(toInt(proyectil.angulo));
+        socket.sendall(&anguloProyectil, sizeof(anguloProyectil), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int32_t cuentaRegProyectil = htonl(proyectil.cuentaRegresiva);
+        socket.sendall(&cuentaRegProyectil, sizeof(cuentaRegProyectil), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t exploto = proyectil.exploto;
+        socket.sendall(&exploto, sizeof(exploto), &was_closed);
+        if (was_closed) {
+            return false;
+        }
     }
     
 

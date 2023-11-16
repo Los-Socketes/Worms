@@ -35,7 +35,6 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 enum ArmaProtocolo {NADA_P, BAZOOKA_P, NORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
                     GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
                     TELETRANSPORTACION_P};
-
 /*
  *0. El gusano esta quieto
  *1. El gusano se mueve
@@ -130,10 +129,20 @@ struct InformacionInicial {
     std::vector<RepresentacionViga> vigas;
 };
 
+struct RepresentacionProyectil {
+    ArmaProtocolo proyectil;
+    bool esFragmento;
+    std::pair<coordX,coordY> posicion;
+    radianes angulo;
+    int cuentaRegresiva;
+    bool exploto;
+};
+
 
 // Tiene la info del estado del juego
 struct EstadoDelJuego {
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::vector<RepresentacionProyectil> proyectiles;
 };
 
 struct Configuracion {
