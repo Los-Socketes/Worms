@@ -13,6 +13,8 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
     escenario[FONDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, true);
     escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
     escenario[RETICULA] = std::make_shared<Animacion>(renderizador, "assets/sprites/crshairc.png", 60, 60, 32, true);
+    escenario[VIGA_GRANDE] = std::make_shared<Animacion>(renderizador, "assets/sprites/grdl4.png", 140, 20, 1, true);
+    escenario[VIGA_CHICA] = std::make_shared<Animacion>(renderizador, "assets/sprites/grds4.png", 70, 20, 1, true);
 
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false);
@@ -59,12 +61,16 @@ void GestorAnimaciones::dibujarAgua(int pos_x, int pos_y, int it) {
 }
 
 void GestorAnimaciones::dibujarFondo() {
-    escenario[FONDO]->dibujar(camara, 0, 0, false, 0, 1);
+    escenario[FONDO]->dibujar(camara, ancho_mapa / 2, alto_mapa / 2, false, 0, 1);
 }
 
 void GestorAnimaciones::dibujarPanorama(int pos_x, int pos_y) {
     escenario[PANORAMA]->dibujar(camara, pos_x, pos_y, false, 0, 1);
 }
+
+//void GestorAnimaciones::dibujarViga(int pos_x, int pos_y, int largo, radianes angulo) {
+    //
+//}
 
 void GestorAnimaciones::dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo) {
     if(arma != NADA_P && (estado == QUIETO || estado == DISPARANDO)) {

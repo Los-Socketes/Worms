@@ -31,6 +31,25 @@ Cliente::Cliente(Socket&& skt):
 
         estado_juego.gusanos = gusanosNuevos;
         // listaGusanosIniciales.
+
+        // Vigas temporalmente para probar.
+        RepresentacionViga viga1;
+        viga1.angulo = 0;
+        viga1.longitud = 6;
+        viga1.posicionInicial = std::pair<int, int>(300, 300);
+        vigas.push_back(viga1);
+
+        RepresentacionViga viga2;
+        viga2.angulo = M_PI / 2;
+        viga2.longitud = 3;
+        viga2.posicionInicial = std::pair<int, int>(500, 300);
+        vigas.push_back(viga2);
+
+        RepresentacionViga viga3;
+        viga3.angulo = M_PI / 4;
+        viga3.longitud = 3;
+        viga3.posicionInicial = std::pair<int, int>(700, 300);
+        vigas.push_back(viga3);
     }
 
 void Cliente::iniciar() {

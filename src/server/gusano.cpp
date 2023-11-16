@@ -106,6 +106,7 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         break;
     case ATAQUE:
         armaQueQuiero = this->armaEquipada;
+        this->estado = DISPARANDO;
         std::cout << "ATACO\n";
         break;
     }

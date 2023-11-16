@@ -10,12 +10,12 @@ Animacion::Animacion(Renderer& render, std::string ruta_textura, int tam_x, int 
     textura.SetBlendMode(SDL_BLENDMODE_BLEND);
     }
 
-void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, bool flip, int frame_actual) {
-    int coord_x = pos_x;
-    int coord_y = pos_y;
+void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angulo, bool flip, int frame_actual) {
+    int coord_x = pos_x - dimensiones.first / 2;
+    int coord_y = pos_y - dimensiones.second / 2;
 
     if (seguir_camara) {
-        std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tam.first, tam.second));
+        std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(coord_x, coord_y, tam.first, tam.second));
 
         coord_x -= camara.getPosicionX();
         coord_y -= camara.getPosicionY();
@@ -34,20 +34,25 @@ void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, bool flip, in
         textura,
         Rect(0, frame_actual * tam.second, tam.first, tam.second),
         Rect(coord_x, coord_y, dimensiones.first, dimensiones.second),
-        0,
+        angulo,
         NullOpt,
         flip_flag);
 }
 
 void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
     int frame_actual = (it / velocidad) % frames;
-    dibujarComun(camara, pos_x, pos_y, flip, frame_actual);
+    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
 }
 
 void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, radianes angulo) {
     // El angulo 0 corresponde al primer frame y el angulo 180 al ultimo.
     int frame_actual = floor((frames * angulo) / M_PI);
-    dibujarComun(camara, pos_x, pos_y, flip, frame_actual);
+    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
+}
+
+void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad, radianes angulo) {
+    int frame_actual = (it / velocidad) % frames;
+    dibujarComun(camara, pos_x, pos_y, angulo, flip, frame_actual);
 }
 
 void Animacion::setDimensiones(int tam_x, int tam_y){

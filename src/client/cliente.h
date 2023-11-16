@@ -43,8 +43,9 @@ class Cliente {
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
-    // Valor temporal, angulo global para probar.
+    // Valores temporales, angulo y vigas para probar.
     radianes angulo;
+    std::vector<RepresentacionViga> vigas;
 
     // Inicia los hilos.
     void iniciar();

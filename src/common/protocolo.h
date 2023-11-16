@@ -41,7 +41,6 @@ public:
     bool atacar(id idGusano);
     EstadoDelJuego obtenerEstadoDelJuego();
 
-    void setMaxY(int y);
 #endif
 
 #ifdef SERVER

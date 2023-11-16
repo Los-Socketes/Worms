@@ -16,6 +16,8 @@ enum ItemEscenario{
     FONDO,
     PANORAMA,
     RETICULA,
+    VIGA_GRANDE,
+    VIGA_CHICA,
     EXPLOSION
 };
 

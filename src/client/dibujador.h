@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <utility>
 #include <SDL2pp/SDL2pp.hh>
 
 #include "animacion.h"
@@ -22,6 +23,7 @@ class Dibujador {
       GestorAnimaciones gestor_animaciones;
       Font fuente;
 
+      std::pair<int, int> traducirCoordenadas(coordX x, coordY y);
       void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
  public:
       Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa);
