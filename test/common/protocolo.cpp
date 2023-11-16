@@ -212,7 +212,6 @@ TEST_CASE( "Tests de atacar", "[obtenerAccionDeAtacar]" ) {
 // TEST 12
 
 std::shared_ptr<EstadoDelJuego> enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
-    protocolo.setMaxY(0);
     protocoloServer.enviarEstadoDelJuego(estado);
     return protocolo.obtenerEstadoDelJuego();
 }
@@ -289,7 +288,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
         REQUIRE(resultadoGusano.idGusano == baseGusano.idGusano);
         REQUIRE(resultadoGusano.dir == baseGusano.dir);
         REQUIRE(resultadoGusano.posicion.first == baseGusano.posicion.first);
-        REQUIRE(resultadoGusano.posicion.second == -baseGusano.posicion.second);
+        REQUIRE(resultadoGusano.posicion.second == baseGusano.posicion.second);
         REQUIRE(resultadoGusano.estado == baseGusano.estado);
 
         REQUIRE(resultadoArma.tieneMira ==baseArma.tieneMira);

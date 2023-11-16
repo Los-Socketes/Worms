@@ -4,11 +4,7 @@
 
 #include <iostream>
 
-Protocolo::Protocolo(Socket &&socket)
-    : socket(std::move(socket))
-      {
-	this->maxYEnMapa = 100;
-      };
+Protocolo::Protocolo(Socket &&socket) : socket(std::move(socket)) {};
 
 
 void Protocolo::cerrarConexion(int forma) {
@@ -372,7 +368,6 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             std::pair<coordX, coordY> posicionRecibida;
             posicionRecibida.enX = toFloat(ntohl(posicion[0]));
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
-            posicionRecibida.enY = maxYEnMapa - posicionRecibida.enY;
 
             int8_t estadoGusano;
             bool was_closed = false;
@@ -512,9 +507,6 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     return estado;
 }
 
-void Protocolo::setMaxY(int y) {
-    this->maxYEnMapa = y;
-}
 //Endif de la macro de CLIENT
 #endif
 

@@ -13,7 +13,6 @@
 class Protocolo {
 private:
     Socket socket;
-    int maxYEnMapa;
 
     id obtenerId();
     int8_t obtenerCodigo();
@@ -45,8 +44,6 @@ public:
     bool configurarCoordenadas(std::pair<coordX,coordY> coordenadas);
     bool atacar();
     std::shared_ptr<EstadoDelJuego> obtenerEstadoDelJuego();
-
-    void setMaxY(int y);
 #endif
 
 #ifdef SERVER
