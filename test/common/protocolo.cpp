@@ -270,7 +270,6 @@ std::shared_ptr<EstadoDelJuego> enviarEstadoDelJuego(std::shared_ptr<EstadoDelJu
 
 TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     idJugador jugador = 0;
-    EstadoDelJuego estado1;
     std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
     RepresentacionGusano gusano1;
     gusano1.idGusano = (id)2;
@@ -321,16 +320,36 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     listaGusanos.push_back(gusano1);
     listaGusanos.push_back(gusano2);
     gusanos.insert({jugador, listaGusanos});
-    estado1.gusanos = gusanos;
+
+    RepresentacionProyectil proyectil1;
+    proyectil1.proyectil = DINAMITA_P;
+    proyectil1.esFragmento = false;
+    proyectil1.posicion.enX = 20.6;
+    proyectil1.posicion.enY = 4.98;
+    proyectil1.angulo = 49.1;
+    proyectil1.cuentaRegresiva = 0;
+    proyectil1.exploto = true;
+
+    RepresentacionProyectil proyectil2;
+    proyectil2.proyectil = GRANADA_ROJA_P;
+    proyectil2.esFragmento = true;
+    proyectil2.posicion.enX = 4.6;
+    proyectil2.posicion.enY = 7.8;
+    proyectil2.angulo = 8.6;
+    proyectil2.cuentaRegresiva = 0;
+    proyectil2.exploto = false;
+
+    std::vector<RepresentacionProyectil> proyectiles = {proyectil1, proyectil2};
 
     std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
-    estado->gusanos = estado1.gusanos;
+    estado->gusanos = gusanos;
+    estado->proyectiles = proyectiles;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
-    REQUIRE(resultado->gusanos.size() == estado1.gusanos.size());
+    REQUIRE(resultado->gusanos.size() == gusanos.size());
     std::vector<RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == listaGusanos.size());
-    
+
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
         RepresentacionGusano resultadoGusano = resultadoGusanos[i];
         RepresentacionGusano baseGusano = listaGusanos[i];
@@ -359,6 +378,22 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
         REQUIRE(resultadoArma.cuentaRegresiva ==baseArma.cuentaRegresiva);
         REQUIRE(resultadoArma.arma ==baseArma.arma);
     }  
+
+    std::vector<RepresentacionProyectil> resultadoProyectiles = resultado->proyectiles;
+    REQUIRE(resultadoProyectiles.size() == proyectiles.size());
+    for (int i = 0; i < (int)proyectiles.size(); i++) {
+        RepresentacionProyectil resultadoProyectil = resultadoProyectiles[i];
+        RepresentacionProyectil baseProyectil = proyectiles[i];
+
+        REQUIRE(resultadoProyectil.proyectil == baseProyectil.proyectil);
+        REQUIRE(resultadoProyectil.esFragmento == baseProyectil.esFragmento);
+        REQUIRE(resultadoProyectil.posicion.enX == baseProyectil.posicion.enX);
+        REQUIRE(resultadoProyectil.posicion.enY == baseProyectil.posicion.enY);
+        REQUIRE(resultadoProyectil.angulo == baseProyectil.angulo);
+        REQUIRE(resultadoProyectil.cuentaRegresiva == baseProyectil.cuentaRegresiva);
+        REQUIRE(resultadoProyectil.exploto == baseProyectil.exploto);
+    }
+    
 }
 
 // TEST 13
