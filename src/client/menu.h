@@ -14,7 +14,7 @@ class Menu {
  public:
     Menu(Protocolo& protocolo);
 
-    bool ejecutar();
+    InformacionInicial ejecutar();
 };
 
 #endif // MENU_H_

@@ -1,6 +1,6 @@
 #include "dibujador.h"
 
-Dibujador::Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa) :
+Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego> estado_juego, int ancho_mapa, int alto_mapa) :
     camara(camara),
     estado_juego(estado_juego),
     ancho_mapa(ancho_mapa),
@@ -86,19 +86,19 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga> vigas) {
 
 void Dibujador::dibujarGusanos(Renderer& renderizador, int it, radianes angulo) {
     // Recorro el mapa de jugador -> gusanos.
-    for (auto& jugador : estado_juego.gusanos) {
+    for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
         for (auto& gusano : jugador.second) {
             // TODO: dibujar barra de potencia si esta disparando.
             // Dibujo al gusano.
             // Traduzco las coordenadas del gusano.
             std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
-            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, it, angulo);
+            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada.arma, gusano.dir, posicion.first, posicion.second, it, angulo);
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
             // Dibujo la reticula del gusano si esta apuntando.
             int direccion = gusano.dir == DERECHA ? 1 : -1;
-            if (gusano.estado == QUIETO && gusano.armaEquipada != NADA_P) {
+            if (gusano.estado == QUIETO && gusano.armaEquipada.arma != NADA_P) {
                 gestor_animaciones.dibujarReticula(
                     posicion.first + (sin(angulo) * 60) * direccion,
                     posicion.second + (cos(angulo) * 60),

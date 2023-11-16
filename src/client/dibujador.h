@@ -17,7 +17,7 @@ using namespace SDL2pp;
 class Dibujador {
  private:
       Camara& camara;
-      EstadoDelJuego& estado_juego;
+      std::shared_ptr<EstadoDelJuego> estado_juego;
       int ancho_mapa;
       int alto_mapa;
       GestorAnimaciones gestor_animaciones;
@@ -26,7 +26,7 @@ class Dibujador {
       std::pair<int, int> traducirCoordenadas(coordX x, coordY y);
       void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
  public:
-      Dibujador(Camara& camara, EstadoDelJuego& estado_juego, int ancho_mapa, int alto_mapa);
+      Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego> estado_juego, int ancho_mapa, int alto_mapa);
       void inicializarAnimaciones(Renderer& renderizador);
       void dibujar(Renderer& renderizador, int it, radianes angulo, ArmaProtocolo arma_equipada, std::vector<RepresentacionViga> vigas);
       void dibujarMapa(std::vector<RepresentacionViga> vigas);

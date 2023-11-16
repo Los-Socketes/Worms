@@ -23,33 +23,14 @@ Cliente::Cliente(Socket&& skt):
         gusi.dir = DERECHA;
         gusi.estado = QUIETO;
         gusi.posicion = std::pair<int, int>(0,0);
-        gusi.armaEquipada = NADA_P;
+        gusi.armaEquipada.arma = NADA_P;
         listaGusanosIniciales.push_back(gusi);
 
         std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
         gusanosNuevos.insert({0, listaGusanosIniciales});
 
-        estado_juego.gusanos = gusanosNuevos;
+        estado_juego->gusanos = gusanosNuevos;
         // listaGusanosIniciales.
-
-        // Vigas temporalmente para probar.
-        RepresentacionViga viga1;
-        viga1.angulo = 0;
-        viga1.longitud = 6;
-        viga1.posicionInicial = std::pair<int, int>(15, 15);
-        vigas.push_back(viga1);
-
-        RepresentacionViga viga2;
-        viga2.angulo = M_PI / 2;
-        viga2.longitud = 3;
-        viga2.posicionInicial = std::pair<int, int>(25, 15);
-        vigas.push_back(viga2);
-
-        RepresentacionViga viga3;
-        viga3.angulo = M_PI / 4;
-        viga3.longitud = 3;
-        viga3.posicionInicial = std::pair<int, int>(35, 15);
-        vigas.push_back(viga3);
     }
 
 void Cliente::iniciar() {
@@ -58,11 +39,11 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-bool Cliente::ejecutar_menu() {
+InformacionInicial Cliente::ejecutar_menu() {
     return menu.ejecutar();
 }
 
-void Cliente::loop_principal() {
+void Cliente::loop_principal(InformacionInicial& info_inicial) {
     // Inicializar SDL.  
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
@@ -120,7 +101,7 @@ void Cliente::loop_principal() {
 
         // Renderizo.
         // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, angulo, estado_juego.gusanos[0][0].armaEquipada, vigas);
+        dibujador.dibujar(renderizador, it, angulo, estado_juego->gusanos[0][0].armaEquipada.arma, info_inicial.vigas);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

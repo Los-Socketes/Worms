@@ -31,29 +31,25 @@ class AccionCliente {
 
 class AccionMoverGusano : public AccionCliente {
  private:
-    int id_gusano;
     Direccion direccion;
  public:
-    AccionMoverGusano(int id_gusano, Direccion direccion);
+    AccionMoverGusano(Direccion direccion);
     void enviar(Protocolo& protocolo) override;
     ~AccionMoverGusano() override = default;
 };
 
 class AccionDisparar : public AccionCliente {
- private:
-    int id_gusano;
  public:
-    AccionDisparar(int id_gusano);
+    AccionDisparar();
     void enviar(Protocolo& protocolo) override;
     ~AccionDisparar() override = default;
 };
 
 class AccionEquiparArma : public AccionCliente {
  private:
-    int id_gusano;
     ArmaProtocolo arma;
  public:
-    AccionEquiparArma(int id_gusano, ArmaProtocolo arma);
+    AccionEquiparArma(ArmaProtocolo arma);
     void enviar(Protocolo& protocolo) override;
     ~AccionEquiparArma() override = default;
 };

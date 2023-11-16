@@ -7,8 +7,6 @@ void EntradaTeclado::run() {
     try {
         cont = true;
         SDL_Event evento;
-        // TODO: obtener el id del gusano que se está controlando.
-        id id_gusano = 0;
         while (cont && SDL_WaitEvent(&evento)) {
             // Capturo eventos de teclado y los envío a la cola
             // de salida hacia al servidor, o bien a la cola
@@ -21,27 +19,29 @@ void EntradaTeclado::run() {
                 switch (evento.key.keysym.sym) {
                     case SDLK_LEFT:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, INICIO_IZQ));
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(INICIO_IZQ));
                         break;
                     case SDLK_RIGHT:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, INICIO_DER));
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(INICIO_DER));
                         break;
                     case SDLK_UP:
                         // TODO: enviar como accion.
+                        // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ARRIBA));
                         comandos_teclado.push(Comando(ARRIBA));
                         break;
                     case SDLK_DOWN:
                         // TODO: enviar como accion.
+                        // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ABAJO));
                         comandos_teclado.push(Comando(ABAJO));
                         break;
                     case SDLK_RETURN:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, SALTO));
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(SALTO));
                         break;
                     case SDLK_BACKSPACE:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, PIRUETA));
+                            envio_comandos.push(std::make_shared<AccionMoverGusano>(PIRUETA));
                         break;
                     case SDLK_q:
                         comandos_teclado.push(Comando(SALIR));
@@ -53,51 +53,51 @@ void EntradaTeclado::run() {
                         break;
                     case SDLK_SPACE:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionDisparar>(id_gusano));
+                            envio_comandos.push(std::make_shared<AccionDisparar>());
                         break;
                     /*
                     case SDLK_1:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, BAZOOKA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(BAZOOKA_P));
                         break;
                     case SDLK_2:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, MORTERO_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>( MORTERO_P));
                         break;
                     case SDLK_3:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, GRANADA_VERDE_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(GRANADA_VERDE_P));
                         break;
                     case SDLK_4:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, GRANADA_ROJA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(GRANADA_ROJA_P));
                         break;
                     case SDLK_5:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, GRANADA_SANTA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(GRANADA_SANTA_P));
                         break;
                     case SDLK_6:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, BANANA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(BANANA_P));
                         break;
                     case SDLK_7:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, DINAMITA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(DINAMITA_P));
                         break;
                     */
                     case SDLK_8:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, BATE_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(BATE_P));
                         break;
                     /*
                     case SDLK_9:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, ATAQUE_AEREO_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(ATAQUE_AEREO_P));
                         break;
                     */
                     case SDLK_0:
                         if(evento.key.repeat == 0)
-                            envio_comandos.push(std::make_shared<AccionEquiparArma>(id_gusano, NADA_P));
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(NADA_P));
                         break;
                     default:
                         break;
@@ -105,10 +105,10 @@ void EntradaTeclado::run() {
             } else if (evento.type == SDL_KEYUP) {
                 switch (evento.key.keysym.sym) {
                     case SDLK_LEFT:
-                        envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, FIN_IZQ));
+                        envio_comandos.push(std::make_shared<AccionMoverGusano>(FIN_IZQ));
                         break;
                     case SDLK_RIGHT:
-                        envio_comandos.push(std::make_shared<AccionMoverGusano>(id_gusano, FIN_DER));
+                        envio_comandos.push(std::make_shared<AccionMoverGusano>(FIN_DER));
                         break;
                     default:
                         break;

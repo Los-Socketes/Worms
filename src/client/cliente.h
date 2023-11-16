@@ -34,11 +34,11 @@ class Cliente {
     SDL sdl;
     SDLTTF ttf;
     Protocolo protocolo;
-    EstadoDelJuego estado_juego;
+    std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
     Menu menu;
-    Queue<EstadoDelJuego> recepcion_estados;
+    Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
     Queue<Comando> comandos_teclado;
     EntradaTeclado entrada_teclado;
@@ -57,10 +57,10 @@ class Cliente {
     Cliente(Socket&& skt);
     
     // Ejecuta el menu.
-    bool ejecutar_menu();
+    InformacionInicial ejecutar_menu();
 
     // Loop principal del cliente.
-    void loop_principal();
+    void loop_principal(InformacionInicial& info_inicial);
 
     // Destructor.
     ~Cliente();
