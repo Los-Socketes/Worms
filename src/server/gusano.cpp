@@ -100,9 +100,12 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         break;
     case SALTO:
         std::cout << "Salto" << "\n";
-        direccion.x = 0.0f;
-        direccion.y = 0.0f;
-        this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), false);
+        if (this->direccion == DERECHA)
+	  direccion.x = 1000.0f;
+        else
+	  direccion.x = -100.0f;
+        direccion.y = 100.0f;
+        this->cuerpo->ApplyLinearImpulseToCenter(direccion, false);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
