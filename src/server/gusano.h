@@ -40,6 +40,8 @@ public:
 
     void giveGun(ArmaProtocolo arma);
 
+    void teletransportarse();
+
     void preparar(Accion& accion);
 
     //TODO: Esta funcion recibe el arma o tipo de dano

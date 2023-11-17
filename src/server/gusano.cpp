@@ -201,6 +201,8 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         armaQueQuiero = NADA_P;
         break;
     case ATAQUE:
+        if (armaEquipada == TELETRANSPORTACION_P)  
+	  this->teletransportarse();
         armaQueQuiero = this->armaEquipada;
         this->estado = DISPARANDO;
         std::cout << "ATACO\n";
@@ -213,7 +215,12 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
 
 }
 
+void Gusano::teletransportarse() {
+    std::pair<coordX, coordY> destino = this->armaSeleccionada.getCoordenadasTeletransporte();
 
+    b2Vec2 vector = deCoordAb2Vec(destino);
+    this->cuerpo->ApplyLinearImpulseToCenter(destino, true)
+}
 
 void Gusano::giveGun(ArmaProtocolo arma) {
     this->armaEquipada = arma;
