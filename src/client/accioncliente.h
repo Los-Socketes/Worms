@@ -38,6 +38,15 @@ class AccionMoverGusano : public AccionCliente {
     ~AccionMoverGusano() override = default;
 };
 
+class AccionCambiarAngulo : public AccionCliente {
+ private:
+    radianes angulo;
+ public:
+    AccionCambiarAngulo(radianes angulo);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarAngulo() override = default;
+};
+
 class AccionDisparar : public AccionCliente {
  public:
     AccionDisparar();

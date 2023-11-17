@@ -25,14 +25,13 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(INICIO_DER));
                         break;
-                    case SDLK_UP:
-                        // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ARRIBA));
-                        comandos_teclado.push(Comando(ARRIBA));
-                        break;
-                    case SDLK_DOWN:
-                        // envio_comandos.push(std::make_shared<AccionMoverGusano>(ANGULO_ABAJO));
-                        comandos_teclado.push(Comando(ABAJO));
-                        break;
+                    // Descomentar para cambiar ángulo.
+                    // case SDLK_UP:
+                        // envio_comandos.push(std::make_shared<AccionCambiarAngulo>(0.1));
+                        // break;
+                    // case SDLK_DOWN:
+                        // envio_comandos.push(std::make_shared<AccionCambiarAngulo>(-0.1));
+                        // break;
                     case SDLK_RETURN:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(SALTO));
@@ -53,7 +52,7 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionDisparar>());
                         break;
-                    /*
+                    /* Armas deshabilitadas por el momento.
                     case SDLK_1:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(BAZOOKA_P));

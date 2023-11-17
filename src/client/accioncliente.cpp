@@ -7,7 +7,15 @@ void AccionMoverGusano::enviar(Protocolo& protocolo) {
     protocolo.moverGusano(direccion);
 }
 
-AccionEquiparArma::AccionEquiparArma(ArmaProtocolo arma) : arma(arma) {}
+AccionCambiarAngulo::AccionCambiarAngulo(radianes angulo) : 
+    angulo(angulo) {}
+
+void AccionCambiarAngulo::enviar(Protocolo& protocolo) {
+    protocolo.configurarAngulo(angulo);
+}
+
+AccionEquiparArma::AccionEquiparArma(ArmaProtocolo arma) :
+    arma(arma) {}
 
 void AccionEquiparArma::enviar(Protocolo& protocolo) {
     protocolo.equiparArma(arma);
