@@ -93,24 +93,8 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 
     b2PolygonShape dynamicBox;
 
-    // Juampi: con esto tengo dudas, voy a tratar de explicar. (mucho texto)
-    // Los sprites para los gusanos son de 60x60 pixeles. Cuando los dibujo
-    // centro el sprite en el punto que me pasan (las coordenadas del gusano).
-    // La caja de colisiones de box2d se termina traduciendo en una caja
-    // de 1 * 1 metro, que pasado a pixeles es 20 * 20 pixeles (con la escala que
-    // estoy usando). El gusano en sí dentro del sprite no ocupa todo el espacio
-    // (me parece que es más chico que 20 * 20 pixeles) entonces con este tamaño
-    // de caja de colisiones, el gusano parece que está flotando en el aire 
-    // cuando el gusano está parado en una viga. Por eso lo cambio a 0.5 * 0.5 
-    // metros, que es 10 * 10 pixeles.
-    // Si afecta mucho la lógica acá, puedo hacer que el sprite sea más grande
-    // o moverlo en el eje y (dibujarlo un toque más abajo) del lado del cliente.
-    // No se que les parece mejor.
-    
-    // TLDR: el gusano parece que flota en el aire porque la caja de colisiones es
-    // más grande que el gusano cuando se lo pasa a pixeles, por eso lo achico.
     dynamicBox.SetAsBox(0.5f, 0.5f);
-    //dynamicBox.SetAsBox(1.0f, 1.0f);
+  
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
     fixtureDef.density = 1.0f;
@@ -148,15 +132,17 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
 }
 
-InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
+
+InformacionInicial Partida::obtenerInfoInicial() {
+    InformacionInicial infoInicial;
+
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        // Juampi: Spawneo los gusanos en el centro así se puede probar mejor el bateo.
-        std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
-        // std::pair<coordX, coordY> coordsIniciales(0.0f,20.0f);
 
+        std::pair<coordX, coordY> coordsIniciales(5.0f,20.0f);
+      
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
@@ -168,26 +154,15 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
-
-    InformacionInicial infoInicial;
+    this->jugadores.push_back(jugadorNuevo);
 
     //Creo el id del nuevo jugador
     idJugador idNuevoJugador;
     idNuevoJugador = (idJugador) this->jugadores.size();
-
-    clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
-
-    this->jugadores.push_back(jugadorNuevo);
-
-    //Anadimos al jugador a la partida
-    this->clientes.push_back(clienteNuevo);
-    //Aviso que se unio un jugador
-    this->seUnioJugador.notify_all();
+    infoInicial.jugador = idNuevoJugador;
 
     //Leo las vigas
     std::vector<RepresentacionViga> vigasEnMapa;
-
-    //Fuente: https://www.iforce2d.net/b2dtut/bodies
     for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
     {
 
@@ -223,10 +198,22 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
         vigasEnMapa.push_back(vigaActual);
     }
 
-    //TODO Mover arriba
-    infoInicial.jugador = idNuevoJugador;
     infoInicial.vigas = vigasEnMapa;
+
+
     return infoInicial;
+}
+
+void Partida::anadirCliente(Cliente *clienteNuevo) {
+    //TODO: Lock
+    clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
+
+    //Anadimos al jugador a la partida
+    this->clientes.push_back(clienteNuevo);
+
+    //Fuente: https://www.iforce2d.net/b2dtut/bodies
+    //Aviso que se unio un jugador
+    this->seUnioJugador.notify_all();
 }
 
 void Partida::enviarEstadoAJugadores() {
@@ -327,8 +314,14 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
 
     for (int i = 0; i < (int) query.foundBodies.size(); i++) {
         b2Body* cuerpoA = query.foundBodies[i];
-        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
-        // printf("Otro: %4.2f %4.2f \n", pos.x, pos.y);
+        if (cuerpoA->GetType() == b2_staticBody)
+	  continue;
+        
+        Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+        entidadA->gusano->recibirDano();
+        
+        // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+        printf("PEGO\n");
     }
     
       
