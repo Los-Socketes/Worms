@@ -155,6 +155,7 @@ void Gusano::preparar(Accion& accion) {
     case CUENTA_REGRESIVA:
         break;
     case COORDENADAS:
+        this->armaSeleccionada.setCoordenadasTeletransporte(configDeseado.coordenadas);
         break;
     }
 }

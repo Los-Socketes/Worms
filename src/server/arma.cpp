@@ -173,3 +173,10 @@ RepresentacionArma Arma::getRepresentacion() {
     arma.arma = this->idArma;
     return arma;
 }
+
+std::pair<coordX, coordY> Arma::getCoordenadasTeletransporte() {
+    return this->coordenadasTeletransporte;
+}
+void Arma::setCoordenadasTeletransporte(std::pair<coordX, coordY> coordenadas) {
+    this->coordenadasTeletransporte = coordenadas;
+}
