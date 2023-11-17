@@ -144,20 +144,20 @@ void GestorAnimaciones::dibujarPanorama(int pos_x, int pos_y) {
 }
 
 void GestorAnimaciones::dibujarViga(int pos_x, int pos_y, int largo, radianes angulo) {
-    if (largo > 3) {
-        escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
-        escenario[VIGA_GRANDE]->dibujar(camara, pos_x + (largo * PIXELS_POR_METRO) / 2, pos_y - PIXELS_POR_METRO / 2, false, 0, 1, angulo);
+    if (largo > 10) {
+        escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
+        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);
     } else {
-        escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
+        escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
         escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);
     }    
 }
 
-void GestorAnimaciones::dibujarGusano(EstadoGusano estado, ArmaProtocolo arma, DireccionGusano dir, int pos_x, int pos_y, int it, radianes angulo) {
-    if(arma != NADA_P && (estado == QUIETO || estado == DISPARANDO)) {
-        gusanos[std::make_pair(estado, arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, angulo);
+void GestorAnimaciones::dibujarGusano(EstadoGusano estado, RepresentacionArma arma, DireccionGusano dir, int pos_x, int pos_y, int it) {
+    if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
+        gusanos[std::make_pair(estado, arma.arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, arma.anguloRad);
     } else {
-        gusanos[std::make_pair(estado, arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, it, 1);
+        gusanos[std::make_pair(estado, arma.arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, it, 1);
     }
 }
 

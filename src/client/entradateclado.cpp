@@ -25,13 +25,12 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(INICIO_DER));
                         break;
-                    // Descomentar para cambiar ángulo.
-                    // case SDLK_UP:
-                        // envio_comandos.push(std::make_shared<AccionCambiarAngulo>(0.1));
-                        // break;
-                    // case SDLK_DOWN:
-                        // envio_comandos.push(std::make_shared<AccionCambiarAngulo>(-0.1));
-                        // break;
+                    case SDLK_UP:
+                        envio_comandos.push(std::make_shared<AccionCambiarAngulo>(0.1));
+                        break;
+                    case SDLK_DOWN:
+                        envio_comandos.push(std::make_shared<AccionCambiarAngulo>(-0.1));
+                        break;
                     case SDLK_RETURN:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionMoverGusano>(SALTO));

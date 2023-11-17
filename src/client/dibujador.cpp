@@ -8,6 +8,22 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     gestor_animaciones(camara, ancho_mapa, alto_mapa),
     fuente("assets/fonts/AdLibRegular.ttf", 12) {}
 
+RepresentacionGusano Dibujador::getGusanoActual() {
+    /* RepresentacionGusano gusano_actual;
+    gusano_actual.idGusano = -1;
+    gusano_actual.armaEquipada.arma = NADA_P;
+    for (auto& jugador : estado_juego->gusanos) {
+        for (auto& gusano : jugador.second) {
+            if (gusano.idGusano == estado_juego->gusanoDeTurno) {
+                gusano_actual = gusano;
+            }
+        }
+    }
+    return gusano_actual; */
+
+    return estado_juego->gusanos[0][0];
+}
+
 std::pair<int, int> Dibujador::traducirCoordenadas(coordX x, coordY y) {
     // Paso de coordenadas en metros a coordenadas en pixeles.
     // TODO: ver como hacerlo bien. Pruebo con 20 pixeles por metro.
@@ -59,14 +75,14 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
 void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas) {
     renderizador.Clear();
 
-    RepresentacionGusano gusano_actual = estado_juego->gusanos[0][0];
+    RepresentacionGusano gusano_actual = getGusanoActual();
 
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
-    dibujarGusanos(renderizador, it, 0);
+    dibujarGusanos(renderizador, it);
     //dibujarProyectiles(it);
     dibujarAguaDelante(it);
-    dibujarBarraArmas(renderizador, NADA_P);
+    dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
     renderizador.Present();
 }
@@ -87,7 +103,7 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga> vigas) {
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador, int it, radianes angulo) {
+void Dibujador::dibujarGusanos(Renderer& renderizador, int it) {
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
@@ -96,15 +112,15 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int it, radianes angulo) 
             // Dibujo al gusano.
             // Traduzco las coordenadas del gusano.
             std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
-            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada.arma, gusano.dir, posicion.first, posicion.second, it, angulo);
+            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, it);
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
             // Dibujo la reticula del gusano si esta apuntando.
             int direccion = gusano.dir == DERECHA ? 1 : -1;
-            if (gusano.estado == QUIETO && gusano.armaEquipada.arma != NADA_P) {
+            if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
                 gestor_animaciones.dibujarReticula(
-                    posicion.first + (sin(angulo) * 60) * direccion,
-                    posicion.second + (cos(angulo) * 60),
+                    posicion.first + (sin(gusano.armaEquipada.anguloRad + M_PI / 2) * 60) * direccion,
+                    posicion.second + (cos(gusano.armaEquipada.anguloRad + M_PI / 2) * 60),
                     it);
             }
                 

@@ -23,6 +23,7 @@ class Dibujador {
       GestorAnimaciones gestor_animaciones;
       Font fuente;
 
+      RepresentacionGusano getGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX x, coordY y);
       void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
  public:
@@ -30,7 +31,7 @@ class Dibujador {
       void inicializarAnimaciones(Renderer& renderizador);
       void dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas);
       void dibujarMapa(std::vector<RepresentacionViga> vigas);
-      void dibujarGusanos(Renderer& renderizador, int it, radianes angulo);
+      void dibujarGusanos(Renderer& renderizador, int it);
       // void dibujarProyectiles(int it);
       void dibujarAguaDetras(int it);
       void dibujarAguaDelante(int it);

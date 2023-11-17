@@ -22,8 +22,10 @@
 
 #define ANCHOVIGA 0.8f
 // es entero para que no rompa
-#define LONGITUDVIGAGRANDE 14.0f
-/* #define LONGITUDVIGAGRANDE 6.0f */
+// Juampi: Lo vuelvo a poner en 6, 14 me parece mucho. Se van a
+// superponer las vigas.
+// #define LONGITUDVIGAGRANDE 14.0f
+#define LONGITUDVIGAGRANDE 6.0f
 #define LONGITUDVIGACHICA 3.0f
 
 #define VELOCIDADMOVIMIENTO 5.0f

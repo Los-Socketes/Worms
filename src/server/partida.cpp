@@ -92,7 +92,9 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
+
     dynamicBox.SetAsBox(0.5f, 0.5f);
+  
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
     fixtureDef.density = 1.0f;
@@ -120,7 +122,9 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     longitud /= 2;
 
     b2PolygonShape viga;
-    viga.SetAsBox(longitud, ANCHOVIGA);
+    // Juampi: puede que ancho viga tambien tenga que ser dividido por 2?
+    viga.SetAsBox(longitud, ANCHOVIGA / 2);
+    //viga.SetAsBox(longitud, ANCHOVIGA);
 
     b2Body* groundBody = world.CreateBody(&vigaDef);
 
@@ -136,9 +140,9 @@ InformacionInicial Partida::obtenerInfoInicial() {
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        // std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
-        std::pair<coordX, coordY> coordsIniciales(5.0f,20.0f);
 
+        std::pair<coordX, coordY> coordsIniciales(5.0f,20.0f);
+      
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
@@ -177,7 +181,14 @@ InformacionInicial Partida::obtenerInfoInicial() {
         RepresentacionViga vigaActual;
         vigaActual.angulo = b->GetAngle();
         //TODO Desharcodear
-        vigaActual.longitud = 8;
+        // Juampi: creo que el problema de que no estaban alineadas las vigas era que le 
+        // estabas pasando el 8 hardcodeado para graficar y la longitud de la viga en box2d es 
+        // LONGITUDVIGAGRANDE que es 14, pero no estoy seguro.
+        // Me parece que 14 es mucho y se van a superponer, así que lo volví a 6.
+        // El centro de la viga al parecer no es la esquina inferior izquierda, es el centro de 
+        // la caja puede ser? Probe usando ese centro en cliente y se veian bien.
+        // En teoría con esto así debería andar si se le pone un valor más chico en el def.
+        vigaActual.longitud = LONGITUDVIGAGRANDE;
         b2Vec2 posicion = b->GetPosition();
         std::pair<coordX, coordY> posicionProtocolo;
         posicionProtocolo.enX = posicion.x;
