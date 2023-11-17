@@ -8,6 +8,7 @@ Gusano::Gusano() : armaSeleccionada(NADA_P)
     this->vida = 100;
     this->armaEquipada = NADA_P;
     this->estado = CAYENDO;
+    this->armaSeleccionada.setAngulo(0); 
 }
 
 void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
@@ -122,7 +123,13 @@ void Gusano::preparar(Accion& accion) {
     configDeseado = accion.configARealizar;
     switch (configDeseado.caracteristica) {
     case ANGULO:
-        this->armaSeleccionada.setAngulo(configDeseado.angulo);
+        {
+        float anguloActual = this->armaSeleccionada.getAngulo();
+        anguloActual += configDeseado.angulo;
+        std::cout << "Cambio: " << configDeseado.angulo << "\n";
+        std::cout << "Angulo nuevo: " << anguloActual << "\n";
+        this->armaSeleccionada.setAngulo(anguloActual);
+        }
         break;
     case POTENCIA:
         break;
@@ -169,6 +176,8 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         armaQueQuiero = NADA_P;
         break;
     case PREPARAR:
+        std::cout << "PREPARAR\n";
+        this->preparar(accion);
         armaQueQuiero = NADA_P;
         break;
     case ATAQUE:
@@ -214,6 +223,7 @@ RepresentacionGusano Gusano::getRepresentacion() {
     //TODO Ahora est hardcodeado. Hacer algo generico.
     //Esto solo aplica al bate
     RepresentacionArma arma = this->armaSeleccionada.getRepresentacion();
+    // std::cout << "Angulo a enviar: " << arma.anguloRad << "\n";
     arma.municiones = 100000;
     arma.arma = this->armaEquipada;
 
