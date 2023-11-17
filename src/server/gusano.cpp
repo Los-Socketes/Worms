@@ -34,6 +34,8 @@ void Gusano::giveId(int idGusano) {
 }
 
 std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
+    //Esta funcion crea la hitbox donde que el gusano va a usar para
+    //pegar. Es una caja con coordenadas inferior izquierda y sup derecha
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
 
@@ -42,16 +44,24 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     coordX offset = 0;
     if (dondeMira == DERECHA)
-        offset = TAMANOGUSANO;
+        offset = 1;
     else
-        offset = -TAMANOGUSANO;
+        offset = -1;
     coords.enX += offset;
+    coords.enY -= offset;
 
     std::pair<inicioCaja, finCaja> vecs;
     b2Vec2 vectorCoordInicio = deCoordAb2Vec(coords);
-    b2Vec2 vectorCoordFin;
-    vectorCoordFin.x += vectorCoordInicio.x + offset;
-    vectorCoordFin.y += vectorCoordInicio.y + offset;
+
+    //reutilizo la variables coords para la segunda coordenada (sup der)
+    //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
+    coords.enX += offset * 5;
+    coords.enY += offset * 5;
+
+    b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
+    //WARNING Valores hardcodeados hasta ver cual se ve mejor
+    // vectorCoordFin.x += vectorCoordInicio.x + offset;
+    // vectorCoordFin.y += vectorCoordInicio.y + 2 * offset;
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
@@ -116,6 +126,12 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         abort();
         break;
     }
+}
+
+void Gusano::recibirDano() {
+    //TODO switch dependiendo del arma de this
+    this->vida -= 20;
+    this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
 }
 
 void Gusano::preparar(Accion& accion) {

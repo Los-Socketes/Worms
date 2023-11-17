@@ -92,7 +92,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     b2Body* body = world.CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
+    dynamicBox.SetAsBox(0.5f, 0.5f);
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &dynamicBox;
     fixtureDef.density = 1.0f;
@@ -134,7 +134,7 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
         // std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
-        std::pair<coordX, coordY> coordsIniciales(0.0f,20.0f);
+        std::pair<coordX, coordY> coordsIniciales(5.0f,20.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
@@ -299,8 +299,14 @@ void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
 
     for (int i = 0; i < (int) query.foundBodies.size(); i++) {
         b2Body* cuerpoA = query.foundBodies[i];
-        cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
-        // printf("Otro: %4.2f %4.2f \n", pos.x, pos.y);
+        if (cuerpoA->GetType() == b2_staticBody)
+	  continue;
+        
+        Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+        entidadA->gusano->recibirDano();
+        
+        // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+        printf("PEGO\n");
     }
     
       
