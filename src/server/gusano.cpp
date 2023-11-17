@@ -141,14 +141,18 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         armaQueQuiero = NADA_P;
         break;
         }
-    case EQUIPARSE:
+    case EQUIPARSE: 
+        {
         std::cout << "EQUIPO EL ARMA\n";
         ArmaProtocolo armaElegida;
         armaElegida = accion.armaAEquipar;
 
         this->armaEquipada = armaElegida;
+        Arma armaSeleccionada(armaElegida);
+        this->armaSeleccionada = armaSeleccionada;
         armaQueQuiero = NADA_P;
         break;
+        }
     case PREPARAR:
         armaQueQuiero = NADA_P;
         break;
@@ -195,7 +199,7 @@ RepresentacionGusano Gusano::getRepresentacion() {
     //Esto solo aplica al bate
     RepresentacionArma arma = this->armaSeleccionada.getRepresentacion();
     arma.municiones = 100000;
-    arma.arma = this->armaEquipada;
+    // arma.arma = this->armaEquipada;
 
     repre.armaEquipada = arma;
 
