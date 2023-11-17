@@ -12,7 +12,7 @@ Partida::Partida(std::string mapa)
     this->world.SetContactListener(&this->colisiones);
 
 
-    this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(0.0f, 10.0f));
 }
 
 //Esto tendria que estar en el YAML?
