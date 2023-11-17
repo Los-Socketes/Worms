@@ -14,6 +14,14 @@ void AccionCambiarAngulo::enviar(Protocolo& protocolo) {
     protocolo.configurarAngulo(angulo);
 }
 
+AccionCambiarCoordenadas::AccionCambiarCoordenadas(coordX x, coordY y) :
+    x(x),
+    y(y) {}
+
+void AccionCambiarCoordenadas::enviar(Protocolo& protocolo) {
+    protocolo.configurarCoordenadas(std::make_pair(x, y));
+}
+
 AccionEquiparArma::AccionEquiparArma(ArmaProtocolo arma) :
     arma(arma) {}
 

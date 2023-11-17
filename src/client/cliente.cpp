@@ -11,9 +11,10 @@ Cliente::Cliente(Socket&& skt):
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
+    es_turno(false),
     entrada_teclado(envio_comandos, comandos_teclado),
-    recibidor(protocolo, recepcion_estados),
-    enviador(protocolo, envio_comandos) {
+    recibidor(protocolo, recepcion_estados, es_turno),
+    enviador(protocolo, envio_comandos, es_turno) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -55,6 +56,9 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
     // TODO: obtener info del mapa desde el servidor.
     camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
+
+    // Seteo el id del jugador.
+    recibidor.setIdJugador(info_inicial.jugador - 1);
 
     iniciar();
 
