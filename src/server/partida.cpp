@@ -128,7 +128,10 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
 }
 
-InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
+
+InformacionInicial Partida::obtenerInfoInicial() {
+    InformacionInicial infoInicial;
+
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
@@ -147,26 +150,15 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
-
-    InformacionInicial infoInicial;
+    this->jugadores.push_back(jugadorNuevo);
 
     //Creo el id del nuevo jugador
     idJugador idNuevoJugador;
     idNuevoJugador = (idJugador) this->jugadores.size();
-
-    clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
-
-    this->jugadores.push_back(jugadorNuevo);
-
-    //Anadimos al jugador a la partida
-    this->clientes.push_back(clienteNuevo);
-    //Aviso que se unio un jugador
-    this->seUnioJugador.notify_all();
+    infoInicial.jugador = idNuevoJugador;
 
     //Leo las vigas
     std::vector<RepresentacionViga> vigasEnMapa;
-
-    //Fuente: https://www.iforce2d.net/b2dtut/bodies
     for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
     {
 
@@ -195,10 +187,22 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
         vigasEnMapa.push_back(vigaActual);
     }
 
-    //TODO Mover arriba
-    infoInicial.jugador = idNuevoJugador;
     infoInicial.vigas = vigasEnMapa;
+
+
     return infoInicial;
+}
+
+void Partida::anadirCliente(Cliente *clienteNuevo) {
+    //TODO: Lock
+    clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
+
+    //Anadimos al jugador a la partida
+    this->clientes.push_back(clienteNuevo);
+
+    //Fuente: https://www.iforce2d.net/b2dtut/bodies
+    //Aviso que se unio un jugador
+    this->seUnioJugador.notify_all();
 }
 
 void Partida::enviarEstadoAJugadores() {
