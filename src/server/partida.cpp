@@ -133,8 +133,8 @@ InformacionInicial Partida::anadirCliente(Cliente *clienteNuevo) {
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
-        std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
-        // std::pair<coordX, coordY> coordsIniciales(0.0f,0.0f);
+        // std::pair<coordX, coordY> coordsIniciales(20.0f,20.0f);
+        std::pair<coordX, coordY> coordsIniciales(0.0f,20.0f);
 
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
