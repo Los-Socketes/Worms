@@ -1,0 +1,7 @@
+* Quinta reunion
+Fecha: <2023-17-10 Fri>
+
+** TODO
+- Ir incorporando sonidos
+- TRATAR de probar con QT
+- Explosiones
