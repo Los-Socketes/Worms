@@ -83,18 +83,6 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
-                /*
-                case ARRIBA:
-                    // Temporalmente para probar.
-                    if (angulo < M_PI - 0.1)
-                        angulo += 0.1;
-                    break;
-                case ABAJO:
-                    // Temporalmente para probar.
-                    if (angulo > 0 + 0.1)
-                        angulo -= 0.1;                
-                    break;
-                */
                 default:
                     break;
             }
