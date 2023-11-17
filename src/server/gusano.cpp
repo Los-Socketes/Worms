@@ -223,7 +223,7 @@ void Gusano::teletransportarse() {
     std::pair<coordX, coordY> destino = this->armaSeleccionada.getCoordenadasTeletransporte();
 
     b2Vec2 vector = deCoordAb2Vec(destino);
-    this->cuerpo->ApplyLinearImpulseToCenter(destino, true)
+    this->cuerpo->ApplyLinearImpulseToCenter(vector, true);
 }
 
 void Gusano::giveGun(ArmaProtocolo arma) {
