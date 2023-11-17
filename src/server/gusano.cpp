@@ -142,6 +142,9 @@ void Gusano::preparar(Accion& accion) {
         {
         float anguloActual = this->armaSeleccionada.getAngulo();
         anguloActual += configDeseado.angulo;
+        if (!this->armaSeleccionada.getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
+            break;
+        } 
         std::cout << "Cambio: " << configDeseado.angulo << "\n";
         std::cout << "Angulo nuevo: " << anguloActual << "\n";
         this->armaSeleccionada.setAngulo(anguloActual);
