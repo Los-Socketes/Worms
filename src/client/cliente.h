@@ -46,7 +46,6 @@ class Cliente {
     Recibidor recibidor;
     Enviador enviador;
 
-
     // Inicia los hilos.
     void iniciar();
 

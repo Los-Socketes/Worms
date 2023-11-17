@@ -47,6 +47,16 @@ class AccionCambiarAngulo : public AccionCliente {
     ~AccionCambiarAngulo() override = default;
 };
 
+class AccionCambiarCoordenadas : public AccionCliente {
+ private:
+    coordX x;
+    coordY y;
+ public:
+    AccionCambiarCoordenadas(coordX x, coordY y);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarCoordenadas() override = default;
+};
+
 class AccionDisparar : public AccionCliente {
  public:
     AccionDisparar();

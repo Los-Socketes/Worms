@@ -93,7 +93,6 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(NADA_P));
                         break;
-
                     case SDLK_t:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(TELETRANSPORTACION_P));
@@ -118,6 +117,8 @@ void EntradaTeclado::run() {
                 if (evento.window.event == SDL_WINDOWEVENT_RESIZED) {
                     comandos_teclado.push(Comando(TAMANIO_VENTANA, evento.window.data1, evento.window.data2));
                 }
+            } else if (evento.type == SDL_MOUSEBUTTONDOWN) {
+                envio_comandos.push(std::make_shared<AccionCambiarCoordenadas>(43.0, 11.0));
             }
         }
     } catch (const ClosedQueue& e) {
