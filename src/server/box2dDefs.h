@@ -21,7 +21,8 @@
 #define FUERZAGRAVITARIAY -20.0f
 
 #define ANCHOVIGA 0.8f
-#define LONGITUDVIGAGRANDE 14.5f
+// es entero para que no rompa
+#define LONGITUDVIGAGRANDE 14.0f
 /* #define LONGITUDVIGAGRANDE 6.0f */
 #define LONGITUDVIGACHICA 3.0f
 

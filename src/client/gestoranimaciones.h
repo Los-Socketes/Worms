@@ -11,7 +11,7 @@
 #include "defs.h"
 #include "camara.h"
 
-#define PIXELS_POR_METRO 20
+#define PIXELS_POR_METRO 15
 
 enum ItemEscenario{
     AGUA,
