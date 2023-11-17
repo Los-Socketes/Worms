@@ -41,6 +41,7 @@ class Cliente {
     Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
     Queue<Comando> comandos_teclado;
+    std::atomic<bool> es_turno;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
