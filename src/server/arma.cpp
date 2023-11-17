@@ -1,9 +1,11 @@
 #include "arma.h"
+#include <iostream>
+#include <fstream>
 
 #include "yaml-cpp/yaml.h"
 
 
-std::pair<int,int> leerArchivo(const std::string& arma, CaracteristicasArma& caracteristicas, Danio& danio, Danio& danioFragmento) {
+std::pair<int,int> leerArchivo(YAML::Node& config, const std::string& arma, CaracteristicasArma& caracteristicas, Danio& danio, Danio& danioFragmento) {
     caracteristicas.tieneMira = config[arma]["ConMira"].as<bool>();
     caracteristicas.esCuerpoACuerpo = config[arma]["EsCuerpoACuerpo"].as<bool>();
     caracteristicas.tienePotenciaVariable = config[arma]["TienePotenciaVariable"].as<bool>();
@@ -28,50 +30,51 @@ std::pair<int,int> leerArchivo(const std::string& arma, CaracteristicasArma& car
 
 
 Arma::Arma(ArmaProtocolo idArma) {
-    YAML::Node config = YAML::LoadFile("config.yaml");
+    std::ifstream fin("../common/config.yaml");
+    YAML::Node config = YAML::Load(fin);
     CaracteristicasArma caracteristicas;
     Danio danio;
     Danio danioFragmento;
     std::pair<int,int> municionesYFragmentos(-1,0);
     switch (idArma) {
     case BAZOOKA_P:{
-        municionesYFragmentos = leerArchivo("Bazooka", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Bazooka", caracteristicas, danio, danioFragmento);
         break;
         }
     case MORTERO_P:{
-        municionesYFragmentos = leerArchivo("Mortero", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Mortero", caracteristicas, danio, danioFragmento);
         break;
         }
     case GRANADA_VERDE_P:{
-        municionesYFragmentos = leerArchivo("Granada Verde", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Granada Verde", caracteristicas, danio, danioFragmento);
         break;
         }
     case GRANADA_ROJA_P:{
-        municionesYFragmentos = leerArchivo("Granada Roja", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Granada Roja", caracteristicas, danio, danioFragmento);
         break;
         }
     case GRANADA_SANTA_P:{
-        municionesYFragmentos = leerArchivo("Granada Santa", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Granada Santa", caracteristicas, danio, danioFragmento);
         break;
         }
     case BANANA_P:{
-        municionesYFragmentos = leerArchivo("Banana", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Banana", caracteristicas, danio, danioFragmento);
         break;
         }
     case DINAMITA_P:{
-        municionesYFragmentos = leerArchivo("Dinamita", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Dinamita", caracteristicas, danio, danioFragmento);
         break;
         }
     case BATE_P:{
-        municionesYFragmentos = leerArchivo("Bate de Baseball", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Bate de Baseball", caracteristicas, danio, danioFragmento);
         break;
         }
     case ATAQUE_AEREO_P:{
-        municionesYFragmentos = leerArchivo("Ataque Aereo", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Ataque Aereo", caracteristicas, danio, danioFragmento);
         break;
         }
     case TELETRANSPORTACION_P:{
-        municionesYFragmentos = leerArchivo("Teletransportacion", caracteristicas, danio, danioFragmento);
+        municionesYFragmentos = leerArchivo(config, "Teletransportacion", caracteristicas, danio, danioFragmento);
         break;
         }
     case NADA_P:{
@@ -88,6 +91,7 @@ Arma::Arma(ArmaProtocolo idArma) {
     default:
         break;
     }
+    fin.close();
     this->idArma = idArma;
     this->caracteristicas = caracteristicas;
     this->municiones = municionesYFragmentos.first;
@@ -97,6 +101,7 @@ Arma::Arma(ArmaProtocolo idArma) {
     this->potencia = 1;
     this->cuentaRegresiva = 0;
     this->angulo = 0;
+    
 }
 
 
@@ -148,4 +153,23 @@ float Arma::getAngulo() {
 
 void Arma::setAngulo(float angulo) {
     this->angulo = angulo;
+}
+
+
+RepresentacionArma Arma::getRepresentacion() {
+    RepresentacionArma arma;
+    arma.tieneMira = this->caracteristicas.tieneMira;
+    arma.tienePotenciaVariable = this->caracteristicas.tienePotenciaVariable;
+    arma.tieneCuentaRegresiva = this->caracteristicas.tieneCuentaRegresiva;
+    arma.municiones = 100000;
+    arma.fragmentos = this->fragmentos;
+    arma.danio.epicentro = this->danio.epicentro;
+    arma.danio.radio = this->danio.radio;
+    arma.danioFragmento.epicentro = this->danioFragmento.epicentro;
+    arma.danioFragmento.radio = this->danioFragmento.radio;
+    arma.anguloRad = this->angulo;
+    arma.potencia = this->potencia;
+    arma.cuentaRegresiva = this->cuentaRegresiva;
+    arma.arma = this->idArma;
+    return arma;
 }

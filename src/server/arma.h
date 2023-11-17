@@ -64,7 +64,7 @@ public:
     void setCuentaRegresiva(int cuentaRegresiva);
 
     // Esto no es atacar, es un actualizar valores
-    bool usar();
+    // bool usar();
 
     RepresentacionArma getRepresentacion();
 

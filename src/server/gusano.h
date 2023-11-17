@@ -3,6 +3,7 @@
 
 #include <box2d/box2d.h>
 #include "defs.h"
+#include "arma.h"
 #include "box2dDefs.h"
 
 //Arma que el gusano quiere crear
@@ -19,6 +20,7 @@ private:
 
     //Arma armaequipada;
     ArmaProtocolo armaEquipada;
+    Arma armaSeleccionada;
 
     EstadoGusano estado;
 

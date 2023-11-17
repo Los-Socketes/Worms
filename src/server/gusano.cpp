@@ -2,7 +2,7 @@
 #include <iostream>
 #include "box2dDefs.h"
 
-Gusano::Gusano()
+Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
     this->direccion = DERECHA;
     this->vida = 100;
@@ -194,20 +194,25 @@ RepresentacionGusano Gusano::getRepresentacion() {
     //TODO Ahora est hardcodeado. Hacer algo generico.
     //Esto solo aplica al bate
     RepresentacionArma arma;
-    arma.tieneMira = false;
-    arma.tienePotenciaVariable = false;
-    arma.tieneCuentaRegresiva = false;
-    arma.municiones = 100000;
-    arma.fragmentos = 0;
-    RepresentacionDanio danio;
-    danio.epicentro = 9;
-    danio.radio = 0;
-    arma.danio = danio;
-    arma.danioFragmento = danio;
-    arma.anguloRad = 1;
-    arma.potencia = 0;
-    arma.cuentaRegresiva = 0;
-    arma.arma = BATE_P;
+    if (this->armaEquipada == NADA_P) {
+        arma = this->armaSeleccionada.getRepresentacion();
+    } else {
+        arma.tieneMira = false;
+        arma.tienePotenciaVariable = false;
+        arma.tieneCuentaRegresiva = false;
+        arma.municiones = 100000;
+        arma.fragmentos = 0;
+        RepresentacionDanio danio;
+        danio.epicentro = 9;
+        danio.radio = 0;
+        arma.danio = danio;
+        arma.danioFragmento = danio;
+        arma.anguloRad = 1;
+        arma.potencia = 0;
+        arma.cuentaRegresiva = 0;
+        arma.arma = BATE_P;
+    }
+
     repre.armaEquipada = arma;
 
     return repre;

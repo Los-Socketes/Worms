@@ -38,6 +38,9 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
 
+# Busco codigo para yaml-cpp
+find_package(yaml-cpp 0.7 REQUIRED)
+
 if(${esGentoo} OR ${esUbuntu}) 
   message("Estas en " ${infoOS})
   find_package(Catch2 3.4.0 REQUIRED)
@@ -99,6 +102,8 @@ add_executable(server
   "${SERVERDIR}/reciever.cpp"
   "${SERVERDIR}/aceptador.cpp"
   "${SERVERDIR}/monitorPartida.cpp"
+  "${SERVERDIR}/arma.cpp"
+  "${COMMONDIR}/config.yaml"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
@@ -125,6 +130,7 @@ target_compile_definitions(server PUBLIC
 # Linkeo box2d
 target_include_directories(server PRIVATE ${box2d_INCLUDE_DIRS})
 target_link_libraries(server PRIVATE box2d::box2d)
+target_link_libraries(server PRIVATE yaml-cpp)
 
 #Ejecutable del cliente
 add_executable(client
