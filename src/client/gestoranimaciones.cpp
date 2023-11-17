@@ -146,7 +146,7 @@ void GestorAnimaciones::dibujarPanorama(int pos_x, int pos_y) {
 void GestorAnimaciones::dibujarViga(int pos_x, int pos_y, int largo, radianes angulo) {
     if (largo > 3) {
         escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
-        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);
+        escenario[VIGA_GRANDE]->dibujar(camara, pos_x + (largo * PIXELS_POR_METRO) / 2, pos_y - PIXELS_POR_METRO / 2, false, 0, 1, angulo);
     } else {
         escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, PIXELS_POR_METRO);
         escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, 0, 1, angulo);

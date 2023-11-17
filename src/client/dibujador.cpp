@@ -1,6 +1,6 @@
 #include "dibujador.h"
 
-Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego> estado_juego, int ancho_mapa, int alto_mapa) :
+Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa) :
     camara(camara),
     estado_juego(estado_juego),
     ancho_mapa(ancho_mapa),
@@ -55,17 +55,18 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
     gestor_animaciones.inicializar(renderizador);    
 }
 
+
 void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas) {
     renderizador.Clear();
 
-    RepresentacionGusano gusano_actual = estado_juego->gusanos[estado_juego->jugadorDeTurno][estado_juego->gusanoDeTurno];
+    RepresentacionGusano gusano_actual = estado_juego->gusanos[0][0];
 
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
-    dibujarGusanos(renderizador, it, gusano_actual.armaEquipada.anguloRad);
+    dibujarGusanos(renderizador, it, 0);
     //dibujarProyectiles(it);
     dibujarAguaDelante(it);
-    dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
+    dibujarBarraArmas(renderizador, NADA_P);
 
     renderizador.Present();
 }

@@ -365,7 +365,7 @@ bool Protocolo::configurarCoordenadas(std::pair<coordX,coordY> coordenadas) {
 
 std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
-    std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
+    std::shared_ptr<EstadoDelJuego> estado = std::make_shared<EstadoDelJuego>();
     if (codigo == -1 || codigo != ESTADO) {
         return estado;
     }
@@ -626,6 +626,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugadorDeTurno;
     estado->gusanoDeTurno = gusanoDeTurno;
+
     return estado;
 }
 
