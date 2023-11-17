@@ -23,6 +23,9 @@ Cliente::Cliente(Socket&& skt):
         gusi.estado = QUIETO;
         gusi.posicion = std::pair<int, int>(0,0);
         gusi.armaEquipada.arma = NADA_P;
+        gusi.armaEquipada.tieneMira = false;
+        gusi.armaEquipada.tienePotenciaVariable = false;
+        gusi.armaEquipada.tieneCuentaRegresiva = false;
         listaGusanosIniciales.push_back(gusi);
 
         std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
@@ -61,6 +64,11 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     bool continuar = true;
 
     bool mover_camara = true;
+
+    // Imprimo las vigas.
+    for (auto& viga : info_inicial.vigas) {
+        std::cout << "Viga: " << viga.posicionInicial.first << " " << viga.posicionInicial.second << " " << viga.longitud << " " << viga.angulo << std::endl;
+    }
 
     while (continuar) {
         // Actualizo el estado del juego.

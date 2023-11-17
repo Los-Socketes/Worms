@@ -220,6 +220,7 @@ std::vector<id> Protocolo::obtenerPartidas() {
 
 InformacionInicial Protocolo::crearPartida(id mapaSeleccionado) {
     InformacionInicial error;
+    error.jugador = -1;
     bool is_open = enviarCodigo(CREAR);
     if (!is_open) {
         return error;
