@@ -51,7 +51,7 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionDisparar>());
                         break;
-                    /* Armas deshabilitadas por el momento.
+                    //Armas deshabilitadas por el momento.
                     case SDLK_1:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(BAZOOKA_P));
@@ -80,20 +80,23 @@ void EntradaTeclado::run() {
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(DINAMITA_P));
                         break;
-                    */
                     case SDLK_8:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(BATE_P));
                         break;
-                    /*
+                    
                     case SDLK_9:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(ATAQUE_AEREO_P));
                         break;
-                    */
                     case SDLK_0:
                         if(evento.key.repeat == 0)
                             envio_comandos.push(std::make_shared<AccionEquiparArma>(NADA_P));
+                        break;
+
+                    case SDLK_t:
+                        if(evento.key.repeat == 0)
+                            envio_comandos.push(std::make_shared<AccionEquiparArma>(TELETRANSPORTACION_P));
                         break;
                     default:
                         break;
