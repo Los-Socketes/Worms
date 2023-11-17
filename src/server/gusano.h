@@ -40,6 +40,8 @@ public:
 
     void giveGun(ArmaProtocolo arma);
 
+    void preparar(Accion& accion);
+
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
     //WARNING: Esta funcion tiene que se ser llamada CERCA, sino AL

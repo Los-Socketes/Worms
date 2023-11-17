@@ -161,6 +161,7 @@ struct Accion {
     idJugador jugador;
     tipoAccion accion;
     // WARNING: saco el union porque rompia con el std::pair
+    // :(
     Direccion dir;
     ArmaProtocolo armaAEquipar;
     Configuracion configARealizar;

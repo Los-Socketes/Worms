@@ -117,6 +117,22 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
+void Gusano::preparar(Accion& accion) {
+    Configuracion configDeseado;
+    configDeseado = accion.configARealizar;
+    switch (configDeseado.caracteristica) {
+    case ANGULO:
+        this->armaSeleccionada.setAngulo(configDeseado.angulo);
+        break;
+    case POTENCIA:
+        break;
+    case CUENTA_REGRESIVA:
+        break;
+    case COORDENADAS:
+        break;
+    }
+}
+
 ArmaDeseada Gusano::ejecutar(Accion accion) {
     ArmaDeseada armaQueQuiero;
 
@@ -167,6 +183,7 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
     
 
 }
+
 
 
 void Gusano::giveGun(ArmaProtocolo arma) {
