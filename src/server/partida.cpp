@@ -25,6 +25,7 @@ Partida::Partida(std::string mapa)
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 25.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 20.0f));
@@ -52,6 +53,8 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     if (entidadB->tipo == TipoEntidad::PROYECTIL
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
+        b2Vec2 dir = cuerpoB->GetLinearVelocity();
+        cuerpoA->ApplyLinearImpulseToCenter(dir, true);
         printf("A\n");
         // abort();
     }
@@ -193,7 +196,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
 
-        std::pair<coordX, coordY> coordsIniciales(5.0f,30.0f);
+        std::pair<coordX, coordY> coordsIniciales(5.0f,23.0f);
       
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
@@ -395,11 +398,11 @@ void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
 	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 	  // bd.position = center; // start at blast center
 	  std::pair<coordX, coordY> coordsCoords = gusano->getCoords();
-	  coordsCoords.enY += 4;
+	  coordsCoords.enX -= 3;
 	  b2Vec2 coords = deCoordAb2Vec(coordsCoords); // start at blast center
 	  bd.position = coords;
 	  // bd.linearVelocity = blastPower * rayDir;
-	  bd.linearVelocity = 2 * rayDir;
+	  bd.linearVelocity = 200 * rayDir;
 	  b2Body* body = this->world.CreateBody( &bd );
 
 	  b2CircleShape circleShape;
