@@ -6,6 +6,18 @@
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
+// Fuente: https://www.iforce2d.net/b2dtut/explosions
+void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower) {
+      b2Vec2 blastDir = applyPoint - blastCenter;
+      float distance = blastDir.Normalize();
+      //ignore bodies exactly at the blast point - blast direction is undefined
+      if ( distance == 0 )
+          return;
+      float invDistance = 1 / distance;
+      float impulseMag = blastPower * invDistance * invDistance;
+      body->ApplyLinearImpulse( impulseMag * blastDir, applyPoint, true);
+  }
+
 Partida::Partida(std::string mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
