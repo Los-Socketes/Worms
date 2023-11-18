@@ -24,11 +24,11 @@ Partida::Partida(std::string mapa)
     this->world.SetContactListener(&this->colisiones);
 
 
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(43.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(43.0f, 20.0f));
 }
 
 //Esto tendria que estar en el YAML?
@@ -153,7 +153,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
 
-        std::pair<coordX, coordY> coordsIniciales(5.0f,20.0f);
+        std::pair<coordX, coordY> coordsIniciales(5.0f,30.0f);
       
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
