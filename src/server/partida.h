@@ -18,18 +18,20 @@
 
 #define MINJUGADORES 1
 
-enum class TipoEntidad { GUSANO, VIGA, ARMA };
+enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
 // Este struct se usa para asociar facilmente un body de box2d a
 // alguna de nuestras clases. En teoria se podria usar solo el puntero,
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
 // lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
+
 struct Entidad {
     TipoEntidad tipo;
     union {
         Gusano *gusano;
         // Viga *viga;
-        Arma *arma;
+        // Arma *arma;
+        b2Vec2 *proyectil;
     };
 };
 

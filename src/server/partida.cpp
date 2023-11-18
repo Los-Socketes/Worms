@@ -49,27 +49,19 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-    if (cuerpoB->IsBullet() == true
+    if (entidadB->tipo == TipoEntidad::PROYECTIL
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
         printf("A\n");
         // abort();
     }
 
-    if (cuerpoA->IsBullet() == true
+    if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         printf("B\n");
         // abort();
     }
-    if (cuerpoA->IsBullet() == true
-        ||
-        cuerpoB->IsBullet() == true) {
-        printf("CHAU\n");
-    
-        return;
-    }
-
 
     else if(entidadA->tipo == TipoEntidad::VIGA
         &&
@@ -100,25 +92,18 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-    if (cuerpoB->IsBullet() == true
+    if (entidadB->tipo == TipoEntidad::PROYECTIL
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
         printf("A\n");
         // abort();
     }
 
-    if (cuerpoA->IsBullet() == true
+    if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         printf("B\n");
         // abort();
-    }
-    if (cuerpoA->IsBullet() == true
-        ||
-        cuerpoB->IsBullet() == true) {
-        printf("CHAU\n");
-    
-        return;
     }
 
     if(entidadA->tipo == TipoEntidad::VIGA
@@ -396,6 +381,8 @@ void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
 	  printf("KATAPUM\n");
         int numRays = 32;
         for (int i = 0; i < numRays; i++) {
+	  Entidad *nuevaEntidad = new Entidad;
+	  nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
 	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
 	  b2Vec2 rayDir( sinf(angle), cosf(angle) );
 
@@ -405,6 +392,7 @@ void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
 	  bd.bullet = true; // prevent tunneling at high speed
 	  // bd.linearDamping = 10; // drag due to moving through air
 	  bd.gravityScale = 0; // ignore gravity
+	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 	  // bd.position = center; // start at blast center
 	  std::pair<coordX, coordY> coordsCoords = gusano->getCoords();
 	  coordsCoords.enY += 4;
