@@ -294,7 +294,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
-void Partida::darArmaA(Gusano *gusano, ArmaDeseada arma) {
+void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -424,7 +424,7 @@ void Partida::gameLoop() {
         ArmaDeseada armaQueQuiere;
         armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
 
-        this->darArmaA(gusanoActual, armaQueQuiere);
+        this->crearProjectil(gusanoActual, armaQueQuiere);
 
 
 
