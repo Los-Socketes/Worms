@@ -332,24 +332,6 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 	  accionAEjecutar.accion = ESTAQUIETO;
        }
 
-       //WARNING Debug
-       // switch (accionAEjecutar.accion) {
-       // case ESTAQUIETO:
-       // 	 std::cout << "Quieto" << "\n";
-       // 	 break;
-       // case MOVERSE:
-       // 	 std::cout << "Moverse" << "\n";
-       // 	 break;
-       // case EQUIPARSE:
-       // 	 std::cout << "Equiparse" << "\n";
-       // 	 break;
-       // case PREPARAR:
-       // 	 std::cout << "Preparar" << "\n";
-       // 	 break;
-       // case ATAQUE:
-       // 	 std::cout << "Ataque" << "\n";
-       // 	 break;
-       // }
 
        return accionAEjecutar;
 }
@@ -427,36 +409,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, int countdown) {
 	  body->CreateFixture( &fd );
         }
     }
-    
       
-    // DireccionGusano dondeMira;
-    // dondeMira = gusano->getDondeMira();
-    // coordX offset = 0;
-    // if (dondeMira == DERECHA)
-    //     offset = TAMANOGUSANO;
-    // else
-    //     offset = -TAMANOGUSANO;
-    // coords.enX += offset;
-
-    // std::cout << "Le doy el arma\n";
-
-    // b2BodyDef bodyDef;
-    // bodyDef.type = b2_dynamicBody;
-    // bodyDef.position.Set(coords.enX, coords.enY);
-    // bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-    // b2Body* body = world.CreateBody(&bodyDef);
-
-    // b2PolygonShape dynamicBox;
-    // dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    // b2FixtureDef fixtureDef;
-    // fixtureDef.shape = &dynamicBox;
-    // fixtureDef.density = 1.0f;
-    // fixtureDef.friction = 0.3f;
-
-    // body->CreateFixture(&fixtureDef);
-
-    
 }
 
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
