@@ -3,9 +3,12 @@
 
 #include <box2d/box2d.h>
 #include "defs.h"
+#include "arma.h"
+#include "box2dDefs.h"
 
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
+
 
 
 class Gusano {
@@ -17,6 +20,7 @@ private:
 
     //Arma armaequipada;
     ArmaProtocolo armaEquipada;
+    Arma armaSeleccionada;
 
     EstadoGusano estado;
 
@@ -36,6 +40,13 @@ public:
 
     void giveGun(ArmaProtocolo arma);
 
+    void teletransportarse();
+
+    void preparar(Accion& accion);
+
+    //TODO: Esta funcion recibe el arma o tipo de dano
+    void recibirDano();
+
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
     //WARNING: Esta funcion tiene que se ser llamada CERCA, sino AL
@@ -53,7 +64,7 @@ public:
 
     [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
 
-    [[nodiscard]] DireccionGusano getDondeMira();
+    [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
 };
 
 #endif

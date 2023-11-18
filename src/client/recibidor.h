@@ -8,19 +8,25 @@
 #include "thread.h"
 #include "queue.h"
 #include "protocolo.h"
+#include "defs.h"
 
 class Recibidor: public Thread {
 private:
     Protocolo& protocolo;
-    Queue<EstadoDelJuego>& recepcion_estados;
-    EstadoDelJuego estado_juego;
+    Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados;
+    std::shared_ptr<EstadoDelJuego> estado_juego;
     std::atomic<bool> cont;
+    idJugador id_jugador;
+    std::atomic<bool>& es_turno;
 
 public:
-    Recibidor(Protocolo& protocolo, Queue<EstadoDelJuego>& recepcion_estados);
+    Recibidor(Protocolo& protocolo, Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados, std::atomic<bool>& es_turno);
 
     // Hilo que se encarga de recibir los estados del juego.
     void run() override;
+
+    // Setea el id del jugador.
+    void setIdJugador(id id_jugador);
 
     // Para cerrar el hilo.
     void stop() override;

@@ -23,14 +23,24 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     return idPartidaNueva;
 }
 
-idJugador MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
+InformacionInicial MonitorPartida::obtenerInfoInicialDePartida(id partidaEspecifica) {
     Partida *partidaRecibidora;
     partidaRecibidora = this->mapa.at(partidaEspecifica);
 
-    idJugador nuevoJugdor;
-    nuevoJugdor = partidaRecibidora->anadirCliente(nuevoCliente);
+    InformacionInicial infoInicial;
+    infoInicial = partidaRecibidora->obtenerInfoInicial();
 
-    return nuevoJugdor;
+
+    return infoInicial;
+}
+
+void MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspecifica) {
+    Partida *partidaRecibidora;
+    partidaRecibidora = this->mapa.at(partidaEspecifica);
+
+    // InformacionInicial infoInicial;
+    // infoInicial = partidaRecibidora->anadirCliente(nuevoCliente);
+    partidaRecibidora->anadirCliente(nuevoCliente);
 }
 
 std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {

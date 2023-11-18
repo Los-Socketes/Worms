@@ -19,7 +19,7 @@ public:
 
     void obtenerAccesoAAcciones(Queue<Accion>* acciones);
 
-    void enviarEstadoJuego(EstadoDelJuego estado);
+    void enviarEstadoJuego(std::shared_ptr<EstadoDelJuego> estado);
 
     bool estaMuerto();
 

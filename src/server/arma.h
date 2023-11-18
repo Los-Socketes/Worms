@@ -37,6 +37,7 @@ private:
     Danio danioFragmento;
     float potencia;
     int cuentaRegresiva;
+    std::pair<coordX, coordY> coordenadasTeletransporte;
 
     float angulo;
 
@@ -64,10 +65,12 @@ public:
     void setCuentaRegresiva(int cuentaRegresiva);
 
     // Esto no es atacar, es un actualizar valores
-    bool usar();
+    // bool usar();
 
     RepresentacionArma getRepresentacion();
 
+    std::pair<coordX, coordY> getCoordenadasTeletransporte();
+    void setCoordenadasTeletransporte(std::pair<coordX, coordY> coordenadas);
     // TODO: hacer todo el cpp y revisar la estructura
     // (esta horrible, lo se)
 

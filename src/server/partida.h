@@ -44,12 +44,21 @@ public:
     // void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 };
 
+class ResolvedorQuery : public b2QueryCallback {
+public:
+    std::vector<b2Body*> foundBodies;
+      
+    bool ReportFixture(b2Fixture* fixture);
+};
+
 class Partida : public Thread {
     Queue<Accion> acciones;
 
     //World de box2d de la partida
     b2World world;
     ResolvedorColisiones colisiones;
+    // ResolvedorQuery query;
+    ResolvedorQuery query;
 
     std::string mapa;
 
@@ -75,7 +84,9 @@ class Partida : public Thread {
 public:
     Partida(const std::string mapa);
 
-    [[nodiscard]] idJugador anadirCliente(Cliente *clienteNuevo);
+    [[nodiscard]] InformacionInicial obtenerInfoInicial();
+
+    void anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
 };

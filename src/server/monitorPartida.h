@@ -20,7 +20,9 @@ public:
 
     [[nodiscard]] id anadirPartida(std::string mapaNombre);
 
-    [[nodiscard]] idJugador anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+    void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
+
+    [[nodiscard]] InformacionInicial obtenerInfoInicialDePartida(id partidaEspecifica);
 
     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 

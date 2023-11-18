@@ -9,7 +9,9 @@ enum TipoComando{
     SALIR,
     MOVER_CAMARA,
     TOGGLE_CAMARA,
-    TAMANIO_VENTANA
+    TAMANIO_VENTANA,
+    ARRIBA,
+    ABAJO
 };
 
 struct Comando{
@@ -21,39 +23,54 @@ struct Comando{
     Comando(TipoComando tipo, int p1, int p2) : tipo(tipo), parametros(p1,p2) {}
 };
 
-class AccionCliente{
-    public:
-        virtual void enviar(Protocolo& protocolo) = 0;
-        virtual ~AccionCliente() = default;
+class AccionCliente {
+ public:
+    virtual void enviar(Protocolo& protocolo) = 0;
+    virtual ~AccionCliente() = default;
 };
 
 class AccionMoverGusano : public AccionCliente {
-    private:
-        int id_gusano;
-        Direccion direccion;
-    public:
-        AccionMoverGusano(int id_gusano, Direccion direccion);
-        void enviar(Protocolo& protocolo) override;
-        ~AccionMoverGusano() override = default;
+ private:
+    Direccion direccion;
+ public:
+    AccionMoverGusano(Direccion direccion);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionMoverGusano() override = default;
+};
+
+class AccionCambiarAngulo : public AccionCliente {
+ private:
+    radianes angulo;
+ public:
+    AccionCambiarAngulo(radianes angulo);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarAngulo() override = default;
+};
+
+class AccionCambiarCoordenadas : public AccionCliente {
+ private:
+    coordX x;
+    coordY y;
+ public:
+    AccionCambiarCoordenadas(coordX x, coordY y);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarCoordenadas() override = default;
 };
 
 class AccionDisparar : public AccionCliente {
-    private:
-        int id_gusano;
-    public:
-        AccionDisparar(int id_gusano);
-        void enviar(Protocolo& protocolo) override;
-        ~AccionDisparar() override = default;
+ public:
+    AccionDisparar();
+    void enviar(Protocolo& protocolo) override;
+    ~AccionDisparar() override = default;
 };
 
 class AccionEquiparArma : public AccionCliente {
-    private:
-        int id_gusano;
-        ArmaProtocolo arma;
-    public:
-        AccionEquiparArma(int id_gusano, ArmaProtocolo arma);
-        void enviar(Protocolo& protocolo) override;
-        ~AccionEquiparArma() override = default;
+ private:
+    ArmaProtocolo arma;
+ public:
+    AccionEquiparArma(ArmaProtocolo arma);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionEquiparArma() override = default;
 };
 
 

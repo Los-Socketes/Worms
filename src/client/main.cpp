@@ -25,10 +25,9 @@ int main(int argc, char* argv[]) {
 
         // Inicializo el cliente.
         Cliente cliente(std::move(socket));
-        bool continuar = true;
-        continuar = cliente.ejecutar_menu();
-        if (continuar) {
-            cliente.loop_principal();
+        InformacionInicial informacion = cliente.ejecutar_menu();
+        if (informacion.jugador != -1) {
+            cliente.loop_principal(informacion);
         }      
     } catch (const std::exception& e) {
         syslog(LOG_CRIT, "[Crit] Error: %s\n", e.what());

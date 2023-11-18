@@ -1,22 +1,37 @@
 #include "accioncliente.h"
 
-AccionMoverGusano::AccionMoverGusano(int id_gusano, Direccion direccion) : 
-    id_gusano(id_gusano), direccion(direccion) {}
+AccionMoverGusano::AccionMoverGusano(Direccion direccion) : 
+    direccion(direccion) {}
 
 void AccionMoverGusano::enviar(Protocolo& protocolo) {
-    protocolo.moverGusano(id_gusano, direccion);
+    protocolo.moverGusano(direccion);
 }
 
-AccionEquiparArma::AccionEquiparArma(int id_gusano, ArmaProtocolo arma) : 
-    id_gusano(id_gusano), arma(arma) {}
+AccionCambiarAngulo::AccionCambiarAngulo(radianes angulo) : 
+    angulo(angulo) {}
+
+void AccionCambiarAngulo::enviar(Protocolo& protocolo) {
+    protocolo.configurarAngulo(angulo);
+}
+
+AccionCambiarCoordenadas::AccionCambiarCoordenadas(coordX x, coordY y) :
+    x(x),
+    y(y) {}
+
+void AccionCambiarCoordenadas::enviar(Protocolo& protocolo) {
+    protocolo.configurarCoordenadas(std::make_pair(x, y));
+}
+
+AccionEquiparArma::AccionEquiparArma(ArmaProtocolo arma) :
+    arma(arma) {}
 
 void AccionEquiparArma::enviar(Protocolo& protocolo) {
-    protocolo.equiparArma(id_gusano, arma);
+    protocolo.equiparArma(arma);
 }
 
-AccionDisparar::AccionDisparar(int id_gusano) : id_gusano(id_gusano) {}
+AccionDisparar::AccionDisparar() {}
 
 void AccionDisparar::enviar(Protocolo& protocolo) {
-    protocolo.atacar(id_gusano);
+    protocolo.atacar();
 }
 

@@ -4,11 +4,7 @@
 
 #include <iostream>
 
-Protocolo::Protocolo(Socket &&socket)
-    : socket(std::move(socket))
-      {
-	this->maxYEnMapa = 100;
-      };
+Protocolo::Protocolo(Socket &&socket) : socket(std::move(socket)) {};
 
 
 void Protocolo::cerrarConexion(int forma) {
@@ -90,14 +86,61 @@ std::vector<id> Protocolo::obtenerVector() {
 }
 
 
-id Protocolo::verificarConexion() {
+InformacionInicial Protocolo::verificarConexion() {
+    InformacionInicial info;
+    info.jugador = INVAL_ID;
     int8_t codigo = obtenerCodigo();
     if (codigo == -1 || codigo == ERROR) {
-        return INVAL_ID;
+        return info;
     }
-    // TODO: quizas ver si no es exito -> tirar excepcion
+    idJugador idEnviada = obtenerId();
+    if (idEnviada == INVAL_ID) {
+        return info;
+    }
 
-    return obtenerId();
+    int16_t cantVigas;
+    bool was_closed = false;
+    socket.recvall(&cantVigas, sizeof(cantVigas), &was_closed);
+    if (was_closed) {
+        return info;
+    }
+    cantVigas = ntohs(cantVigas);
+    std::vector<RepresentacionViga> vigas;
+    for (int16_t i = 0; i < cantVigas; i++) {
+        int32_t angulo;
+        socket.recvall(&angulo, sizeof(angulo), &was_closed);
+        if (was_closed) {
+            return info;
+        }
+        float anguloRecibido = toFloat(ntohl(angulo));
+
+        int32_t largo;
+        socket.recvall(&largo, sizeof(largo), &was_closed);
+        if (was_closed) {
+            return info;
+        }
+        largo = ntohl(largo);
+
+        std::vector<int32_t> posicion(2,0);
+        socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+        if (was_closed) {
+            return info;
+        }
+
+        std::pair<coordX, coordY> posicionRecibida;
+        posicionRecibida.enX = toFloat(ntohl(posicion[0]));
+        posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+
+        RepresentacionViga vigaActual;
+        vigaActual.angulo = anguloRecibido;
+        vigaActual.longitud = largo;
+        vigaActual.posicionInicial = posicionRecibida;
+        vigas.push_back(vigaActual);
+    } 
+    info.jugador = idEnviada;
+    info.vigas = vigas;
+    return info;
+
 }
 
 
@@ -175,44 +218,41 @@ std::vector<id> Protocolo::obtenerPartidas() {
 }
 
 
-id Protocolo::crearPartida(id mapaSeleccionado) {
+InformacionInicial Protocolo::crearPartida(id mapaSeleccionado) {
+    InformacionInicial error;
+    error.jugador = -1;
     bool is_open = enviarCodigo(CREAR);
     if (!is_open) {
-        return INVAL_ID;
+        return error;
     }
 
     is_open = enviarId(mapaSeleccionado);
     if (!is_open) {
-        return INVAL_ID;
+        return error;
     }
 
     return verificarConexion();
 }
 
 
-bool Protocolo::unirseAPartida(id idPartida) {
+InformacionInicial Protocolo::unirseAPartida(id idPartida) {
+    InformacionInicial error;
     bool is_open = enviarCodigo(UNIRSE);
     if (!is_open) {
-        return false;
+        return error;
     }
 
     is_open = enviarId(idPartida);
     if (!is_open) {
-        return false;
+        return error;
     }
 
-    id idPartidaUnida = verificarConexion();
-    return !(idPartidaUnida == INVAL_ID);
+    return verificarConexion();
 }
 
 
-bool Protocolo::moverGusano(id gusano, Direccion direccion) {
+bool Protocolo::moverGusano(Direccion direccion) {
     bool is_open = enviarCodigo(MOV);
-    if (!is_open) {
-        return false;
-    }
-
-    is_open = enviarId(gusano);
     if (!is_open) {
         return false;
     }
@@ -227,15 +267,12 @@ bool Protocolo::moverGusano(id gusano, Direccion direccion) {
 }
 
 
-bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
+bool Protocolo::equiparArma(ArmaProtocolo arma) {
     bool is_open = enviarCodigo(EQUIPAR);
     if (!is_open) {
         return false;
     }
-    is_open = enviarId(gusano);
-    if (!is_open) {
-        return false;
-    }
+
     int8_t armaAEnviar = arma;
     bool was_closed = false;
     socket.sendall(&armaAEnviar, sizeof(armaAEnviar), &was_closed);
@@ -243,27 +280,112 @@ bool Protocolo::equiparArma(id gusano, ArmaProtocolo arma) {
 }
 
 
-bool Protocolo::atacar(id idGusano) {
-    bool is_open = enviarCodigo(ATACAR);
+bool Protocolo::atacar() {
+    return enviarCodigo(ATACAR);
+}
+
+
+bool Protocolo::configurarAngulo(float angulo) {
+    bool is_open = enviarCodigo(CALIBRAR);
     if (!is_open) {
         return false;
     }
 
-    return enviarId(idGusano);
+    int8_t tipoConfig = ANGULO; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valor = htonl(toInt(angulo));
+    socket.sendall(&valor, sizeof(valor), &was_closed);
+    return !was_closed;
 }
 
-EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
+
+bool Protocolo::configurarPotencia(float potencia) {
+    bool is_open = enviarCodigo(CALIBRAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = POTENCIA; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valor = htonl(toInt(potencia));
+    socket.sendall(&valor, sizeof(valor), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::configurarCuentaRegresiva(int valor) {
+    bool is_open = enviarCodigo(CALIBRAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = CUENTA_REGRESIVA; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t valorAEnviar = htonl(valor);
+    socket.sendall(&valorAEnviar, sizeof(valorAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
+bool Protocolo::configurarCoordenadas(std::pair<coordX,coordY> coordenadas) {
+    bool is_open = enviarCodigo(CALIBRAR);
+    if (!is_open) {
+        return false;
+    }
+
+    int8_t tipoConfig = COORDENADAS; 
+    bool was_closed = false;
+    socket.sendall(&tipoConfig, sizeof(tipoConfig), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    std::vector<int32_t> posAEnviar;
+    posAEnviar.push_back(htonl((int32_t)toInt(coordenadas.enX)));
+    posAEnviar.push_back(htonl((int32_t)toInt(coordenadas.enY)));
+
+    socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
+    return !was_closed;
+}
+
+
+std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
-    EstadoDelJuego error;
+    std::shared_ptr<EstadoDelJuego> estado = std::make_shared<EstadoDelJuego>();
     if (codigo == -1 || codigo != ESTADO) {
-        return error;
+        return estado;
+    }
+
+    idJugador jugadorDeTurno = obtenerId();
+    if (jugadorDeTurno == INVAL_ID) {
+        return estado;
+    }
+
+    id gusanoDeTurno = obtenerId();
+    if (gusanoDeTurno == INVAL_ID) {
+        return estado;
     }
 
     int16_t cantJugadores;
     bool was_closed = false;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
-        return error;
+        return estado;
     }
     cantJugadores = ntohs(cantJugadores);
 
@@ -271,14 +393,14 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
     for (int16_t i = 0; i < cantJugadores; i++) {
         id idJugador = obtenerId();
         if (idJugador == INVAL_ID) {
-            return error;
+            return estado;
         }
 
         int16_t cantGusanos;
         was_closed = false;
         socket.recvall(&cantGusanos, sizeof(cantGusanos), &was_closed);
         if (was_closed) {
-            return error;
+            return estado;
         }
         cantGusanos = ntohs(cantGusanos);
 
@@ -286,47 +408,144 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
         for (int16_t j = 0; j < cantGusanos; j++) {
             id idGusano = obtenerId();
             if (idJugador == INVAL_ID) {
-                return error;
+                return estado;
             }
 
             uint32_t vida;
             socket.recvall(&vida, sizeof(vida), &was_closed);
             if (was_closed) {
-                return error;
+                return estado;
             }
             vida = ntohl(vida);
 
             std::vector<int32_t> posicion(2,0);
             socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
             if (was_closed) {
-                return error;
+                return estado;
             }
 
             std::pair<coordX, coordY> posicionRecibida;
             posicionRecibida.enX = toFloat(ntohl(posicion[0]));
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
-            posicionRecibida.enY = maxYEnMapa - posicionRecibida.enY;
 
             int8_t estadoGusano;
-            bool was_closed = false;
+            // bool was_closed = false;
             socket.recvall(&estadoGusano, sizeof(estadoGusano), &was_closed);
             if (was_closed) {
-                return error;
+                return estado;
             }
 
             int8_t dir;
             socket.recvall(&dir, sizeof(dir), &was_closed);
             if (was_closed) {
-                return error;
+                return estado;
             }
+
+            int8_t mira;
+            socket.recvall(&mira, sizeof(mira), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int8_t potenciaVariable;
+            socket.recvall(&potenciaVariable, sizeof(potenciaVariable), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int8_t tieneCuentaRegresiva;
+            socket.recvall(&tieneCuentaRegresiva, sizeof(tieneCuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            int32_t municiones;
+            socket.recvall(&municiones, sizeof(municiones), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            municiones = ntohl(municiones);
+
+            int32_t fragmentos;
+            socket.recvall(&fragmentos, sizeof(fragmentos), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            fragmentos = ntohl(fragmentos);
+
+            int32_t danioEpicentro;
+            socket.recvall(&danioEpicentro, sizeof(danioEpicentro), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            danioEpicentro = ntohl(danioEpicentro);
+
+            int32_t danioRadio;
+            socket.recvall(&danioRadio, sizeof(danioRadio), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            danioRadio = ntohl(danioRadio);
+
+            int32_t danioFragEpicentro;
+            int32_t danioFragRadio;
+            if (fragmentos > 0) {
+                socket.recvall(&danioFragEpicentro, sizeof(danioFragEpicentro), &was_closed);
+                if (was_closed) {
+                    return estado;
+                }
+                danioFragEpicentro = ntohl(danioFragEpicentro);
+
+                socket.recvall(&danioFragRadio, sizeof(danioFragRadio), &was_closed);
+                if (was_closed) {
+                    return estado;
+                }
+                danioFragRadio = ntohl(danioFragRadio);
+            }
+            int32_t angulo;
+            socket.recvall(&angulo, sizeof(angulo), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            float anguloRecibido = toFloat(ntohl(angulo));
+
+            int32_t potencia;
+            socket.recvall(&potencia, sizeof(potencia), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            potencia = toFloat(ntohl(potencia));
+
+            int32_t cuentaRegresiva;
+            socket.recvall(&cuentaRegresiva, sizeof(cuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return estado;
+            }
+            cuentaRegresiva = ntohl(cuentaRegresiva);
+
 
             int8_t arma;
             socket.recvall(&arma, sizeof(arma), &was_closed);
             if (was_closed) {
-                return error;
+                return estado;
             }
 
-            // TODO: recibir estado
+
+            RepresentacionArma armaEquipada;
+            armaEquipada.tieneMira = mira;
+            armaEquipada.tienePotenciaVariable = potenciaVariable;
+            armaEquipada.tieneCuentaRegresiva = tieneCuentaRegresiva;
+            armaEquipada.municiones = municiones;
+            armaEquipada.fragmentos = fragmentos;
+
+            armaEquipada.danio.epicentro = danioEpicentro;
+            armaEquipada.danio.radio = danioRadio;
+
+            if (fragmentos > 0) {
+                armaEquipada.danioFragmento.epicentro = danioFragEpicentro;
+                armaEquipada.danioFragmento.radio = danioFragRadio;
+            }
+            armaEquipada.anguloRad = anguloRecibido;
+            armaEquipada.potencia = potencia;
+            armaEquipada.cuentaRegresiva = cuentaRegresiva;
+            armaEquipada.arma = (ArmaProtocolo)arma;
 
             RepresentacionGusano gusanoActual;
             gusanoActual.vida = vida;
@@ -334,7 +553,7 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
             gusanoActual.estado = (EstadoGusano)estadoGusano;
             gusanoActual.dir = (DireccionGusano)dir;
             gusanoActual.posicion = posicionRecibida;
-            gusanoActual.armaEquipada = (ArmaProtocolo)arma;
+            gusanoActual.armaEquipada = armaEquipada;
 
             listaGusanos[j] = gusanoActual;
         }   
@@ -342,15 +561,76 @@ EstadoDelJuego Protocolo::obtenerEstadoDelJuego() {
         gusanos.insert({idJugador, listaGusanos});
         
     }
+
+    int16_t cantProyectiles;
+    socket.recvall(&cantProyectiles, sizeof(cantProyectiles), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    cantProyectiles = ntohs(cantProyectiles);
+
+    std::vector<RepresentacionProyectil> proyectiles;
+    for (int i = 0; i < cantProyectiles; i++) {
+        int8_t tipoProyectil;
+        socket.recvall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        int8_t esFragmento;
+        socket.recvall(&esFragmento, sizeof(esFragmento), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        std::vector<int32_t> posicionProyectiles(2,0);
+        socket.recvall(posicionProyectiles.data(), sizeof(int32_t)*2, &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+
+        std::pair<coordX, coordY> posicionRecibidaProy;
+        posicionRecibidaProy.enX = toFloat(ntohl(posicionProyectiles[0]));
+        posicionRecibidaProy.enY = toFloat(ntohl(posicionProyectiles[1]));
+
+        int32_t anguloProyectos;
+        socket.recvall(&anguloProyectos, sizeof(anguloProyectos), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        float anguloRecibidoProy = toFloat(ntohl(anguloProyectos));
+
+        int32_t cuentaRegresivaProy;
+        socket.recvall(&cuentaRegresivaProy, sizeof(cuentaRegresivaProy), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        cuentaRegresivaProy = ntohl(cuentaRegresivaProy);
+
+        int8_t exploto;
+        socket.recvall(&exploto, sizeof(exploto), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        RepresentacionProyectil proyectil;
+        proyectil.proyectil = (ArmaProtocolo)tipoProyectil;
+        proyectil.esFragmento = esFragmento;
+        proyectil.posicion = posicionRecibidaProy;
+        proyectil.angulo = anguloRecibidoProy;
+        proyectil.cuentaRegresiva = cuentaRegresivaProy;
+        proyectil.exploto = exploto;
+
+        proyectiles.push_back(proyectil);
+    }
     
-    EstadoDelJuego estado;
-    estado.gusanos = gusanos;
+    estado->gusanos = gusanos;
+    estado->proyectiles = proyectiles;
+    estado->jugadorDeTurno = jugadorDeTurno;
+    estado->gusanoDeTurno = gusanoDeTurno;
+
     return estado;
 }
 
-void Protocolo::setMaxY(int y) {
-    this->maxYEnMapa = y;
-}
 //Endif de la macro de CLIENT
 #endif
 
@@ -442,13 +722,49 @@ id Protocolo::obtenerPartidaDeseada() {
 }
 
 
-bool Protocolo::enviarConfirmacion(id idPartida) {
+bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
     bool is_open = enviarCodigo(EXITO);
     if (!is_open) {
         return false;
     }
 
-    return enviarId(idPartida);
+    is_open = enviarId(informacion.jugador);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarCantidad(informacion.vigas.size());
+    if (!is_open) {
+        return false;
+    }
+
+    for (auto &&viga : informacion.vigas) {
+        // angulo
+        bool was_closed = false;
+        int32_t angulo = htonl(toInt(viga.angulo));
+        socket.sendall(&angulo, sizeof(angulo), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        // largo
+        int32_t largo = htonl(viga.longitud);
+        socket.sendall(&largo, sizeof(largo), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+        //posicion
+        std::vector<int32_t> posAEnviar;
+        posAEnviar.push_back(htonl((int32_t)toInt(viga.posicionInicial.enX)));
+        posAEnviar.push_back(htonl((int32_t)toInt(viga.posicionInicial.enY)));
+
+        socket.sendall(posAEnviar.data(), sizeof(int32_t)*posAEnviar.size(), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+    }
+
+    return true;
+    
 }
 
 
@@ -459,17 +775,14 @@ bool Protocolo::enviarError() {
 
 Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
+    bool was_closed = false;
     Accion accion;
-    if (codigo != MOV && codigo != ATACAR && codigo != EQUIPAR) {
+    if (codigo != MOV && codigo != ATACAR && 
+        codigo != EQUIPAR && codigo != CALIBRAR) {
         return accion;
     }
 
-    id idGusano = obtenerId();
-    if (idGusano == INVAL_ID) {
-        return accion;
-    }
     if (codigo == EQUIPAR) {
-        bool was_closed = false;
         int8_t arma;
         socket.recvall(&arma, sizeof(arma), &was_closed);
         if (was_closed) {
@@ -477,17 +790,58 @@ Accion Protocolo::obtenerAccion() {
         }
 
         accion.accion = EQUIPARSE;
-        accion.idGusano = idGusano;
         accion.armaAEquipar = (ArmaProtocolo)arma;
         return accion;
     }
 
     if (codigo == ATACAR) {
         accion.accion = ATAQUE;
-        accion.idGusano = idGusano;
         return accion;
     }
-    bool was_closed = false;
+
+    if (codigo == CALIBRAR) {
+        int8_t valorAConfigurar;
+        socket.recvall(&valorAConfigurar, sizeof(valorAConfigurar), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
+        Configuracion config;
+        config.caracteristica = (ValorAConfigurar)valorAConfigurar;
+        if (config.caracteristica == COORDENADAS) {
+            std::vector<int32_t> posicion(2,0);
+            socket.recvall(posicion.data(), sizeof(int32_t)*2, &was_closed);
+            if (was_closed) {
+                return accion;
+            }
+
+            std::pair<coordX, coordY> posicionRecibida;
+            posicionRecibida.enX = toFloat(ntohl(posicion[0]));
+            posicionRecibida.enY = toFloat(ntohl(posicion[1]));
+            config.coordenadas = posicionRecibida;
+        } else {
+            int32_t valor;
+            socket.recvall(&valor, sizeof(valor), &was_closed);
+            if (was_closed) {
+                return accion;
+            }
+            valor = ntohl(valor);
+            
+            if (config.caracteristica == POTENCIA) {
+                config.potencia = toFloat(valor);
+            } else if (config.caracteristica == ANGULO) {
+                config.angulo = toFloat(valor);
+            } else {
+                config.cuentaRegresiva = valor;
+            }
+        }
+
+        accion.accion = PREPARAR;
+        accion.configARealizar = config;
+        return accion;
+        
+    }
+    // caso de moverse
+    
     int8_t dir;
     socket.recvall(&dir, sizeof(dir), &was_closed);
     if (was_closed) {
@@ -496,26 +850,36 @@ Accion Protocolo::obtenerAccion() {
 
     // TODO: ampliar a los otros tipos de accion
     accion.accion = MOVERSE;
-    accion.idGusano = idGusano;
     accion.dir = (Direccion)dir;
     return accion;
 }
 
 
 // se manda ESCENARIO+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
-bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
+bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     bool is_open = enviarCodigo(ESTADO);
     if (!is_open) {
         return false;
     }
-    int cant = estado.gusanos.size();
-    //envio cantJugadores
-    is_open = enviarCantidad(cant);
+
+    is_open = enviarId(estado->jugadorDeTurno);
     if (!is_open) {
         return false;
     }
 
-    for (auto const& [idJugador, listaGusanos] : estado.gusanos) {
+    is_open = enviarId(estado->gusanoDeTurno);
+    if (!is_open) {
+        return false;
+    }
+    
+    //envio cantJugadores
+    int cant = estado->gusanos.size();
+    is_open = enviarCantidad(cant);
+    if (!is_open) {
+        return false;
+    }
+    bool was_closed = false;
+    for (auto const& [idJugador, listaGusanos] : estado->gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
         if (!is_open) {
@@ -538,7 +902,6 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
             }
             
             // envio vida del gusano
-            bool was_closed = false;
             uint32_t vida = htonl((uint32_t)gusano.vida);
             socket.sendall(&vida, sizeof(vida), &was_closed);
             if (was_closed) {
@@ -569,14 +932,128 @@ bool Protocolo::enviarEstadoDelJuego(EstadoDelJuego estado) {
                 return false;
             }
 
-            int8_t arma = gusano.armaEquipada;
+            // envio datos de arma
+            RepresentacionArma armaEquipada = gusano.armaEquipada;
+            int8_t mira = armaEquipada.tieneMira;
+            socket.sendall(&mira, sizeof(mira), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int8_t potenciaVariable = armaEquipada.tienePotenciaVariable;
+            socket.sendall(&potenciaVariable, sizeof(potenciaVariable), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int8_t tieneCuentaRegresiva = armaEquipada.tieneCuentaRegresiva;
+            socket.sendall(&tieneCuentaRegresiva, sizeof(tieneCuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t municiones = htonl(armaEquipada.municiones);
+            socket.sendall(&municiones, sizeof(municiones), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t fragmentos = htonl(armaEquipada.fragmentos);
+            socket.sendall(&fragmentos, sizeof(fragmentos), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t danioEpicentro = htonl(armaEquipada.danio.epicentro);
+            socket.sendall(&danioEpicentro, sizeof(danioEpicentro), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t danioRadio = htonl(armaEquipada.danio.radio);
+            socket.sendall(&danioRadio, sizeof(danioRadio), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            if (fragmentos > 0) {
+                int32_t danioFragEpicentro = htonl(armaEquipada.danioFragmento.epicentro);
+                socket.sendall(&danioFragEpicentro, sizeof(danioFragEpicentro), &was_closed);
+                if (was_closed) {
+                    return false;
+                }
+                int32_t danioFragRadio = htonl(armaEquipada.danioFragmento.radio);
+                socket.sendall(&danioFragRadio, sizeof(danioFragRadio), &was_closed);
+                if (was_closed) {
+                    return false;
+                }
+            }
+
+            int32_t angulo = htonl(toInt(armaEquipada.anguloRad));
+            socket.sendall(&angulo, sizeof(angulo), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+            int32_t potencia = htonl(toInt(armaEquipada.potencia));
+            socket.sendall(&potencia, sizeof(potencia), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            int32_t cuentaRegresiva = htonl(armaEquipada.cuentaRegresiva);
+            socket.sendall(&cuentaRegresiva, sizeof(cuentaRegresiva), &was_closed);
+            if (was_closed) {
+                return false;
+            }
+
+            int8_t arma = armaEquipada.arma;
             socket.sendall(&arma, sizeof(arma), &was_closed);
             if (was_closed) {
                 return false;
             }
+        }  
+    }
+    
+
+    // envio proyectiles
+    is_open = enviarCantidad(estado->proyectiles.size());
+    if (!is_open) {
+        return false;
+    }
+
+    for (auto &&proyectil : estado->proyectiles) {
+        int8_t tipoProyectil = proyectil.proyectil;
+        socket.sendall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
+        if (was_closed) {
+            return false;
         }
-        
-        
+
+        int8_t esFragmento = proyectil.esFragmento;
+        socket.sendall(&esFragmento, sizeof(esFragmento), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        std::vector<int32_t> posProyectil;
+        posProyectil.push_back(htonl((int32_t)toInt(proyectil.posicion.enX)));
+        posProyectil.push_back(htonl((int32_t)toInt(proyectil.posicion.enY)));
+
+        socket.sendall(posProyectil.data(), sizeof(int32_t)*posProyectil.size(), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int32_t anguloProyectil = htonl(toInt(proyectil.angulo));
+        socket.sendall(&anguloProyectil, sizeof(anguloProyectil), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int32_t cuentaRegProyectil = htonl(proyectil.cuentaRegresiva);
+        socket.sendall(&cuentaRegProyectil, sizeof(cuentaRegProyectil), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t exploto = proyectil.exploto;
+        socket.sendall(&exploto, sizeof(exploto), &was_closed);
+        if (was_closed) {
+            return false;
+        }
     }
     
 
