@@ -160,7 +160,10 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
-ArmaDeseada Gusano::ejecutar(Accion accion) {
+Ataque Gusano::ejecutar(Accion accion) {
+    Ataque ataqueARealizar;
+    b2Vec2 posicion; //Posicion donde se va a realizar el ataque
+    int tiempoEspera; //Delay
     ArmaDeseada armaQueQuiero;
 
     tipoAccion accionDeseada;
@@ -168,23 +171,27 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
     switch (accionDeseada) {
     case ESTAQUIETO:
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
     case MOVERSE:
         {
-        // std::pair<coordX, coordY> coordsIniciales;
-        // this->cuerpo.SetLinearVelocity;
-        
-        // b2Vec2 fuerzamovimiento(100.0f, 0.0f);
-        // b2Vec2 fuerzamovimiento;
         Direccion direccionDeseada;
         direccionDeseada = accion.dir;
-        // fuerzamovimiento =
         // WARNING: Aca se ejecuta el movimiento
         realizarMovimiento(direccionDeseada);
 
-        // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
-
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
         }
     case EQUIPARSE: 
@@ -197,24 +204,49 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         Arma armaSeleccionada(armaElegida);
         this->armaSeleccionada = armaSeleccionada;
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
+
         break;
         }
     case PREPARAR:
         std::cout << "PREPARAR\n";
         this->preparar(accion);
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        // else if(armaEquipada == DINAMITA_P) {
+        // 	  tiempoEspera = 99;
+        // }
+        tiempoEspera = 99;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
     case ATAQUE:
+        tiempoEspera = 0;
         if (armaEquipada == TELETRANSPORTACION_P)  
 	  this->teletransportarse();
+
         armaQueQuiero = this->armaEquipada;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        tiempoEspera = 99;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
         std::cout << "ATACO\n";
         break;
     }
 
 
-    return armaQueQuiero;
+    return ataqueARealizar;
     
 
 }

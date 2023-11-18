@@ -86,7 +86,7 @@ class Partida : public Thread {
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
-    void crearProjectil(Gusano *gusano, ArmaDeseada arma);
+    void crearProjectil(Gusano *gusano, Ataque ataque, int countdown);
 
 public:
     Partida(const std::string mapa);

@@ -10,6 +10,12 @@
 #define ArmaDeseada ArmaProtocolo
 
 
+struct Ataque {
+    b2Vec2 posicion;
+    int tiempoEspera;
+    ArmaDeseada arma;
+};
+
 
 class Gusano {
 private:
@@ -26,6 +32,7 @@ private:
 
     //Conceptos de b2box
     b2Body* cuerpo;
+    // int tiempoEspera;
 
     void setDireccion(DireccionGusano nuevaDireccion);
 
@@ -56,7 +63,7 @@ public:
 
     void setEstado(EstadoGusano nuevoEstado);
 
-    [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
+    [[nodiscard]] Ataque ejecutar(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 

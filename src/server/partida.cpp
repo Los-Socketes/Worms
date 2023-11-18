@@ -4,6 +4,8 @@
 
 #define SLEEPSEGS 1
 
+int esperar = 0;
+
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 // Fuente: https://www.iforce2d.net/b2dtut/explosions
@@ -322,6 +324,9 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 	      ) {
 	  accionAEjecutar = ultimaAccion;
        }
+       else if (tipoUltimaAccion == ATAQUE) {
+	 accionAEjecutar = ultimaAccion;
+       }
        else {
 	  // accionAEjecutar = ultimaAccion;
 	  accionAEjecutar.accion = ESTAQUIETO;
@@ -349,7 +354,9 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
-void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
+void Partida::crearProjectil(Gusano *gusano, Ataque ataque, int countdown) {
+    ArmaDeseada arma;
+    arma = ataque.arma;
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -380,8 +387,11 @@ void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
         }
     }
 
-    else if (arma == GRANADA_VERDE_P) {
-	  printf("KATAPUM\n");
+    else if (arma == DINAMITA_P) {
+        if (countdown > 0)
+	  return;
+
+        printf("KATAPUM\n");
         int numRays = 32;
         for (int i = 0; i < numRays; i++) {
 	  Entidad *nuevaEntidad = new Entidad;
@@ -501,6 +511,8 @@ void Partida::gameLoop() {
     // abort();
 
     Accion ultimaAccion;
+    bool exploto = false;
+    int countdown = 0;
 
     while (true) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
@@ -516,10 +528,20 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        ArmaDeseada armaQueQuiere;
-        armaQueQuiere = gusanoActual->ejecutar(accionAEjecutar);
+        Ataque ataqueARealizar;
+        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
-        this->crearProjectil(gusanoActual, armaQueQuiere);
+        if (countdown == 0)
+	  countdown = ataqueARealizar.tiempoEspera;
+        else {
+	  countdown -= 1;
+	  ataqueARealizar.arma = DINAMITA_P;
+        }
+
+
+        this->crearProjectil(gusanoActual, ataqueARealizar, countdown);
+
+        std::cout << countdown << "\n";
 
 
 
@@ -528,18 +550,6 @@ void Partida::gameLoop() {
         printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
 
 
-        // b2Vec2 position = body->GetPosition();
-        // printf("Otro: %4.2f %4.2f \n", position.x, position.y);
-
-
-
-
-        // std::pair<cambioX, cambioY> cambioDeseado = gusanoActual->cambio(accionAEjecutar);
-
-        // std::pair<coordX, coordY> coordenadasIniciales = gusanoActual->getCoords();
-        // std::pair<coordX, coordY> coordenadasFinales;
-        // coordenadasFinales.first = coordenadasIniciales.first + cambioDeseado.first;
-        // coordenadasFinales.second = coordenadasIniciales.second + cambioDeseado.second;
 
         std::this_thread::sleep_for(frameDuration);
     }
