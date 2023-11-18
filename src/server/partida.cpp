@@ -477,38 +477,6 @@ void Partida::gameLoop() {
     jugadorActual = this->jugadores.at(0);
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
-    // for (int32 i = 0; i < 600; ++i)
-    // {
-    //     world.Step(timeStep, velocityIterations, positionIterations);
-    //     // b2Vec2 position = body->GetPosition();
-    //     // float angle = body->GetAngle();
-    //     // printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-    //     std::pair<coordX, coordY> coords;
-    //     coords = gusanoActual->getCoords();
-    //     printf("%4.2f %4.2f \n", coords.enX, coords.enY);
-    //     this->enviarEstadoAJugadores();
-
-    //     std::this_thread::sleep_for(frameDuration);
-    // }
-
-
-    //WARNING: Creamos esto para testear las colisiones
-    // b2BodyDef bodyDef;
-    // bodyDef.type = b2_dynamicBody;
-    // bodyDef.position.Set(0.0f, 110.0f);
-    // b2Body* body = world.CreateBody(&bodyDef);
-
-    // b2PolygonShape dynamicBox;
-    // dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    // b2FixtureDef fixtureDef;
-    // fixtureDef.shape = &dynamicBox;
-    // fixtureDef.density = 1.0f;
-    // fixtureDef.friction = 0.3f;
-
-    // body->CreateFixture(&fixtureDef);
-    
-    // abort();
 
     Accion ultimaAccion;
     bool exploto = false;
