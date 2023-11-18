@@ -20,6 +20,8 @@
 #define FUERZAGRAVITARIAX 0.0f
 #define FUERZAGRAVITARIAY -20.0f
 
+#define DEGTORAD 0.0174532925199432957f
+
 #define ANCHOVIGA 0.8f
 // es entero para que no rompa
 // Juampi: Lo vuelvo a poner en 6, 14 me parece mucho. Se van a

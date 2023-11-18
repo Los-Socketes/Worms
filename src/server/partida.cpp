@@ -42,18 +42,48 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
+    // if (contact->GetFixtureA()->GetShape() == b2Contact)
+    //     abort();
+
+
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-    if(entidadA->tipo == TipoEntidad::VIGA) {
+    if (cuerpoB->IsBullet() == true
+        &&
+        entidadA->tipo == TipoEntidad::GUSANO) {
+        printf("A\n");
+        // abort();
+    }
+
+    if (cuerpoA->IsBullet() == true
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
+        printf("B\n");
+        // abort();
+    }
+    if (cuerpoA->IsBullet() == true
+        ||
+        cuerpoB->IsBullet() == true) {
+        printf("CHAU\n");
+    
+        return;
+    }
+
+
+    else if(entidadA->tipo == TipoEntidad::VIGA
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
         entidadB->gusano->setEstado(QUIETO);
     }
 
-    if(entidadB->tipo == TipoEntidad::VIGA) {
+    else if(entidadB->tipo == TipoEntidad::VIGA 
+        &&
+        entidadA->tipo == TipoEntidad::GUSANO) {
         entidadA->gusano->setEstado(QUIETO);
     }
 
-    if (entidadA->tipo == TipoEntidad::GUSANO
+    else if (entidadA->tipo == TipoEntidad::GUSANO
         &&
         entidadB->tipo == TipoEntidad::ARMA) {
 
@@ -70,11 +100,36 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
 
-    if(entidadA->tipo == TipoEntidad::VIGA) {
+    if (cuerpoB->IsBullet() == true
+        &&
+        entidadA->tipo == TipoEntidad::GUSANO) {
+        printf("A\n");
+        // abort();
+    }
+
+    if (cuerpoA->IsBullet() == true
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
+        printf("B\n");
+        // abort();
+    }
+    if (cuerpoA->IsBullet() == true
+        ||
+        cuerpoB->IsBullet() == true) {
+        printf("CHAU\n");
+    
+        return;
+    }
+
+    if(entidadA->tipo == TipoEntidad::VIGA
+       &&
+       entidadB->tipo == TipoEntidad::GUSANO) {
         entidadB->gusano->setEstado(CAYENDO);
     }
 
-    if(entidadB->tipo == TipoEntidad::VIGA) {
+    if(entidadB->tipo == TipoEntidad::VIGA
+       &&
+       entidadA->tipo == TipoEntidad::GUSANO) {
         entidadA->gusano->setEstado(CAYENDO);
     }
     std::cout << "FIN CONTACTO\n";
@@ -314,26 +369,62 @@ void Partida::crearProjectil(Gusano *gusano, ArmaDeseada arma) {
     // nuevaEntidad->tipo = TipoEntidad::ARMA;
     // Arma *nuevaArma = new Arma();
     // nuevaEntidad->arma = nuevaArma;
+    else if (arma == BATE_P) {
+        std::pair<inicioCaja, finCaja> coordsGolpe;
+        coordsGolpe = gusano->getAreaGolpe();
 
-    std::pair<inicioCaja, finCaja> coordsGolpe;
-    coordsGolpe = gusano->getAreaGolpe();
+        ResolvedorQuery query;
+        b2AABB aabb;
+        aabb.lowerBound = coordsGolpe.inicio;
+        aabb.upperBound = coordsGolpe.fin;
+        this->world.QueryAABB( &query, aabb );
 
-    ResolvedorQuery query;
-    b2AABB aabb;
-    aabb.lowerBound = coordsGolpe.inicio;
-    aabb.upperBound = coordsGolpe.fin;
-    this->world.QueryAABB( &query, aabb );
+        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+	  b2Body* cuerpoA = query.foundBodies[i];
+	  if (cuerpoA->GetType() == b2_staticBody)
+	      continue;
 
-    for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-        b2Body* cuerpoA = query.foundBodies[i];
-        if (cuerpoA->GetType() == b2_staticBody)
-	  continue;
-        
-        Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-        entidadA->gusano->recibirDano();
-        
-        // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
-        printf("PEGO\n");
+	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+	  entidadA->gusano->recibirDano();
+
+	  // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+	  printf("PEGO\n");
+        }
+    }
+
+    else if (arma == GRANADA_VERDE_P) {
+	  printf("KATAPUM\n");
+        int numRays = 32;
+        for (int i = 0; i < numRays; i++) {
+	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
+	  b2Vec2 rayDir( sinf(angle), cosf(angle) );
+
+	  b2BodyDef bd;
+	  bd.type = b2_dynamicBody;
+	  bd.fixedRotation = true; // rotation not necessary
+	  bd.bullet = true; // prevent tunneling at high speed
+	  // bd.linearDamping = 10; // drag due to moving through air
+	  bd.gravityScale = 0; // ignore gravity
+	  // bd.position = center; // start at blast center
+	  std::pair<coordX, coordY> coordsCoords = gusano->getCoords();
+	  coordsCoords.enY += 4;
+	  b2Vec2 coords = deCoordAb2Vec(coordsCoords); // start at blast center
+	  bd.position = coords;
+	  // bd.linearVelocity = blastPower * rayDir;
+	  bd.linearVelocity = 2 * rayDir;
+	  b2Body* body = this->world.CreateBody( &bd );
+
+	  b2CircleShape circleShape;
+	  circleShape.m_radius = 0.05; // very small
+
+	  b2FixtureDef fd;
+	  fd.shape = &circleShape;
+	  fd.density = 60 / (float)numRays; // very high - shared across all particles
+	  fd.friction = 0; // friction not necessary
+	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
+	  fd.filter.groupIndex = -1; // particles should not collide with each other
+	  body->CreateFixture( &fd );
+        }
     }
     
       
@@ -422,6 +513,7 @@ void Partida::gameLoop() {
 
     while (true) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
+        std::cout << "STEP \n";
         this->enviarEstadoAJugadores();
 
         Accion accionRecibida;

@@ -29,9 +29,14 @@ struct Entidad {
     union {
         Gusano *gusano;
         // Viga *viga;
-        // Arma *arma;
+        Arma *arma;
     };
 };
+
+// class ResolvedorDestruccion : public b2DestructionListener {
+//     void SayGoodbye(b2Fixture *fixture); 	
+//     void SayGoodbye(b2Joint *joint); 	
+// };
 
 class ResolvedorColisiones : public b2ContactListener {
 public:
@@ -57,8 +62,8 @@ class Partida : public Thread {
     //World de box2d de la partida
     b2World world;
     ResolvedorColisiones colisiones;
-    // ResolvedorQuery query;
     ResolvedorQuery query;
+    // ResolvedorDestruccion destucciones;
 
     std::string mapa;
 
