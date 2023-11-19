@@ -380,6 +380,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         printf("KATAPUM\n");
         int numRays = 32;
         for (int i = 0; i < numRays; i++) {
+	  std::cout << i << "\n";
 	  Entidad *nuevaEntidad = new Entidad;
 	  nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
 	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
@@ -411,6 +412,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
 	  fd.filter.groupIndex = -1; // particles should not collide with each other
 	  body->CreateFixture( &fd );
+	  nuevaEntidad->proyectil = body;
         }
     }
       
@@ -450,13 +452,11 @@ void Partida::gameLoop() {
 
     while (true) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
-        std::cout << "STEP \n";
         this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
-        // accionRecibida = acciones.pop();
 
         Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
