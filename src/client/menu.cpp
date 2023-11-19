@@ -78,6 +78,11 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // creo pagina crear
     QWidget *paginaCrear = new QWidget();
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
+    QLabel *logoCrear = new QLabel(paginaCrear);
+    logoCrear->setPixmap(fotoLogo);
+    logoCrear->setAlignment(Qt::AlignCenter);
+    verticalLayoutCrear->addWidget(logoCrear);
+    
     QLabel *tituloCrear = new QLabel(paginaCrear);
     QFont fontTituloCrear;
     fontTituloCrear.setFamily(letraCustom);
@@ -92,6 +97,11 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // creo pagina unirse
     QWidget *paginaUnirse = new QWidget();
     QVBoxLayout *verticalLayoutUnirse = new QVBoxLayout(paginaUnirse);
+    QLabel *logoUnirse = new QLabel(paginaUnirse);
+    logoUnirse->setPixmap(fotoLogo);
+    logoUnirse->setAlignment(Qt::AlignCenter);
+    verticalLayoutUnirse->addWidget(logoUnirse);
+
     QLabel *tituloUnirse = new QLabel(paginaUnirse);
     QFont fontTituloUnirse;
     fontTituloUnirse.setFamily(letraCustom);
