@@ -15,7 +15,7 @@ Partida::Partida(std::string mapa)
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 25.0f));
+    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 25.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 20.0f));
@@ -286,7 +286,9 @@ void Partida::enviarEstadoAJugadores() {
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
-        if (proyectil->armaOrigen == NADA_P)
+        if (proyectil->armaOrigen == NADA_P
+	  ||
+	  proyectil->armaOrigen == TELETRANSPORTACION_P)
 	  continue;
         RepresentacionProyectil repre;
         repre.id = proyectil->id;
