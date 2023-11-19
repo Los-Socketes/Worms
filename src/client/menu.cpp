@@ -67,9 +67,9 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QSpacerItem *espacioDerechaBotones = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     layoutHorizontalPrincipal->addItem(espacioIzquierdaBotones);
-    layoutHorizontalPrincipal->addItem(botonesPrincipal);
+    layoutHorizontalPrincipal->addLayout(botonesPrincipal);
     layoutHorizontalPrincipal->addItem(espacioDerechaBotones);
-    verticalLayoutPrincipal->addItem(layoutHorizontalPrincipal);
+    verticalLayoutPrincipal->addLayout(layoutHorizontalPrincipal);
 
 
     // creo pagina crear
@@ -89,6 +89,17 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     tituloCrear->setText("Mapas disponibles:");
     tituloCrear->setAlignment(Qt::AlignCenter);
     verticalLayoutCrear->addWidget(tituloCrear);
+
+    QHBoxLayout *layoutHorizontalCrear = new QHBoxLayout();
+    QVBoxLayout *botonesCrear = new QVBoxLayout();
+
+    QSpacerItem *espacioIzqBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *espacioDerBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    layoutHorizontalCrear->addItem(espacioIzqBotonesCrear);
+    layoutHorizontalCrear->addLayout(botonesCrear);
+    layoutHorizontalCrear->addItem(espacioDerBotonesCrear);
+    verticalLayoutCrear->addLayout(layoutHorizontalCrear);
 
 
     // creo pagina unirse
@@ -126,7 +137,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
         for (int i = 0; i < (int)opciones_mapa.size(); i++) {
             QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
             mapa->setFont(letraCustom);
-            verticalLayoutCrear->addWidget(mapa);
+            botonesCrear->addWidget(mapa);
             QObject::connect(mapa, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_mapa]() {
                 informacion = this->protocolo.crearPartida(opciones_mapa[i].ID);
                 mainWindow->close();
