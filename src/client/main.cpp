@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
         // Inicializo el cliente.
         Cliente cliente(std::move(socket));
-        InformacionInicial informacion = cliente.ejecutar_menu();
+        InformacionInicial informacion = cliente.ejecutar_menu(argc, argv);
         if (informacion.jugador != -1) {
             cliente.loop_principal(informacion);
         }      

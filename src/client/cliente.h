@@ -55,7 +55,7 @@ class Cliente {
     Cliente(Socket&& skt);
     
     // Ejecuta el menu.
-    InformacionInicial ejecutar_menu();
+    InformacionInicial ejecutar_menu(int argc, char* argv[]);
 
     // Loop principal del cliente.
     void loop_principal(InformacionInicial& info_inicial);

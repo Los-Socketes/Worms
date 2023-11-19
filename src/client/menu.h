@@ -14,7 +14,7 @@ class Menu {
  public:
     Menu(Protocolo& protocolo);
 
-    InformacionInicial ejecutar();
+    InformacionInicial ejecutar(int argc, char* argv[]);
 };
 
 #endif // MENU_H_

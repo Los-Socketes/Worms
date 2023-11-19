@@ -42,8 +42,8 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-InformacionInicial Cliente::ejecutar_menu() {
-    return menu.ejecutar();
+InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
+    return menu.ejecutar(argc, argv);
 }
 
 void Cliente::loop_principal(InformacionInicial& info_inicial) {
