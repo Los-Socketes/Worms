@@ -120,6 +120,9 @@ TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
     InformacionInicial info;
     info.jugador = 1;
 
+    std::pair<coordX, coordY> dimensiones(60.5, 85.42);
+    info.dimensiones = dimensiones;
+
     RepresentacionViga viga1;
     viga1.angulo = 45.2;
     viga1.longitud = 3;
@@ -143,8 +146,10 @@ TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
         REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
         REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
     }
-    REQUIRE(resultado.first.jugador ==  1);
-    REQUIRE( resultado.second == (id)0);
+    REQUIRE(resultado.first.jugador == 1);
+    REQUIRE(resultado.first.dimensiones.enX == dimensiones.enX);
+    REQUIRE(resultado.first.dimensiones.enY == dimensiones.enY);
+    REQUIRE(resultado.second == (id)0);
 
 }
 
@@ -178,6 +183,9 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
     InformacionInicial info;
     info.jugador = 1;
 
+    std::pair<coordX, coordY> dimensiones(87.45, 50.21);
+    info.dimensiones = dimensiones;
+
     RepresentacionViga viga1;
     viga1.angulo = 45;
     viga1.longitud = 3;
@@ -194,6 +202,8 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
     info.vigas = vigas;
     std::pair<InformacionInicial,id> resultado = unirsePartidaCasoFeliz((id)0, info);
     REQUIRE(resultado.first.jugador == 1);
+    REQUIRE(resultado.first.dimensiones.enX == dimensiones.enX);
+    REQUIRE(resultado.first.dimensiones.enY == dimensiones.enY);
     REQUIRE(resultado.first.vigas.size() == vigas.size());
     for (int i = 0; i < (int)vigas.size(); i++) {
         RepresentacionViga vigaObtenida = resultado.first.vigas[i];
@@ -203,7 +213,7 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
         REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
         REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
     }
-    REQUIRE(resultado.second == (id)0);
+    REQUIRE(resultado.second == (id)0); 
 }
 
 // TEST 9

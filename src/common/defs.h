@@ -125,14 +125,12 @@ struct RepresentacionViga {
     std::pair<coordX, coordY> posicionInicial;
 };
 
-// struct InformacionMapa {
-//     std::vector<RepresentacionViga> vigas;
-// };
 
 struct InformacionInicial {
     idJugador jugador;
-    // InformacionMapa infoMapa;
     std::vector<RepresentacionViga> vigas;
+    std::pair<coordX, coordY> dimensiones;
+
 };
 
 struct RepresentacionProyectil {
