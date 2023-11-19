@@ -12,6 +12,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <box2d/box2d.h>
+#include <set>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
@@ -39,7 +40,7 @@ struct Entidad {
         Gusano *gusano;
         // Viga *viga;
         // Arma *arma;
-        b2Vec2 *proyectil;
+        b2Body *proyectil;
     };
 };
 
@@ -73,6 +74,9 @@ class Partida : public Thread {
     b2World world;
     ResolvedorColisiones colisiones;
     ResolvedorQuery query;
+    //WARNING Actualmente solo usado para sacar los cuerpos creados en
+    //las explosiones
+    std::set<b2Body *> cuerposADestruir;
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;
