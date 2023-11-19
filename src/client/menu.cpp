@@ -81,11 +81,11 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     verticalLayoutCrear->addWidget(logoCrear);
 
     QLabel *tituloCrear = new QLabel(paginaCrear);
-    QFont fontTituloCrear;
-    fontTituloCrear.setFamily(letraCustom);
-    fontTituloCrear.setPointSize(20);
-    fontTituloCrear.setWeight(50);
-    tituloCrear->setFont(fontTituloCrear);
+    QFont fontTitulo;
+    fontTitulo.setFamily(letraCustom);
+    fontTitulo.setPointSize(20);
+    fontTitulo.setWeight(50);
+    tituloCrear->setFont(fontTitulo);
     tituloCrear->setText("Mapas disponibles:");
     tituloCrear->setAlignment(Qt::AlignCenter);
     verticalLayoutCrear->addWidget(tituloCrear);
@@ -111,12 +111,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     verticalLayoutUnirse->addWidget(logoUnirse);
 
     QLabel *tituloUnirse = new QLabel(paginaUnirse);
-    QFont fontTituloUnirse;
-    fontTituloUnirse.setFamily(letraCustom);
-    // fontTituloUnirse.setFamily(QString::fromUtf8("Noto Serif Thai"));
-    fontTituloUnirse.setPointSize(20);
-    fontTituloUnirse.setWeight(50);
-    tituloUnirse->setFont(fontTituloUnirse);
+    tituloUnirse->setFont(fontTitulo);
     tituloUnirse->setText("Partidas disponibles:");
     tituloUnirse->setAlignment(Qt::AlignCenter);
     verticalLayoutUnirse->addWidget(tituloUnirse);
@@ -164,6 +159,17 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
         protocolo.pedirInformacion(PARTIDA);
         opciones_partida = protocolo.obtenerPartidas();
 
+        if (opciones_partida.size() == 0) {
+            QFont fontTexto;
+            fontTexto.setFamily(letraCustom);
+            fontTexto.setPointSize(12);
+            fontTexto.setWeight(40);
+            QLabel *textoSinPartidas = new QLabel(paginaUnirse);
+            textoSinPartidas->setFont(fontTexto);
+            textoSinPartidas->setText("No hay partidas disponibles...");
+            textoSinPartidas->setAlignment(Qt::AlignCenter);
+            verticalLayoutUnirse->addWidget(textoSinPartidas);
+        }
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
             QPushButton *partida = new QPushButton(QString("%1").arg(i));
             partida->setFont(letraCustom);
