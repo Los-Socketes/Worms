@@ -137,8 +137,20 @@ InformacionInicial Protocolo::verificarConexion() {
         vigaActual.posicionInicial = posicionRecibida;
         vigas.push_back(vigaActual);
     } 
+
+    std::vector<int32_t> dimensiones(2,0);
+    socket.recvall(dimensiones.data(), sizeof(int32_t)*2, &was_closed);
+    if (was_closed) {
+        return info;
+    }
+
+    std::pair<coordX, coordY> dimensionesRecibidas;
+    dimensionesRecibidas.enX = toFloat(ntohl(dimensiones[0]));
+    dimensionesRecibidas.enY = toFloat(ntohl(dimensiones[1]));
+
     info.jugador = idEnviada;
     info.vigas = vigas;
+    info.dimensiones = dimensionesRecibidas;
     return info;
 
 }
@@ -743,9 +755,9 @@ bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
         return false;
     }
 
+    bool was_closed = false;
     for (auto &&viga : informacion.vigas) {
         // angulo
-        bool was_closed = false;
         int32_t angulo = htonl(toInt(viga.angulo));
         socket.sendall(&angulo, sizeof(angulo), &was_closed);
         if (was_closed) {
@@ -768,8 +780,12 @@ bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
         }
     }
 
-    return true;
-    
+    std::vector<int32_t> dimensiones;
+    dimensiones.push_back(htonl((int32_t)toInt(informacion.dimensiones.enX)));
+    dimensiones.push_back(htonl((int32_t)toInt(informacion.dimensiones.enY)));
+
+    socket.sendall(dimensiones.data(), sizeof(int32_t)*dimensiones.size(), &was_closed);
+    return !was_closed;
 }
 
 
