@@ -24,18 +24,20 @@ class Dibujador {
       Font fuente;
 
       RepresentacionGusano getGusanoActual();
-      std::pair<int, int> traducirCoordenadas(coordX x, coordY y);
-      void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
+      std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
+      void dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, int& it);
+      void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida);
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
+      void setDimensionMapa(int ancho, int alto);
       void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas);
-      void dibujarMapa(std::vector<RepresentacionViga> vigas);
-      void dibujarGusanos(Renderer& renderizador, int it);
+      void dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas);
+      void dibujarMapa(std::vector<RepresentacionViga>& vigas);
+      void dibujarGusanos(Renderer& renderizador, int& it);
       // void dibujarProyectiles(int it);
-      void dibujarAguaDetras(int it);
-      void dibujarAguaDelante(int it);
-      void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada);
+      void dibujarAguaDetras(int& it);
+      void dibujarAguaDelante(int& it);
+      void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
 };
 
 #endif // DIBUJADOR_H_

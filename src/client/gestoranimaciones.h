@@ -34,16 +34,17 @@ class GestorAnimaciones {
     int alto_mapa;
  public:
     GestorAnimaciones(Camara& camara, int ancho_mapa, int alto_mapa);
+    void setDimensionMapa(int ancho, int alto);
     void inicializar(Renderer& renderizador);
-    void dibujarAgua(int pos_x, int pos_y, int it);
+    void dibujarAgua(int& pos_x, int& pos_y, int& it);
     void dibujarFondo();
-    void dibujarPanorama(int pos_x, int pos_y);
-    void dibujarViga(int pos_x, int pos_y, int largo, radianes angulo);
-    void dibujarGusano(EstadoGusano estado, RepresentacionArma arma, DireccionGusano dir, int pos_x, int pos_y, int it);
-    void dibujarReticula(int pos_x, int pos_y, int it);
-    void dibujarIconoArma(ArmaProtocolo arma, int pos_x, int pos_y);
-    //void dibujarProyectil(ProyectilProtocolo protectil??, radianes angulo??, int pos_x, int pos_y, int it);
-    //void dibujarExplosion(int pos_x, int pos_y, int it);
+    void dibujarPanorama(int& pos_x, int& pos_y);
+    void dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo);
+    void dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, int& it);
+    void dibujarReticula(int& pos_x, int& pos_y, int& it);
+    void dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y);
+    //void dibujarProyectil(ProyectilProtocolo& proyectil??, radianes& angulo??, int& pos_x, int& pos_y, int& it);
+    //void dibujarExplosion(int& pos_x, int& pos_y, int& it);
 };
 
 #endif // GESTORANIMACIONES_H_

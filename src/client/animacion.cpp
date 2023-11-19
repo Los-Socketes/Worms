@@ -14,7 +14,7 @@ Animacion::Animacion(Renderer& render,
     textura.SetBlendMode(SDL_BLENDMODE_BLEND);
     }
 
-void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angulo, bool flip, int frame_actual) {
+void Animacion::dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& angulo, bool& flip, int& frame_actual) {
 
     int coord_x = pos_x;
     int coord_y = pos_y;
@@ -57,18 +57,20 @@ void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angu
         flip_flag);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad) {
     int frame_actual = (it / velocidad) % frames;
-    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
+    radianes rotacion = 0;
+    dibujarComun(camara, pos_x, pos_y, rotacion, flip, frame_actual);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, radianes angulo) {
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, radianes& angulo) {
     // El angulo 90 corresponde al primer frame y el angulo -90 al ultimo.
     int frame_actual = (angulo * 180 / M_PI + 90) / 180 * frames;
-    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
+    radianes rotacion = 0;
+    dibujarComun(camara, pos_x, pos_y, rotacion, flip, frame_actual);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad, radianes angulo) {
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad, radianes& angulo) {
     int frame_actual = (it / velocidad) % frames;
     dibujarComun(camara, pos_x, pos_y, angulo, flip, frame_actual);
 }

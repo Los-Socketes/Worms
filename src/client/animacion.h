@@ -28,16 +28,16 @@ class Animacion {
     bool seguir_camara;
     Centro centro;
     
-    void dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angulo, bool flip, int frame_actual);
+    void dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& angulo, bool& flip, int& frame_actual);
  public:
    Animacion(Renderer& render, std::string ruta_textura, int tam_x, int tam_y, int frames, bool seguir_camara, Centro centro = CENTRO);
 
    // Dibuja el frame dada una iteración del loop y una velocidad.
-   void dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad);
+   void dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad);
    // Dibuja el frame dado un angulo.
-   void dibujar(Camara& camara, int pos_x, int pos_y, bool flip, radianes angulo);
+   void dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, radianes& angulo);
    // Dibuja el frame dada una iteración del loop, una velocidad y lo rota un angulo.
-   void dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad, radianes angulo);
+   void dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad, radianes& angulo);
    void setDimensiones(int tam_x, int tam_y);
 };
 
