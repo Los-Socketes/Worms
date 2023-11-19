@@ -12,9 +12,10 @@ Cliente::Cliente(Socket&& skt):
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
-    entrada_teclado(envio_comandos, comandos_teclado),
+    entrada_teclado(envio_comandos, comandos_teclado, camara),
     recibidor(protocolo, recepcion_estados, es_turno),
-    enviador(protocolo, envio_comandos, es_turno) {
+    enviador(protocolo, envio_comandos, es_turno),
+    pos_cursor(0, 0) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -99,6 +100,10 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
+                case MOVER_CURSOR:
+                    pos_cursor.first = comando.parametros.first;
+                    pos_cursor.second = comando.parametros.second;
+                    break;
                 default:
                     break;
             }
@@ -106,7 +111,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
         // Renderizo.
         // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, info_inicial.vigas);
+        dibujador.dibujar(renderizador, it, info_inicial.vigas, pos_cursor);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

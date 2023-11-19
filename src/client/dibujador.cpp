@@ -72,9 +72,9 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
 }
 
 void Dibujador::setDimensionMapa(int ancho, int alto) {
-    ancho_mapa = ancho;
-    alto_mapa = alto;
-    gestor_animaciones.setDimensionMapa(ancho, alto);
+    ancho_mapa = ancho * PIXELS_POR_METRO;
+    alto_mapa = alto * PIXELS_POR_METRO;
+    gestor_animaciones.setDimensionMapa(ancho_mapa, alto_mapa);
 }
 
 void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
@@ -82,14 +82,17 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
 }
 
 
-void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas) {
+void Dibujador::dibujar(Renderer& renderizador,
+    int& it,
+    std::vector<RepresentacionViga>& vigas,
+    std::pair<int, int>& pos_cursor) {
     renderizador.Clear();
 
     RepresentacionGusano gusano_actual = getGusanoActual();
 
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
-    dibujarGusanos(renderizador, it);
+    dibujarGusanos(renderizador, it, pos_cursor);
     dibujarProyectiles(it);
     dibujarAguaDelante(it);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
@@ -116,7 +119,7 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador, int& it) {
+void Dibujador::dibujarGusanos(Renderer& renderizador, int& it, std::pair<int, int>& pos_cursor) {
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
@@ -133,7 +136,14 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int& it) {
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
                 dibujarReticula(posicion, gusano.armaEquipada.anguloRad, direccion, it);
             }
-                
+            if (gusano.estado != DISPARANDO && 
+                (gusano.armaEquipada.arma == ATAQUE_AEREO_P ||
+                gusano.armaEquipada.arma == TELETRANSPORTACION_P)) {
+                int pos_x = pos_cursor.first;
+                int pos_y = pos_cursor.second;
+                gestor_animaciones.dibujarCursor(pos_x, pos_y, it);
+            }
+                                
         }
     }
 

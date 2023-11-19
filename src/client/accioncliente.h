@@ -10,6 +10,7 @@ enum TipoComando{
     MOVER_CAMARA,
     TOGGLE_CAMARA,
     TAMANIO_VENTANA,
+    MOVER_CURSOR,
     ARRIBA,
     ABAJO
 };

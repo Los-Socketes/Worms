@@ -209,6 +209,10 @@ void GestorAnimaciones::dibujarReticula(int& pos_x, int& pos_y, int& it) {
     escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
+void GestorAnimaciones::dibujarCursor(int& pos_x, int& pos_y, int& it) {
+    escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+
 void GestorAnimaciones::dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y) {
     int it = 0;
     iconos[arma]->dibujar(camara, pos_x, pos_y, false, it, 1);

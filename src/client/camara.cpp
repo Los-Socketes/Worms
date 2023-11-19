@@ -25,6 +25,17 @@ void Camara::mover(int& deltaX, int& deltaY) {
     posicion.second = nueva_pos_y;
 }
 
+std::pair<coordX, coordY> Camara::traducirCoordenadas(int x, int y) {
+    // Teniendo la conversion metro a pixel como:
+    // x_pixeles = x_metro * PIXELS_POR_METRO - camara.x
+    // y_pixeles = alto_mapa - y_metro * PIXELS_POR_METRO - camara.y
+    // La inversa es:
+    // x_metro = (x_pixeles + camara.x) / PIXELS_POR_METRO
+    // y_metro = (alto_mapa - y_pixeles - camara.y) / PIXELS_POR_METRO
+    return std::make_pair((x + posicion.first) / PIXELS_POR_METRO,
+        (dimension_mapa.second - y - posicion.second) / PIXELS_POR_METRO);
+}
+
 int Camara::getPosicionX() {
     return posicion.first;
 }
@@ -52,8 +63,8 @@ void Camara::setDimension(int ancho, int alto) {
 }
 
 void Camara::setDimensionMapa(int& ancho, int& alto) {
-    dimension_mapa.first = ancho;
-    dimension_mapa.second = alto;
+    dimension_mapa.first = ancho * PIXELS_POR_METRO;
+    dimension_mapa.second = alto * PIXELS_POR_METRO;
 }
 
 Rect Camara::getRectangulo() {

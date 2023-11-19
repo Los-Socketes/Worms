@@ -25,9 +25,9 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 // A reemplazar cuando reciba datos del mapa.
-// Mapa de 75 metros de ancho por 40 de alto. (se multiplica por 20)
-const int MAPA_ANCHO = 1500;
-const int MAPA_ALTO = 800;
+// Mapa de 75 metros de ancho por 40 de alto.
+const int MAPA_ANCHO = 75;
+const int MAPA_ALTO = 40;
 
 class Cliente {
  private:
@@ -45,12 +45,10 @@ class Cliente {
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
+    std::pair<int, int> pos_cursor;
 
     // Inicia los hilos.
     void iniciar();
-
-    // Renderiza el estado del juego.
-    void renderizar(Renderer& renderizador, Animacion& caminar, Animacion& agua, int itq);
  public:
     Cliente(Socket&& skt);
     
