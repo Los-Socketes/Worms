@@ -46,8 +46,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     logo->setAlignment(Qt::AlignCenter);
     verticalLayoutPrincipal->addWidget(logo);
     // agrego horizontal layout para centrar los botones
-    QHBoxLayout *layoutHorizontalPrincipal = new QHBoxLayout(paginaPrincipal);
-    QVBoxLayout *botonesPrincipal = new QVBoxLayout(paginaPrincipal);
+    QHBoxLayout *layoutHorizontalPrincipal = new QHBoxLayout();
+    QVBoxLayout *botonesPrincipal = new QVBoxLayout();
     QPushButton *crearPartida = new QPushButton(paginaPrincipal);
     crearPartida->setText("Crear una partida");
     crearPartida->setFont(letraCustom);
