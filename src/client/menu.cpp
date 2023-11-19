@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QFontDatabase>
+#include <QPixmap>
 
 
 Menu::Menu(Protocolo& protocolo) : protocolo(protocolo) {}
@@ -37,8 +38,14 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // seteo fondo
     // pantallas->setStyleSheet("background-image: url(../build/assets/sprites/back.png);");
     // creo pagina principal
+    QPixmap fotoLogo("../build/assets/menu/WormsLogo.png");
+
     QWidget *paginaPrincipal = new QWidget();
     QVBoxLayout *verticalLayoutPrincipal = new QVBoxLayout(paginaPrincipal);
+    QLabel *logo = new QLabel(paginaPrincipal);
+    logo->setPixmap(fotoLogo);
+    // logo->setAlignment(Qt::AlignCenter);
+    verticalLayoutPrincipal->addWidget(logo);
     QLabel *titulo = new QLabel(paginaPrincipal);
     QFont fontTitulo;
     fontTitulo.setFamily(letraCustom);
