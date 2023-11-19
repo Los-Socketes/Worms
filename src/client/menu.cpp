@@ -28,7 +28,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setWindowTitle("Worms");
-    // mainWindow->setFixedSize(700, 500);
 
     // creo letra "custom" en base a la tipografia que tenemos
     int fontId = QFontDatabase::addApplicationFont("assets/fonts/AdLibRegular.ttf");
@@ -36,7 +35,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
     QStackedWidget *pantallas = new QStackedWidget();
     // seteo fondo
-    // pantallas->setStyleSheet("background-image: url(../build/assets/sprites/back.png);");
     pantallas->setStyleSheet("background-color: #cc8835;");
     // creo pagina principal
     QPixmap fotoLogo("assets/menu/WormsLogo.png");
@@ -72,16 +70,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     layoutHorizontalPrincipal->addItem(botonesPrincipal);
     layoutHorizontalPrincipal->addItem(espacioDerechaBotones);
     verticalLayoutPrincipal->addItem(layoutHorizontalPrincipal);
-    // QLabel *titulo = new QLabel(paginaPrincipal);
-    // QFont fontTitulo;
-    // fontTitulo.setFamily(letraCustom);
-    // fontTitulo.setPointSize(80);
-    // fontTitulo.setBold(true);
-    // fontTitulo.setWeight(75);
-    // titulo->setFont(fontTitulo);
-    // titulo->setText("WORMS");
-    // titulo->setAlignment(Qt::AlignCenter);
-    // verticalLayoutPrincipal->addWidget(titulo);
 
 
     // creo pagina crear
@@ -95,8 +83,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QLabel *tituloCrear = new QLabel(paginaCrear);
     QFont fontTituloCrear;
     fontTituloCrear.setFamily(letraCustom);
-    fontTituloCrear.setPointSize(40);
-    fontTituloCrear.setWeight(60);
+    fontTituloCrear.setPointSize(20);
+    fontTituloCrear.setWeight(50);
     tituloCrear->setFont(fontTituloCrear);
     tituloCrear->setText("Mapas disponibles:");
     tituloCrear->setAlignment(Qt::AlignCenter);
@@ -115,8 +103,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QFont fontTituloUnirse;
     fontTituloUnirse.setFamily(letraCustom);
     // fontTituloUnirse.setFamily(QString::fromUtf8("Noto Serif Thai"));
-    fontTituloUnirse.setPointSize(40);
-    fontTituloUnirse.setWeight(60);
+    fontTituloUnirse.setPointSize(20);
+    fontTituloUnirse.setWeight(50);
     tituloUnirse->setFont(fontTituloUnirse);
     tituloUnirse->setText("Partidas disponibles:");
     tituloUnirse->setAlignment(Qt::AlignCenter);
