@@ -429,7 +429,6 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
 
             int8_t estadoGusano;
-            // bool was_closed = false;
             socket.recvall(&estadoGusano, sizeof(estadoGusano), &was_closed);
             if (was_closed) {
                 return estado;
@@ -441,6 +440,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
                 return estado;
             }
 
+            // caracteristicas de arma
             int8_t mira;
             socket.recvall(&mira, sizeof(mira), &was_closed);
             if (was_closed) {
@@ -571,6 +571,10 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
 
     std::vector<RepresentacionProyectil> proyectiles;
     for (int i = 0; i < cantProyectiles; i++) {
+        idProyectil proyectilId = obtenerId();
+        if (proyectilId == INVAL_ID) {
+            return estado;
+        }
         int8_t tipoProyectil;
         socket.recvall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
         if (was_closed) {
@@ -613,6 +617,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             return estado;
         }
         RepresentacionProyectil proyectil;
+        proyectil.id = proyectilId;
         proyectil.proyectil = (ArmaProtocolo)tipoProyectil;
         proyectil.esFragmento = esFragmento;
         proyectil.posicion = posicionRecibidaProy;
@@ -1016,6 +1021,10 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     }
 
     for (auto &&proyectil : estado->proyectiles) {
+        is_open = enviarId(proyectil.id);
+        if (!is_open) {
+            return false;
+        }
         int8_t tipoProyectil = proyectil.proyectil;
         socket.sendall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
         if (was_closed) {
