@@ -306,7 +306,7 @@ void Partida::enviarEstadoAJugadores() {
         repre.angulo = 0;
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = false;
-        // repre.id = proyectil->id;
+        repre.id = proyectil->id;
 
         proyectilesRepre.push_back(repre);
     }
