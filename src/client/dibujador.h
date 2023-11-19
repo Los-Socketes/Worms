@@ -31,10 +31,10 @@ class Dibujador {
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
       void setDimensionMapa(int ancho, int alto);
       void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas);
+      void dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas, std::vector<RepresentacionProyectil>& proyectiles);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
       void dibujarGusanos(Renderer& renderizador, int& it);
-      // void dibujarProyectiles(int it);
+      void dibujarProyectiles(std::vector<RepresentacionProyectil>& proyectiles, int& it);
       void dibujarAguaDetras(int& it);
       void dibujarAguaDelante(int& it);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);

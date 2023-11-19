@@ -26,7 +26,6 @@ RepresentacionGusano Dibujador::getGusanoActual() {
 
 std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
     // Paso de coordenadas en metros a coordenadas en pixeles.
-    // TODO: ver como hacerlo bien. Pruebo con 20 pixeles por metro.
     int coord_x = x * PIXELS_POR_METRO;
     int coord_y = alto_mapa - y * PIXELS_POR_METRO;
     return std::make_pair(coord_x, coord_y);
@@ -83,7 +82,7 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
 }
 
 
-void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas) {
+void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas, std::vector<RepresentacionProyectil>& proyectiles) {
     renderizador.Clear();
 
     RepresentacionGusano gusano_actual = getGusanoActual();
@@ -91,7 +90,7 @@ void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<Representac
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
     dibujarGusanos(renderizador, it);
-    //dibujarProyectiles(it);
+    dibujarProyectiles(proyectiles, it);
     dibujarAguaDelante(it);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
@@ -140,8 +139,18 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int& it) {
 
 }
 
-// TODO: implementar.
-// void Dibujador::dibujarProyectiles(int& it) {}
+void Dibujador::dibujarProyectiles(std::vector<RepresentacionProyectil>& proyectiles, int& it) {
+    for(auto& proyectil : proyectiles) {
+        // Traduzco las coordenadas del proyectil.
+        std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
+        // Dibujo el proyectil.
+        if (proyectil.exploto) {
+            gestor_animaciones.dibujarExplosion(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, it);
+        } else {
+            gestor_animaciones.dibujarProyectil(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, it);
+        }
+    }    
+}
 
 
 void Dibujador::dibujarAguaDetras(int& it) {

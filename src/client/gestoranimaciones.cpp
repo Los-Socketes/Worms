@@ -48,15 +48,6 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
         renderizador, "assets/sprites/wfall.png", 60, 60, 2, true);
     gusanos[std::make_pair(DISPARANDO, NADA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
     
-    // Gusano con bate de baseball.
-    gusanos[std::make_pair(QUIETO, BATE_P)] = std::make_shared<Animacion>(
-        renderizador, "assets/sprites/wbsbaim.png", 60, 60, 32, true);
-    gusanos[std::make_pair(CAMINANDO, BATE_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
-    gusanos[std::make_pair(SALTANDO, BATE_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
-    gusanos[std::make_pair(CAYENDO, BATE_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
-    gusanos[std::make_pair(DISPARANDO, BATE_P)] = std::make_shared<Animacion>(
-        renderizador, "assets/sprites/wbsbswn.png", 60, 60, 32, true);
-
     // Gusano con bazooka.
     gusanos[std::make_pair(QUIETO, BAZOOKA_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wbaz.png", 60, 60, 32, true);
@@ -112,6 +103,15 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
     gusanos[std::make_pair(CAYENDO, BANANA_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
     gusanos[std::make_pair(DISPARANDO, BANANA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
 
+    // Gusano con bate de baseball.
+    gusanos[std::make_pair(QUIETO, BATE_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wbsbaim.png", 60, 60, 32, true);
+    gusanos[std::make_pair(CAMINANDO, BATE_P)] = gusanos[std::make_pair(CAMINANDO, NADA_P)];
+    gusanos[std::make_pair(SALTANDO, BATE_P)] = gusanos[std::make_pair(SALTANDO, NADA_P)];
+    gusanos[std::make_pair(CAYENDO, BATE_P)] = gusanos[std::make_pair(CAYENDO, NADA_P)];
+    gusanos[std::make_pair(DISPARANDO, BATE_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wbsbswn.png", 60, 60, 32, true);
+
     // Gusano con ataque aereo.
     gusanos[std::make_pair(QUIETO, ATAQUE_AEREO_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wairtlk.png", 60, 60, 1, true);
@@ -132,8 +132,42 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
 
     // Proyectiles.    
     
+    // Bazooka.
+    proyectiles[std::make_pair(BAZOOKA_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/missile.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    // Mortero
+    proyectiles[std::make_pair(MORTERO_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/mortar.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    proyectiles[std::make_pair(MORTERO_P, true)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/mortar.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    proyectiles[std::make_pair(MORTERO_P, true)]->setDimensiones(30, 30);
+    // Granada verde.
+    proyectiles[std::make_pair(GRANADA_VERDE_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/grenade.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    // Granada roja.
+    proyectiles[std::make_pair(GRANADA_ROJA_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/cluster.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    proyectiles[std::make_pair(GRANADA_ROJA_P, true)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/clustlet.png", 60, 60, 6, true, CENTRO, 0, 2 * M_PI);
+    // Granada santa.
+    proyectiles[std::make_pair(GRANADA_SANTA_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/hgrenade.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    // Banana.
+    proyectiles[std::make_pair(BANANA_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/banana.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    proyectiles[std::make_pair(BANANA_P, true)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/banana.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
+    proyectiles[std::make_pair(BANANA_P, true)]->setDimensiones(30, 30);
+    // Dinamita.
+    proyectiles[std::make_pair(DINAMITA_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/dynamite.png", 60, 60, 125, true);
+    // Ataque aereo.
+    proyectiles[std::make_pair(ATAQUE_AEREO_P, false)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/airmisl.png", 60, 60, 32, true, CENTRO, 0, 2 * M_PI);
 
-
+    // Explosiones.
+    escenario[EXPLOSION] = std::make_shared<Animacion>(renderizador, "assets/sprites/circle50.png", 100, 100, 8, true);
+    
 }
 
 void GestorAnimaciones::dibujarAgua(int& pos_x, int& pos_y, int& it) {
@@ -180,8 +214,23 @@ void GestorAnimaciones::dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& po
     iconos[arma]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-// TODO: implementar.
-// void GestorAnimaciones::dibujarProyectil(ProyectilProtocolo protectil??, radianes angulo??, int pos_x, int pos_y, int it) {}
+void GestorAnimaciones::dibujarProyectil(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, int& it) {
+    if (proyectil == DINAMITA_P)
+        proyectiles[std::make_pair(proyectil, es_fragmento)]->dibujar(camara, pos_x, pos_y, false, it, 1, angulo);
+    else
+        proyectiles[std::make_pair(proyectil, es_fragmento)]->dibujar(camara, pos_x, pos_y, false, angulo);
+}
 
-// TODO: implementar.
-// void GestorAnimaciones::dibujarExplosion(int pos_x, int pos_y, int it) {}
+void GestorAnimaciones::dibujarExplosion(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, int& it) {
+    if (es_fragmento) {
+        escenario[EXPLOSION]->setDimensiones(30, 30);
+    } else if (proyectil == DINAMITA_P) {
+        escenario[EXPLOSION]->setDimensiones(70, 70);
+    } else if (proyectil == GRANADA_SANTA_P) {
+        escenario[EXPLOSION]->setDimensiones(100, 100);
+    } else {
+        escenario[EXPLOSION]->setDimensiones(50, 50);
+    }
+    escenario[EXPLOSION]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+

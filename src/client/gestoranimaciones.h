@@ -29,7 +29,7 @@ class GestorAnimaciones {
     std::map<std::pair<EstadoGusano, ArmaProtocolo>, std::shared_ptr<Animacion>> gusanos;
     std::map<ItemEscenario, std::shared_ptr<Animacion>> escenario;
     std::map<ArmaProtocolo, std::shared_ptr<Animacion>> iconos;
-    //std::map<ProyectilProtocolo, std::shared_ptr<Animacion>> proyectiles; ???
+    std::map<std::pair<ArmaProtocolo, bool>, std::shared_ptr<Animacion>> proyectiles;
     int ancho_mapa;
     int alto_mapa;
  public:
@@ -43,8 +43,8 @@ class GestorAnimaciones {
     void dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, int& it);
     void dibujarReticula(int& pos_x, int& pos_y, int& it);
     void dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y);
-    //void dibujarProyectil(ProyectilProtocolo& proyectil??, radianes& angulo??, int& pos_x, int& pos_y, int& it);
-    //void dibujarExplosion(int& pos_x, int& pos_y, int& it);
+    void dibujarProyectil(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, int& it);
+    void dibujarExplosion(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, int& it);
 };
 
 #endif // GESTORANIMACIONES_H_
