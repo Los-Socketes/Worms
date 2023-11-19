@@ -322,6 +322,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     gusanos.insert({jugador, listaGusanos});
 
     RepresentacionProyectil proyectil1;
+    proyectil1.id = 8;
     proyectil1.proyectil = DINAMITA_P;
     proyectil1.esFragmento = false;
     proyectil1.posicion.enX = 20.6;
@@ -331,6 +332,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     proyectil1.exploto = true;
 
     RepresentacionProyectil proyectil2;
+    proyectil1.id = 9;
     proyectil2.proyectil = GRANADA_ROJA_P;
     proyectil2.esFragmento = true;
     proyectil2.posicion.enX = 4.6;
