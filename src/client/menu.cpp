@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QStackedWidget>
+#include <QFontDatabase>
 
 
 Menu::Menu(Protocolo& protocolo) : protocolo(protocolo) {}
@@ -28,14 +29,19 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     mainWindow->setWindowTitle("Worms");
     mainWindow->resize(400, 300);
 
+    // creo letra "custom" en base a la tipografia que tenemos
+    int fontId = QFontDatabase::addApplicationFont("../build/assets/fonts/AdLibRegular.ttf");
+    QString letraCustom = QFontDatabase::applicationFontFamilies(fontId).at(0);
+
     QStackedWidget *pantallas = new QStackedWidget();
-    
+    // seteo fondo
+    // pantallas->setStyleSheet("background-image: url(../build/assets/sprites/back.png);");
     // creo pagina principal
     QWidget *paginaPrincipal = new QWidget();
     QVBoxLayout *verticalLayoutPrincipal = new QVBoxLayout(paginaPrincipal);
     QLabel *titulo = new QLabel(paginaPrincipal);
     QFont fontTitulo;
-    fontTitulo.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTitulo.setFamily(letraCustom);
     fontTitulo.setPointSize(80);
     fontTitulo.setBold(true);
     fontTitulo.setWeight(75);
@@ -63,7 +69,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
     QLabel *tituloCrear = new QLabel(paginaCrear);
     QFont fontTituloCrear;
-    fontTituloCrear.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTituloCrear.setFamily(letraCustom);
     fontTituloCrear.setPointSize(40);
     fontTituloCrear.setWeight(60);
     tituloCrear->setFont(fontTituloCrear);
@@ -77,7 +83,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QVBoxLayout *verticalLayoutUnirse = new QVBoxLayout(paginaUnirse);
     QLabel *tituloUnirse = new QLabel(paginaUnirse);
     QFont fontTituloUnirse;
-    fontTituloUnirse.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTituloUnirse.setFamily(letraCustom);
+    // fontTituloUnirse.setFamily(QString::fromUtf8("Noto Serif Thai"));
     fontTituloUnirse.setPointSize(40);
     fontTituloUnirse.setWeight(60);
     tituloUnirse->setFont(fontTituloUnirse);
