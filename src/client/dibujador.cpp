@@ -82,7 +82,7 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
 }
 
 
-void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas, std::vector<RepresentacionProyectil>& proyectiles) {
+void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas) {
     renderizador.Clear();
 
     RepresentacionGusano gusano_actual = getGusanoActual();
@@ -90,7 +90,7 @@ void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<Representac
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
     dibujarGusanos(renderizador, it);
-    dibujarProyectiles(proyectiles, it);
+    dibujarProyectiles(it);
     dibujarAguaDelante(it);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
@@ -139,8 +139,8 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int& it) {
 
 }
 
-void Dibujador::dibujarProyectiles(std::vector<RepresentacionProyectil>& proyectiles, int& it) {
-    for(auto& proyectil : proyectiles) {
+void Dibujador::dibujarProyectiles(int& it) {
+    for(auto& proyectil : estado_juego->proyectiles) {
         // Traduzco las coordenadas del proyectil.
         std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
         // Dibujo el proyectil.

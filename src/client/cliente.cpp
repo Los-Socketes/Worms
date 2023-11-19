@@ -14,8 +14,7 @@ Cliente::Cliente(Socket&& skt):
     es_turno(false),
     entrada_teclado(envio_comandos, comandos_teclado),
     recibidor(protocolo, recepcion_estados, es_turno),
-    enviador(protocolo, envio_comandos, es_turno),
-    proyectiles() {
+    enviador(protocolo, envio_comandos, es_turno) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -35,53 +34,6 @@ Cliente::Cliente(Socket&& skt):
 
         estado_juego->gusanos = gusanosNuevos;
         // listaGusanosIniciales.
-
-        RepresentacionProyectil bala_bazooka;
-        bala_bazooka.proyectil = BAZOOKA_P;
-        bala_bazooka.esFragmento = false;
-        bala_bazooka.posicion = std::pair<coordX, coordY>(20, 20);
-        bala_bazooka.angulo = 0;
-        bala_bazooka.cuentaRegresiva = 0;
-        bala_bazooka.exploto = false;
-
-        RepresentacionProyectil granada;
-        granada.proyectil = GRANADA_VERDE_P;
-        granada.esFragmento = false;
-        granada.posicion = std::pair<coordX, coordY>(25, 20);
-        granada.angulo = M_PI;
-        granada.cuentaRegresiva = 0;
-        granada.exploto = false;
-
-        RepresentacionProyectil dinamita;
-        dinamita.proyectil = DINAMITA_P;
-        dinamita.esFragmento = false;
-        dinamita.posicion = std::pair<coordX, coordY>(30, 20);
-        dinamita.angulo = M_PI / 2;
-        dinamita.cuentaRegresiva = 0;
-        dinamita.exploto = false;
-
-        RepresentacionProyectil cluster_fragmento;
-        cluster_fragmento.proyectil = GRANADA_ROJA_P;
-        cluster_fragmento.esFragmento = true;
-        cluster_fragmento.posicion = std::pair<coordX, coordY>(20, 15);
-        cluster_fragmento.angulo = 0;
-        cluster_fragmento.cuentaRegresiva = 0;
-        cluster_fragmento.exploto = false;
-
-        RepresentacionProyectil granada_santa;
-        granada_santa.proyectil = GRANADA_SANTA_P;
-        granada_santa.esFragmento = false;
-        granada_santa.posicion = std::pair<coordX, coordY>(25, 15);
-        granada_santa.angulo = 0;
-        granada_santa.cuentaRegresiva = 0;
-        granada_santa.exploto = true;
-       
-        proyectiles.push_back(bala_bazooka);
-        proyectiles.push_back(granada);
-        proyectiles.push_back(dinamita);
-        proyectiles.push_back(cluster_fragmento);
-        proyectiles.push_back(granada_santa);
-
     }
 
 void Cliente::iniciar() {
@@ -154,7 +106,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
         // Renderizo.
         // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, info_inicial.vigas, proyectiles);
+        dibujador.dibujar(renderizador, it, info_inicial.vigas);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

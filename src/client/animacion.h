@@ -27,6 +27,8 @@ class Animacion {
     Texture textura;
     bool seguir_camara;
     Centro centro;
+    // Angulo minimo y maximo para calcular el frame proporcionalmente al angulo
+    // si se dibuja por angulo, por defecto es -pi/2 y pi/2.
     radianes min;
     radianes max;
     

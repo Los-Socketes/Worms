@@ -46,8 +46,6 @@ class Cliente {
     Recibidor recibidor;
     Enviador enviador;
 
-    std::vector<RepresentacionProyectil> proyectiles;
-
     // Inicia los hilos.
     void iniciar();
 
