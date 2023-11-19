@@ -52,14 +52,17 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
     QPushButton *crearPartida = new QPushButton(paginaPrincipal);
     crearPartida->setText("Crear una partida");
+    crearPartida->setFont(letraCustom);
     verticalLayoutPrincipal->addWidget(crearPartida);
 
     QPushButton *unirsePartida = new QPushButton(paginaPrincipal);
     unirsePartida->setText("Unirse a una partida");
+    unirsePartida->setFont(letraCustom);
     verticalLayoutPrincipal->addWidget(unirsePartida);
 
     QPushButton *salir = new QPushButton(paginaPrincipal);
     salir->setText("Salir");
+    salir->setFont(letraCustom);
     verticalLayoutPrincipal->addWidget(salir);
 
 
@@ -107,7 +110,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
         for (int i = 0; i < (int)opciones_mapa.size(); i++) {
             QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
-            
+            mapa->setFont(letraCustom);
             verticalLayoutCrear->addWidget(mapa);
             QObject::connect(mapa, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_mapa]() {
                 informacion = this->protocolo.crearPartida(opciones_mapa[i].ID);
@@ -124,7 +127,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
             QPushButton *partida = new QPushButton(QString("%1").arg(i));
-            
+            partida->setFont(letraCustom);
             verticalLayoutUnirse->addWidget(partida);
             QObject::connect(partida, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_partida]() {
                 informacion = this->protocolo.unirseAPartida(opciones_partida[i]);
