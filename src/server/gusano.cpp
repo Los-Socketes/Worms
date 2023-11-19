@@ -221,8 +221,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
 
+        ataqueARealizar.arma = NADA_P;
         ataqueARealizar.posicion = posicion;
-        // tiempoEspera = 99;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         break;
@@ -236,11 +236,11 @@ Ataque Gusano::ejecutar(Accion accion) {
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P) {
+        if(armaEquipada == DINAMITA_P) 
 	  tiempoEspera = TIEMPOESPERADINAMITA;
-        }
         else
 	  tiempoEspera = 0;
+
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;

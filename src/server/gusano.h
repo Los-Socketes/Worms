@@ -10,10 +10,19 @@
 #define ArmaDeseada ArmaProtocolo
 
 
+struct Proyectil {
+    ArmaProtocolo armaOrigen;
+    b2Vec2 posicion;
+    int id;
+    int countdown;
+    b2Vec2 *cuerpo;
+};
+
 struct Ataque {
     b2Vec2 posicion;
     int tiempoEspera;
     ArmaDeseada arma;
+    Proyectil *proyectilAsociado;
 };
 
 

@@ -450,6 +450,8 @@ void Partida::gameLoop() {
     // int countdown = 0;
 
     b2Vec2 origen(0,0);
+
+    Ataque ataqueARealizar;
     Proyectil * nuevoProyectil = new Proyectil();
     nuevoProyectil->armaOrigen = NADA_P;
     nuevoProyectil->posicion = origen;
@@ -457,6 +459,7 @@ void Partida::gameLoop() {
     nuevoProyectil->countdown = 0;
     nuevoProyectil->cuerpo = nullptr;
     this->proyectiles.push_back(nuevoProyectil);
+    ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     while (true) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
@@ -470,7 +473,6 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      ultimaAccion);
 
-        Ataque ataqueARealizar;
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         if (nuevoProyectil->countdown == 0) {

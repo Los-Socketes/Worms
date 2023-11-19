@@ -26,14 +26,6 @@ enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
 // lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
 
-struct Proyectil {
-    ArmaProtocolo armaOrigen;
-    b2Vec2 posicion;
-    int id;
-    int countdown;
-    b2Vec2 *cuerpo;
-};
-
 struct Entidad {
     TipoEntidad tipo;
     union {
