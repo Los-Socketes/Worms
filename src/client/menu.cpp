@@ -64,7 +64,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QFont fontTituloCrear;
     fontTituloCrear.setFamily(QString::fromUtf8("Noto Serif Thai"));
     fontTituloCrear.setPointSize(40);
-    // fontTituloCrear.setBold(true);
     fontTituloCrear.setWeight(60);
     tituloCrear->setFont(fontTituloCrear);
     tituloCrear->setText("Mapas disponibles:");
@@ -83,25 +82,17 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
         pantallas->setCurrentIndex(1);
         protocolo.pedirInformacion(MAPA);
         opciones_mapa = protocolo.obtenerMapas();
-        std::cout << "Mapas disponibles:" << std::endl;
         int i;
         for (i = 0; i < (int)opciones_mapa.size(); i++) {
             QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
             
             verticalLayoutCrear->addWidget(mapa);
             QObject::connect(mapa, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_mapa]() {
-                std::cout << "Aprete boton " << i << "\n";
                 informacion = this->protocolo.crearPartida(opciones_mapa[i].ID);
                 mainWindow->close();
             });
-
-            std::cout << std::to_string(pos) << ") " << opciones_mapa[i].nombre << std::endl;
-            pos++;
         }
         QCoreApplication::processEvents();
-        // std::cin >> sub_opcion;
-        // informacion = protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
-        // mainWindow->close();
     });
 
     QObject::connect(unirsePartida, &QPushButton::clicked, [&]() {
