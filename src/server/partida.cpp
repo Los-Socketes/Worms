@@ -486,8 +486,7 @@ void Partida::gameLoop() {
         
         else {
 	  nuevoProyectil->countdown -= 1;
-	  // countdown -= 1;
-	  ataqueARealizar.arma = DINAMITA_P;
+	  ataqueARealizar.arma = ultimaAccion.armaAEquipar;
         }
 
 
