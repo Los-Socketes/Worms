@@ -33,12 +33,12 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QWidget *paginaPrincipal = new QWidget();
     QVBoxLayout *verticalLayoutPrincipal = new QVBoxLayout(paginaPrincipal);
     QLabel *titulo = new QLabel(paginaPrincipal);
-    QFont font;
-    font.setFamily(QString::fromUtf8("Noto Serif Thai"));
-    font.setPointSize(80);
-    font.setBold(true);
-    font.setWeight(75);
-    titulo->setFont(font);
+    QFont fontTitulo;
+    fontTitulo.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTitulo.setPointSize(80);
+    fontTitulo.setBold(true);
+    fontTitulo.setWeight(75);
+    titulo->setFont(fontTitulo);
     titulo->setText("WORMS");
     titulo->setAlignment(Qt::AlignCenter);
     verticalLayoutPrincipal->addWidget(titulo);
@@ -60,9 +60,16 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // creo pagina crear (prueba)
     QWidget *paginaCrear = new QWidget();
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
-    QPushButton *salirCrear = new QPushButton(paginaCrear);
-    salirCrear->setText("Salir");
-    verticalLayoutCrear->addWidget(salirCrear);
+    QLabel *tituloCrear = new QLabel(paginaCrear);
+    QFont fontTituloCrear;
+    fontTituloCrear.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTituloCrear.setPointSize(40);
+    // fontTituloCrear.setBold(true);
+    fontTituloCrear.setWeight(60);
+    tituloCrear->setFont(fontTituloCrear);
+    tituloCrear->setText("Mapas disponibles:");
+    tituloCrear->setAlignment(Qt::AlignCenter);
+    verticalLayoutCrear->addWidget(tituloCrear);
 
     // agrego primera pagina
     pantallas->addWidget(paginaPrincipal);
@@ -74,17 +81,27 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
     QObject::connect(crearPartida, &QPushButton::clicked, [&]() {
         pantallas->setCurrentIndex(1);
-        QCoreApplication::processEvents();
         protocolo.pedirInformacion(MAPA);
         opciones_mapa = protocolo.obtenerMapas();
         std::cout << "Mapas disponibles:" << std::endl;
-        for (const RepresentacionMapa& mapa : opciones_mapa) {
-            std::cout << std::to_string(pos) << ") " << mapa.nombre << std::endl;
+        int i;
+        for (i = 0; i < (int)opciones_mapa.size(); i++) {
+            QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
+            
+            verticalLayoutCrear->addWidget(mapa);
+            QObject::connect(mapa, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_mapa]() {
+                std::cout << "Aprete boton " << i << "\n";
+                informacion = this->protocolo.crearPartida(opciones_mapa[i].ID);
+                mainWindow->close();
+            });
+
+            std::cout << std::to_string(pos) << ") " << opciones_mapa[i].nombre << std::endl;
             pos++;
         }
-        std::cin >> sub_opcion;
-        informacion = protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
-        mainWindow->close();
+        QCoreApplication::processEvents();
+        // std::cin >> sub_opcion;
+        // informacion = protocolo.crearPartida(opciones_mapa[sub_opcion].ID);
+        // mainWindow->close();
     });
 
     QObject::connect(unirsePartida, &QPushButton::clicked, [&]() {
