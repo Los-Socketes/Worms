@@ -237,7 +237,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P) {
-	  tiempoEspera = 99;
+	  tiempoEspera = TIEMPOESPERADINAMITA;
         }
         else
 	  tiempoEspera = 0;

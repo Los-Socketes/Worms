@@ -58,4 +58,6 @@ typedef b2Vec2 finCaja;
     return representacionVec;
 }
 
+#define TIEMPOESPERADINAMITA 99
+
 #endif
