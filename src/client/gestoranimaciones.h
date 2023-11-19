@@ -10,8 +10,7 @@
 #include "animacion.h"
 #include "defs.h"
 #include "camara.h"
-
-#define PIXELS_POR_METRO 20
+#include "controliteracion.h"
 
 enum ItemEscenario{
     AGUA,
@@ -40,11 +39,12 @@ class GestorAnimaciones {
     void dibujarFondo();
     void dibujarPanorama(int& pos_x, int& pos_y);
     void dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo);
-    void dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, int& it);
+    void dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
     void dibujarReticula(int& pos_x, int& pos_y, int& it);
+    void dibujarCursor(int& pos_x, int& pos_y, int& it);
     void dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y);
-    void dibujarProyectil(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, int& it);
-    void dibujarExplosion(ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, int& it);
+    void dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones);
+    void dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
 };
 
 #endif // GESTORANIMACIONES_H_

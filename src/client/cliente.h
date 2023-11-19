@@ -15,6 +15,7 @@
 #include "defs.h"
 #include "accioncliente.h"
 #include "dibujador.h"
+#include "controliteracion.h"
 
 using namespace SDL2pp;
 
@@ -25,9 +26,9 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 // A reemplazar cuando reciba datos del mapa.
-// Mapa de 75 metros de ancho por 40 de alto. (se multiplica por 20)
-const int MAPA_ANCHO = 1500;
-const int MAPA_ALTO = 800;
+// Mapa de 75 metros de ancho por 40 de alto.
+const int MAPA_ANCHO = 75;
+const int MAPA_ALTO = 40;
 
 class Cliente {
  private:
@@ -37,6 +38,7 @@ class Cliente {
     std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
+    ControlIteracion control_iteracion;
     Menu menu;
     Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
@@ -45,12 +47,11 @@ class Cliente {
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
+    std::pair<int, int> pos_cursor;
 
     // Inicia los hilos.
     void iniciar();
 
-    // Renderiza el estado del juego.
-    void renderizar(Renderer& renderizador, Animacion& caminar, Animacion& agua, int itq);
  public:
     Cliente(Socket&& skt);
     

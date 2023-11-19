@@ -65,6 +65,9 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 #define ATACAR 12
 
 
+#define PIXELS_POR_METRO 20
+
+
 // Tiene la info de una partida para unirse
 struct RepresentacionPartida {
     id ID;

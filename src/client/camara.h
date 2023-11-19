@@ -2,7 +2,10 @@
 #define CAMARA_H_
 
 #include <utility>
+#include <atomic>
 #include <SDL2pp/SDL2pp.hh>
+
+#include "defs.h"
 
 using namespace SDL2pp;
 
@@ -16,6 +19,8 @@ class Camara {
     Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa);
     
     void mover(int& deltaX, int& deltaY);
+
+    std::pair<coordX, coordY> traducirCoordenadas(int x, int y);
 
     int getPosicionX();
     int getPosicionY();

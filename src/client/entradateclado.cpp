@@ -1,7 +1,7 @@
 #include "entradateclado.h"
 
-EntradaTeclado::EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos, Queue<Comando>& comandos_teclado)
-    : envio_comandos(envio_comandos), comandos_teclado(comandos_teclado), cont(true) {}
+EntradaTeclado::EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos, Queue<Comando>& comandos_teclado, Camara& camara)
+    : envio_comandos(envio_comandos), comandos_teclado(comandos_teclado), cont(true), camara(camara) {}
 
 void EntradaTeclado::run() {
     try {
@@ -118,7 +118,11 @@ void EntradaTeclado::run() {
                     comandos_teclado.push(Comando(TAMANIO_VENTANA, evento.window.data1, evento.window.data2));
                 }
             } else if (evento.type == SDL_MOUSEBUTTONDOWN) {
-                envio_comandos.push(std::make_shared<AccionCambiarCoordenadas>(43.0, 11.0));
+                if (evento.button.button == SDL_BUTTON_LEFT) {
+                    comandos_teclado.push(Comando(MOVER_CURSOR, evento.button.x + camara.getPosicionX(), evento.button.y + camara.getPosicionY()));
+                    std::pair<coordX, coordY> coordenadas = camara.traducirCoordenadas(evento.button.x, evento.button.y);
+                    envio_comandos.push(std::make_shared<AccionCambiarCoordenadas>(coordenadas.first, coordenadas.second));
+                }
             }
         }
     } catch (const ClosedQueue& e) {
