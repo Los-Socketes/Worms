@@ -25,6 +25,14 @@ enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
 // lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
 
+struct Proyectil {
+    ArmaProtocolo armaOrigen;
+    b2Vec2 posicion;
+    int id;
+    int countdown;
+    b2Vec2 *cuerpo;
+};
+
 struct Entidad {
     TipoEntidad tipo;
     union {
@@ -77,6 +85,8 @@ class Partida : public Thread {
 
     std::vector<Jugador *> jugadores;
 
+    std::vector<Proyectil *> proyectiles;
+
     void enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
@@ -86,7 +96,7 @@ class Partida : public Thread {
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
-    void crearProjectil(Gusano *gusano, Ataque ataque, int countdown);
+    void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
 public:
     Partida(const std::string mapa);

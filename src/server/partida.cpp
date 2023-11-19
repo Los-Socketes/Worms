@@ -20,6 +20,7 @@ void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, floa
       body->ApplyLinearImpulse( impulseMag * blastDir, applyPoint, true);
   }
 
+
 Partida::Partida(std::string mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
@@ -296,6 +297,20 @@ void Partida::enviarEstadoAJugadores() {
 
     // estadoActual.vigas = vigasEnMapa;
 
+    std::vector<RepresentacionProyectil> proyectilesRepre;
+    for (Proyectil *proyectil : this->proyectiles) {
+        RepresentacionProyectil repre;
+        repre.proyectil = proyectil->armaOrigen;
+        repre.esFragmento = false;
+        repre.posicion = deb2VecACoord(proyectil->posicion);
+        repre.angulo = 0;
+        repre.cuentaRegresiva = proyectil->countdown;
+        repre.exploto = false;
+
+        proyectilesRepre.push_back(repre);
+    }
+    estadoActual->proyectiles = proyectilesRepre;
+
     for(Cliente *cliente : this->clientes) {
         cliente->enviarEstadoJuego(estadoActual);
     }
@@ -336,9 +351,10 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
        return accionAEjecutar;
 }
 
-void Partida::crearProjectil(Gusano *gusano, Ataque ataque, int countdown) {
+void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
     ArmaDeseada arma;
     arma = ataque.arma;
+    int countdown = proyectil->countdown;
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -433,7 +449,16 @@ void Partida::gameLoop() {
 
     Accion ultimaAccion;
     bool exploto = false;
-    int countdown = 0;
+    // int countdown = 0;
+
+    b2Vec2 origen(0,0);
+    Proyectil * nuevoProyectil = new Proyectil();
+    nuevoProyectil->armaOrigen = NADA_P;
+    nuevoProyectil->posicion = origen;
+    nuevoProyectil->id = 0;
+    nuevoProyectil->countdown = 0;
+    nuevoProyectil->cuerpo = nullptr;
+    this->proyectiles.push_back(nuevoProyectil);
 
     while (true) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
@@ -452,17 +477,22 @@ void Partida::gameLoop() {
         Ataque ataqueARealizar;
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
-        if (countdown == 0)
-	  countdown = ataqueARealizar.tiempoEspera;
+        if (nuevoProyectil->countdown == 0) {
+	  nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+	  nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
+	  nuevoProyectil->posicion = ataqueARealizar.posicion;
+        }
+        
         else {
-	  countdown -= 1;
+	  nuevoProyectil->countdown -= 1;
+	  // countdown -= 1;
 	  ataqueARealizar.arma = DINAMITA_P;
         }
 
 
-        this->crearProjectil(gusanoActual, ataqueARealizar, countdown);
+        this->crearProjectil(gusanoActual, ataqueARealizar, nuevoProyectil);
 
-        std::cout << countdown << "\n";
+        std::cout << nuevoProyectil->countdown << "\n";
 
 
 
