@@ -69,8 +69,6 @@ public:
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
 
-    [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
-
     [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
 };
 

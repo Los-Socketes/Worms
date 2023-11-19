@@ -75,48 +75,49 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     if (this->estado == CAYENDO)
         return;
 
-    b2Vec2 direccion;
+    // b2Vec2 direccion;
+    std::pair<coordX, coordY> direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
         std::cout << "Inicio der" << "\n";
-        direccion.x = VELOCIDADMOVIMIENTO;
-        direccion.y = 0.0f;
+        direccion.enX = VELOCIDADMOVIMIENTO;
+        direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(DERECHA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case INICIO_IZQ:
         std::cout << "Inicio izq" << "\n";
-        direccion.x = -VELOCIDADMOVIMIENTO;
-        direccion.y = 0.0f;
+        direccion.enX = -VELOCIDADMOVIMIENTO;
+        direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(IZQUIERDA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_DER:
         std::cout << "Fin der" << "\n";
-        direccion.x = 0.0f;
-        direccion.y = 0.0f;
+        direccion.enX = 0.0f;
+        direccion.enY = 0.0f;
         this->setEstado(QUIETO);
         this->setDireccion(DERECHA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_IZQ:
         std::cout << "Fin izq" << "\n";
-        direccion.x = 0.0f;
-        direccion.y = 0.0f;
+        direccion.enX = 0.0f;
+        direccion.enY = 0.0f;
         this->setEstado(QUIETO);
         this->setDireccion(IZQUIERDA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case SALTO:
         std::cout << "Salto" << "\n";
         if (this->direccion == DERECHA)
-	  direccion.x = 100000.0f;
+	  direccion.enX = 100000.0f;
         else
-	  direccion.x = -100000.0f;
-        direccion.y = 1000000.0f;
-        this->cuerpo->ApplyForceToCenter(direccion, false);
+	  direccion.enX = -100000.0f;
+        direccion.enY = 1000000.0f;
+        this->cuerpo->ApplyLinearImpulseToCenter(deCoordAb2Vec(direccion), true);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -221,10 +222,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         posicion = (deCoordAb2Vec(this->getCoords()));
 
         ataqueARealizar.posicion = posicion;
-        // else if(armaEquipada == DINAMITA_P) {
-        // 	  tiempoEspera = 99;
-        // }
-        tiempoEspera = 99;
+        // tiempoEspera = 99;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         break;
@@ -237,7 +235,12 @@ Ataque Gusano::ejecutar(Accion accion) {
         posicion = (deCoordAb2Vec(this->getCoords()));
 
         ataqueARealizar.posicion = posicion;
-        tiempoEspera = 99;
+        // tiempoEspera = 99;
+        if(armaEquipada == DINAMITA_P) {
+	  tiempoEspera = 99;
+        }
+        else
+	  tiempoEspera = 0;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
