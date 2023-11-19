@@ -286,14 +286,16 @@ void Partida::enviarEstadoAJugadores() {
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
+        if (proyectil->armaOrigen == NADA_P)
+	  continue;
         RepresentacionProyectil repre;
+        repre.id = proyectil->id;
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
         repre.posicion = deb2VecACoord(proyectil->posicion);
-        repre.angulo = 0;
+        repre.angulo = 0.0f;
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = false;
-        repre.id = proyectil->id;
 
         proyectilesRepre.push_back(repre);
     }
