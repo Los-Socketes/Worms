@@ -75,6 +75,12 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // creo pagina crear
     QWidget *paginaCrear = new QWidget();
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
+
+    QPushButton *volverEnCrear = new QPushButton(paginaCrear);
+    volverEnCrear->setText("Volver");
+    volverEnCrear->setFont(letraCustom);
+    verticalLayoutCrear->addWidget(volverEnCrear);
+
     QLabel *logoCrear = new QLabel(paginaCrear);
     logoCrear->setPixmap(fotoLogo);
     logoCrear->setAlignment(Qt::AlignCenter);
@@ -101,6 +107,11 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     layoutHorizontalCrear->addItem(espacioDerBotonesCrear);
     verticalLayoutCrear->addLayout(layoutHorizontalCrear);
 
+    QObject::connect(volverEnCrear, &QPushButton::clicked, [&]() {
+        pantallas->setCurrentIndex(0);
+        // QCoreApplication::processEvents();
+    });
+
 
     // creo pagina unirse
     QWidget *paginaUnirse = new QWidget();
@@ -119,8 +130,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QHBoxLayout *layoutHorizontalUnirse = new QHBoxLayout();
     QVBoxLayout *botonesUnirse = new QVBoxLayout();
 
-    QSpacerItem *espacioIzqBotonesUnirse = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QSpacerItem *espacioDerBotonesUnirse = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *espacioIzqBotonesUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *espacioDerBotonesUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     layoutHorizontalUnirse->addItem(espacioIzqBotonesUnirse);
     layoutHorizontalUnirse->addLayout(botonesUnirse);
@@ -169,6 +180,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
             textoSinPartidas->setText("No hay partidas disponibles...");
             textoSinPartidas->setAlignment(Qt::AlignCenter);
             verticalLayoutUnirse->addWidget(textoSinPartidas);
+            QSpacerItem *espacioUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            verticalLayoutUnirse->addItem(espacioUnirse);
         }
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
             QPushButton *partida = new QPushButton(QString("%1").arg(i));
