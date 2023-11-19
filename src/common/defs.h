@@ -11,6 +11,7 @@
 
 typedef int32_t id;
 typedef int idJugador;
+typedef int idProyectil;
 typedef uint hp;
 
 #define strings std::vector<std::string>
@@ -135,6 +136,7 @@ struct InformacionInicial {
 };
 
 struct RepresentacionProyectil {
+    idProyectil id;
     ArmaProtocolo proyectil;
     bool esFragmento;
     std::pair<coordX,coordY> posicion;
