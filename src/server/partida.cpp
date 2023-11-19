@@ -286,9 +286,13 @@ void Partida::enviarEstadoAJugadores() {
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
+        //TODO: Hack momentaneo
         if (proyectil->armaOrigen == NADA_P
 	  ||
-	  proyectil->armaOrigen == TELETRANSPORTACION_P)
+	  proyectil->armaOrigen == TELETRANSPORTACION_P
+	  ||
+	  proyectil->armaOrigen == BATE_P
+	  )
 	  continue;
         RepresentacionProyectil repre;
         repre.id = proyectil->id;
