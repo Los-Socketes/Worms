@@ -6,7 +6,7 @@ Cliente::Cliente(Socket&& skt):
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
-    dibujador(camara, estado_juego, MAPA_ANCHO, MAPA_ALTO),
+    dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -51,11 +51,15 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
 
+    // TODO: obtener info del mapa desde el servidor.
+    int ancho_mapa = MAPA_ANCHO;
+    int alto_mapa = MAPA_ALTO;
+
+    camara.setDimensionMapa(ancho_mapa, alto_mapa);
+    dibujador.setDimensionMapa(ancho_mapa, alto_mapa);
+
     // Inicializar animaciones.
     dibujador.inicializarAnimaciones(renderizador);
-
-    // TODO: obtener info del mapa desde el servidor.
-    camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);

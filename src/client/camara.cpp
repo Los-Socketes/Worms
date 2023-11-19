@@ -5,7 +5,7 @@ Camara::Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa)
     dimension(ancho, alto),
     dimension_mapa(ancho_mapa, alto_mapa) {}
 
-void Camara::mover(int deltaX, int deltaY) {
+void Camara::mover(int& deltaX, int& deltaY) {
     int nueva_pos_x = posicion.first + deltaX;
     int nueva_pos_y = posicion.second + deltaY;
 
@@ -41,7 +41,7 @@ int Camara::getAlto() {
     return dimension.second;
 }
 
-void Camara::setPosicion(int x, int y) {
+void Camara::setPosicion(int& x, int& y) {
     posicion.first = x;
     posicion.second = y;
 }
@@ -51,7 +51,7 @@ void Camara::setDimension(int ancho, int alto) {
     dimension.second = alto;
 }
 
-void Camara::setDimensionMapa(int ancho, int alto) {
+void Camara::setDimensionMapa(int& ancho, int& alto) {
     dimension_mapa.first = ancho;
     dimension_mapa.second = alto;
 }

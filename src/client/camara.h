@@ -15,16 +15,16 @@ class Camara {
  public:
     Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa);
     
-    void mover(int deltaX, int deltaY);
+    void mover(int& deltaX, int& deltaY);
 
     int getPosicionX();
     int getPosicionY();
     int getAncho();
     int getAlto();
 
-    void setPosicion(int x, int y);
+    void setPosicion(int& x, int& y);
     void setDimension(int ancho, int alto);
-    void setDimensionMapa(int ancho, int alto);
+    void setDimensionMapa(int& ancho, int& alto);
 
     Rect getRectangulo();
 };

@@ -24,15 +24,20 @@ RepresentacionGusano Dibujador::getGusanoActual() {
     return estado_juego->gusanos[0][0];
 }
 
-std::pair<int, int> Dibujador::traducirCoordenadas(coordX x, coordY y) {
+std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
     // Paso de coordenadas en metros a coordenadas en pixeles.
-    // TODO: ver como hacerlo bien. Pruebo con 20 pixeles por metro.
     int coord_x = x * PIXELS_POR_METRO;
     int coord_y = alto_mapa - y * PIXELS_POR_METRO;
     return std::make_pair(coord_x, coord_y);
 }
 
-void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida) {
+void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, int& it) {
+    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * 60) * direccion;
+    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * 60);
+    gestor_animaciones.dibujarReticula(pos_x, pos_y, it);
+}
+
+void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida) {
     // Acomodo la posicion para que quede centrada en el gusano.
     int pos_x = posicion.first - 8;
     int pos_y = posicion.second - 30;
@@ -66,13 +71,18 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int> posicion
     renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 16, 16));
 }
 
+void Dibujador::setDimensionMapa(int ancho, int alto) {
+    ancho_mapa = ancho;
+    alto_mapa = alto;
+    gestor_animaciones.setDimensionMapa(ancho, alto);
+}
 
 void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
     gestor_animaciones.inicializar(renderizador);    
 }
 
 
-void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas) {
+void Dibujador::dibujar(Renderer& renderizador, int& it, std::vector<RepresentacionViga>& vigas) {
     renderizador.Clear();
 
     RepresentacionGusano gusano_actual = getGusanoActual();
@@ -80,30 +90,33 @@ void Dibujador::dibujar(Renderer& renderizador, int it, std::vector<Representaci
     dibujarMapa(vigas);
     dibujarAguaDetras(it);
     dibujarGusanos(renderizador, it);
-    //dibujarProyectiles(it);
+    dibujarProyectiles(it);
     dibujarAguaDelante(it);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
     renderizador.Present();
 }
 
-void Dibujador::dibujarMapa(std::vector<RepresentacionViga> vigas) {
+void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
     // Dibujo la imagen de fondo.
     gestor_animaciones.dibujarFondo();
     // Dibujo el panorama del fondo.
+    std::pair<int, int> posicion;
     for (int i = 0; i < (ancho_mapa / 640 + 1); i++) {
-        gestor_animaciones.dibujarPanorama(i * 640, alto_mapa - 179);
+        posicion.first = i * 640;
+        posicion.second = alto_mapa - 179;
+        gestor_animaciones.dibujarPanorama(posicion.first, posicion.second);
     }
     // Dibujo las vigas.
     for (auto& viga : vigas) {
         // Traduzco las coordenadas de la viga.
-        std::pair<int, int> posicion = traducirCoordenadas(viga.posicionInicial.first, viga.posicionInicial.second);
+        posicion = traducirCoordenadas(viga.posicionInicial.first, viga.posicionInicial.second);
         gestor_animaciones.dibujarViga(posicion.first, posicion.second, viga.longitud, viga.angulo);
     }
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador, int it) {
+void Dibujador::dibujarGusanos(Renderer& renderizador, int& it) {
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
@@ -116,12 +129,9 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int it) {
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
             // Dibujo la reticula del gusano si esta apuntando.
-            int direccion = gusano.dir == DERECHA ? 1 : -1;
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
-                gestor_animaciones.dibujarReticula(
-                    posicion.first + (sin(gusano.armaEquipada.anguloRad + M_PI / 2) * 60) * direccion,
-                    posicion.second + (cos(gusano.armaEquipada.anguloRad + M_PI / 2) * 60),
-                    it);
+                int direccion = gusano.dir == DERECHA ? 1 : -1;
+                dibujarReticula(posicion, gusano.armaEquipada.anguloRad, direccion, it);
             }
                 
         }
@@ -129,33 +139,56 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int it) {
 
 }
 
-// TODO: implementar.
-// void Dibujador::dibujarProyectiles(int it) {}
+void Dibujador::dibujarProyectiles(int& it) {
+    for(auto& proyectil : estado_juego->proyectiles) {
+        // Traduzco las coordenadas del proyectil.
+        std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
+        // Dibujo el proyectil.
+        if (proyectil.exploto) {
+            gestor_animaciones.dibujarExplosion(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, it);
+        } else {
+            gestor_animaciones.dibujarProyectil(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, it);
+        }
+    }    
+}
 
 
-void Dibujador::dibujarAguaDetras(int it) {
+void Dibujador::dibujarAguaDetras(int& it) {
+    std::pair<int, int> posicion;
+    int iteracion;
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
-            gestor_animaciones.dibujarAgua(j * 128 + 64, alto_mapa - 70 + 10 * (i + 1), it + 3*(i+1));
+            posicion.first = j * 128 + 64;
+            posicion.second = alto_mapa - 70 + 10 * (i + 1);
+            iteracion = it + 3*(i+1);
+            gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }
 }
 
-void Dibujador::dibujarAguaDelante(int it) {
+void Dibujador::dibujarAguaDelante(int& it) {
+    std::pair<int, int> posicion;
+    int iteracion;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
-            gestor_animaciones.dibujarAgua(j * 128 + 64, alto_mapa - 50 + 10 * (i + 1), it + 3*(i+3));
+            posicion.first = j * 128 + 64;
+            posicion.second = alto_mapa - 50 + 10 * (i + 1);
+            iteracion = it + 3*(i+3);
+            gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }
 }
 
-void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada) {
+void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada) {
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
     // Dibujo barra de armas abajo a la derecha.
     for (int i = 0; i < 11; i++) {
+        posicion.first = ancho_pantalla - 32 * (11 - i) - 14;
+        posicion.second = alto_pantalla - 46;
         // Dibujo el icono del arma.
-        gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), ancho_pantalla - 32 * (11 - i) - 14, alto_pantalla - 46);
+        gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), posicion.first, posicion.second);
         // Dibujo el borde del icono.
         if (static_cast<ArmaProtocolo>(i) == arma_equipada) {
             renderizador.SetDrawColor(255, 255, 255, 255);
