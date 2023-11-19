@@ -121,6 +121,19 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     tituloUnirse->setAlignment(Qt::AlignCenter);
     verticalLayoutUnirse->addWidget(tituloUnirse);
 
+    QHBoxLayout *layoutHorizontalUnirse = new QHBoxLayout();
+    QVBoxLayout *botonesUnirse = new QVBoxLayout();
+
+    QSpacerItem *espacioIzqBotonesUnirse = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *espacioDerBotonesUnirse = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    layoutHorizontalUnirse->addItem(espacioIzqBotonesUnirse);
+    layoutHorizontalUnirse->addLayout(botonesUnirse);
+    layoutHorizontalUnirse->addItem(espacioDerBotonesUnirse);
+    verticalLayoutUnirse->addLayout(layoutHorizontalUnirse);
+
+
+
     // agrego paginas
     pantallas->addWidget(paginaPrincipal);
     pantallas->addWidget(paginaCrear);
@@ -154,7 +167,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
             QPushButton *partida = new QPushButton(QString("%1").arg(i));
             partida->setFont(letraCustom);
-            verticalLayoutUnirse->addWidget(partida);
+            botonesUnirse->addWidget(partida);
             QObject::connect(partida, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_partida]() {
                 informacion = this->protocolo.unirseAPartida(opciones_partida[i]);
                 mainWindow->close();
