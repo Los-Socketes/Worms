@@ -29,6 +29,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     mainWindow->resize(400, 300);
 
     QStackedWidget *pantallas = new QStackedWidget();
+    
     // creo pagina principal
     QWidget *paginaPrincipal = new QWidget();
     QVBoxLayout *verticalLayoutPrincipal = new QVBoxLayout(paginaPrincipal);
@@ -57,7 +58,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
 
 
-    // creo pagina crear (prueba)
+    // creo pagina crear
     QWidget *paginaCrear = new QWidget();
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
     QLabel *tituloCrear = new QLabel(paginaCrear);
@@ -70,10 +71,24 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     tituloCrear->setAlignment(Qt::AlignCenter);
     verticalLayoutCrear->addWidget(tituloCrear);
 
-    // agrego primera pagina
+
+    // creo pagina unirse
+    QWidget *paginaUnirse = new QWidget();
+    QVBoxLayout *verticalLayoutUnirse = new QVBoxLayout(paginaUnirse);
+    QLabel *tituloUnirse = new QLabel(paginaUnirse);
+    QFont fontTituloUnirse;
+    fontTituloUnirse.setFamily(QString::fromUtf8("Noto Serif Thai"));
+    fontTituloUnirse.setPointSize(40);
+    fontTituloUnirse.setWeight(60);
+    tituloUnirse->setFont(fontTituloUnirse);
+    tituloUnirse->setText("Partidas disponibles:");
+    tituloUnirse->setAlignment(Qt::AlignCenter);
+    verticalLayoutUnirse->addWidget(tituloUnirse);
+
+    // agrego paginas
     pantallas->addWidget(paginaPrincipal);
-    // agrego pagina crear
     pantallas->addWidget(paginaCrear);
+    pantallas->addWidget(paginaUnirse);
 
     mainWindow->setCentralWidget(pantallas);
 
@@ -82,8 +97,8 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
         pantallas->setCurrentIndex(1);
         protocolo.pedirInformacion(MAPA);
         opciones_mapa = protocolo.obtenerMapas();
-        int i;
-        for (i = 0; i < (int)opciones_mapa.size(); i++) {
+
+        for (int i = 0; i < (int)opciones_mapa.size(); i++) {
             QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
             
             verticalLayoutCrear->addWidget(mapa);
@@ -96,20 +111,24 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     });
 
     QObject::connect(unirsePartida, &QPushButton::clicked, [&]() {
+        pantallas->setCurrentIndex(2);
         protocolo.pedirInformacion(PARTIDA);
         opciones_partida = protocolo.obtenerPartidas();
-        std::cout << "Partidas disponibles:" << std::endl;
-        for (const id& id_partida : opciones_partida) {
-            std::cout << std::to_string(pos) << ") " << id_partida << std::endl;
-            pos++;
+
+        for (int i = 0; i < (int)opciones_partida.size(); i++) {
+            QPushButton *partida = new QPushButton(QString("%1").arg(i));
+            
+            verticalLayoutUnirse->addWidget(partida);
+            QObject::connect(partida, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_partida]() {
+                informacion = this->protocolo.unirseAPartida(opciones_partida[i]);
+                mainWindow->close();
+            });
         }
-        std::cin >> sub_opcion;
-        informacion = protocolo.unirseAPartida(opciones_partida[sub_opcion]);
-        mainWindow->close();
+        QCoreApplication::processEvents();
     });
 
     QObject::connect(salir, &QPushButton::clicked, [&]() {
-        mainWindow->close(); // For simplicity, just close the application
+        mainWindow->close();
     });
 
     
