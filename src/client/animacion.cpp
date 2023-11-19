@@ -3,13 +3,14 @@
 Animacion::Animacion(Renderer& render,
     std::string ruta_textura, int tam_x,
     int tam_y, int frames, bool seguir_camara,
-    Centro centro, radianes min, radianes max) :
+    bool es_loop, Centro centro, radianes min, radianes max) :
     renderizador(render),
     frames(frames),
     tam(tam_x, tam_y),
     dimensiones(tam_x, tam_y),
     textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
     seguir_camara(seguir_camara),
+    es_loop(es_loop),
     centro(centro),
     min(min),
     max(max) {
@@ -61,6 +62,10 @@ void Animacion::dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& a
 
 void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad) {
     int frame_actual = (it / velocidad) % frames;
+    // Si no es loop y ya termino la animacion, se queda en el ultimo frame.
+    if (!es_loop && it / velocidad >= frames - 1) {
+        frame_actual = frames - 1;
+    }
     radianes rotacion = 0;
     dibujarComun(camara, pos_x, pos_y, rotacion, flip, frame_actual);
 }
@@ -74,6 +79,10 @@ void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, radia
 
 void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad, radianes& angulo) {
     int frame_actual = (it / velocidad) % frames;
+    // Si no es loop y ya termino la animacion, se queda en el ultimo frame.
+    if (!es_loop && it / velocidad >= frames - 1) {
+        frame_actual = frames - 1;
+    }
     dibujarComun(camara, pos_x, pos_y, angulo, flip, frame_actual);
 }
 

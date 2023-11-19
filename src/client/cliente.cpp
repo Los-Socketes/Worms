@@ -7,6 +7,7 @@ Cliente::Cliente(Socket&& skt):
     estado_juego(std::make_shared<EstadoDelJuego>()),
     camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
     dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT),
+    control_iteracion(estado_juego),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -67,7 +68,6 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
     iniciar();
 
-    int it = 0;
     int tick_anterior = SDL_GetTicks();
     int rate = 1000 / FPS;
     bool continuar = true;
@@ -82,6 +82,9 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     while (continuar) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
+
+        // Actualizo entidades en el iterador.
+        control_iteracion.actualizarEntidades();     
 
         // Chequeo comandos de teclado.
         Comando comando;
@@ -110,8 +113,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         }
 
         // Renderizo.
-        // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, info_inicial.vigas, pos_cursor);
+        dibujador.dibujar(renderizador, control_iteracion, info_inicial.vigas, pos_cursor);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();
@@ -121,14 +123,14 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
             int ticks_detras = -descanso;
             int ticks_perdidos = ticks_detras / ticks_detras % rate;
             tick_anterior += ticks_perdidos;
-            it += int(ticks_detras / rate);
+            control_iteracion.aumentarIteraciones(ticks_detras / rate);
         }
         else {
             SDL_Delay(descanso);
         }
     
         tick_anterior += rate;
-        it++;
+        control_iteracion.aumentarIteraciones(1);
 
     }
 }

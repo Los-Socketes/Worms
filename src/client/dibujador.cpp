@@ -31,10 +31,10 @@ std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
     return std::make_pair(coord_x, coord_y);
 }
 
-void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, int& it) {
+void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones) {
     int pos_x = posicion.first + (sin(angulo + M_PI / 2) * 60) * direccion;
     int pos_y = posicion.second + (cos(angulo + M_PI / 2) * 60);
-    gestor_animaciones.dibujarReticula(pos_x, pos_y, it);
+    gestor_animaciones.dibujarReticula(pos_x, pos_y, iteraciones.getIteracionGlobal());
 }
 
 void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida) {
@@ -83,7 +83,7 @@ void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
 
 
 void Dibujador::dibujar(Renderer& renderizador,
-    int& it,
+    ControlIteracion& iteraciones,
     std::vector<RepresentacionViga>& vigas,
     std::pair<int, int>& pos_cursor) {
     renderizador.Clear();
@@ -91,10 +91,10 @@ void Dibujador::dibujar(Renderer& renderizador,
     RepresentacionGusano gusano_actual = getGusanoActual();
 
     dibujarMapa(vigas);
-    dibujarAguaDetras(it);
-    dibujarGusanos(renderizador, it, pos_cursor);
-    dibujarProyectiles(it);
-    dibujarAguaDelante(it);
+    dibujarAguaDetras(iteraciones);
+    dibujarGusanos(renderizador, iteraciones, pos_cursor);
+    dibujarProyectiles(iteraciones);
+    dibujarAguaDelante(iteraciones);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
 
     renderizador.Present();
@@ -119,7 +119,7 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador, int& it, std::pair<int, int>& pos_cursor) {
+void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor) {
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
@@ -128,20 +128,20 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int& it, std::pair<int, i
             // Dibujo al gusano.
             // Traduzco las coordenadas del gusano.
             std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
-            gestor_animaciones.dibujarGusano(gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, it);
+            gestor_animaciones.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
             // Dibujo la reticula del gusano si esta apuntando.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
-                dibujarReticula(posicion, gusano.armaEquipada.anguloRad, direccion, it);
+                dibujarReticula(posicion, gusano.armaEquipada.anguloRad, direccion, iteraciones);
             }
             if (gusano.estado != DISPARANDO && 
                 (gusano.armaEquipada.arma == ATAQUE_AEREO_P ||
                 gusano.armaEquipada.arma == TELETRANSPORTACION_P)) {
                 int pos_x = pos_cursor.first;
                 int pos_y = pos_cursor.second;
-                gestor_animaciones.dibujarCursor(pos_x, pos_y, it);
+                gestor_animaciones.dibujarCursor(pos_x, pos_y, iteraciones.getIteracionGlobal());
             }
                                 
         }
@@ -149,41 +149,41 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, int& it, std::pair<int, i
 
 }
 
-void Dibujador::dibujarProyectiles(int& it) {
+void Dibujador::dibujarProyectiles(ControlIteracion& iteraciones) {
     for(auto& proyectil : estado_juego->proyectiles) {
         // Traduzco las coordenadas del proyectil.
         std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
         // Dibujo el proyectil.
         if (proyectil.exploto) {
-            gestor_animaciones.dibujarExplosion(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, it);
+            gestor_animaciones.dibujarExplosion(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, iteraciones);
         } else {
-            gestor_animaciones.dibujarProyectil(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, it);
+            gestor_animaciones.dibujarProyectil(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, iteraciones);
         }
     }    
 }
 
 
-void Dibujador::dibujarAguaDetras(int& it) {
+void Dibujador::dibujarAguaDetras(ControlIteracion& iteraciones) {
     std::pair<int, int> posicion;
     int iteracion;
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
             posicion.first = j * 128 + 64;
             posicion.second = alto_mapa - 70 + 10 * (i + 1);
-            iteracion = it + 3*(i+1);
+            iteracion = iteraciones.getIteracionGlobal() + 3*(i+1);
             gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }
 }
 
-void Dibujador::dibujarAguaDelante(int& it) {
+void Dibujador::dibujarAguaDelante(ControlIteracion& iteraciones) {
     std::pair<int, int> posicion;
     int iteracion;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < (ancho_mapa / 128 + 1); j++) {
             posicion.first = j * 128 + 64;
             posicion.second = alto_mapa - 50 + 10 * (i + 1);
-            iteracion = it + 3*(i+3);
+            iteracion = iteraciones.getIteracionGlobal() + 3*(i+3);
             gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }

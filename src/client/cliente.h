@@ -15,6 +15,7 @@
 #include "defs.h"
 #include "accioncliente.h"
 #include "dibujador.h"
+#include "controliteracion.h"
 
 using namespace SDL2pp;
 
@@ -37,6 +38,7 @@ class Cliente {
     std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
+    ControlIteracion control_iteracion;
     Menu menu;
     Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
@@ -49,6 +51,7 @@ class Cliente {
 
     // Inicia los hilos.
     void iniciar();
+
  public:
     Cliente(Socket&& skt);
     
