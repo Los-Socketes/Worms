@@ -47,6 +47,31 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     logo->setPixmap(fotoLogo);
     logo->setAlignment(Qt::AlignCenter);
     verticalLayoutPrincipal->addWidget(logo);
+    // agrego horizontal layout para centrar los botones
+    QHBoxLayout *layoutHorizontalPrincipal = new QHBoxLayout(paginaPrincipal);
+    QVBoxLayout *botonesPrincipal = new QVBoxLayout(paginaPrincipal);
+    QPushButton *crearPartida = new QPushButton(paginaPrincipal);
+    crearPartida->setText("Crear una partida");
+    crearPartida->setFont(letraCustom);
+    botonesPrincipal->addWidget(crearPartida);
+
+    QPushButton *unirsePartida = new QPushButton(paginaPrincipal);
+    unirsePartida->setText("Unirse a una partida");
+    unirsePartida->setFont(letraCustom);
+    botonesPrincipal->addWidget(unirsePartida);
+
+    QPushButton *salir = new QPushButton(paginaPrincipal);
+    salir->setText("Salir");
+    salir->setFont(letraCustom);
+    botonesPrincipal->addWidget(salir);
+
+    QSpacerItem *espacioIzquierdaBotones = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *espacioDerechaBotones = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    layoutHorizontalPrincipal->addItem(espacioIzquierdaBotones);
+    layoutHorizontalPrincipal->addItem(botonesPrincipal);
+    layoutHorizontalPrincipal->addItem(espacioDerechaBotones);
+    verticalLayoutPrincipal->addItem(layoutHorizontalPrincipal);
     // QLabel *titulo = new QLabel(paginaPrincipal);
     // QFont fontTitulo;
     // fontTitulo.setFamily(letraCustom);
@@ -58,22 +83,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     // titulo->setAlignment(Qt::AlignCenter);
     // verticalLayoutPrincipal->addWidget(titulo);
 
-    QPushButton *crearPartida = new QPushButton(paginaPrincipal);
-    crearPartida->setText("Crear una partida");
-    crearPartida->setFont(letraCustom);
-    verticalLayoutPrincipal->addWidget(crearPartida);
-
-    QPushButton *unirsePartida = new QPushButton(paginaPrincipal);
-    unirsePartida->setText("Unirse a una partida");
-    unirsePartida->setFont(letraCustom);
-    verticalLayoutPrincipal->addWidget(unirsePartida);
-
-    QPushButton *salir = new QPushButton(paginaPrincipal);
-    salir->setText("Salir");
-    salir->setFont(letraCustom);
-    verticalLayoutPrincipal->addWidget(salir);
-
-
 
     // creo pagina crear
     QWidget *paginaCrear = new QWidget();
@@ -82,7 +91,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     logoCrear->setPixmap(fotoLogo);
     logoCrear->setAlignment(Qt::AlignCenter);
     verticalLayoutCrear->addWidget(logoCrear);
-    
+
     QLabel *tituloCrear = new QLabel(paginaCrear);
     QFont fontTituloCrear;
     fontTituloCrear.setFamily(letraCustom);
