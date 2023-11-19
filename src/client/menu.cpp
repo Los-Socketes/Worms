@@ -28,34 +28,35 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setWindowTitle("Worms");
-    mainWindow->resize(400, 300);
+    // mainWindow->setFixedSize(700, 500);
 
     // creo letra "custom" en base a la tipografia que tenemos
-    int fontId = QFontDatabase::addApplicationFont("../build/assets/fonts/AdLibRegular.ttf");
+    int fontId = QFontDatabase::addApplicationFont("assets/fonts/AdLibRegular.ttf");
     QString letraCustom = QFontDatabase::applicationFontFamilies(fontId).at(0);
 
     QStackedWidget *pantallas = new QStackedWidget();
     // seteo fondo
     // pantallas->setStyleSheet("background-image: url(../build/assets/sprites/back.png);");
+    pantallas->setStyleSheet("background-color: #cc8835;");
     // creo pagina principal
-    QPixmap fotoLogo("../build/assets/menu/WormsLogo.png");
+    QPixmap fotoLogo("assets/menu/WormsLogo.png");
 
     QWidget *paginaPrincipal = new QWidget();
     QVBoxLayout *verticalLayoutPrincipal = new QVBoxLayout(paginaPrincipal);
     QLabel *logo = new QLabel(paginaPrincipal);
     logo->setPixmap(fotoLogo);
-    // logo->setAlignment(Qt::AlignCenter);
+    logo->setAlignment(Qt::AlignCenter);
     verticalLayoutPrincipal->addWidget(logo);
-    QLabel *titulo = new QLabel(paginaPrincipal);
-    QFont fontTitulo;
-    fontTitulo.setFamily(letraCustom);
-    fontTitulo.setPointSize(80);
-    fontTitulo.setBold(true);
-    fontTitulo.setWeight(75);
-    titulo->setFont(fontTitulo);
-    titulo->setText("WORMS");
-    titulo->setAlignment(Qt::AlignCenter);
-    verticalLayoutPrincipal->addWidget(titulo);
+    // QLabel *titulo = new QLabel(paginaPrincipal);
+    // QFont fontTitulo;
+    // fontTitulo.setFamily(letraCustom);
+    // fontTitulo.setPointSize(80);
+    // fontTitulo.setBold(true);
+    // fontTitulo.setWeight(75);
+    // titulo->setFont(fontTitulo);
+    // titulo->setText("WORMS");
+    // titulo->setAlignment(Qt::AlignCenter);
+    // verticalLayoutPrincipal->addWidget(titulo);
 
     QPushButton *crearPartida = new QPushButton(paginaPrincipal);
     crearPartida->setText("Crear una partida");
