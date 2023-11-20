@@ -261,7 +261,7 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     this->seUnioJugador.notify_all();
 }
 
-void Partida::enviarEstadoAJugadores() {
+bool Partida::enviarEstadoAJugadores() {
     //TODO esto deberia ser un puntero
     std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
@@ -307,12 +307,14 @@ void Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
+    bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
             cliente->enviarEstadoJuego(estadoActual);
+            hayJugadores = true;
         }
     }
-
+    return hayJugadores;
 }
 
 
@@ -465,10 +467,10 @@ void Partida::gameLoop() {
     nuevoProyectil->exploto = false;
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
-
-    while (true) {
+    bool hayJugadores = true;
+    while (hayJugadores) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
-        this->enviarEstadoAJugadores();
+        hayJugadores = this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;

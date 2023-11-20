@@ -22,7 +22,6 @@ void Sender::enviarEstado() {
         // atrapo error de que se cierre la queue
         catch(const ClosedQueue e)
         {
-            std::cout << "entre a catch\n";
             // std::cerr << e.what() << '\n';
             return;
         }
