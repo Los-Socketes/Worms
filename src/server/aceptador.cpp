@@ -50,7 +50,7 @@ void Aceptador::kill() {
             delete cliente;
         }
     }
-    
+    reap_dead();
     this->socket.shutdown(SHUT_RDWR);
     this->socket.close();
 }

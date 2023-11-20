@@ -19,53 +19,67 @@ Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida
         this->acciones = nullptr;
     }
 
-void Reciever::lobby() {
+bool Reciever::lobby() {
+    bool envio = true;
     tipoInfo pedido;
     pedido = this->protocolo.obtenerPedido();
     id partidaElegida;
     switch (pedido) {
         case MAPA:
-	  {
-	      //Le mando los mapas que me dieron
-	      this->protocolo.enviarMapas(mapasDisponibles);
+	    {
+        //Le mando los mapas que me dieron
+        envio = this->protocolo.enviarMapas(mapasDisponibles);
+        if (!envio) {
+            return false;
+        }
+        //Me devuelve el indice del mapas deseado
+        id mapaDeseado = this->protocolo.obtenerMapaDeseado();
+        if (mapaDeseado == INVAL_ID) {
+            return false;
+        }
+        std::string nombreMapaDeseado;
+        nombreMapaDeseado = mapasDisponibles.at(mapaDeseado);
 
-	      //Me devuelve el indice del mapas deseado
-	      id mapaDeseado = this->protocolo.obtenerMapaDeseado();
-	      std::string nombreMapaDeseado;
-	      nombreMapaDeseado = mapasDisponibles.at(mapaDeseado);
+        partidaElegida = partidas.anadirPartida(nombreMapaDeseado);
 
-	      partidaElegida = partidas.anadirPartida(nombreMapaDeseado);
-
-	  break;
-	  }
+        break;
+        }
         case PARTIDA:
-	  {
-	  std::vector<RepresentacionPartida> partidasAEnviar;
-	  partidasAEnviar = partidas.partidasDisponibles();
+        {
+        std::vector<RepresentacionPartida> partidasAEnviar;
+        partidasAEnviar = partidas.partidasDisponibles();
 
-	  this->protocolo.enviarPartidas(partidasAEnviar);
-
-	  partidaElegida = this->protocolo.obtenerPartidaDeseada();
-	  break;
-	  }
+        envio = this->protocolo.enviarPartidas(partidasAEnviar);
+        if (!envio) {
+            return false;
+        }
+        partidaElegida = this->protocolo.obtenerPartidaDeseada();
+        if (partidaElegida == INVAL_ID) {
+            return false;
+        }
+        break;
+        }
         case INVAL_TIPO:
-	  {
-	  //TODO: _hacer algo_
-	//   abort();
-	//   break;
-      return;
-	  }
+        {
+        //TODO: _hacer algo_
+        //   abort();
+        //   break;
+        return false;
+        }
     }
 
     InformacionInicial infoInicial;
     infoInicial = partidas.obtenerInfoInicialDePartida(partidaElegida);
     // infoInicial = partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
 
-    this->protocolo.enviarConfirmacion(infoInicial);
-
+    envio = this->protocolo.enviarConfirmacion(infoInicial);
+    if (!envio) {
+        return false;
+    }
     partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
     // TODO: cambiar a que sea de cliente o algo idk
     this->miId = infoInicial.jugador;
+    return true;
 }
 
 
@@ -80,7 +94,9 @@ void Reciever::obtener(Queue<Accion> *accionesRecibidas) {
 void Reciever::run() {
     //TODO Cambiar a socket vivo o algo
     try {
-        lobby();
+        if (!lobby()) {
+            return;
+        }
         while (true) {
             Accion accionDeseada;
             accionDeseada = this->protocolo.obtenerAccion();
