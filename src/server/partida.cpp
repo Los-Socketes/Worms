@@ -336,7 +336,8 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 	  accionAEjecutar = ultimaAccion;
        }
        else if (tipoUltimaAccion == ATAQUE) {
-	 accionAEjecutar = ultimaAccion;
+	 // accionAEjecutar = ultimaAccion;
+	 // accionAEjecutar.accion = ESTAQUIETO;
        }
        else {
 	  // accionAEjecutar = ultimaAccion;
