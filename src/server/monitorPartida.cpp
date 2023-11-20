@@ -44,6 +44,7 @@ void MonitorPartida::anadirJugadorAPartida(Cliente *nuevoCliente, id partidaEspe
 }
 
 std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
+    std::unique_lock<std::mutex> lck(mtx);
     std::vector<RepresentacionPartida> partidasAEnviar;
 
     //Fuente: https://stackoverflow.com/a/26282004/13683575

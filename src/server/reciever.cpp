@@ -100,6 +100,9 @@ void Reciever::run() {
         while (true) {
             Accion accionDeseada;
             accionDeseada = this->protocolo.obtenerAccion();
+            if (accionDeseada.accion == INVAL_ACCION) {
+                break;
+            }
             accionDeseada.jugador = this->miId;
 
             this->acciones->push(accionDeseada);

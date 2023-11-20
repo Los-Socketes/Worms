@@ -339,7 +339,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         accionAEjecutar = ultimaAccion;
     }
     else {
-    // accionAEjecutar = ultimaAccion;
+        accionAEjecutar = ultimaAccion;
         accionAEjecutar.accion = ESTAQUIETO;
     }
 
@@ -480,16 +480,16 @@ void Partida::gameLoop() {
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         if (nuevoProyectil->countdown == 0) {
-	  nuevoProyectil->armaOrigen = ataqueARealizar.arma;
-	  nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
-	  nuevoProyectil->posicion = ataqueARealizar.posicion;
-	  nuevoProyectil->exploto = false;
+            nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+            nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
+            nuevoProyectil->posicion = ataqueARealizar.posicion;
+            nuevoProyectil->exploto = false;
         }
         
         else {
-	  nuevoProyectil->countdown -= 1;
-	  ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-	  ataqueARealizar.posicion = nuevoProyectil->posicion;
+            nuevoProyectil->countdown -= 1;
+            ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+            ataqueARealizar.posicion = nuevoProyectil->posicion;
         }
 
 
