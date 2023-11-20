@@ -76,11 +76,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     QWidget *paginaCrear = new QWidget();
     QVBoxLayout *verticalLayoutCrear = new QVBoxLayout(paginaCrear);
 
-    QPushButton *volverEnCrear = new QPushButton(paginaCrear);
-    volverEnCrear->setText("Volver");
-    volverEnCrear->setFont(letraCustom);
-    verticalLayoutCrear->addWidget(volverEnCrear);
-
     QLabel *logoCrear = new QLabel(paginaCrear);
     logoCrear->setPixmap(fotoLogo);
     logoCrear->setAlignment(Qt::AlignCenter);
@@ -106,11 +101,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     layoutHorizontalCrear->addLayout(botonesCrear);
     layoutHorizontalCrear->addItem(espacioDerBotonesCrear);
     verticalLayoutCrear->addLayout(layoutHorizontalCrear);
-
-    QObject::connect(volverEnCrear, &QPushButton::clicked, [&]() {
-        pantallas->setCurrentIndex(0);
-        // QCoreApplication::processEvents();
-    });
 
 
     // creo pagina unirse
