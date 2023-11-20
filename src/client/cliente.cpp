@@ -61,7 +61,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     dibujador.setDimensionMapa(ancho_mapa, alto_mapa);
 
     // Inicializar animaciones.
-    dibujador.inicializarAnimaciones(renderizador);
+    dibujador.inicializar(renderizador);
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);

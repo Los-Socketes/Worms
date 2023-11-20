@@ -6,7 +6,8 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     ancho_mapa(ancho_mapa),
     alto_mapa(alto_mapa),
     gestor_animaciones(camara, ancho_mapa, alto_mapa),
-    fuente("assets/fonts/AdLibRegular.ttf", 12) {}
+    fuente1("assets/fonts/AdLibRegular.ttf", 32),
+    fuente2("assets/fonts/ANDYB.TTF", 32) {}
 
 RepresentacionGusano Dibujador::getGusanoActual() {
     /* RepresentacionGusano gusano_actual;
@@ -60,15 +61,69 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
     renderizador.DrawRect(coord_x - 2, coord_y - 2, coord_x + 18, coord_y + 14);
 
     // Dibujo el borde de la vida.
-    fuente.SetOutline(2);
-    Texture textura_vida_outline(renderizador, fuente.RenderText_Blended(std::to_string(vida), {0, 0, 0, 255}));
+    fuente1.SetOutline(2);
+    Texture textura_vida_outline(renderizador, fuente1.RenderText_Blended(std::to_string(vida), {0, 0, 0, 255}));
     renderizador.Copy(textura_vida_outline, NullOpt, Rect(coord_x, coord_y, 16, 16));
 
     // Dibujo la vida.
     // TODO: colores segun jugador.
-    fuente.SetOutline(0);
-    Texture textura_vida(renderizador, fuente.RenderText_Blended(std::to_string(vida), {255, 255, 0, 255}));
+    fuente1.SetOutline(0);
+    Texture textura_vida(renderizador, fuente1.RenderText_Blended(std::to_string(vida), {255, 255, 0, 255}));
     renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 16, 16));
+}
+
+void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i) {
+    int tamanio = i * 20;
+    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i * (60 - 10))) * direccion - tamanio / 2;
+    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i * (60 - 10))) - tamanio / 2;
+
+    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tamanio, tamanio));
+    
+    int coord_x = pos_x - camara.getPosicionX();
+    int coord_y = pos_y - camara.getPosicionY();
+    
+    // Si no hay interseccion no se renderiza.
+    if (!rect_interseccion) {
+        return;
+    }
+
+    // Dibujo el cuadrado, el color depende de la potencia, va de amarillo a rojo.
+    renderizador.SetDrawColor(255, 255 * (1 - i), 0, 255);
+    renderizador.FillRect(coord_x, coord_y, coord_x + tamanio, coord_y + tamanio);
+}
+
+void Dibujador::dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia) {
+    // Potencia va de 0 a 1, y avanza en 0.05.
+    // Dibujo cuadrado con SDL que van creciendo en tamaño, para el angulo y la direccion.
+    for (float i = 0; i <= potencia; i += 0.1) {
+        dibujarCuadradoPotencia(renderizador, posicion, angulo, direccion, i);
+    }
+}
+
+void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, int& cuenta_regresiva) {
+    // Dibujo el temporizador al lado del gusano.
+    int pos_x = posicion.first + 20;
+    int pos_y = posicion.second - 30;
+
+    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, 16, 16));
+
+    int coord_x = pos_x - camara.getPosicionX();
+    int coord_y = pos_y - camara.getPosicionY();
+
+    // Si no hay interseccion no se renderiza.
+    if (!rect_interseccion) {
+        return;
+    }
+
+    // Dibujo el borde del temporizador.
+    fuente1.SetOutline(2);
+    Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(std::to_string(cuenta_regresiva), {0, 0, 0, 255}));
+    renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(coord_x, coord_y, 12, 12));
+
+    // Dibujo el temporizador.
+    fuente1.SetOutline(0);
+    Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(std::to_string(cuenta_regresiva), {255, 255, 255, 255}));
+    renderizador.Copy(textura_cuenta, NullOpt, Rect(coord_x, coord_y, 12, 12));
 }
 
 void Dibujador::setDimensionMapa(int ancho, int alto) {
@@ -77,8 +132,19 @@ void Dibujador::setDimensionMapa(int ancho, int alto) {
     gestor_animaciones.setDimensionMapa(ancho_mapa, alto_mapa);
 }
 
-void Dibujador::inicializarAnimaciones(Renderer& renderizador) {
-    gestor_animaciones.inicializar(renderizador);    
+void Dibujador::inicializar(Renderer& renderizador) {
+    gestor_animaciones.inicializar(renderizador);
+    teclas_armas[NADA_P] = "R";
+    teclas_armas[BAZOOKA_P] = "1";
+    teclas_armas[MORTERO_P] = "2";
+    teclas_armas[GRANADA_VERDE_P] = "3";
+    teclas_armas[GRANADA_ROJA_P] = "4";
+    teclas_armas[GRANADA_SANTA_P] = "5";
+    teclas_armas[BANANA_P] = "6";
+    teclas_armas[DINAMITA_P] = "7";
+    teclas_armas[BATE_P] = "8";
+    teclas_armas[ATAQUE_AEREO_P] = "9";
+    teclas_armas[TELETRANSPORTACION_P] = "0";
 }
 
 
@@ -124,10 +190,15 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraci
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
         for (auto& gusano : jugador.second) {
-            // TODO: dibujar barra de potencia si esta disparando.
-            // Dibujo al gusano.
             // Traduzco las coordenadas del gusano.
             std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
+            
+            // Dibujo la barra de potencia del gusano si esta cargando.
+            if (gusano.estado == QUIETO && gusano.armaEquipada.tienePotenciaVariable) {
+                int direccion = gusano.dir == DERECHA ? 1 : -1;
+                dibujarBarraPotencia(renderizador, posicion, gusano.armaEquipada.anguloRad, direccion, gusano.armaEquipada.potencia);
+            }
+            // Dibujo al gusano.
             gestor_animaciones.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
@@ -136,7 +207,12 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraci
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
                 dibujarReticula(posicion, gusano.armaEquipada.anguloRad, direccion, iteraciones);
             }
-            if (gusano.estado != DISPARANDO && 
+            // Dibujo la cuenta regresiva del arma si la tiene.
+            if (gusano.estado == QUIETO && gusano.armaEquipada.tieneCuentaRegresiva) {
+                dibujarCuentaRegresiva(renderizador, posicion, gusano.armaEquipada.cuentaRegresiva);
+            }
+            // Dibujo el cursor si el gusano no disparo y no esta usando un arma que requiera apuntar.
+            if (gusano.idGusano == estado_juego->gusanoDeTurno && gusano.estado != DISPARANDO && 
                 (gusano.armaEquipada.arma == ATAQUE_AEREO_P ||
                 gusano.armaEquipada.arma == TELETRANSPORTACION_P)) {
                 int pos_x = pos_cursor.first;
@@ -199,6 +275,10 @@ void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_eq
         posicion.second = alto_pantalla - 46;
         // Dibujo el icono del arma.
         gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), posicion.first, posicion.second);
+        // Dibujo la tecla asociada al arma.
+        fuente2.SetOutline(0);
+        Texture textura_tecla(renderizador, fuente2.RenderText_Blended(teclas_armas[static_cast<ArmaProtocolo>(i)], {255, 255, 255, 255}));
+        renderizador.Copy(textura_tecla, NullOpt, Rect(posicion.first - 6, posicion.second - 32, 12, 16));
         // Dibujo el borde del icono.
         if (static_cast<ArmaProtocolo>(i) == arma_equipada) {
             renderizador.SetDrawColor(255, 255, 255, 255);

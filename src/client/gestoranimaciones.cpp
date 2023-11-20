@@ -136,7 +136,7 @@ void GestorAnimaciones::inicializar(Renderer& renderizador) {
     proyectiles[std::make_pair(BANANA_P, true)]->setDimensiones(30, 30);
     // Dinamita.
     proyectiles[std::make_pair(DINAMITA_P, false)] = std::make_shared<Animacion>(
-        renderizador, "assets/sprites/dynamite.png", 60, 60, 75, true, true);
+        renderizador, "assets/sprites/dynamite.png", 60, 60, 6, true, true);
     // Ataque aereo.
     proyectiles[std::make_pair(ATAQUE_AEREO_P, false)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/airmisl.png", 60, 60, 32, true, false, CENTRO, 0, 2 * M_PI);
@@ -209,13 +209,13 @@ void GestorAnimaciones::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocol
     // Si la animacion cambio, reseteo el iterador.
     iteraciones.actualizarAnimacionProyectil(id_proyectil, escenario[EXPLOSION]);
     if (es_fragmento) {
-        escenario[EXPLOSION]->setDimensiones(30, 30);
-    } else if (proyectil == DINAMITA_P) {
         escenario[EXPLOSION]->setDimensiones(70, 70);
+    } else if (proyectil == DINAMITA_P) {
+        escenario[EXPLOSION]->setDimensiones(120, 120);
     } else if (proyectil == GRANADA_SANTA_P) {
-        escenario[EXPLOSION]->setDimensiones(100, 100);
+        escenario[EXPLOSION]->setDimensiones(200, 200);
     } else {
-        escenario[EXPLOSION]->setDimensiones(50, 50);
+        escenario[EXPLOSION]->setDimensiones(100, 100);
     }
     escenario[EXPLOSION]->dibujar(camara, pos_x, pos_y, false, iteraciones.getIteracionProyectil(id_proyectil), 1);
 }

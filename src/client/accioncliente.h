@@ -58,6 +58,24 @@ class AccionCambiarCoordenadas : public AccionCliente {
     ~AccionCambiarCoordenadas() override = default;
 };
 
+class AccionCambiarPotencia : public AccionCliente {
+ private:
+    float potencia;
+ public:
+    AccionCambiarPotencia(float potencia);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarPotencia() override = default;
+};
+
+class AccionCambiarCuentaRegresiva : public AccionCliente {
+ private:
+    int cuenta_regresiva;
+ public:
+    AccionCambiarCuentaRegresiva(int cuenta_regresiva);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarCuentaRegresiva() override = default;
+};
+
 class AccionDisparar : public AccionCliente {
  public:
     AccionDisparar();
