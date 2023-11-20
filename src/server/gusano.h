@@ -16,6 +16,7 @@ struct Proyectil {
     int id;
     int countdown;
     b2Vec2 *cuerpo;
+    bool exploto;
 };
 
 struct Ataque {

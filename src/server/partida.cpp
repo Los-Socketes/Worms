@@ -301,7 +301,7 @@ void Partida::enviarEstadoAJugadores() {
         repre.posicion = deb2VecACoord(proyectil->posicion);
         repre.angulo = 0.0f;
         repre.cuentaRegresiva = proyectil->countdown;
-        repre.exploto = false;
+        repre.exploto = proyectil->exploto;
 
         proyectilesRepre.push_back(repre);
     }
@@ -384,6 +384,8 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     else if (arma == DINAMITA_P) {
         if (countdown > 0)
 	  return;
+        //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
+        proyectil->exploto = true;
 
         printf("KATAPUM\n");
         int numRays = 32;
@@ -455,6 +457,7 @@ void Partida::gameLoop() {
     nuevoProyectil->id = 0;
     nuevoProyectil->countdown = 0;
     nuevoProyectil->cuerpo = nullptr;
+    nuevoProyectil->exploto = false;
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
@@ -476,6 +479,7 @@ void Partida::gameLoop() {
 	  nuevoProyectil->armaOrigen = ataqueARealizar.arma;
 	  nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
 	  nuevoProyectil->posicion = ataqueARealizar.posicion;
+	  nuevoProyectil->exploto = false;
         }
         
         else {
