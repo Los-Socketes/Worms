@@ -308,7 +308,9 @@ void Partida::enviarEstadoAJugadores() {
     estadoActual->proyectiles = proyectilesRepre;
 
     for(Cliente *cliente : this->clientes) {
-        cliente->enviarEstadoJuego(estadoActual);
+        if (cliente != nullptr && !cliente->estaMuerto()) {
+            cliente->enviarEstadoJuego(estadoActual);
+        }
     }
 
 }

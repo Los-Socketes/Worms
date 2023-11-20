@@ -15,11 +15,14 @@ void Sender::enviarEstado() {
     while (!this->estadoAEnviar.is_closed()) {
         try {
             nuevoEstado = this->estadoAEnviar.pop();
-            this->protocol.enviarEstadoDelJuego(nuevoEstado);
+            if (!this->protocol.enviarEstadoDelJuego(nuevoEstado)) {
+                break;
+            }
         }
         // atrapo error de que se cierre la queue
         catch(const ClosedQueue e)
         {
+            std::cout << "entre a catch\n";
             // std::cerr << e.what() << '\n';
             return;
         }
@@ -29,5 +32,7 @@ void Sender::enviarEstado() {
 
 
 void Sender::stop() {
-    this->estadoAEnviar.close();
+    if (!this->estadoAEnviar.is_closed()) {
+        this->estadoAEnviar.close();
+    }
 }
