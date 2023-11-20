@@ -79,7 +79,10 @@ public:
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
 
-    [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
+    [[nodiscard]] std::pair<
+        float,
+        std::pair<inicioCaja, finCaja>
+        > ejecutarGolpe();
 };
 
 #endif

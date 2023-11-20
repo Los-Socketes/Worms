@@ -359,8 +359,10 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     // Arma *nuevaArma = new Arma();
     // nuevaEntidad->arma = nuevaArma;
     else if (arma == BATE_P) {
+        std::pair<float, std::pair<inicioCaja, finCaja>> anguloYCaja;
+        anguloYCaja = gusano->ejecutarGolpe();
         std::pair<inicioCaja, finCaja> coordsGolpe;
-        coordsGolpe = gusano->getAreaGolpe();
+        coordsGolpe = anguloYCaja.second;
 
         ResolvedorQuery query;
         b2AABB aabb;

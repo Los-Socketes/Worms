@@ -33,11 +33,24 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
+std::pair<float, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     //Esta funcion crea la hitbox donde que el gusano va a usar para
     //pegar. Es una caja con coordenadas inferior izquierda y sup derecha
+    std::pair<
+        int,
+        std::pair<inicioCaja, finCaja>
+        > anguloYCaja;
+
+    //Angulo
+    anguloYCaja.first = this->armaSeleccionada.getAngulo();
+
+
+
+    //CAJA
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
+
+    std::cout << "ANGULO" << this->armaSeleccionada.getAngulo() << "\n";
 
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
@@ -65,8 +78,9 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
+    anguloYCaja.second = vecs;
 
-    return vecs;
+    return anguloYCaja;
 }
 
 
