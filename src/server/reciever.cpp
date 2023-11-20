@@ -16,6 +16,7 @@ class MonitorPartida {public: [[nodiscard]] id anadirPartida(std::string mapaNom
 Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente) 
     : protocolo(protocol), partidas(monitorPartidas), cliente(cliente) {
         this->mapasDisponibles = mapasDisponibles;
+        this->acciones = nullptr;
     }
 
 void Reciever::lobby() {
