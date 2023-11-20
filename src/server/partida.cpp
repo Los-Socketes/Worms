@@ -186,7 +186,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     for (int i = 0 ;i < CANTGUSANOS; i++) {
         //TODO Hacer las coordenadas distintas
 
-        std::pair<coordX, coordY> coordsIniciales(5.0f,23.0f);
+        std::pair<coordX, coordY> coordsIniciales(15.0f,23.0f);
       
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
