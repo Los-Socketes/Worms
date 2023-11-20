@@ -1,6 +1,7 @@
 #include "gusano.h"
 #include <iostream>
 #include "box2dDefs.h"
+#include <math.h>       /* sin */
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -33,16 +34,39 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<float, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
+std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     //Esta funcion crea la hitbox donde que el gusano va a usar para
     //pegar. Es una caja con coordenadas inferior izquierda y sup derecha
     std::pair<
-        int,
+        b2Vec2,
         std::pair<inicioCaja, finCaja>
-        > anguloYCaja;
+        > golpeYCaja;
 
     //Angulo
-    anguloYCaja.first = this->armaSeleccionada.getAngulo();
+    //Usando trigonometria  vamos a obtener los vectores dado el angulo
+    //WARNING: HARDCODEO La potencia
+    /*
+           /| 
+          / |
+         /  |
+        /   | Opuesto (y)
+       /    |
+      /_____|
+      Adyacente(x)
+     */
+    float potencia = 2;
+    float hipotenusa = 1 * potencia;
+    float angulo = this->armaSeleccionada.getAngulo();
+
+    //SOHCAHTOA
+    float adyacente;
+    adyacente = cos(angulo) * hipotenusa;
+
+    float opuesto;
+    opuesto = sin(angulo) * hipotenusa;
+
+    b2Vec2 golpeDeseado(adyacente, opuesto);
+    golpeYCaja.first = golpeDeseado;
 
 
 
@@ -78,9 +102,9 @@ std::pair<float, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
-    anguloYCaja.second = vecs;
+    golpeYCaja.second = vecs;
 
-    return anguloYCaja;
+    return golpeYCaja;
 }
 
 
@@ -143,10 +167,10 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-void Gusano::recibirDano() {
+void Gusano::recibirDano(b2Vec2 golpe) {
     //TODO switch dependiendo del arma de this
     this->vida -= 20;
-    this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+    this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 }
 
 void Gusano::preparar(Accion& accion) {
