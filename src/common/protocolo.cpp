@@ -401,7 +401,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     }
     cantJugadores = ntohs(cantJugadores);
 
-    std::map<idJugador,std::vector<RepresentacionGusano>> gusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
     for (int16_t i = 0; i < cantJugadores; i++) {
         id idJugador = obtenerId();
         if (idJugador == INVAL_ID) {
@@ -416,7 +416,8 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         }
         cantGusanos = ntohs(cantGusanos);
 
-        std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
+        std::map<id, RepresentacionGusano> mapaGusanos;
+        // std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
         for (int16_t j = 0; j < cantGusanos; j++) {
             id idGusano = obtenerId();
             if (idJugador == INVAL_ID) {
@@ -567,10 +568,11 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             gusanoActual.posicion = posicionRecibida;
             gusanoActual.armaEquipada = armaEquipada;
 
-            listaGusanos[j] = gusanoActual;
+            // listaGusanos[j] = gusanoActual;
+            mapaGusanos.insert({idGusano, gusanoActual});
         }   
 
-        gusanos.insert({idJugador, listaGusanos});
+        gusanos.insert({idJugador, mapaGusanos});
         
     }
 
@@ -900,7 +902,7 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
         return false;
     }
     bool was_closed = false;
-    for (auto const& [idJugador, listaGusanos] : estado->gusanos) {
+    for (auto const& [idJugador, mapaGusanos] : estado->gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
         if (!is_open) {
@@ -908,16 +910,17 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
         }
 
         // envio cant de gusanos
-        int cantGusanos = listaGusanos.size();
+        int cantGusanos = mapaGusanos.size();
         is_open = enviarCantidad(cantGusanos);
         if (!is_open) {
             return false;
         }
 
-        for (int32_t i = 0; i < cantGusanos; i++) {
-            RepresentacionGusano gusano = listaGusanos[i];
+        for (auto const& [idGusano, gusano] : mapaGusanos) {
+        // for (int32_t i = 0; i < cantGusanos; i++) {
+            // RepresentacionGusano gusano = listaGusanos[i];
             // envio el id del gusano
-            is_open = enviarId(gusano.idGusano);
+            is_open = enviarId(idGusano);
             if (!is_open) {
                 return false;
             }
