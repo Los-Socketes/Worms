@@ -401,10 +401,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  // bd.linearDamping = 10; // drag due to moving through air
 	  bd.gravityScale = 0; // ignore gravity
 	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-	  // bd.position = center; // start at blast center
-	  std::pair<coordX, coordY> coordsCoords = gusano->getCoords();
-	  coordsCoords.enX -= 3;
-	  b2Vec2 coords = deCoordAb2Vec(coordsCoords); // start at blast center
+	  b2Vec2 coords = ataque.posicion;
 	  bd.position = coords;
 	  // bd.linearVelocity = blastPower * rayDir;
 	  bd.linearVelocity = 200 * rayDir;
@@ -484,6 +481,7 @@ void Partida::gameLoop() {
         else {
 	  nuevoProyectil->countdown -= 1;
 	  ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	  ataqueARealizar.posicion = nuevoProyectil->posicion;
         }
 
 
