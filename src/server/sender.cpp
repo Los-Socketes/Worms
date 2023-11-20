@@ -13,8 +13,17 @@ void Sender::enviarEstado() {
     //TODO emprolijar, sacar el true
     std::shared_ptr<EstadoDelJuego> nuevoEstado;
     while (!this->estadoAEnviar.is_closed()) {
-        nuevoEstado = this->estadoAEnviar.pop();
-        this->protocol.enviarEstadoDelJuego(nuevoEstado);
+        try {
+            nuevoEstado = this->estadoAEnviar.pop();
+            this->protocol.enviarEstadoDelJuego(nuevoEstado);
+        }
+        // atrapo error de que se cierre la queue
+        catch(const ClosedQueue e)
+        {
+            // std::cerr << e.what() << '\n';
+            return;
+        }
+        
     }
 }
 
