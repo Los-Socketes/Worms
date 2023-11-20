@@ -316,35 +316,35 @@ void Partida::enviarEstadoAJugadores() {
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Accion& ultimaAccion) {
-       Accion accionAEjecutar;
-       //Si la ultima accion fue de movimiento y no obtuvimos nada
-       //nuevo; ejecutamos esa accion de movimiento.
-       //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
-       //de detenernos
+    Accion accionAEjecutar;
+    //Si la ultima accion fue de movimiento y no obtuvimos nada
+    //nuevo; ejecutamos esa accion de movimiento.
+    //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
+    //de detenernos
 
-       tipoAccion tipoUltimaAccion;
-       tipoUltimaAccion = ultimaAccion.accion;
-       if (obtuvoNueva == true) {
-	 accionAEjecutar = accionObtenida;
-	 ultimaAccion = accionAEjecutar;
-       }
-       //Si entra en estos otros if es porque NO se obtuvo algo nuevo
-       else if (tipoUltimaAccion == MOVERSE &&
-	      (ultimaAccion.dir != SALTO &&
-	       ultimaAccion.dir != PIRUETA)
-	      ) {
-	  accionAEjecutar = ultimaAccion;
-       }
-       else if (tipoUltimaAccion == ATAQUE) {
-	 accionAEjecutar = ultimaAccion;
-       }
-       else {
-	  // accionAEjecutar = ultimaAccion;
-	  accionAEjecutar.accion = ESTAQUIETO;
-       }
+    tipoAccion tipoUltimaAccion;
+    tipoUltimaAccion = ultimaAccion.accion;
+    if (obtuvoNueva == true) {
+        accionAEjecutar = accionObtenida;
+        ultimaAccion = accionAEjecutar;
+    }
+    //Si entra en estos otros if es porque NO se obtuvo algo nuevo
+    else if (tipoUltimaAccion == MOVERSE &&
+        (ultimaAccion.dir != SALTO &&
+        ultimaAccion.dir != PIRUETA)
+    ) {
+        accionAEjecutar = ultimaAccion;
+    }
+    else if (tipoUltimaAccion == ATAQUE) {
+        accionAEjecutar = ultimaAccion;
+    }
+    else {
+    // accionAEjecutar = ultimaAccion;
+        accionAEjecutar.accion = ESTAQUIETO;
+    }
 
 
-       return accionAEjecutar;
+    return accionAEjecutar;
 }
 
 void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
@@ -445,6 +445,9 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoActual();
 
     Accion ultimaAccion;
+    ultimaAccion.idGusano = INVAL_ID;
+    // valor basura para que no rompa valgrind
+    ultimaAccion.accion = ESTAQUIETO;
     bool exploto = false;
     // int countdown = 0;
 
@@ -466,6 +469,7 @@ void Partida::gameLoop() {
         this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
+        accionRecibida.idGusano = INVAL_ID;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
