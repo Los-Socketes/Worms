@@ -9,6 +9,17 @@ MonitorPartida::MonitorPartida() {
 id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     std::unique_lock<std::mutex> lck(mtx);
 
+    // recorro toda la lista para que si hay alguna libre
+    // se ocupe de vuelta y los ids no suban tan rapido
+    for (auto const& [idPartida, partida] : this->mapa) {
+        if (partida == nullptr || !partida->is_alive()) {
+            Partida *partidaNueva = new Partida(mapaNombre);
+            partidaNueva->start();
+            this->mapa[idPartida] = partidaNueva;
+            return idPartida;
+        }
+    }
+    // aca entra si todas las partidas estan ocupadas
     id idPartidaNueva;
     idPartidaNueva = this->contador;
 
@@ -50,8 +61,9 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
     //Fuente: https://stackoverflow.com/a/26282004/13683575
     for (auto const& [idPartida, partida] : this->mapa)
     {
-        if (partida == nullptr)
-	  continue;
+        if (partida == nullptr || !partida->is_alive()) {
+            continue;
+        }
 
 
         RepresentacionPartida repreActual;
@@ -62,9 +74,24 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
     return partidasAEnviar;
 }
 
-MonitorPartida::~MonitorPartida() {
+void MonitorPartida::reapDead() {
     for (auto const& [idPartida, partida] : this->mapa) {
         if (partida == nullptr) {
+            continue;
+        }
+        
+        if (!partida->is_alive()) {
+            partida->join();
+            delete partida;
+            this->mapa[idPartida] = nullptr;
+        }
+
+    }
+}
+
+MonitorPartida::~MonitorPartida() {
+    for (auto const& [idPartida, partida] : this->mapa) {
+        if (partida == nullptr || !partida->is_alive()) {
             continue;
         }
 

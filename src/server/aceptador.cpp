@@ -40,6 +40,7 @@ void Aceptador::reap_dead() {
         }
         return false;
     });
+    this->partidas.reapDead();
 }
 
 void Aceptador::kill() {

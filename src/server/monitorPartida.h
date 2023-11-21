@@ -26,6 +26,8 @@ public:
 
     [[nodiscard]] std::vector<RepresentacionPartida> partidasDisponibles();
 
+    void reapDead();
+
     ~MonitorPartida();
 
 };
