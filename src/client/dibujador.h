@@ -10,7 +10,7 @@
 #include "animacion.h"
 #include "camara.h"
 #include "defs.h"
-#include "gestoranimaciones.h"
+#include "gestormultimedia.h"
 #include "controliteracion.h"
 
 using namespace SDL2pp;
@@ -21,7 +21,7 @@ class Dibujador {
       std::shared_ptr<EstadoDelJuego>& estado_juego;
       int ancho_mapa;
       int alto_mapa;
-      GestorAnimaciones gestor_animaciones;
+      GestorMultimedia gestor_multimedia;
       std::map<ArmaProtocolo, std::string> teclas_armas;
       Font fuente1;
       Font fuente2;
@@ -36,7 +36,7 @@ class Dibujador {
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
       void setDimensionMapa(int ancho, int alto);
-      void inicializar(Renderer& renderizador);
+      void inicializar(Renderer& renderizador, Mixer& mixer);
       void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
       void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor);

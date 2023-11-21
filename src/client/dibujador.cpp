@@ -5,7 +5,7 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     estado_juego(estado_juego),
     ancho_mapa(ancho_mapa),
     alto_mapa(alto_mapa),
-    gestor_animaciones(camara, ancho_mapa, alto_mapa),
+    gestor_multimedia(camara, ancho_mapa, alto_mapa),
     fuente1("assets/fonts/AdLibRegular.ttf", 32),
     fuente2("assets/fonts/ANDYB.TTF", 32) {}
 
@@ -35,7 +35,7 @@ std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
 void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones) {
     int pos_x = posicion.first + (sin(angulo + M_PI / 2) * 60) * direccion;
     int pos_y = posicion.second + (cos(angulo + M_PI / 2) * 60);
-    gestor_animaciones.dibujarReticula(pos_x, pos_y, iteraciones.getIteracionGlobal());
+    gestor_multimedia.dibujarReticula(pos_x, pos_y, iteraciones.getIteracionGlobal());
 }
 
 void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida) {
@@ -129,11 +129,11 @@ void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int
 void Dibujador::setDimensionMapa(int ancho, int alto) {
     ancho_mapa = ancho * PIXELS_POR_METRO;
     alto_mapa = alto * PIXELS_POR_METRO;
-    gestor_animaciones.setDimensionMapa(ancho_mapa, alto_mapa);
+    gestor_multimedia.setDimensionMapa(ancho_mapa, alto_mapa);
 }
 
-void Dibujador::inicializar(Renderer& renderizador) {
-    gestor_animaciones.inicializar(renderizador);
+void Dibujador::inicializar(Renderer& renderizador, Mixer& mixer) {
+    gestor_multimedia.inicializar(renderizador, mixer);
     teclas_armas[NADA_P] = "R";
     teclas_armas[BAZOOKA_P] = "1";
     teclas_armas[MORTERO_P] = "2";
@@ -168,19 +168,19 @@ void Dibujador::dibujar(Renderer& renderizador,
 
 void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
     // Dibujo la imagen de fondo.
-    gestor_animaciones.dibujarFondo();
+    gestor_multimedia.dibujarFondo();
     // Dibujo el panorama del fondo.
     std::pair<int, int> posicion;
     for (int i = 0; i < (ancho_mapa / 640 + 1); i++) {
         posicion.first = i * 640;
         posicion.second = alto_mapa - 179;
-        gestor_animaciones.dibujarPanorama(posicion.first, posicion.second);
+        gestor_multimedia.dibujarPanorama(posicion.first, posicion.second);
     }
     // Dibujo las vigas.
     for (auto& viga : vigas) {
         // Traduzco las coordenadas de la viga.
         posicion = traducirCoordenadas(viga.posicionInicial.first, viga.posicionInicial.second);
-        gestor_animaciones.dibujarViga(posicion.first, posicion.second, viga.longitud, viga.angulo);
+        gestor_multimedia.dibujarViga(posicion.first, posicion.second, viga.longitud, viga.angulo);
     }
 }
 
@@ -199,7 +199,7 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraci
                 dibujarBarraPotencia(renderizador, posicion, gusano.armaEquipada.anguloRad, direccion, gusano.armaEquipada.potencia);
             }
             // Dibujo al gusano.
-            gestor_animaciones.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
+            gestor_multimedia.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
             dibujarVida(renderizador, posicion, gusano.vida);
             // Dibujo la reticula del gusano si esta apuntando.
@@ -212,12 +212,12 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraci
                 dibujarCuentaRegresiva(renderizador, posicion, gusano.armaEquipada.cuentaRegresiva);
             }
             // Dibujo el cursor si el gusano no disparo y no esta usando un arma que requiera apuntar.
-            if (gusano.idGusano == estado_juego->gusanoDeTurno && gusano.estado != DISPARANDO && 
+            if (gusano.estado != DISPARANDO && 
                 (gusano.armaEquipada.arma == ATAQUE_AEREO_P ||
                 gusano.armaEquipada.arma == TELETRANSPORTACION_P)) {
                 int pos_x = pos_cursor.first;
                 int pos_y = pos_cursor.second;
-                gestor_animaciones.dibujarCursor(pos_x, pos_y, iteraciones.getIteracionGlobal());
+                gestor_multimedia.dibujarCursor(pos_x, pos_y, iteraciones.getIteracionGlobal());
             }
                                 
         }
@@ -231,9 +231,9 @@ void Dibujador::dibujarProyectiles(ControlIteracion& iteraciones) {
         std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
         // Dibujo el proyectil.
         if (proyectil.exploto) {
-            gestor_animaciones.dibujarExplosion(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, iteraciones);
+            gestor_multimedia.dibujarExplosion(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, iteraciones);
         } else {
-            gestor_animaciones.dibujarProyectil(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, iteraciones);
+            gestor_multimedia.dibujarProyectil(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, iteraciones);
         }
     }    
 }
@@ -247,7 +247,7 @@ void Dibujador::dibujarAguaDetras(ControlIteracion& iteraciones) {
             posicion.first = j * 128 + 64;
             posicion.second = alto_mapa - 70 + 10 * (i + 1);
             iteracion = iteraciones.getIteracionGlobal() + 3*(i+1);
-            gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
+            gestor_multimedia.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }
 }
@@ -260,7 +260,7 @@ void Dibujador::dibujarAguaDelante(ControlIteracion& iteraciones) {
             posicion.first = j * 128 + 64;
             posicion.second = alto_mapa - 50 + 10 * (i + 1);
             iteracion = iteraciones.getIteracionGlobal() + 3*(i+3);
-            gestor_animaciones.dibujarAgua(posicion.first, posicion.second, iteracion);
+            gestor_multimedia.dibujarAgua(posicion.first, posicion.second, iteracion);
         }
     }
 }
@@ -274,7 +274,7 @@ void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_eq
         posicion.first = ancho_pantalla - 32 * (11 - i) - 14;
         posicion.second = alto_pantalla - 46;
         // Dibujo el icono del arma.
-        gestor_animaciones.dibujarIconoArma(static_cast<ArmaProtocolo>(i), posicion.first, posicion.second);
+        gestor_multimedia.dibujarIconoArma(static_cast<ArmaProtocolo>(i), posicion.first, posicion.second);
         // Dibujo la tecla asociada al arma.
         fuente2.SetOutline(0);
         Texture textura_tecla(renderizador, fuente2.RenderText_Blended(teclas_armas[static_cast<ArmaProtocolo>(i)], {255, 255, 255, 255}));

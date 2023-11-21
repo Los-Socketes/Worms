@@ -48,6 +48,8 @@ class Cliente {
     Recibidor recibidor;
     Enviador enviador;
     std::pair<int, int> pos_cursor;
+    int volumen;
+    bool muteado;
 
     // Inicia los hilos.
     void iniciar();

@@ -108,6 +108,16 @@ void EntradaTeclado::run() {
                         if (cuenta_regresiva == 0)
                             cuenta_regresiva = 5;
                         envio_comandos.push(std::make_shared<AccionCambiarCuentaRegresiva>(cuenta_regresiva));
+                        break;
+                    case SDLK_PLUS:
+                        comandos_teclado.push(Comando(VOLUMEN_MAS));
+                        break;
+                    case SDLK_MINUS:
+                        comandos_teclado.push(Comando(VOLUMEN_MENOS));
+                        break;
+                    case SDLK_m:
+                        comandos_teclado.push(Comando(TOGGLE_MUTEAR));
+                        break;                    
                     default:
                         break;
                 }

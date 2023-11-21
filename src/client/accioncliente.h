@@ -11,8 +11,9 @@ enum TipoComando{
     TOGGLE_CAMARA,
     TAMANIO_VENTANA,
     MOVER_CURSOR,
-    ARRIBA,
-    ABAJO
+    VOLUMEN_MAS,
+    VOLUMEN_MENOS,
+    TOGGLE_MUTEAR
 };
 
 struct Comando{

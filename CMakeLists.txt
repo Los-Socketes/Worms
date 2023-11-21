@@ -147,8 +147,9 @@ add_executable(client
   "${CLIENTDIR}/camara.cpp"
   "${CLIENTDIR}/accioncliente.cpp"
   "${CLIENTDIR}/dibujador.cpp"
-  "${CLIENTDIR}/gestoranimaciones.cpp"
+  "${CLIENTDIR}/gestormultimedia.cpp"
   "${CLIENTDIR}/controliteracion.cpp"
+  "${CLIENTDIR}/sonido.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"

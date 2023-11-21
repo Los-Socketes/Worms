@@ -35,6 +35,9 @@ class ControlIteracion {
     int& getIteracionGlobal();
     void aumentarIteraciones(int cant);
 
+    IteradorGusano& getIteradorGusano(id id);
+    IteradorProyectil& getIteradorProyectil(idProyectil id);
+
     int& getIteracionGusano(id id);
     void actualizarAnimacionGusano(id id, std::shared_ptr<Animacion> animacion);
 
