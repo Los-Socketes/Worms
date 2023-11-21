@@ -69,6 +69,7 @@ MonitorPartida::~MonitorPartida() {
         }
 
         // TODO: verificar que el destructor de partida esta bien y no leakea memoria
+        partida->join();
         delete partida;
     }
 }

@@ -513,3 +513,24 @@ void Partida::gameLoop() {
     }
 
 }
+
+
+Partida::~Partida() {
+    if (!this->acciones.is_closed()) {
+        this->acciones.close();
+    }
+    // TODO: destruir cuerposADestruir
+
+    for (auto &&gusano : this->gusanos) {
+        delete gusano;
+    }
+
+    for (auto &&jugador : this->jugadores) {
+        delete jugador;
+    }
+
+    for (auto &&proyectil : this->proyectiles) {
+        delete proyectil;
+    }
+    
+}

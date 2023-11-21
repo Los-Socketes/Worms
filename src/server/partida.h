@@ -102,6 +102,8 @@ public:
     void anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
+
+    ~Partida();
 };
 
 #endif
