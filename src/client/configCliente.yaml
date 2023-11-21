@@ -3,12 +3,14 @@ Dimensiones pantalla:
   ancho: 640
   alto: 480
 Volumen inicial: 50
+Cantidad maxima jugadores: 8
 Color jugadores:
-  Jugador 1: 255, 0, 0
-  Jugador 2: 0, 0, 255
-  Jugador 3: 0, 255, 0
-  Jugador 4: 255, 255, 0
-  Jugador 5: 255, 0, 255
-  Jugador 6: 0, 255, 255
-  Jugador 7: 255, 255, 255
-  Jugador 8: 125, 125, 125
+  Jugador 1: [255, 0, 0]
+  Jugador 2: [0, 0, 255]
+  Jugador 3: [0, 255, 0]
+  Jugador 4: [255, 255, 0]
+  Jugador 5: [255, 0, 255]
+  Jugador 6: [0, 255, 255]
+  Jugador 7: [255, 255, 255]
+  Jugador 8: [125, 125, 125]
+Pixeles por metro: 20

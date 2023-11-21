@@ -150,6 +150,7 @@ add_executable(client
   "${CLIENTDIR}/gestormultimedia.cpp"
   "${CLIENTDIR}/controliteracion.cpp"
   "${CLIENTDIR}/sonido.cpp"
+  "${CLIENTDIR}/configuracionCliente.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
@@ -165,6 +166,9 @@ add_executable(client
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
+
+  # Configuracion
+  "${CLIENTDIR}/configCliente.yaml"
 )
 ## Macros para pasarle al client
 target_compile_definitions(client PUBLIC
@@ -181,6 +185,7 @@ target_link_libraries(client PRIVATE SDL2_image::SDL2_image)
 target_link_libraries(client PRIVATE SDL2_mixer::SDL2_mixer)
 target_link_libraries(client PRIVATE SDL2pp::SDL2pp)
 target_link_libraries(client PRIVATE Qt5::Widgets)
+target_link_libraries(client PRIVATE yaml-cpp)
 
 # Copiamos los assets a la carpeta de build
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
