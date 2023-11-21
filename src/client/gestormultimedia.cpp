@@ -182,11 +182,11 @@ void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGu
             }
             break;
         case SALTANDO:
-        case PIRUETA:
-            if (iterador.it == 0) {
-                sonidos[SONIDO_GUSANO_SALTA]->reproducir();
-            }
-            break;
+        // case PIRUETA:
+        //     if (iterador.it == 0) {
+        //         sonidos[SONIDO_GUSANO_SALTA]->reproducir();
+        //     }
+        //     break;
         case DISPARANDO:
             if (iterador.it == 0) {
                 if (arma == BATE_P)
