@@ -166,9 +166,6 @@ add_executable(client
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
-
-  # Configuracion
-  "${CLIENTDIR}/configCliente.yaml"
 )
 ## Macros para pasarle al client
 target_compile_definitions(client PUBLIC
@@ -189,6 +186,9 @@ target_link_libraries(client PRIVATE yaml-cpp)
 
 # Copiamos los assets a la carpeta de build
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copiamos la configuracion del cliente a la carpeta de build
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/client/configCliente.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el

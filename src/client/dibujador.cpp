@@ -38,7 +38,7 @@ void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo,
     gestor_multimedia.dibujarReticula(pos_x, pos_y, iteraciones.getIteracionGlobal());
 }
 
-void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida) {
+void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color) {
     // Acomodo la posicion para que quede centrada en el gusano.
     int pos_x = posicion.first - 8;
     int pos_y = posicion.second - 30;
@@ -65,10 +65,9 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
     Texture textura_vida_outline(renderizador, fuente1.RenderText_Blended(std::to_string(vida), {0, 0, 0, 255}));
     renderizador.Copy(textura_vida_outline, NullOpt, Rect(coord_x, coord_y, 16, 16));
 
-    // Dibujo la vida.
-    // TODO: colores segun jugador.
+    // Dibujo la vida del color del jugador.
     fuente1.SetOutline(0);
-    Texture textura_vida(renderizador, fuente1.RenderText_Blended(std::to_string(vida), {255, 255, 0, 255}));
+    Texture textura_vida(renderizador, fuente1.RenderText_Blended(std::to_string(vida), {color[0], color[1], color[2], 255}));
     renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 16, 16));
 }
 
@@ -151,17 +150,19 @@ void Dibujador::inicializar(Renderer& renderizador, Mixer& mixer) {
 void Dibujador::dibujar(Renderer& renderizador,
     ControlIteracion& iteraciones,
     std::vector<RepresentacionViga>& vigas,
-    std::pair<int, int>& pos_cursor) {
+    std::pair<int, int>& pos_cursor,
+    std::vector<colorJugador>& colores) {
     renderizador.Clear();
 
     RepresentacionGusano gusano_actual = getGusanoActual();
 
     dibujarMapa(vigas);
     dibujarAguaDetras(iteraciones);
-    dibujarGusanos(renderizador, iteraciones, pos_cursor);
+    dibujarGusanos(renderizador, iteraciones, pos_cursor, colores);
     dibujarProyectiles(iteraciones);
     dibujarAguaDelante(iteraciones);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
+    dibujarBarrasVida(renderizador, colores);
 
     renderizador.Present();
 }
@@ -185,7 +186,10 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor) {
+void Dibujador::dibujarGusanos(Renderer& renderizador,
+    ControlIteracion& iteraciones,
+    std::pair<int, int>& pos_cursor,
+    std::vector<colorJugador>& colores) {
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
@@ -201,7 +205,7 @@ void Dibujador::dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraci
             // Dibujo al gusano.
             gestor_multimedia.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
-            dibujarVida(renderizador, posicion, gusano.vida);
+            dibujarVida(renderizador, posicion, gusano.vida, colores.at(jugador.first));
             // Dibujo la reticula del gusano si esta apuntando.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
@@ -293,3 +297,44 @@ void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_eq
     }
         
 }
+
+void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores) {
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    // Para cada jugador, dibujo una barra de vida de su color.
+    // La misma se calcula en base a la vida de cada gusano sobre la vida total 
+    // (gusanos x vida máxima inicial (100)).
+    // Escribo "Jugador X" a la izquierda de la barra.
+    for (auto& jugador : estado_juego->gusanos) {
+        int vida_total = 0;
+        int vida_actual = 0;
+        for (auto& gusano : jugador.second) {
+            vida_total += 100;
+            vida_actual += gusano.vida;
+        }
+        int vida_relativa = vida_actual * 100 / vida_total;
+        posicion.first = 10;
+        posicion.second = alto_pantalla - 30 * (jugador.first + 1) - 10;
+        // Dibujo el texto.
+        // Si es el turno le escribo '>' al principio.
+        std::string texto = "";
+        if (jugador.first == estado_juego->jugadorDeTurno) {
+            texto += "> ";
+        }
+        fuente1.SetOutline(2);
+        Texture textura_jugador_outline(renderizador, fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1), {0, 0, 0, 255}));
+        renderizador.Copy(textura_jugador_outline, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
+        fuente1.SetOutline(0);
+        Texture textura_jugador(renderizador,
+            fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1),
+            {colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255}));
+        renderizador.Copy(textura_jugador, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
+        // Dibujo la barra de vida.
+        renderizador.SetDrawColor(colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255);
+        renderizador.FillRect(posicion.first + 120, posicion.second + 5, posicion.first + 120 + vida_relativa, posicion.second + 15);
+        renderizador.SetDrawColor(0, 0, 0, 255);
+        renderizador.DrawRect(posicion.first + 120, posicion.second + 5, posicion.first + 220, posicion.second + 15);
+    }    
+}
+

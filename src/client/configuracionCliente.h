@@ -9,7 +9,7 @@
 #include <vector>
 #include "defs.h"
 
-typedef std::vector<int> colorJugador;
+typedef std::vector<uint8_t> colorJugador;
 
 class ConfiguracionCliente {
 private:

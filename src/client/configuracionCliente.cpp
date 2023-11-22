@@ -5,7 +5,7 @@
 
 
 ConfiguracionCliente::ConfiguracionCliente() {
-    std::ifstream fin("../src/client/configCliente.yaml");
+    std::ifstream fin("./configCliente.yaml");
     YAML::Node config = YAML::Load(fin);
 
     this->dimensionesIniciales.enX = config["Dimensiones pantalla"]["ancho"].as<int>();
@@ -19,7 +19,7 @@ ConfiguracionCliente::ConfiguracionCliente() {
         colorJugador colores = config["Color jugadores"][jugador.str()].as<colorJugador>();
         this->coloresJugadores.push_back(colores);
     }
-    this->pixelsPorMetro = config["Pixeles por metro"].as<int>();
+    //this->pixelsPorMetro = config["Pixeles por metro"].as<int>();
     fin.close();
 }
 

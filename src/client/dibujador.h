@@ -12,6 +12,7 @@
 #include "defs.h"
 #include "gestormultimedia.h"
 #include "controliteracion.h"
+#include "configuracionCliente.h"
 
 using namespace SDL2pp;
 
@@ -29,7 +30,7 @@ class Dibujador {
       RepresentacionGusano getGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
       void dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones);
-      void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida);
+      void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color);
       void dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i);
       void dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia);
       void dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, int& cuenta_regresiva);
@@ -37,13 +38,14 @@ class Dibujador {
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
       void setDimensionMapa(int ancho, int alto);
       void inicializar(Renderer& renderizador, Mixer& mixer);
-      void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor);
+      void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
-      void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor);
+      void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarProyectiles(ControlIteracion& iteraciones);
       void dibujarAguaDetras(ControlIteracion& iteraciones);
       void dibujarAguaDelante(ControlIteracion& iteraciones);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
+      void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
 };
 
 #endif // DIBUJADOR_H_

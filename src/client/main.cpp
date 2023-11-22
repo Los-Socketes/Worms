@@ -4,6 +4,7 @@
 
 #include "socket.h"
 #include "cliente.h"
+#include "configuracionCliente.h"
 
 #define HOST 1
 #define PUERTO 2
@@ -20,11 +21,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     try {
+        // Inicializo la configuracion del cliente.
+        ConfiguracionCliente config;
+
         // Inicializo el socket.
         Socket socket(argv[HOST], argv[PUERTO]);
 
         // Inicializo el cliente.
-        Cliente cliente(std::move(socket));
+        Cliente cliente(std::move(socket), config);
         InformacionInicial informacion = cliente.ejecutar_menu(argc, argv);
         if (informacion.jugador != -1) {
             cliente.loop_principal(informacion);

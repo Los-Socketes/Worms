@@ -16,6 +16,7 @@
 #include "accioncliente.h"
 #include "dibujador.h"
 #include "controliteracion.h"
+#include "configuracionCliente.h"
 
 using namespace SDL2pp;
 
@@ -35,6 +36,7 @@ class Cliente {
     SDL sdl;
     SDLTTF ttf;
     Protocolo protocolo;
+    ConfiguracionCliente& config;
     std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
@@ -55,7 +57,7 @@ class Cliente {
     void iniciar();
 
  public:
-    Cliente(Socket&& skt);
+    Cliente(Socket&& skt, ConfiguracionCliente& config);
     
     // Ejecuta el menu.
     InformacionInicial ejecutar_menu(int argc, char* argv[]);
