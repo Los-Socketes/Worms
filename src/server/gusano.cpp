@@ -54,13 +54,16 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
       /_____|
       Adyacente(x)
      */
-    float potencia = 2;
-    float hipotenusa = 1 * potencia;
+    float potencia = 9;
+    float hipotenusa = 9 * potencia;
     float angulo = this->armaSeleccionada.getAngulo();
 
     //SOHCAHTOA
     float adyacente;
     adyacente = cos(angulo) * hipotenusa;
+    if (this->direccion == IZQUIERDA)
+        adyacente *= -1;
+    std::cout << adyacente << "\n";
 
     float opuesto;
     opuesto = sin(angulo) * hipotenusa;
@@ -92,8 +95,8 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
     //reutilizo la variables coords para la segunda coordenada (sup der)
     //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    coords.enX += offset * 5;
-    coords.enY += offset * 5;
+    coords.enX += offset * 1;
+    coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
     //WARNING Valores hardcodeados hasta ver cual se ve mejor
@@ -171,6 +174,9 @@ void Gusano::recibirDano(b2Vec2 golpe) {
     //TODO switch dependiendo del arma de this
     this->vida -= 20;
     this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 }
 
 void Gusano::preparar(Accion& accion) {
