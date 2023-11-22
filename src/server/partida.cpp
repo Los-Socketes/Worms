@@ -272,7 +272,7 @@ bool Partida::enviarEstadoAJugadores() {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
 
-        if (jugadorActual->esMiTurno == true)
+        if (jugador == this->posJugadorActual)
 	  estadoActual->jugadorDeTurno = jugador;
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
@@ -439,12 +439,10 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
       
 }
 Jugador *Partida::nuevoJugador(Jugador *viejoJugador) {
-    viejoJugador->esMiTurno = false;
-
     Jugador *jugadorActual;
     jugadorActual = this->jugadores.at(this->posJugadorActual);
     this->posJugadorActual += 1;
-    if (posJugadorActual > (int) this->jugadores.size())
+    if (this->posJugadorActual >= (int) this->jugadores.size())
         this->posJugadorActual = 0;
 
     return jugadorActual;
@@ -465,6 +463,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
     jugadorDeTurno = this->nuevoJugador(jugadorTurnoActual);
     gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+    gusanoDeTurno->esMiTurno(tiempoActual);
     gusanoYJugador.first = gusanoActual;
     gusanoYJugador.second = jugadorDeTurno;
 
@@ -485,12 +484,6 @@ void Partida::gameLoop() {
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
 
-    Jugador *jugadorActual;
-    jugadorActual = this->jugadores.at(0);
-    jugadorActual->esMiTurno = true;
-
-    Gusano *gusanoActual;
-    gusanoActual = jugadorActual->getGusanoActual();
 
     Accion ultimaAccion;
     ultimaAccion.idGusano = INVAL_ID;
@@ -512,8 +505,17 @@ void Partida::gameLoop() {
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     bool hayJugadores = true;
+
+    time_t tiempoActual;
+    tiempoActual = time(NOW);
+
+    Jugador *jugadorActual;
+    jugadorActual = this->jugadores.at(0);
+
+    Gusano *gusanoActual;
+    gusanoActual = jugadorActual->getGusanoActual();
+    gusanoActual->esMiTurno(tiempoActual);
     while (hayJugadores) {
-        time_t tiempoActual;
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
