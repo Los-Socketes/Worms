@@ -19,27 +19,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     enviador(protocolo, envio_comandos, es_turno),
     pos_cursor(0, 0),
     volumen(config.getVolumenInicial()),
-    muteado(false) {
-        //WARNING todo esto es momentaneo para que compile
-        std::vector<RepresentacionGusano> listaGusanosIniciales;
-        RepresentacionGusano gusi;
-        gusi.idGusano = 0;
-        gusi.vida = 100;
-        gusi.dir = DERECHA;
-        gusi.estado = QUIETO;
-        gusi.posicion = std::pair<int, int>(0,0);
-        gusi.armaEquipada.arma = NADA_P;
-        gusi.armaEquipada.tieneMira = false;
-        gusi.armaEquipada.tienePotenciaVariable = false;
-        gusi.armaEquipada.tieneCuentaRegresiva = false;
-        listaGusanosIniciales.push_back(gusi);
-
-        std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
-        gusanosNuevos.insert({0, listaGusanosIniciales});
-
-        estado_juego->gusanos = gusanosNuevos;
-        // listaGusanosIniciales.
-    }
+    muteado(false) {}
 
 void Cliente::iniciar() {
     entrada_teclado.start();

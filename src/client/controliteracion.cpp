@@ -8,8 +8,8 @@ void ControlIteracion::actualizarEntidades() {
     // Añado gusanos y proyectiles que no estaban en los mapas.
     for (auto& jugador : estado_juego->gusanos) {
         for(auto& gusano : jugador.second) {
-            if (it_gusanos.find(gusano.idGusano) == it_gusanos.end()) {
-                it_gusanos[gusano.idGusano] = {0, nullptr};
+            if (it_gusanos.find(gusano.second.idGusano) == it_gusanos.end()) {
+                it_gusanos[gusano.second.idGusano] = {0, nullptr};
             }
         }
     }

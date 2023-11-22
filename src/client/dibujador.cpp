@@ -10,19 +10,7 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     fuente2("assets/fonts/ANDYB.TTF", 32) {}
 
 RepresentacionGusano Dibujador::getGusanoActual() {
-    /* RepresentacionGusano gusano_actual;
-    gusano_actual.idGusano = -1;
-    gusano_actual.armaEquipada.arma = NADA_P;
-    for (auto& jugador : estado_juego->gusanos) {
-        for (auto& gusano : jugador.second) {
-            if (gusano.idGusano == estado_juego->gusanoDeTurno) {
-                gusano_actual = gusano;
-            }
-        }
-    }
-    return gusano_actual; */
-
-    return estado_juego->gusanos[0][0];
+    return estado_juego->gusanos[estado_juego->jugadorDeTurno][estado_juego->gusanoDeTurno];
 }
 
 std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
@@ -190,10 +178,12 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
     ControlIteracion& iteraciones,
     std::pair<int, int>& pos_cursor,
     std::vector<colorJugador>& colores) {
+    RepresentacionGusano gusano;
     // Recorro el mapa de jugador -> gusanos.
     for (auto& jugador : estado_juego->gusanos) {
         // Recorro los gusanos del jugador.
-        for (auto& gusano : jugador.second) {
+        for (auto& gusano_id : jugador.second) {
+            gusano = gusano_id.second;
             // Traduzco las coordenadas del gusano.
             std::pair<int, int> posicion = traducirCoordenadas(gusano.posicion.first, gusano.posicion.second);
             
@@ -311,7 +301,7 @@ void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugad
         int vida_actual = 0;
         for (auto& gusano : jugador.second) {
             vida_total += 100;
-            vida_actual += gusano.vida;
+            vida_actual += gusano.second.vida;
         }
         int vida_relativa = vida_actual * 100 / vida_total;
         posicion.first = 10;
