@@ -441,6 +441,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 Jugador *Partida::nuevoJugador(Jugador *viejoJugador) {
     Jugador *jugadorActual;
     jugadorActual = this->jugadores.at(this->posJugadorActual);
+    //Si con el siguiente me paso, volve a 0
     this->posJugadorActual += 1;
     if (this->posJugadorActual >= (int) this->jugadores.size())
         this->posJugadorActual = 0;

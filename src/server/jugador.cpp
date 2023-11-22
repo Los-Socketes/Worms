@@ -14,7 +14,7 @@ Gusano *Jugador::getGusanoActual() {
         this->gusanoActualPos += 1;
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
-        if (this->gusanoActualPos > (int) this->gusanos.size())
+        if (this->gusanoActualPos >= (int) this->gusanos.size())
 	  this->gusanoActualPos = 0;
     }
 
