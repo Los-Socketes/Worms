@@ -83,7 +83,7 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
-    void enviarEstadoAJugadores();
+    bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
@@ -102,6 +102,8 @@ public:
     void anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
+
+    ~Partida();
 };
 
 #endif

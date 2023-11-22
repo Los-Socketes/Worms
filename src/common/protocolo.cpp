@@ -800,6 +800,7 @@ Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     bool was_closed = false;
     Accion accion;
+    accion.accion = INVAL_ACCION;
     if (codigo != MOV && codigo != ATACAR && 
         codigo != EQUIPAR && codigo != CALIBRAR) {
         return accion;

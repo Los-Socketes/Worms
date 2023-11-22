@@ -272,23 +272,28 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     case ATAQUE:
         tiempoEspera = 0;
-        if (armaEquipada == TELETRANSPORTACION_P)  
-	  this->teletransportarse();
+        if (armaEquipada == TELETRANSPORTACION_P) {
+	        this->teletransportarse();
+        }  
 
         armaQueQuiero = this->armaEquipada;
         posicion = (deCoordAb2Vec(this->getCoords()));
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P) 
-	  tiempoEspera = TIEMPOESPERADINAMITA;
-        else
-	  tiempoEspera = 0;
+        if(armaEquipada == DINAMITA_P) {
+	        tiempoEspera = TIEMPOESPERADINAMITA;
+        } else {
+	        tiempoEspera = 0;
+        }
 
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
         std::cout << "ATACO\n";
+        break;
+    case INVAL_ACCION:
+        std::cout << "INVALID ACCION\n";
         break;
     }
 

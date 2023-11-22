@@ -261,7 +261,7 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     this->seUnioJugador.notify_all();
 }
 
-void Partida::enviarEstadoAJugadores() {
+bool Partida::enviarEstadoAJugadores() {
     //TODO esto deberia ser un puntero
     std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
@@ -307,45 +307,48 @@ void Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
+    bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
-        cliente->enviarEstadoJuego(estadoActual);
+        if (cliente != nullptr && !cliente->estaMuerto()) {
+            cliente->enviarEstadoJuego(estadoActual);
+            hayJugadores = true;
+        }
     }
-
+    return hayJugadores;
 }
 
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Accion& ultimaAccion) {
-       Accion accionAEjecutar;
-       //Si la ultima accion fue de movimiento y no obtuvimos nada
-       //nuevo; ejecutamos esa accion de movimiento.
-       //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
-       //de detenernos
+    Accion accionAEjecutar;
+    //Si la ultima accion fue de movimiento y no obtuvimos nada
+    //nuevo; ejecutamos esa accion de movimiento.
+    //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
+    //de detenernos
 
-       tipoAccion tipoUltimaAccion;
-       tipoUltimaAccion = ultimaAccion.accion;
-       if (obtuvoNueva == true) {
-	 accionAEjecutar = accionObtenida;
-	 ultimaAccion = accionAEjecutar;
-       }
-       //Si entra en estos otros if es porque NO se obtuvo algo nuevo
-       else if (tipoUltimaAccion == MOVERSE &&
-	      (ultimaAccion.dir != SALTO &&
-	       ultimaAccion.dir != PIRUETA)
-	      ) {
-	  accionAEjecutar = ultimaAccion;
-       }
-       else if (tipoUltimaAccion == ATAQUE) {
-	 // accionAEjecutar = ultimaAccion;
-	 // accionAEjecutar.accion = ESTAQUIETO;
-       }
-       else {
-	  // accionAEjecutar = ultimaAccion;
-	  accionAEjecutar.accion = ESTAQUIETO;
-       }
+    tipoAccion tipoUltimaAccion;
+    tipoUltimaAccion = ultimaAccion.accion;
+    if (obtuvoNueva == true) {
+        accionAEjecutar = accionObtenida;
+        ultimaAccion = accionAEjecutar;
+    }
+    //Si entra en estos otros if es porque NO se obtuvo algo nuevo
+    else if (tipoUltimaAccion == MOVERSE &&
+        (ultimaAccion.dir != SALTO &&
+        ultimaAccion.dir != PIRUETA)
+    ) {
+        accionAEjecutar = ultimaAccion;
+    }
+    else if (tipoUltimaAccion == ATAQUE) {
+        accionAEjecutar = ultimaAccion;
+    }
+    else {
+        accionAEjecutar = ultimaAccion;
+        accionAEjecutar.accion = ESTAQUIETO;
+    }
 
 
-       return accionAEjecutar;
+    return accionAEjecutar;
 }
 
 void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
@@ -451,6 +454,9 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoActual();
 
     Accion ultimaAccion;
+    ultimaAccion.idGusano = INVAL_ID;
+    // valor basura para que no rompa valgrind
+    ultimaAccion.accion = ESTAQUIETO;
     bool exploto = false;
     // int countdown = 0;
 
@@ -466,12 +472,13 @@ void Partida::gameLoop() {
     nuevoProyectil->exploto = false;
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
-
-    while (true) {
+    bool hayJugadores = true;
+    while (hayJugadores) {
         this->world.Step(timeStep, velocityIterations, positionIterations);
-        this->enviarEstadoAJugadores();
+        hayJugadores = this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
+        accionRecibida.idGusano = INVAL_ID;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
@@ -482,16 +489,16 @@ void Partida::gameLoop() {
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         if (nuevoProyectil->countdown == 0) {
-	  nuevoProyectil->armaOrigen = ataqueARealizar.arma;
-	  nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
-	  nuevoProyectil->posicion = ataqueARealizar.posicion;
-	  nuevoProyectil->exploto = false;
+            nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+            nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
+            nuevoProyectil->posicion = ataqueARealizar.posicion;
+            nuevoProyectil->exploto = false;
         }
         
         else {
-	  nuevoProyectil->countdown -= 1;
-	  ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-	  ataqueARealizar.posicion = nuevoProyectil->posicion;
+            nuevoProyectil->countdown -= 1;
+            ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+            ataqueARealizar.posicion = nuevoProyectil->posicion;
         }
 
 
@@ -510,4 +517,25 @@ void Partida::gameLoop() {
         std::this_thread::sleep_for(frameDuration);
     }
 
+}
+
+
+Partida::~Partida() {
+    if (!this->acciones.is_closed()) {
+        this->acciones.close();
+    }
+    // TODO: destruir cuerposADestruir
+
+    for (auto &&gusano : this->gusanos) {
+        delete gusano;
+    }
+
+    for (auto &&jugador : this->jugadores) {
+        delete jugador;
+    }
+
+    for (auto &&proyectil : this->proyectiles) {
+        delete proyectil;
+    }
+    
 }

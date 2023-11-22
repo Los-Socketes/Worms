@@ -426,3 +426,7 @@ void Socket::chk_skt_or_fail() const {
                                  "socket (and therefore invalid).");
     }
 }
+
+bool Socket::is_closed() {
+    return this->closed;
+}

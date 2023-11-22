@@ -165,5 +165,7 @@ public:
      * automáticamente.
      * */
     ~Socket();
+
+    bool is_closed();
 };
 #endif

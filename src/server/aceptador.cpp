@@ -1,4 +1,5 @@
 #include "aceptador.h"
+#include "liberror.h"
 
 
 Aceptador::Aceptador(const char *puerto)
@@ -6,15 +7,23 @@ Aceptador::Aceptador(const char *puerto)
 
 void Aceptador::aceptarClientes() {
     //TODO: Hacer que en vez de true sea socket cerrado
-    while (true) {
-        Socket conexionEntrante = this->socket.accept();
+    while (!this->socket.is_closed()) {
+        try {
+            Socket conexionEntrante = this->socket.accept();
 
-        //TODO Anadir un reap dead ACA que busque en una lista de jugadores
-        Cliente* cliente = new Cliente(std::move(conexionEntrante), this->escenariosDisponibles, std::ref(this->partidas));
+            //TODO Anadir un reap dead ACA que busque en una lista de jugadores
+            Cliente* cliente = new Cliente(std::move(conexionEntrante), this->escenariosDisponibles, std::ref(this->partidas));
 
-        // Primero el reap_dead para que la lista tenga un elemento menos
-        reap_dead();
-        this->listaClientes.push_back(cliente);
+            // Primero el reap_dead para que la lista tenga un elemento menos
+            reap_dead();
+            this->listaClientes.push_back(cliente);
+        }
+        // catch de que se cerro el socket
+        catch(const LibError& e) {
+            // std::cerr << e.what() << '\n';
+            break;
+        }
+        
     }
 
 }
@@ -31,6 +40,7 @@ void Aceptador::reap_dead() {
         }
         return false;
     });
+    this->partidas.reapDead();
 }
 
 void Aceptador::kill() {
@@ -41,7 +51,7 @@ void Aceptador::kill() {
             delete cliente;
         }
     }
-    
+    reap_dead();
     this->socket.shutdown(SHUT_RDWR);
     this->socket.close();
 }
