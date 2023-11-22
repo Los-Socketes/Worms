@@ -8,6 +8,7 @@
 
 #include <vector>
 #include "defs.h"
+#include <cstdint>
 
 typedef std::vector<uint8_t> colorJugador;
 
