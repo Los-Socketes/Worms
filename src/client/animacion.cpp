@@ -1,7 +1,7 @@
 #include "animacion.h"
 
 Animacion::Animacion(Renderer& render,
-    std::string ruta_textura, int tam_x,
+    const std::string& ruta_textura, int tam_x,
     int tam_y, int frames, bool seguir_camara,
     bool es_loop, Centro centro, radianes min, radianes max) :
     renderizador(render),
@@ -84,6 +84,10 @@ void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& 
         frame_actual = frames - 1;
     }
     dibujarComun(camara, pos_x, pos_y, angulo, flip, frame_actual);
+}
+
+int Animacion::getFrames() {
+    return frames;
 }
 
 void Animacion::setDimensiones(int tam_x, int tam_y){

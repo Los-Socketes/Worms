@@ -1,12 +1,13 @@
 #include "cliente.h"
 
-Cliente::Cliente(Socket&& skt):
+Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     sdl(SDL_INIT_VIDEO),
     ttf(),
     protocolo(std::move(skt)),
+    config(config),
     estado_juego(std::make_shared<EstadoDelJuego>()),
-    camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
-    dibujador(camara, estado_juego, SCREEN_WIDTH, SCREEN_HEIGHT),
+    camara(0, 0, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second, 0, 0),
+    dibujador(camara, estado_juego, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second),
     control_iteracion(estado_juego),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
@@ -16,7 +17,9 @@ Cliente::Cliente(Socket&& skt):
     entrada_teclado(envio_comandos, comandos_teclado, camara),
     recibidor(protocolo, recepcion_estados, es_turno),
     enviador(protocolo, envio_comandos, es_turno),
-    pos_cursor(0, 0) {
+    pos_cursor(0, 0),
+    volumen(config.getVolumenInicial()),
+    muteado(false) {
         //WARNING todo esto es momentaneo para que compile
         std::vector<RepresentacionGusano> listaGusanosIniciales;
         RepresentacionGusano gusi;
@@ -50,8 +53,20 @@ InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
 
 void Cliente::loop_principal(InformacionInicial& info_inicial) {
     // Inicializar SDL.  
-    Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    Window ventana("Worms",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        config.getDimensionesIniciales().first,
+        config.getDimensionesIniciales().second,
+        SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
+    Mixer mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
+
+    Music music("assets/sounds/music.ogg");
+
+    mixer.FadeInMusic(music, -1, 2000);
+    mixer.SetMusicVolume(volumen);
+    mixer.SetVolume(-1, volumen);
 
     // TODO: obtener info del mapa desde el servidor.
     int ancho_mapa = MAPA_ANCHO;
@@ -61,10 +76,13 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     dibujador.setDimensionMapa(ancho_mapa, alto_mapa);
 
     // Inicializar animaciones.
-    dibujador.inicializarAnimaciones(renderizador);
+    dibujador.inicializar(renderizador, mixer);
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);
+
+    // Obtengo colores de los jugadores.
+    std::vector<colorJugador> colores = config.getColoresJugadores();
 
     iniciar();
 
@@ -107,13 +125,39 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                     pos_cursor.first = comando.parametros.first;
                     pos_cursor.second = comando.parametros.second;
                     break;
+                case VOLUMEN_MAS:
+                    if (volumen + 8 <= MIX_MAX_VOLUME) {
+                        volumen += 8;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    break;
+                case VOLUMEN_MENOS:
+                    if (volumen - 8 >= 0) {
+                        volumen -= 8;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    break;
+                case TOGGLE_MUTEAR:
+                    if (muteado) {
+                        muteado = false;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    else {
+                        muteado = true;
+                        mixer.SetMusicVolume(0);
+                        mixer.SetVolume(-1, 0);
+                    }
+                    break;
                 default:
                     break;
             }
         }
 
         // Renderizo.
-        dibujador.dibujar(renderizador, control_iteracion, info_inicial.vigas, pos_cursor);
+        dibujador.dibujar(renderizador, control_iteracion, info_inicial.vigas, pos_cursor, colores);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

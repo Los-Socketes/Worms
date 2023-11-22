@@ -363,8 +363,13 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     // Arma *nuevaArma = new Arma();
     // nuevaEntidad->arma = nuevaArma;
     else if (arma == BATE_P) {
+        std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
+        golpeYCaja = gusano->ejecutarGolpe();
         std::pair<inicioCaja, finCaja> coordsGolpe;
-        coordsGolpe = gusano->getAreaGolpe();
+        coordsGolpe = golpeYCaja.second;
+        b2Vec2 golpe;
+        golpe = golpeYCaja.first;
+        std::cout << "AMONGUS" << golpe.x << " " << golpe.y << "\n";
 
         ResolvedorQuery query;
         b2AABB aabb;
@@ -378,7 +383,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	      continue;
 
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-	  entidadA->gusano->recibirDano();
+	  entidadA->gusano->recibirDano(golpe);
 
 	  // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
 	  printf("PEGO\n");

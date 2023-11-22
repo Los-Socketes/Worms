@@ -62,7 +62,7 @@ public:
     void preparar(Accion& accion);
 
     //TODO: Esta funcion recibe el arma o tipo de dano
-    void recibirDano();
+    void recibirDano(b2Vec2 golpe);
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
@@ -79,7 +79,10 @@ public:
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
 
-    [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
+    [[nodiscard]] std::pair<
+        b2Vec2,
+        std::pair<inicioCaja, finCaja>
+        > ejecutarGolpe();
 };
 
 #endif

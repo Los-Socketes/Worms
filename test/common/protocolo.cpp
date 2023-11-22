@@ -280,7 +280,8 @@ std::shared_ptr<EstadoDelJuego> enviarEstadoDelJuego(std::shared_ptr<EstadoDelJu
 
 TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     idJugador jugador = 0;
-    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
+    std::map<id, RepresentacionGusano> mapaGusanos;
     RepresentacionGusano gusano1;
     gusano1.idGusano = (id)2;
     gusano1.vida = (hp)20;
@@ -326,10 +327,12 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     arma2.cuentaRegresiva = 0;
     arma2.arma = GRANADA_ROJA_P;
     gusano2.armaEquipada = arma2;
-    std::vector<RepresentacionGusano> listaGusanos;
-    listaGusanos.push_back(gusano1);
-    listaGusanos.push_back(gusano2);
-    gusanos.insert({jugador, listaGusanos});
+    // std::vector<RepresentacionGusano> listaGusanos;
+    // listaGusanos.push_back(gusano1);
+    // listaGusanos.push_back(gusano2);
+    mapaGusanos.insert({gusano1.idGusano, gusano1});
+    mapaGusanos.insert({gusano2.idGusano, gusano2});
+    gusanos.insert({jugador, mapaGusanos});
 
     RepresentacionProyectil proyectil1;
     proyectil1.id = 8;
@@ -363,12 +366,12 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     REQUIRE(resultado->gusanos.size() == gusanos.size());
     REQUIRE(resultado->jugadorDeTurno == estado->jugadorDeTurno);
     REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
-    std::vector<RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
-    REQUIRE(resultadoGusanos.size() == listaGusanos.size());
+    std::map<id, RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
+    REQUIRE(resultadoGusanos.size() == mapaGusanos.size());
 
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
         RepresentacionGusano resultadoGusano = resultadoGusanos[i];
-        RepresentacionGusano baseGusano = listaGusanos[i];
+        RepresentacionGusano baseGusano = mapaGusanos[i];
         RepresentacionArma resultadoArma = resultadoGusano.armaEquipada;
         RepresentacionArma baseArma = baseGusano.armaEquipada;
         REQUIRE(resultadoGusano.vida == baseGusano.vida);

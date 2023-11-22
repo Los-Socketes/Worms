@@ -22,6 +22,20 @@ void AccionCambiarCoordenadas::enviar(Protocolo& protocolo) {
     protocolo.configurarCoordenadas(std::make_pair(x, y));
 }
 
+AccionCambiarPotencia::AccionCambiarPotencia(float potencia) :
+    potencia(potencia) {}
+
+void AccionCambiarPotencia::enviar(Protocolo& protocolo) {
+    protocolo.configurarPotencia(potencia);
+}
+
+AccionCambiarCuentaRegresiva::AccionCambiarCuentaRegresiva(int cuenta_regresiva) :
+    cuenta_regresiva(cuenta_regresiva) {}
+
+void AccionCambiarCuentaRegresiva::enviar(Protocolo& protocolo) {
+    protocolo.configurarCuentaRegresiva(cuenta_regresiva);
+}
+
 AccionEquiparArma::AccionEquiparArma(ArmaProtocolo arma) :
     arma(arma) {}
 

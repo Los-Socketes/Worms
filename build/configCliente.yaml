@@ -1,0 +1,15 @@
+---
+Dimensiones pantalla:
+  ancho: 640
+  alto: 480
+Volumen inicial: 50
+Cantidad maxima jugadores: 8
+Color jugadores:
+  Jugador 1: [255, 255, 0]
+  Jugador 2: [255, 50, 0]
+  Jugador 3: [0, 0, 255]
+  Jugador 4: [50, 205, 50]
+  Jugador 5: [255, 165, 0]
+  Jugador 6: [255, 0, 255]
+  Jugador 7: [0, 255, 255]
+  Jugador 8: [255, 255, 255]

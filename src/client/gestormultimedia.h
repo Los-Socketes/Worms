@@ -1,5 +1,5 @@
-#ifndef GESTORANIMACIONES_H_
-#define GESTORANIMACIONES_H_
+#ifndef GESTORMULTIMEDIA_H_
+#define GESTORMULTIMEDIA_H_
 
 #include <map>
 #include <utility>
@@ -11,8 +11,9 @@
 #include "defs.h"
 #include "camara.h"
 #include "controliteracion.h"
+#include "sonido.h"
 
-enum ItemEscenario{
+enum ItemEscenario {
     AGUA,
     FONDO,
     PANORAMA,
@@ -22,19 +23,42 @@ enum ItemEscenario{
     EXPLOSION
 };
 
-class GestorAnimaciones {
+enum TipoSonido {
+    SONIDO_GUSANO_CAMINA_INICIO,
+    SONIDO_GUSANO_CAMINA_FIN,
+    SONIDO_GUSANO_SALTA,
+    SONIDO_CARGANDO_ARMA,
+    SONIDO_CARGANDO_LANZAMIENTO,
+    SONIDO_DISPARO,
+    SONIDO_LANZAMIENTO,
+    SONIDO_EXPLOSION,
+    SONIDO_EXPLOSION_GRANDE,
+    SONIDO_GRANADA_SANTA,
+    SONIDO_ATAQUE_AEREO,
+    SONIDO_COMUNICACION,
+    SONIDO_TELETRANSPORTE,
+    SONIDO_TICK,
+    SONIDO_DINAMITA,
+    SONIDO_BATE
+};
+
+class GestorMultimedia {
  private:
     Camara& camara;
     std::map<std::pair<EstadoGusano, ArmaProtocolo>, std::shared_ptr<Animacion>> gusanos;
     std::map<ItemEscenario, std::shared_ptr<Animacion>> escenario;
     std::map<ArmaProtocolo, std::shared_ptr<Animacion>> iconos;
     std::map<std::pair<ArmaProtocolo, bool>, std::shared_ptr<Animacion>> proyectiles;
+    std::map<TipoSonido, std::shared_ptr<Sonido>> sonidos;
     int ancho_mapa;
     int alto_mapa;
+
+    void reproducirSonidoGusano(IteradorGusano& iterador, EstadoGusano& estado, ArmaProtocolo& arma);
+    void reproducirSonidoProyectil(IteradorProyectil& iterador, ArmaProtocolo& proyectil, bool exploto);
  public:
-    GestorAnimaciones(Camara& camara, int ancho_mapa, int alto_mapa);
+    GestorMultimedia(Camara& camara, int ancho_mapa, int alto_mapa);
     void setDimensionMapa(int ancho, int alto);
-    void inicializar(Renderer& renderizador);
+    void inicializar(Renderer& renderizador, Mixer& mixer);
     void dibujarAgua(int& pos_x, int& pos_y, int& it);
     void dibujarFondo();
     void dibujarPanorama(int& pos_x, int& pos_y);
@@ -47,4 +71,4 @@ class GestorAnimaciones {
     void dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
 };
 
-#endif // GESTORANIMACIONES_H_
+#endif // GESTORMULTIMEDIA_H_

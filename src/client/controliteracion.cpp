@@ -37,6 +37,14 @@ void ControlIteracion::aumentarIteraciones(int cant) {
     }
 }
 
+IteradorGusano& ControlIteracion::getIteradorGusano(id id) {
+    return it_gusanos[id];
+}
+
+IteradorProyectil& ControlIteracion::getIteradorProyectil(idProyectil id) {
+    return it_proyectiles[id];
+}
+
 int& ControlIteracion::getIteracionGusano(id id) {
     return it_gusanos[id].it;
 }

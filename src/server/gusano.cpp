@@ -1,6 +1,7 @@
 #include "gusano.h"
 #include <iostream>
 #include "box2dDefs.h"
+#include <math.h>       /* sin */
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -33,11 +34,50 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
+std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     //Esta funcion crea la hitbox donde que el gusano va a usar para
     //pegar. Es una caja con coordenadas inferior izquierda y sup derecha
+    std::pair<
+        b2Vec2,
+        std::pair<inicioCaja, finCaja>
+        > golpeYCaja;
+
+    //Angulo
+    //Usando trigonometria  vamos a obtener los vectores dado el angulo
+    //WARNING: HARDCODEO La potencia
+    /*
+           /| 
+          / |
+         /  |
+        /   | Opuesto (y)
+       /    |
+      /_____|
+      Adyacente(x)
+     */
+    float potencia = 9;
+    float hipotenusa = 9 * potencia;
+    float angulo = this->armaSeleccionada.getAngulo();
+
+    //SOHCAHTOA
+    float adyacente;
+    adyacente = cos(angulo) * hipotenusa;
+    if (this->direccion == IZQUIERDA)
+        adyacente *= -1;
+    std::cout << adyacente << "\n";
+
+    float opuesto;
+    opuesto = sin(angulo) * hipotenusa;
+
+    b2Vec2 golpeDeseado(adyacente, opuesto);
+    golpeYCaja.first = golpeDeseado;
+
+
+
+    //CAJA
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
+
+    std::cout << "ANGULO" << this->armaSeleccionada.getAngulo() << "\n";
 
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
@@ -55,8 +95,8 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     //reutilizo la variables coords para la segunda coordenada (sup der)
     //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    coords.enX += offset * 5;
-    coords.enY += offset * 5;
+    coords.enX += offset * 1;
+    coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
     //WARNING Valores hardcodeados hasta ver cual se ve mejor
@@ -65,8 +105,9 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
+    golpeYCaja.second = vecs;
 
-    return vecs;
+    return golpeYCaja;
 }
 
 
@@ -129,10 +170,13 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-void Gusano::recibirDano() {
+void Gusano::recibirDano(b2Vec2 golpe) {
     //TODO switch dependiendo del arma de this
     this->vida -= 20;
-    this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+    this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 }
 
 void Gusano::preparar(Accion& accion) {
