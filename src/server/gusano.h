@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "arma.h"
 #include "box2dDefs.h"
+#include <ctime>
 
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
@@ -26,6 +27,11 @@ struct Ataque {
     Proyectil *proyectilAsociado;
 };
 
+struct condicionDeTurno {
+    time_t cuandoArranco;
+    bool usoSuArma;
+    bool recibioDano;
+};
 
 class Gusano {
 private:
@@ -33,6 +39,8 @@ private:
     DireccionGusano direccion;
 
     int idGusano;
+
+    condicionDeTurno turno;
 
     //Arma armaequipada;
     ArmaProtocolo armaEquipada;
@@ -52,6 +60,13 @@ private:
 public:
 
     Gusano();
+
+    /*
+     * Le pregunta al gusano si su turno esta terminado o no.
+     */
+    [[nodiscard]] bool hayQueCambiarDeTurno(time_t tiempoActual);
+
+    void esMiTurno(time_t cuandoArranco);
 
     void giveId(int idGusano);
 

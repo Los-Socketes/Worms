@@ -2,7 +2,7 @@
 
 Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
-
+    this->esMiTurno = false;
     this->gusanos = gusanos;
 }
 

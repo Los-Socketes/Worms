@@ -3,6 +3,7 @@
 #include "box2dDefs.h"
 
 #define SLEEPSEGS 1
+#define NOW NULL
 
 int esperar = 0;
 
@@ -271,6 +272,9 @@ bool Partida::enviarEstadoAJugadores() {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
 
+        if (jugadorActual->esMiTurno == true)
+	  estadoActual->jugadorDeTurno = jugador;
+
         std::map<id, RepresentacionGusano> gusanosJugActual;
 
         gusanosJugActual = jugadorActual->getRepresentacionGusanos();
@@ -279,7 +283,7 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->gusanos = representacionGusanos;
     // TODO: actualizar para que sea el posta
-    estadoActual->jugadorDeTurno = 0;
+    // estadoActual->jugadorDeTurno = 0;
     estadoActual->gusanoDeTurno = 0;
 
 
@@ -434,6 +438,38 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     }
       
 }
+Jugador *Partida::nuevoJugador(Jugador *viejoJugador) {
+    viejoJugador->esMiTurno = false;
+
+    Jugador *jugadorActual;
+    jugadorActual = this->jugadores.at(this->posJugadorActual);
+    this->posJugadorActual += 1;
+    if (posJugadorActual > (int) this->jugadores.size())
+        this->posJugadorActual = 0;
+
+    return jugadorActual;
+}
+
+std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual) {
+    std::pair<Gusano *, Jugador *> gusanoYJugador;
+    Gusano *gusanoDeTurno = gusanoActual;
+    Jugador *jugadorDeTurno = jugadorTurnoActual;
+    gusanoYJugador.first = gusanoActual;
+    gusanoYJugador.second = jugadorDeTurno;
+
+    bool cambioDeTurno;
+    cambioDeTurno = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    //Si no hay cambio de turno, devolvemos el mismo gusano
+    if (cambioDeTurno == false)
+        return gusanoYJugador;
+
+    jugadorDeTurno = this->nuevoJugador(jugadorTurnoActual);
+    gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+    gusanoYJugador.first = gusanoActual;
+    gusanoYJugador.second = jugadorDeTurno;
+
+    return gusanoYJugador;
+}
 
 //     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
@@ -451,6 +487,8 @@ void Partida::gameLoop() {
 
     Jugador *jugadorActual;
     jugadorActual = this->jugadores.at(0);
+    jugadorActual->esMiTurno = true;
+
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
 
@@ -462,7 +500,6 @@ void Partida::gameLoop() {
     // int countdown = 0;
 
     b2Vec2 origen(0,0);
-
     Ataque ataqueARealizar;
     Proyectil * nuevoProyectil = new Proyectil();
     nuevoProyectil->armaOrigen = NADA_P;
@@ -473,8 +510,17 @@ void Partida::gameLoop() {
     nuevoProyectil->exploto = false;
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
+
     bool hayJugadores = true;
     while (hayJugadores) {
+        time_t tiempoActual;
+        tiempoActual = time(NOW);
+
+        std::pair<Gusano *, Jugador *> gusanoYJugador;
+        gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
+        gusanoActual = gusanoYJugador.first;
+        jugadorActual = gusanoYJugador.second;
+
         this->world.Step(timeStep, velocityIterations, positionIterations);
         hayJugadores = this->enviarEstadoAJugadores();
 

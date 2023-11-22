@@ -2,6 +2,7 @@
 #include <iostream>
 #include "box2dDefs.h"
 #include <math.h>       /* sin */
+#include <time.h>
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -32,6 +33,29 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
 
 void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
+}
+
+void Gusano::esMiTurno(time_t arrancoAhora) {
+    this->turno.cuandoArranco = arrancoAhora;
+    this->turno.recibioDano = false;
+    this->turno.usoSuArma = false;
+}
+
+bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
+    bool cambiaDeTurno;
+
+    //Esto, en teoria, da la rta en segundos
+    bool noTengoMasTiempo;
+    double cuantoTiempoLlevo;
+    cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
+    noTengoMasTiempo = (cuantoTiempoLlevo > 60);
+
+    //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
+    cambiaDeTurno = (noTengoMasTiempo ||
+        this->turno.recibioDano == true ||
+        this->turno.usoSuArma == true);
+
+    return cambiaDeTurno;
 }
 
 int Gusano::getId() {

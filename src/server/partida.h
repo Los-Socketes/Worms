@@ -79,7 +79,9 @@ class Partida : public Thread {
 
     std::vector<Gusano *> gusanos;
 
+    int posJugadorActual = 0;
     std::vector<Jugador *> jugadores;
+    Jugador *nuevoJugador(Jugador *viejoJugador);
 
     std::vector<Proyectil *> proyectiles;
 
@@ -93,6 +95,8 @@ class Partida : public Thread {
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
+
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
 
 public:
     Partida(const std::string mapa);

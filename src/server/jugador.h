@@ -15,6 +15,8 @@ private:
 public:
     Jugador(std::vector<Gusano*> gusanos);
 
+    bool esMiTurno;
+
     Gusano* getGusanoActual();
 
     std::map<id, RepresentacionGusano> getRepresentacionGusanos();
