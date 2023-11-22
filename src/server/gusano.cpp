@@ -4,6 +4,8 @@
 #include <math.h>       /* sin */
 #include <time.h>
 
+#define TIEMPOCAMBIOTURNO 10
+
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
     this->direccion = DERECHA;
@@ -48,12 +50,16 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     bool noTengoMasTiempo;
     double cuantoTiempoLlevo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
-    noTengoMasTiempo = (cuantoTiempoLlevo > 60);
+    noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
 
     //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
     cambiaDeTurno = (noTengoMasTiempo ||
         this->turno.recibioDano == true ||
         this->turno.usoSuArma == true);
+
+    if (cambiaDeTurno == true) {
+        std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    }
 
     return cambiaDeTurno;
 }
