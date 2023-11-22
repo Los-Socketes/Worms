@@ -26,13 +26,17 @@ Gusano *Jugador::getGusanoActual() {
 }
 
 //Flatmap
-std::vector<RepresentacionGusano> Jugador::getRepresentacionGusanos() {
-    std::vector<RepresentacionGusano> misGusanos;
+std::map<id, RepresentacionGusano> Jugador::getRepresentacionGusanos() {
+    std::map<id, RepresentacionGusano> misGusanos;
 
     for (Gusano *gusano : this->gusanos) {
+        int idActual;
+        idActual = gusano->getId();
+
         RepresentacionGusano repreActual;
         repreActual = gusano->getRepresentacion();
-        misGusanos.push_back(repreActual);
+
+        misGusanos.insert({idActual, repreActual});
     }
 
     return misGusanos;

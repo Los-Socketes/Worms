@@ -17,7 +17,7 @@ public:
 
     Gusano* getGusanoActual();
 
-    std::vector<RepresentacionGusano> getRepresentacionGusanos();
+    std::map<id, RepresentacionGusano> getRepresentacionGusanos();
 
 };
 

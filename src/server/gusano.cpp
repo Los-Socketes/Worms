@@ -34,6 +34,12 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
+int Gusano::getId() {
+    int idGusano;
+    idGusano = this->idGusano;
+    return idGusano;
+}
+
 std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     //Esta funcion crea la hitbox donde que el gusano va a usar para
     //pegar. Es una caja con coordenadas inferior izquierda y sup derecha

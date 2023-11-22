@@ -265,18 +265,19 @@ bool Partida::enviarEstadoAJugadores() {
     //TODO esto deberia ser un puntero
     std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
-    std::map<idJugador, std::vector<RepresentacionGusano>> representacionPartida;
+    // std::map<idJugador, std::vector<RepresentacionGusano>> representacionGusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> representacionGusanos;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
 
-        std::vector<RepresentacionGusano> gusanosJugActual;
+        std::map<id, RepresentacionGusano> gusanosJugActual;
 
         gusanosJugActual = jugadorActual->getRepresentacionGusanos();
 
-        representacionPartida.insert({jugador, gusanosJugActual});
+        representacionGusanos.insert({jugador, gusanosJugActual});
     }
-    estadoActual->gusanos = representacionPartida;
+    estadoActual->gusanos = representacionGusanos;
     // TODO: actualizar para que sea el posta
     estadoActual->jugadorDeTurno = 0;
     estadoActual->gusanoDeTurno = 0;

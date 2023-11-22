@@ -73,6 +73,8 @@ public:
 
     void setEstado(EstadoGusano nuevoEstado);
 
+    int getId();
+
     [[nodiscard]] Ataque ejecutar(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
