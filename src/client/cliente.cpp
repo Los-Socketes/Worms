@@ -145,7 +145,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
         if (descanso < 0) {
             int ticks_detras = -descanso;
-            int ticks_perdidos = ticks_detras / ticks_detras % rate;
+            int ticks_perdidos = ticks_detras - ticks_detras % rate;
             tick_anterior += ticks_perdidos;
             control_iteracion.aumentarIteraciones(ticks_detras / rate);
         }
