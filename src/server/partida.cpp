@@ -17,7 +17,6 @@ Partida::Partida(std::string mapa)
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
-    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 25.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 20.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 20.0f));
@@ -34,10 +33,6 @@ Partida::Partida(std::string mapa)
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
-
-    // if (contact->GetFixtureA()->GetShape() == b2Contact)
-    //     abort();
-
 
     Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
     Entidad *entidadB = (Entidad *) cuerpoB->GetUserData().pointer;
@@ -215,11 +210,6 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
         b2BodyType tipoDelCuerpo;
         tipoDelCuerpo = b->GetType();
-        /*
-        b2_staticBody = 0,
-        b2_kinematicBody,
-        b2_dynamicBody
-        */
         //Ignoramos los que no son estaticos porque los gusanos los
         //sacamos de los jugadores
         if (tipoDelCuerpo != b2_staticBody)
@@ -227,7 +217,6 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
         RepresentacionViga vigaActual;
         vigaActual.angulo = b->GetAngle();
-        //TODO Desharcodear
         // Juampi: creo que el problema de que no estaban alineadas las vigas era que le 
         // estabas pasando el 8 hardcodeado para graficar y la longitud de la viga en box2d es 
         // LONGITUDVIGAGRANDE que es 14, pero no estoy seguro.
@@ -258,23 +247,22 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     //Anadimos al jugador a la partida
     this->clientes.push_back(clienteNuevo);
 
-    //Fuente: https://www.iforce2d.net/b2dtut/bodies
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
 }
 
 bool Partida::enviarEstadoAJugadores() {
-    //TODO esto deberia ser un puntero
     std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
-    // std::map<idJugador, std::vector<RepresentacionGusano>> representacionGusanos;
     std::map<idJugador, std::map<id, RepresentacionGusano>> representacionGusanos;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
 
-        if (jugador == this->posJugadorActual)
+        if (jugador == this->posJugadorActual) {
 	  estadoActual->jugadorDeTurno = jugador;
+	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoActual()->getId();
+        }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
 
@@ -284,11 +272,8 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->gusanos = representacionGusanos;
     // TODO: actualizar para que sea el posta
-    // estadoActual->jugadorDeTurno = 0;
     estadoActual->gusanoDeTurno = 0;
 
-
-    // estadoActual.vigas = vigasEnMapa;
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
@@ -329,8 +314,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     Accion accionAEjecutar;
     //Si la ultima accion fue de movimiento y no obtuvimos nada
     //nuevo; ejecutamos esa accion de movimiento.
-    //AKA: Nos movemos a la Izquierda (por ej) hasta que nos digan
-    //de detenernos
+    //AKA: Nos movemos a la Izquierda hasta que nos digan de detenernos
 
     tipoAccion tipoUltimaAccion;
     tipoUltimaAccion = ultimaAccion.accion;
@@ -364,10 +348,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
-    // Entidad *nuevaEntidad = new Entidad;
-    // nuevaEntidad->tipo = TipoEntidad::ARMA;
-    // Arma *nuevaArma = new Arma();
-    // nuevaEntidad->arma = nuevaArma;
+
     else if (arma == BATE_P) {
         std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
         golpeYCaja = gusano->ejecutarGolpe();
@@ -375,7 +356,6 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         coordsGolpe = golpeYCaja.second;
         b2Vec2 golpe;
         golpe = golpeYCaja.first;
-        std::cout << "AMONGUS" << golpe.x << " " << golpe.y << "\n";
 
         ResolvedorQuery query;
         b2AABB aabb;
@@ -391,8 +371,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
 	  entidadA->gusano->recibirDano(golpe);
 
-	  // cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
-	  printf("PEGO\n");
+	  // printf("PEGO\n");
         }
     }
 
@@ -473,15 +452,12 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
-//     //INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 
     //Esperamos hasta que se unan todos los jugadores necesarios
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
-
-    // this->anadirViga(0, 60000, std::pair<coordX,coordY>(0.0f, 10.0f));
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
@@ -490,10 +466,9 @@ void Partida::gameLoop() {
 
     Accion ultimaAccion;
     ultimaAccion.idGusano = INVAL_ID;
-    // valor basura para que no rompa valgrind
+    // WARNING valor basura para que no rompa valgrind
     ultimaAccion.accion = ESTAQUIETO;
     bool exploto = false;
-    // int countdown = 0;
 
     b2Vec2 origen(0,0);
     Ataque ataqueARealizar;
@@ -519,17 +494,15 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoActual();
     gusanoActual->esMiTurno(tiempoActual);
     while (hayJugadores) {
-        std::cout << "Inicio: " << this->posJugadorActual << "\n";
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
         gusanoActual = gusanoYJugador.first;
-        std::cout << "GUSANO EN LOOP" << gusanoActual->getId() << "\n";
         jugadorActual = gusanoYJugador.second;
-        std::cout << "Fin: " << this->posJugadorActual << "\n";
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
+
         hayJugadores = this->enviarEstadoAJugadores();
 
         Accion accionRecibida;
@@ -558,16 +531,6 @@ void Partida::gameLoop() {
 
 
         this->crearProjectil(gusanoActual, ataqueARealizar, nuevoProyectil);
-
-        // std::cout << nuevoProyectil->countdown << "\n";
-
-
-
-        // printf("\n");
-        // std::pair<coordX, coordY> posicionamiento = gusanoActual->getCoords();
-        // printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
-
-
 
         std::this_thread::sleep_for(frameDuration);
     }
