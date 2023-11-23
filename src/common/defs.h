@@ -153,6 +153,7 @@ struct EstadoDelJuego {
     std::vector<RepresentacionProyectil> proyectiles;
     idJugador jugadorDeTurno;
     id gusanoDeTurno;
+    float segundosRestantes;
 };
 
 struct Configuracion {

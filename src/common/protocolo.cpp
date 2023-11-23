@@ -393,8 +393,16 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         return estado;
     }
 
-    int16_t cantJugadores;
     bool was_closed = false;
+    int32_t tiempoRestante;
+    socket.recvall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    float segundosRestantes = toFloat(ntohl(tiempoRestante));
+
+
+    int16_t cantJugadores;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
         return estado;
@@ -646,6 +654,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugadorDeTurno;
     estado->gusanoDeTurno = gusanoDeTurno;
+    estado->segundosRestantes = segundosRestantes;
 
     return estado;
 }
@@ -879,7 +888,7 @@ Accion Protocolo::obtenerAccion() {
 }
 
 
-// se manda ESCENARIO+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
+// se manda ESCENARIO+jugadorDeTurno+gusanoDeTurno+tiempoRestante+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
 bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     bool is_open = enviarCodigo(ESTADO);
     if (!is_open) {
@@ -895,6 +904,13 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (!is_open) {
         return false;
     }
+
+    bool was_closed = false;
+    int32_t tiempoRestante = htonl(toInt(estado->segundosRestantes));
+    socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     
     //envio cantJugadores
     int cant = estado->gusanos.size();
@@ -902,7 +918,7 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (!is_open) {
         return false;
     }
-    bool was_closed = false;
+
     for (auto const& [idJugador, mapaGusanos] : estado->gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
