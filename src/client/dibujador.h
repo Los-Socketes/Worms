@@ -27,6 +27,7 @@ class Dibujador {
       RepresentacionGusano gusano_actual;    
       Font fuente1;
       Font fuente2;
+      int segundos_turno;
 
       void actualizarGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
@@ -47,6 +48,7 @@ class Dibujador {
       void dibujarAguaDelante(ControlIteracion& iteraciones);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
+      void dibujarCuentaRegresiva(Renderer& renderizador);
 };
 
 #endif // DIBUJADOR_H_

@@ -311,3 +311,6 @@ void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo
     reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, true);
 }
 
+void GestorMultimedia::reproducirSonido(TipoSonido tipo) {
+    sonidos[tipo]->reproducir();
+}
