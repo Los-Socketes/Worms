@@ -361,11 +361,13 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugador;
     estado->gusanoDeTurno = (id)2;
+    estado->segundosRestantes = 25.36;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());
     REQUIRE(resultado->jugadorDeTurno == estado->jugadorDeTurno);
     REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
+    REQUIRE(resultado->segundosRestantes == estado->segundosRestantes);
     std::map<id, RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == mapaGusanos.size());
 
