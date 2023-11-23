@@ -4,7 +4,7 @@
 #include <math.h>       /* sin */
 #include <time.h>
 
-#define TIEMPOCAMBIOTURNO 10
+#define TIEMPOCAMBIOTURNO 20
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -58,6 +58,8 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
         this->turno.usoSuArma == true);
 
     if (cambiaDeTurno == true) {
+        std::cout << cuantoTiempoLlevo << "\n";
+        std::cout << this->idGusano << "\n";
         std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     }
 

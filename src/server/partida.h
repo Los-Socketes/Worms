@@ -17,7 +17,7 @@
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-#define MINJUGADORES 1
+#define MINJUGADORES 2
 
 enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
@@ -81,7 +81,7 @@ class Partida : public Thread {
 
     int posJugadorActual = 0;
     std::vector<Jugador *> jugadores;
-    Jugador *nuevoJugador(Jugador *viejoJugador);
+    Jugador *siguienteJugador(Jugador *viejoJugador);
 
     std::vector<Proyectil *> proyectiles;
 

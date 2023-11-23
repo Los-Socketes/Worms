@@ -13,6 +13,7 @@ Partida::Partida(std::string mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
+    this->posJugadorActual = -1;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
@@ -438,13 +439,14 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     }
       
 }
-Jugador *Partida::nuevoJugador(Jugador *viejoJugador) {
+Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
     Jugador *jugadorActual;
-    jugadorActual = this->jugadores.at(this->posJugadorActual);
     //Si con el siguiente me paso, volve a 0
+    if (this->posJugadorActual + 1 >= (int) this->jugadores.size())
+        this->posJugadorActual = -1;
+
     this->posJugadorActual += 1;
-    if (this->posJugadorActual >= (int) this->jugadores.size())
-        this->posJugadorActual = 0;
+    jugadorActual = this->jugadores.at(this->posJugadorActual);
 
     return jugadorActual;
 }
@@ -462,10 +464,10 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
-    jugadorDeTurno = this->nuevoJugador(jugadorTurnoActual);
+    jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
     gusanoDeTurno = jugadorDeTurno->getGusanoActual();
     gusanoDeTurno->esMiTurno(tiempoActual);
-    gusanoYJugador.first = gusanoActual;
+    gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
     return gusanoYJugador;
@@ -511,18 +513,21 @@ void Partida::gameLoop() {
     tiempoActual = time(NOW);
 
     Jugador *jugadorActual;
-    jugadorActual = this->jugadores.at(0);
+    jugadorActual = this->siguienteJugador(NULL);
 
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
     gusanoActual->esMiTurno(tiempoActual);
     while (hayJugadores) {
+        std::cout << "Inicio: " << this->posJugadorActual << "\n";
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
         gusanoActual = gusanoYJugador.first;
+        std::cout << "GUSANO EN LOOP" << gusanoActual->getId() << "\n";
         jugadorActual = gusanoYJugador.second;
+        std::cout << "Fin: " << this->posJugadorActual << "\n";
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
         hayJugadores = this->enviarEstadoAJugadores();
@@ -554,13 +559,13 @@ void Partida::gameLoop() {
 
         this->crearProjectil(gusanoActual, ataqueARealizar, nuevoProyectil);
 
-        std::cout << nuevoProyectil->countdown << "\n";
+        // std::cout << nuevoProyectil->countdown << "\n";
 
 
 
-        printf("\n");
-        std::pair<coordX, coordY> posicionamiento = gusanoActual->getCoords();
-        printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
+        // printf("\n");
+        // std::pair<coordX, coordY> posicionamiento = gusanoActual->getCoords();
+        // printf("Gusano: %4.2f %4.2f \n", posicionamiento.enX, posicionamiento.enY);
 
 
 
