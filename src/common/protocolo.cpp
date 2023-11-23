@@ -394,12 +394,12 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     }
 
     bool was_closed = false;
-    int32_t tiempoRestante;
-    socket.recvall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    int32_t segundosRestantes;
+    socket.recvall(&segundosRestantes, sizeof(segundosRestantes), &was_closed);
     if (was_closed) {
         return estado;
     }
-    float segundosRestantes = toFloat(ntohl(tiempoRestante));
+    segundosRestantes = ntohl(segundosRestantes);
 
 
     int16_t cantJugadores;
@@ -906,7 +906,7 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     }
 
     bool was_closed = false;
-    int32_t tiempoRestante = htonl(toInt(estado->segundosRestantes));
+    int32_t tiempoRestante = htonl(estado->segundosRestantes);
     socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
     if (was_closed) {
         return false;
