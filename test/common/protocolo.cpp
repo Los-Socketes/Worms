@@ -361,8 +361,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugador;
     estado->gusanoDeTurno = (id)2;
-    time_t tiempo(30);
-    estado->segundosRestantes = tiempo;
+    estado->segundosRestantes = 30;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());

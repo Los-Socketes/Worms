@@ -153,7 +153,7 @@ struct EstadoDelJuego {
     std::vector<RepresentacionProyectil> proyectiles;
     idJugador jugadorDeTurno;
     id gusanoDeTurno;
-    time_t segundosRestantes;
+    int segundosRestantes;
 };
 
 struct Configuracion {
