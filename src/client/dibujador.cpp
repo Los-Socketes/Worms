@@ -8,7 +8,8 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     gestor_multimedia(camara, ancho_mapa, alto_mapa),
     gusano_actual(),
     fuente1("assets/fonts/AdLibRegular.ttf", 32),
-    fuente2("assets/fonts/ANDYB.TTF", 32) {
+    fuente2("assets/fonts/ANDYB.TTF", 32),
+    segundos_turno(0) {
     // Inicializo el gusano actual con valores por defecto.
     gusano_actual.idGusano = -1;
     gusano_actual.estado = QUIETO;
@@ -162,6 +163,7 @@ void Dibujador::dibujar(Renderer& renderizador,
     dibujarAguaDelante(iteraciones);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
     dibujarBarrasVida(renderizador, colores);
+    dibujarCuentaRegresiva(renderizador);
 
     renderizador.Present();
 }
@@ -337,5 +339,33 @@ void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugad
         renderizador.SetDrawColor(0, 0, 0, 255);
         renderizador.DrawRect(posicion.first + 120, posicion.second + 5, posicion.first + 220, posicion.second + 15);
     }    
+}
+
+void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador) {
+    // Dibujo los segundos restantes arriba a la derecha de la pantalla.
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    posicion.first = ancho_pantalla - 40;
+    posicion.second = 20;
+    // Determino el color blanco como default.
+    SDL_Color color = {255, 255, 255, 255};
+    // Si quedan 5 o menos segundos, dibujo en rojo.
+    if (estado_juego->segundosRestantes <= 5) {
+        color = {255, 0, 0, 255};
+    }
+    // Dibujo el borde del temporizador.
+    fuente1.SetOutline(2);
+    Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), {0, 0, 0, 255}));
+    renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
+    // Dibujo el temporizador.
+    fuente1.SetOutline(0);
+    Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), color));
+    renderizador.Copy(textura_cuenta, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
+    // Si quedan 5 o menos segundos, reproduzco el sonido de tick al principio de cada segundo.
+    if (estado_juego->segundosRestantes <= 5 && segundos_turno != estado_juego->segundosRestantes) {
+        gestor_multimedia.reproducirSonido(SONIDO_TICK);
+    }
+    segundos_turno = estado_juego->segundosRestantes;
 }
 
