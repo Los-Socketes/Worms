@@ -39,7 +39,7 @@ private:
     DireccionGusano direccion;
 
     int idGusano;
-    int tiempoQueLlevo;
+    int tiempoQueMeQueda;
 
     condicionDeTurno turno;
 
@@ -67,7 +67,7 @@ public:
      */
     [[nodiscard]] bool hayQueCambiarDeTurno(time_t tiempoActual);
 
-    [[nodiscard]] int getTiempoDeTurno();
+    [[nodiscard]] int getTiempoQueMeQueda();
 
     void esMiTurno(time_t cuandoArranco);
 

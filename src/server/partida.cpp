@@ -262,7 +262,8 @@ bool Partida::enviarEstadoAJugadores() {
         if (jugador == this->posJugadorActual) {
 	  estadoActual->jugadorDeTurno = jugador;
 	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoActual()->getId();
-	  estadoActual->segundosRestantes = jugadorActual->getGusanoActual()->getTiempoDeTurno();
+	  estadoActual->segundosRestantes = jugadorActual->getGusanoActual()->getTiempoQueMeQueda();
+	  // std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;

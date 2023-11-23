@@ -64,13 +64,13 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     }
 
 
-    this->tiempoQueLlevo = cuantoTiempoLlevo;
+    this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
 
     return cambiaDeTurno;
 }
 
-int Gusano::getTiempoDeTurno() {
-    return this->tiempoQueLlevo;
+int Gusano::getTiempoQueMeQueda() {
+    return this->tiempoQueMeQueda;
 }
 
 int Gusano::getId() {
