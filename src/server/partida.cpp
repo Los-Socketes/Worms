@@ -193,7 +193,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
         int idGusano;
-        idGusano = this->gusanos.size();
+        idGusano = this->gusanos.size() - 1;
         nuevoGusano->giveId(idGusano);
 
     }
