@@ -6,11 +6,22 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     ancho_mapa(ancho_mapa),
     alto_mapa(alto_mapa),
     gestor_multimedia(camara, ancho_mapa, alto_mapa),
+    gusano_actual(),
     fuente1("assets/fonts/AdLibRegular.ttf", 32),
-    fuente2("assets/fonts/ANDYB.TTF", 32) {}
+    fuente2("assets/fonts/ANDYB.TTF", 32) {
+    // Inicializo el gusano actual con valores por defecto.
+    gusano_actual.idGusano = -1;
+    gusano_actual.estado = QUIETO;
+    gusano_actual.armaEquipada.arma = NADA_P;
+    }
 
-RepresentacionGusano Dibujador::getGusanoActual() {
-    return estado_juego->gusanos[estado_juego->jugadorDeTurno][estado_juego->gusanoDeTurno];
+void Dibujador::actualizarGusanoActual() {
+    // Chequeo que el jugador y el gusano de turno existan.
+    if (estado_juego->gusanos.find(estado_juego->jugadorDeTurno) != estado_juego->gusanos.end() &&
+        estado_juego->gusanos[estado_juego->jugadorDeTurno].find(estado_juego->gusanoDeTurno) != estado_juego->gusanos[estado_juego->jugadorDeTurno].end()) {
+        
+        gusano_actual = estado_juego->gusanos.at(estado_juego->jugadorDeTurno).at(estado_juego->gusanoDeTurno);
+    }
 }
 
 std::pair<int, int> Dibujador::traducirCoordenadas(coordX& x, coordY& y) {
@@ -142,7 +153,7 @@ void Dibujador::dibujar(Renderer& renderizador,
     std::vector<colorJugador>& colores) {
     renderizador.Clear();
 
-    RepresentacionGusano gusano_actual = getGusanoActual();
+    actualizarGusanoActual();
 
     dibujarMapa(vigas);
     dibujarAguaDetras(iteraciones);

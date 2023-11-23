@@ -24,10 +24,11 @@ class Dibujador {
       int alto_mapa;
       GestorMultimedia gestor_multimedia;
       std::map<ArmaProtocolo, std::string> teclas_armas;
+      RepresentacionGusano gusano_actual;    
       Font fuente1;
       Font fuente2;
 
-      RepresentacionGusano getGusanoActual();
+      void actualizarGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
       void dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones);
       void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color);
