@@ -20,6 +20,8 @@
 #define FUERZAGRAVITARIAX 0.0f
 #define FUERZAGRAVITARIAY -20.0f
 
+#define DEGTORAD 0.0174532925199432957f
+
 #define ANCHOVIGA 0.8f
 // es entero para que no rompa
 // Juampi: Lo vuelvo a poner en 6, 14 me parece mucho. Se van a
@@ -40,7 +42,7 @@ typedef b2Vec2 finCaja;
 #define inicio first
 #define fin second
 
-[[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2& vec) {
+[[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2 vec) {
     std::pair<coordX, coordY> representacionCoord;
     representacionCoord.enX = vec.x;
     representacionCoord.enY = vec.y;
@@ -48,12 +50,14 @@ typedef b2Vec2 finCaja;
     return representacionCoord;
 }
 
-[[nodiscard]] inline b2Vec2 deCoordAb2Vec(std::pair<coordX, coordY>& coord) {
+[[nodiscard]] inline b2Vec2 deCoordAb2Vec(std::pair<coordX, coordY> coord) {
     b2Vec2 representacionVec;
     representacionVec.x = coord.enX;
     representacionVec.y = coord.enY;
 
     return representacionVec;
 }
+
+#define TIEMPOESPERADINAMITA 99
 
 #endif

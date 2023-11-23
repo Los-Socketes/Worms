@@ -12,26 +12,34 @@
 #include <condition_variable>
 #include <mutex>
 #include <box2d/box2d.h>
+#include <set>
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-#define MINJUGADORES 1
+#define MINJUGADORES 2
 
-enum class TipoEntidad { GUSANO, VIGA, ARMA };
+enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
 // Este struct se usa para asociar facilmente un body de box2d a
 // alguna de nuestras clases. En teoria se podria usar solo el puntero,
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
 // lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
+
 struct Entidad {
     TipoEntidad tipo;
     union {
         Gusano *gusano;
         // Viga *viga;
         // Arma *arma;
+        b2Body *proyectil;
     };
 };
+
+// class ResolvedorDestruccion : public b2DestructionListener {
+//     void SayGoodbye(b2Fixture *fixture); 	
+//     void SayGoodbye(b2Joint *joint); 	
+// };
 
 class ResolvedorColisiones : public b2ContactListener {
 public:
@@ -57,8 +65,11 @@ class Partida : public Thread {
     //World de box2d de la partida
     b2World world;
     ResolvedorColisiones colisiones;
-    // ResolvedorQuery query;
     ResolvedorQuery query;
+    //WARNING Actualmente solo usado para sacar los cuerpos creados en
+    //las explosiones
+    std::set<b2Body *> cuerposADestruir;
+    // ResolvedorDestruccion destucciones;
 
     std::string mapa;
 
@@ -68,9 +79,13 @@ class Partida : public Thread {
 
     std::vector<Gusano *> gusanos;
 
+    int posJugadorActual = 0;
     std::vector<Jugador *> jugadores;
+    Jugador *siguienteJugador(Jugador *viejoJugador);
 
-    void enviarEstadoAJugadores();
+    std::vector<Proyectil *> proyectiles;
+
+    bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 		     Accion& ultimaAccion);
@@ -79,7 +94,9 @@ class Partida : public Thread {
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
-    void crearProjectil(Gusano *gusano, ArmaDeseada arma);
+    void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
+
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
 
 public:
     Partida(const std::string mapa);
@@ -89,6 +106,8 @@ public:
     void anadirCliente(Cliente *clienteNuevo);
 
     void gameLoop();
+
+    ~Partida();
 };
 
 #endif

@@ -120,6 +120,9 @@ TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
     InformacionInicial info;
     info.jugador = 1;
 
+    std::pair<coordX, coordY> dimensiones(60.5, 85.42);
+    info.dimensiones = dimensiones;
+
     RepresentacionViga viga1;
     viga1.angulo = 45.2;
     viga1.longitud = 3;
@@ -143,8 +146,10 @@ TEST_CASE("Test de crear partidas (Caso feliz)", "[crearPartidaCasoFeliz]") {
         REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
         REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
     }
-    REQUIRE(resultado.first.jugador ==  1);
-    REQUIRE( resultado.second == (id)0);
+    REQUIRE(resultado.first.jugador == 1);
+    REQUIRE(resultado.first.dimensiones.enX == dimensiones.enX);
+    REQUIRE(resultado.first.dimensiones.enY == dimensiones.enY);
+    REQUIRE(resultado.second == (id)0);
 
 }
 
@@ -178,6 +183,9 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
     InformacionInicial info;
     info.jugador = 1;
 
+    std::pair<coordX, coordY> dimensiones(87.45, 50.21);
+    info.dimensiones = dimensiones;
+
     RepresentacionViga viga1;
     viga1.angulo = 45;
     viga1.longitud = 3;
@@ -194,6 +202,8 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
     info.vigas = vigas;
     std::pair<InformacionInicial,id> resultado = unirsePartidaCasoFeliz((id)0, info);
     REQUIRE(resultado.first.jugador == 1);
+    REQUIRE(resultado.first.dimensiones.enX == dimensiones.enX);
+    REQUIRE(resultado.first.dimensiones.enY == dimensiones.enY);
     REQUIRE(resultado.first.vigas.size() == vigas.size());
     for (int i = 0; i < (int)vigas.size(); i++) {
         RepresentacionViga vigaObtenida = resultado.first.vigas[i];
@@ -203,7 +213,7 @@ TEST_CASE("Test de unirse a partidas (Caso feliz)", "[unirsePartidaCasoFeliz]") 
         REQUIRE(vigaObtenida.posicionInicial.enX == vigaBase.posicionInicial.enX);
         REQUIRE(vigaObtenida.posicionInicial.enY == vigaBase.posicionInicial.enY);
     }
-    REQUIRE(resultado.second == (id)0);
+    REQUIRE(resultado.second == (id)0); 
 }
 
 // TEST 9
@@ -270,7 +280,8 @@ std::shared_ptr<EstadoDelJuego> enviarEstadoDelJuego(std::shared_ptr<EstadoDelJu
 
 TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     idJugador jugador = 0;
-    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
+    std::map<id, RepresentacionGusano> mapaGusanos;
     RepresentacionGusano gusano1;
     gusano1.idGusano = (id)2;
     gusano1.vida = (hp)20;
@@ -316,12 +327,15 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     arma2.cuentaRegresiva = 0;
     arma2.arma = GRANADA_ROJA_P;
     gusano2.armaEquipada = arma2;
-    std::vector<RepresentacionGusano> listaGusanos;
-    listaGusanos.push_back(gusano1);
-    listaGusanos.push_back(gusano2);
-    gusanos.insert({jugador, listaGusanos});
+    // std::vector<RepresentacionGusano> listaGusanos;
+    // listaGusanos.push_back(gusano1);
+    // listaGusanos.push_back(gusano2);
+    mapaGusanos.insert({gusano1.idGusano, gusano1});
+    mapaGusanos.insert({gusano2.idGusano, gusano2});
+    gusanos.insert({jugador, mapaGusanos});
 
     RepresentacionProyectil proyectil1;
+    proyectil1.id = 8;
     proyectil1.proyectil = DINAMITA_P;
     proyectil1.esFragmento = false;
     proyectil1.posicion.enX = 20.6;
@@ -331,6 +345,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     proyectil1.exploto = true;
 
     RepresentacionProyectil proyectil2;
+    proyectil1.id = 9;
     proyectil2.proyectil = GRANADA_ROJA_P;
     proyectil2.esFragmento = true;
     proyectil2.posicion.enX = 4.6;
@@ -346,17 +361,19 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugador;
     estado->gusanoDeTurno = (id)2;
+    estado->segundosRestantes = 30;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());
     REQUIRE(resultado->jugadorDeTurno == estado->jugadorDeTurno);
     REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
-    std::vector<RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
-    REQUIRE(resultadoGusanos.size() == listaGusanos.size());
+    REQUIRE(resultado->segundosRestantes == estado->segundosRestantes);
+    std::map<id, RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
+    REQUIRE(resultadoGusanos.size() == mapaGusanos.size());
 
     for (int i = 0; i < (int)resultadoGusanos.size(); i++) {
         RepresentacionGusano resultadoGusano = resultadoGusanos[i];
-        RepresentacionGusano baseGusano = listaGusanos[i];
+        RepresentacionGusano baseGusano = mapaGusanos[i];
         RepresentacionArma resultadoArma = resultadoGusano.armaEquipada;
         RepresentacionArma baseArma = baseGusano.armaEquipada;
         REQUIRE(resultadoGusano.vida == baseGusano.vida);

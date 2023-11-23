@@ -38,6 +38,9 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer 2.6.3 REQUIRED)
 find_package(SDL2pp REQUIRED)
 
+# Busco codigo para QT
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
 # Busco codigo para yaml-cpp
 find_package(yaml-cpp 0.7 REQUIRED)
 
@@ -144,7 +147,10 @@ add_executable(client
   "${CLIENTDIR}/camara.cpp"
   "${CLIENTDIR}/accioncliente.cpp"
   "${CLIENTDIR}/dibujador.cpp"
-  "${CLIENTDIR}/gestoranimaciones.cpp"
+  "${CLIENTDIR}/gestormultimedia.cpp"
+  "${CLIENTDIR}/controliteracion.cpp"
+  "${CLIENTDIR}/sonido.cpp"
+  "${CLIENTDIR}/configuracionCliente.cpp"
 
   # Socket
   "${COMMONDIR}/resolvererror.cpp"
@@ -175,9 +181,14 @@ target_link_libraries(client PRIVATE SDL2::SDL2)
 target_link_libraries(client PRIVATE SDL2_image::SDL2_image)
 target_link_libraries(client PRIVATE SDL2_mixer::SDL2_mixer)
 target_link_libraries(client PRIVATE SDL2pp::SDL2pp)
+target_link_libraries(client PRIVATE Qt5::Widgets)
+target_link_libraries(client PRIVATE yaml-cpp)
 
 # Copiamos los assets a la carpeta de build
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copiamos la configuracion del cliente a la carpeta de build
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/client/configCliente.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el

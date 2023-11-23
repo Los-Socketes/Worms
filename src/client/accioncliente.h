@@ -10,8 +10,10 @@ enum TipoComando{
     MOVER_CAMARA,
     TOGGLE_CAMARA,
     TAMANIO_VENTANA,
-    ARRIBA,
-    ABAJO
+    MOVER_CURSOR,
+    VOLUMEN_MAS,
+    VOLUMEN_MENOS,
+    TOGGLE_MUTEAR
 };
 
 struct Comando{
@@ -55,6 +57,24 @@ class AccionCambiarCoordenadas : public AccionCliente {
     AccionCambiarCoordenadas(coordX x, coordY y);
     void enviar(Protocolo& protocolo) override;
     ~AccionCambiarCoordenadas() override = default;
+};
+
+class AccionCambiarPotencia : public AccionCliente {
+ private:
+    float potencia;
+ public:
+    AccionCambiarPotencia(float potencia);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarPotencia() override = default;
+};
+
+class AccionCambiarCuentaRegresiva : public AccionCliente {
+ private:
+    int cuenta_regresiva;
+ public:
+    AccionCambiarCuentaRegresiva(int cuenta_regresiva);
+    void enviar(Protocolo& protocolo) override;
+    ~AccionCambiarCuentaRegresiva() override = default;
 };
 
 class AccionDisparar : public AccionCliente {

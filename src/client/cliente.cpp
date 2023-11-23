@@ -1,40 +1,25 @@
 #include "cliente.h"
 
-Cliente::Cliente(Socket&& skt):
+Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     sdl(SDL_INIT_VIDEO),
     ttf(),
     protocolo(std::move(skt)),
+    config(config),
     estado_juego(std::make_shared<EstadoDelJuego>()),
-    camara(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0),
-    dibujador(camara, estado_juego, MAPA_ANCHO, MAPA_ALTO),
+    camara(0, 0, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second, 0, 0),
+    dibujador(camara, estado_juego, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second),
+    control_iteracion(estado_juego),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
-    entrada_teclado(envio_comandos, comandos_teclado),
+    entrada_teclado(envio_comandos, comandos_teclado, camara),
     recibidor(protocolo, recepcion_estados, es_turno),
-    enviador(protocolo, envio_comandos, es_turno) {
-        //WARNING todo esto es momentaneo para que compile
-        std::vector<RepresentacionGusano> listaGusanosIniciales;
-        RepresentacionGusano gusi;
-        gusi.idGusano = 0;
-        gusi.vida = 100;
-        gusi.dir = DERECHA;
-        gusi.estado = QUIETO;
-        gusi.posicion = std::pair<int, int>(0,0);
-        gusi.armaEquipada.arma = NADA_P;
-        gusi.armaEquipada.tieneMira = false;
-        gusi.armaEquipada.tienePotenciaVariable = false;
-        gusi.armaEquipada.tieneCuentaRegresiva = false;
-        listaGusanosIniciales.push_back(gusi);
-
-        std::map<idJugador, std::vector<RepresentacionGusano>> gusanosNuevos;
-        gusanosNuevos.insert({0, listaGusanosIniciales});
-
-        estado_juego->gusanos = gusanosNuevos;
-        // listaGusanosIniciales.
-    }
+    enviador(protocolo, envio_comandos, es_turno),
+    pos_cursor(0, 0),
+    volumen(config.getVolumenInicial()),
+    muteado(false) {}
 
 void Cliente::iniciar() {
     entrada_teclado.start();
@@ -42,27 +27,45 @@ void Cliente::iniciar() {
     recibidor.start();
 }
 
-InformacionInicial Cliente::ejecutar_menu() {
-    return menu.ejecutar();
+InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
+    return menu.ejecutar(argc, argv);
 }
 
 void Cliente::loop_principal(InformacionInicial& info_inicial) {
     // Inicializar SDL.  
-    Window ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    Window ventana("Worms",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        config.getDimensionesIniciales().first,
+        config.getDimensionesIniciales().second,
+        SDL_WINDOW_RESIZABLE);
     Renderer renderizador(ventana, -1, SDL_RENDERER_ACCELERATED);
+    Mixer mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
 
-    // Inicializar animaciones.
-    dibujador.inicializarAnimaciones(renderizador);
+    Music music("assets/sounds/music.ogg");
+
+    mixer.FadeInMusic(music, -1, 2000);
+    mixer.SetMusicVolume(volumen);
+    mixer.SetVolume(-1, volumen);
 
     // TODO: obtener info del mapa desde el servidor.
-    camara.setDimensionMapa(MAPA_ANCHO, MAPA_ALTO);
+    int ancho_mapa = MAPA_ANCHO;
+    int alto_mapa = MAPA_ALTO;
+
+    camara.setDimensionMapa(ancho_mapa, alto_mapa);
+    dibujador.setDimensionMapa(ancho_mapa, alto_mapa);
+
+    // Inicializar animaciones.
+    dibujador.inicializar(renderizador, mixer);
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);
 
+    // Obtengo colores de los jugadores.
+    std::vector<colorJugador> colores = config.getColoresJugadores();
+
     iniciar();
 
-    int it = 0;
     int tick_anterior = SDL_GetTicks();
     int rate = 1000 / FPS;
     bool continuar = true;
@@ -77,6 +80,9 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     while (continuar) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
+
+        // Actualizo entidades en el iterador.
+        control_iteracion.actualizarEntidades();     
 
         // Chequeo comandos de teclado.
         Comando comando;
@@ -95,14 +101,43 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                 case TAMANIO_VENTANA:
                     camara.setDimension(comando.parametros.first, comando.parametros.second);
                     break;
+                case MOVER_CURSOR:
+                    pos_cursor.first = comando.parametros.first;
+                    pos_cursor.second = comando.parametros.second;
+                    break;
+                case VOLUMEN_MAS:
+                    if (volumen + 8 <= MIX_MAX_VOLUME) {
+                        volumen += 8;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    break;
+                case VOLUMEN_MENOS:
+                    if (volumen - 8 >= 0) {
+                        volumen -= 8;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    break;
+                case TOGGLE_MUTEAR:
+                    if (muteado) {
+                        muteado = false;
+                        mixer.SetMusicVolume(volumen);
+                        mixer.SetVolume(-1, volumen);
+                    }
+                    else {
+                        muteado = true;
+                        mixer.SetMusicVolume(0);
+                        mixer.SetVolume(-1, 0);
+                    }
+                    break;
                 default:
                     break;
             }
         }
 
         // Renderizo.
-        // Temporalmente solo utilizo el arma del primer gusano del primer jugador.
-        dibujador.dibujar(renderizador, it, info_inicial.vigas);
+        dibujador.dibujar(renderizador, control_iteracion, info_inicial.vigas, pos_cursor, colores);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();
@@ -110,16 +145,16 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
         if (descanso < 0) {
             int ticks_detras = -descanso;
-            int ticks_perdidos = ticks_detras / ticks_detras % rate;
+            int ticks_perdidos = ticks_detras - ticks_detras % rate;
             tick_anterior += ticks_perdidos;
-            it += int(ticks_detras / rate);
+            control_iteracion.aumentarIteraciones(ticks_detras / rate);
         }
         else {
             SDL_Delay(descanso);
         }
     
         tick_anterior += rate;
-        it++;
+        control_iteracion.aumentarIteraciones(1);
 
     }
 }

@@ -1,20 +1,23 @@
 #include "animacion.h"
 
 Animacion::Animacion(Renderer& render,
-    std::string ruta_textura, int tam_x,
+    const std::string& ruta_textura, int tam_x,
     int tam_y, int frames, bool seguir_camara,
-    Centro centro) :
+    bool es_loop, Centro centro, radianes min, radianes max) :
     renderizador(render),
     frames(frames),
     tam(tam_x, tam_y),
     dimensiones(tam_x, tam_y),
     textura(renderizador, Surface(ruta_textura).SetColorKey(true, 0)),
     seguir_camara(seguir_camara),
-    centro(centro) {
+    es_loop(es_loop),
+    centro(centro),
+    min(min),
+    max(max) {
     textura.SetBlendMode(SDL_BLENDMODE_BLEND);
     }
 
-void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angulo, bool flip, int frame_actual) {
+void Animacion::dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& angulo, bool& flip, int& frame_actual) {
 
     int coord_x = pos_x;
     int coord_y = pos_y;
@@ -57,20 +60,34 @@ void Animacion::dibujarComun(Camara& camara, int pos_x, int pos_y, radianes angu
         flip_flag);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad) {
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad) {
     int frame_actual = (it / velocidad) % frames;
-    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
+    // Si no es loop y ya termino la animacion, se queda en el ultimo frame.
+    if (!es_loop && it / velocidad >= frames - 1) {
+        frame_actual = frames - 1;
+    }
+    radianes rotacion = 0;
+    dibujarComun(camara, pos_x, pos_y, rotacion, flip, frame_actual);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, radianes angulo) {
-    // El angulo 90 corresponde al primer frame y el angulo -90 al ultimo.
-    int frame_actual = (angulo * 180 / M_PI + 90) / 180 * frames;
-    dibujarComun(camara, pos_x, pos_y, 0, flip, frame_actual);
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, radianes& angulo) {
+    // El frame actual se calcula en proporcion a los angulos maximos y minimos.
+    int frame_actual = (angulo - min) / (max - min) * frames;
+    radianes rotacion = 0;
+    dibujarComun(camara, pos_x, pos_y, rotacion, flip, frame_actual);
 }
 
-void Animacion::dibujar(Camara& camara, int pos_x, int pos_y, bool flip, int it, int velocidad, radianes angulo) {
+void Animacion::dibujar(Camara& camara, int& pos_x, int& pos_y, bool flip, int& it, int velocidad, radianes& angulo) {
     int frame_actual = (it / velocidad) % frames;
+    // Si no es loop y ya termino la animacion, se queda en el ultimo frame.
+    if (!es_loop && it / velocidad >= frames - 1) {
+        frame_actual = frames - 1;
+    }
     dibujarComun(camara, pos_x, pos_y, angulo, flip, frame_actual);
+}
+
+int Animacion::getFrames() {
+    return frames;
 }
 
 void Animacion::setDimensiones(int tam_x, int tam_y){

@@ -2,7 +2,6 @@
 
 Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
-
     this->gusanos = gusanos;
 }
 
@@ -15,7 +14,7 @@ Gusano *Jugador::getGusanoActual() {
         this->gusanoActualPos += 1;
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
-        if (this->gusanoActualPos > (int) this->gusanos.size())
+        if (this->gusanoActualPos >= (int) this->gusanos.size())
 	  this->gusanoActualPos = 0;
     }
 
@@ -26,13 +25,17 @@ Gusano *Jugador::getGusanoActual() {
 }
 
 //Flatmap
-std::vector<RepresentacionGusano> Jugador::getRepresentacionGusanos() {
-    std::vector<RepresentacionGusano> misGusanos;
+std::map<id, RepresentacionGusano> Jugador::getRepresentacionGusanos() {
+    std::map<id, RepresentacionGusano> misGusanos;
 
     for (Gusano *gusano : this->gusanos) {
+        int idActual;
+        idActual = gusano->getId();
+
         RepresentacionGusano repreActual;
         repreActual = gusano->getRepresentacion();
-        misGusanos.push_back(repreActual);
+
+        misGusanos.insert({idActual, repreActual});
     }
 
     return misGusanos;

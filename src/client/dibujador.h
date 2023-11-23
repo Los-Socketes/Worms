@@ -10,7 +10,9 @@
 #include "animacion.h"
 #include "camara.h"
 #include "defs.h"
-#include "gestoranimaciones.h"
+#include "gestormultimedia.h"
+#include "controliteracion.h"
+#include "configuracionCliente.h"
 
 using namespace SDL2pp;
 
@@ -20,22 +22,33 @@ class Dibujador {
       std::shared_ptr<EstadoDelJuego>& estado_juego;
       int ancho_mapa;
       int alto_mapa;
-      GestorAnimaciones gestor_animaciones;
-      Font fuente;
+      GestorMultimedia gestor_multimedia;
+      std::map<ArmaProtocolo, std::string> teclas_armas;
+      RepresentacionGusano gusano_actual;    
+      Font fuente1;
+      Font fuente2;
+      int segundos_turno;
 
-      RepresentacionGusano getGusanoActual();
-      std::pair<int, int> traducirCoordenadas(coordX x, coordY y);
-      void dibujarVida(Renderer& renderizador, std::pair<int, int> posicion, int vida);
+      void actualizarGusanoActual();
+      std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
+      void dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones);
+      void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color);
+      void dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i);
+      void dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia);
+      void dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, int& cuenta_regresiva);
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
-      void inicializarAnimaciones(Renderer& renderizador);
-      void dibujar(Renderer& renderizador, int it, std::vector<RepresentacionViga> vigas);
-      void dibujarMapa(std::vector<RepresentacionViga> vigas);
-      void dibujarGusanos(Renderer& renderizador, int it);
-      // void dibujarProyectiles(int it);
-      void dibujarAguaDetras(int it);
-      void dibujarAguaDelante(int it);
-      void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo arma_equipada);
+      void setDimensionMapa(int ancho, int alto);
+      void inicializar(Renderer& renderizador, Mixer& mixer);
+      void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
+      void dibujarMapa(std::vector<RepresentacionViga>& vigas);
+      void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
+      void dibujarProyectiles(ControlIteracion& iteraciones);
+      void dibujarAguaDetras(ControlIteracion& iteraciones);
+      void dibujarAguaDelante(ControlIteracion& iteraciones);
+      void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
+      void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
+      void dibujarCuentaRegresiva(Renderer& renderizador);
 };
 
 #endif // DIBUJADOR_H_

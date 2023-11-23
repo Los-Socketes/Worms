@@ -11,6 +11,7 @@
 
 typedef int32_t id;
 typedef int idJugador;
+typedef int idProyectil;
 typedef uint hp;
 
 #define strings std::vector<std::string>
@@ -43,7 +44,7 @@ enum ArmaProtocolo {NADA_P, BAZOOKA_P, MORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_
  *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                    0         1         2        3          4
-enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE};
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, INVAL_ACCION};
 enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 
 
@@ -62,6 +63,9 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 #define EQUIPAR 10
 #define CALIBRAR 11
 #define ATACAR 12
+
+
+#define PIXELS_POR_METRO 20
 
 
 // Tiene la info de una partida para unirse
@@ -124,17 +128,16 @@ struct RepresentacionViga {
     std::pair<coordX, coordY> posicionInicial;
 };
 
-// struct InformacionMapa {
-//     std::vector<RepresentacionViga> vigas;
-// };
 
 struct InformacionInicial {
     idJugador jugador;
-    // InformacionMapa infoMapa;
     std::vector<RepresentacionViga> vigas;
+    std::pair<coordX, coordY> dimensiones;
+
 };
 
 struct RepresentacionProyectil {
+    idProyectil id;
     ArmaProtocolo proyectil;
     bool esFragmento;
     std::pair<coordX,coordY> posicion;
@@ -146,10 +149,11 @@ struct RepresentacionProyectil {
 
 // Tiene la info del estado del juego
 struct EstadoDelJuego {
-    std::map<idJugador, std::vector<RepresentacionGusano>> gusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
     std::vector<RepresentacionProyectil> proyectiles;
     idJugador jugadorDeTurno;
     id gusanoDeTurno;
+    int segundosRestantes;
 };
 
 struct Configuracion {

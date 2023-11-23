@@ -26,6 +26,7 @@ Cliente::~Cliente() {
     this->reciever.join();
     std::cout << "despues reciever\n";
     this->sender.stop();
+    std::cout << "despues de parar sender\n";
     this->sender.join();
     std::cout << "despues sender\n";
 }

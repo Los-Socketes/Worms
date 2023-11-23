@@ -137,8 +137,20 @@ InformacionInicial Protocolo::verificarConexion() {
         vigaActual.posicionInicial = posicionRecibida;
         vigas.push_back(vigaActual);
     } 
+
+    std::vector<int32_t> dimensiones(2,0);
+    socket.recvall(dimensiones.data(), sizeof(int32_t)*2, &was_closed);
+    if (was_closed) {
+        return info;
+    }
+
+    std::pair<coordX, coordY> dimensionesRecibidas;
+    dimensionesRecibidas.enX = toFloat(ntohl(dimensiones[0]));
+    dimensionesRecibidas.enY = toFloat(ntohl(dimensiones[1]));
+
     info.jugador = idEnviada;
     info.vigas = vigas;
+    info.dimensiones = dimensionesRecibidas;
     return info;
 
 }
@@ -381,15 +393,23 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         return estado;
     }
 
-    int16_t cantJugadores;
     bool was_closed = false;
+    int32_t segundosRestantes;
+    socket.recvall(&segundosRestantes, sizeof(segundosRestantes), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    segundosRestantes = ntohl(segundosRestantes);
+
+
+    int16_t cantJugadores;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
         return estado;
     }
     cantJugadores = ntohs(cantJugadores);
 
-    std::map<idJugador,std::vector<RepresentacionGusano>> gusanos;
+    std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
     for (int16_t i = 0; i < cantJugadores; i++) {
         id idJugador = obtenerId();
         if (idJugador == INVAL_ID) {
@@ -404,7 +424,8 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         }
         cantGusanos = ntohs(cantGusanos);
 
-        std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
+        std::map<id, RepresentacionGusano> mapaGusanos;
+        // std::vector<RepresentacionGusano> listaGusanos(cantGusanos);
         for (int16_t j = 0; j < cantGusanos; j++) {
             id idGusano = obtenerId();
             if (idJugador == INVAL_ID) {
@@ -429,7 +450,6 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             posicionRecibida.enY = toFloat(ntohl(posicion[1]));
 
             int8_t estadoGusano;
-            // bool was_closed = false;
             socket.recvall(&estadoGusano, sizeof(estadoGusano), &was_closed);
             if (was_closed) {
                 return estado;
@@ -441,6 +461,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
                 return estado;
             }
 
+            // caracteristicas de arma
             int8_t mira;
             socket.recvall(&mira, sizeof(mira), &was_closed);
             if (was_closed) {
@@ -555,10 +576,11 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             gusanoActual.posicion = posicionRecibida;
             gusanoActual.armaEquipada = armaEquipada;
 
-            listaGusanos[j] = gusanoActual;
+            // listaGusanos[j] = gusanoActual;
+            mapaGusanos.insert({idGusano, gusanoActual});
         }   
 
-        gusanos.insert({idJugador, listaGusanos});
+        gusanos.insert({idJugador, mapaGusanos});
         
     }
 
@@ -571,6 +593,10 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
 
     std::vector<RepresentacionProyectil> proyectiles;
     for (int i = 0; i < cantProyectiles; i++) {
+        idProyectil proyectilId = obtenerId();
+        if (proyectilId == INVAL_ID) {
+            return estado;
+        }
         int8_t tipoProyectil;
         socket.recvall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
         if (was_closed) {
@@ -613,6 +639,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
             return estado;
         }
         RepresentacionProyectil proyectil;
+        proyectil.id = proyectilId;
         proyectil.proyectil = (ArmaProtocolo)tipoProyectil;
         proyectil.esFragmento = esFragmento;
         proyectil.posicion = posicionRecibidaProy;
@@ -627,6 +654,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->proyectiles = proyectiles;
     estado->jugadorDeTurno = jugadorDeTurno;
     estado->gusanoDeTurno = gusanoDeTurno;
+    estado->segundosRestantes = segundosRestantes;
 
     return estado;
 }
@@ -738,9 +766,9 @@ bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
         return false;
     }
 
+    bool was_closed = false;
     for (auto &&viga : informacion.vigas) {
         // angulo
-        bool was_closed = false;
         int32_t angulo = htonl(toInt(viga.angulo));
         socket.sendall(&angulo, sizeof(angulo), &was_closed);
         if (was_closed) {
@@ -763,8 +791,12 @@ bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
         }
     }
 
-    return true;
-    
+    std::vector<int32_t> dimensiones;
+    dimensiones.push_back(htonl((int32_t)toInt(informacion.dimensiones.enX)));
+    dimensiones.push_back(htonl((int32_t)toInt(informacion.dimensiones.enY)));
+
+    socket.sendall(dimensiones.data(), sizeof(int32_t)*dimensiones.size(), &was_closed);
+    return !was_closed;
 }
 
 
@@ -777,6 +809,7 @@ Accion Protocolo::obtenerAccion() {
     int8_t codigo = obtenerCodigo();
     bool was_closed = false;
     Accion accion;
+    accion.accion = INVAL_ACCION;
     if (codigo != MOV && codigo != ATACAR && 
         codigo != EQUIPAR && codigo != CALIBRAR) {
         return accion;
@@ -855,7 +888,7 @@ Accion Protocolo::obtenerAccion() {
 }
 
 
-// se manda ESCENARIO+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
+// se manda ESCENARIO+jugadorDeTurno+gusanoDeTurno+tiempoRestante+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
 bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     bool is_open = enviarCodigo(ESTADO);
     if (!is_open) {
@@ -871,6 +904,13 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (!is_open) {
         return false;
     }
+
+    bool was_closed = false;
+    int32_t tiempoRestante = htonl(estado->segundosRestantes);
+    socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return false;
+    }
     
     //envio cantJugadores
     int cant = estado->gusanos.size();
@@ -878,8 +918,8 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (!is_open) {
         return false;
     }
-    bool was_closed = false;
-    for (auto const& [idJugador, listaGusanos] : estado->gusanos) {
+
+    for (auto const& [idJugador, mapaGusanos] : estado->gusanos) {
         // envio idJugador
         is_open = enviarId(idJugador);
         if (!is_open) {
@@ -887,16 +927,17 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
         }
 
         // envio cant de gusanos
-        int cantGusanos = listaGusanos.size();
+        int cantGusanos = mapaGusanos.size();
         is_open = enviarCantidad(cantGusanos);
         if (!is_open) {
             return false;
         }
 
-        for (int32_t i = 0; i < cantGusanos; i++) {
-            RepresentacionGusano gusano = listaGusanos[i];
+        for (auto const& [idGusano, gusano] : mapaGusanos) {
+        // for (int32_t i = 0; i < cantGusanos; i++) {
+            // RepresentacionGusano gusano = listaGusanos[i];
             // envio el id del gusano
-            is_open = enviarId(gusano.idGusano);
+            is_open = enviarId(idGusano);
             if (!is_open) {
                 return false;
             }
@@ -1016,6 +1057,10 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     }
 
     for (auto &&proyectil : estado->proyectiles) {
+        is_open = enviarId(proyectil.id);
+        if (!is_open) {
+            return false;
+        }
         int8_t tipoProyectil = proyectil.proyectil;
         socket.sendall(&tipoProyectil, sizeof(tipoProyectil), &was_closed);
         if (was_closed) {

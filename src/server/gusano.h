@@ -5,11 +5,33 @@
 #include "defs.h"
 #include "arma.h"
 #include "box2dDefs.h"
+#include <ctime>
 
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
 
 
+struct Proyectil {
+    ArmaProtocolo armaOrigen;
+    b2Vec2 posicion;
+    int id;
+    int countdown;
+    b2Vec2 *cuerpo;
+    bool exploto;
+};
+
+struct Ataque {
+    b2Vec2 posicion;
+    int tiempoEspera;
+    ArmaDeseada arma;
+    Proyectil *proyectilAsociado;
+};
+
+struct condicionDeTurno {
+    time_t cuandoArranco;
+    bool usoSuArma;
+    bool recibioDano;
+};
 
 class Gusano {
 private:
@@ -17,6 +39,9 @@ private:
     DireccionGusano direccion;
 
     int idGusano;
+    int tiempoQueMeQueda;
+
+    condicionDeTurno turno;
 
     //Arma armaequipada;
     ArmaProtocolo armaEquipada;
@@ -26,6 +51,7 @@ private:
 
     //Conceptos de b2box
     b2Body* cuerpo;
+    // int tiempoEspera;
 
     void setDireccion(DireccionGusano nuevaDireccion);
 
@@ -36,6 +62,15 @@ public:
 
     Gusano();
 
+    /*
+     * Le pregunta al gusano si su turno esta terminado o no.
+     */
+    [[nodiscard]] bool hayQueCambiarDeTurno(time_t tiempoActual);
+
+    [[nodiscard]] int getTiempoQueMeQueda();
+
+    void esMiTurno(time_t cuandoArranco);
+
     void giveId(int idGusano);
 
     void giveGun(ArmaProtocolo arma);
@@ -45,7 +80,7 @@ public:
     void preparar(Accion& accion);
 
     //TODO: Esta funcion recibe el arma o tipo de dano
-    void recibirDano();
+    void recibirDano(b2Vec2 golpe);
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
@@ -56,15 +91,18 @@ public:
 
     void setEstado(EstadoGusano nuevoEstado);
 
-    [[nodiscard]] ArmaDeseada ejecutar(Accion accion);
+    int getId();
+
+    [[nodiscard]] Ataque ejecutar(Accion accion);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
 
-    [[nodiscard]] std::pair<coordX, coordY> getCoordsArma();
-
-    [[nodiscard]] std::pair<inicioCaja, finCaja>  getAreaGolpe();
+    [[nodiscard]] std::pair<
+        b2Vec2,
+        std::pair<inicioCaja, finCaja>
+        > ejecutarGolpe();
 };
 
 #endif

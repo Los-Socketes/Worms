@@ -1,6 +1,10 @@
 #include "gusano.h"
 #include <iostream>
 #include "box2dDefs.h"
+#include <math.h>       /* sin */
+#include <time.h>
+
+#define TIEMPOCAMBIOTURNO 20
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -33,11 +37,92 @@ void Gusano::giveId(int idGusano) {
     this->idGusano = idGusano;
 }
 
-std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
+void Gusano::esMiTurno(time_t arrancoAhora) {
+    this->turno.cuandoArranco = arrancoAhora;
+    this->turno.recibioDano = false;
+    this->turno.usoSuArma = false;
+}
+
+bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
+    bool cambiaDeTurno;
+
+    //Esto, en teoria, da la rta en segundos
+    bool noTengoMasTiempo;
+    double cuantoTiempoLlevo;
+    cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
+    noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
+
+    //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
+    cambiaDeTurno = (noTengoMasTiempo ||
+        this->turno.recibioDano == true ||
+        this->turno.usoSuArma == true);
+
+    if (cambiaDeTurno == true) {
+        std::cout << cuantoTiempoLlevo << "\n";
+        std::cout << this->idGusano << "\n";
+        std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    }
+
+
+    this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
+
+    return cambiaDeTurno;
+}
+
+int Gusano::getTiempoQueMeQueda() {
+    return this->tiempoQueMeQueda;
+}
+
+int Gusano::getId() {
+    int idGusano;
+    idGusano = this->idGusano;
+    return idGusano;
+}
+
+std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     //Esta funcion crea la hitbox donde que el gusano va a usar para
     //pegar. Es una caja con coordenadas inferior izquierda y sup derecha
+    std::pair<
+        b2Vec2,
+        std::pair<inicioCaja, finCaja>
+        > golpeYCaja;
+
+    //Angulo
+    //Usando trigonometria  vamos a obtener los vectores dado el angulo
+    //WARNING: HARDCODEO La potencia
+    /*
+           /| 
+          / |
+         /  |
+        /   | Opuesto (y)
+       /    |
+      /_____|
+      Adyacente(x)
+     */
+    float potencia = 9;
+    float hipotenusa = 9 * potencia;
+    float angulo = this->armaSeleccionada.getAngulo();
+
+    //SOHCAHTOA
+    float adyacente;
+    adyacente = cos(angulo) * hipotenusa;
+    if (this->direccion == IZQUIERDA)
+        adyacente *= -1;
+    std::cout << adyacente << "\n";
+
+    float opuesto;
+    opuesto = sin(angulo) * hipotenusa;
+
+    b2Vec2 golpeDeseado(adyacente, opuesto);
+    golpeYCaja.first = golpeDeseado;
+
+
+
+    //CAJA
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
+
+    std::cout << "ANGULO" << this->armaSeleccionada.getAngulo() << "\n";
 
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
@@ -55,8 +140,8 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     //reutilizo la variables coords para la segunda coordenada (sup der)
     //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    coords.enX += offset * 5;
-    coords.enY += offset * 5;
+    coords.enX += offset * 1;
+    coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
     //WARNING Valores hardcodeados hasta ver cual se ve mejor
@@ -65,8 +150,9 @@ std::pair<inicioCaja, finCaja> Gusano::getAreaGolpe() {
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
+    golpeYCaja.second = vecs;
 
-    return vecs;
+    return golpeYCaja;
 }
 
 
@@ -75,48 +161,49 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     if (this->estado == CAYENDO)
         return;
 
-    b2Vec2 direccion;
+    // b2Vec2 direccion;
+    std::pair<coordX, coordY> direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
         std::cout << "Inicio der" << "\n";
-        direccion.x = VELOCIDADMOVIMIENTO;
-        direccion.y = 0.0f;
+        direccion.enX = VELOCIDADMOVIMIENTO;
+        direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(DERECHA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case INICIO_IZQ:
         std::cout << "Inicio izq" << "\n";
-        direccion.x = -VELOCIDADMOVIMIENTO;
-        direccion.y = 0.0f;
+        direccion.enX = -VELOCIDADMOVIMIENTO;
+        direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(IZQUIERDA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_DER:
         std::cout << "Fin der" << "\n";
-        direccion.x = 0.0f;
-        direccion.y = 0.0f;
+        direccion.enX = 0.0f;
+        direccion.enY = 0.0f;
         this->setEstado(QUIETO);
         this->setDireccion(DERECHA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_IZQ:
         std::cout << "Fin izq" << "\n";
-        direccion.x = 0.0f;
-        direccion.y = 0.0f;
+        direccion.enX = 0.0f;
+        direccion.enY = 0.0f;
         this->setEstado(QUIETO);
         this->setDireccion(IZQUIERDA);
-        this->cuerpo->SetLinearVelocity(direccion);
+        this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case SALTO:
         std::cout << "Salto" << "\n";
         if (this->direccion == DERECHA)
-	  direccion.x = 100000.0f;
+	  direccion.enX = 100000.0f;
         else
-	  direccion.x = -100000.0f;
-        direccion.y = 1000000.0f;
-        this->cuerpo->ApplyForceToCenter(direccion, false);
+	  direccion.enX = -100000.0f;
+        direccion.enY = 1000000.0f;
+        this->cuerpo->ApplyLinearImpulseToCenter(deCoordAb2Vec(direccion), true);
         break;
     case PIRUETA:
         std::cout << "PIRUETA" << "\n";
@@ -128,10 +215,13 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-void Gusano::recibirDano() {
+void Gusano::recibirDano(b2Vec2 golpe) {
     //TODO switch dependiendo del arma de this
     this->vida -= 20;
-    this->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
+    this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 }
 
 void Gusano::preparar(Accion& accion) {
@@ -160,7 +250,10 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
-ArmaDeseada Gusano::ejecutar(Accion accion) {
+Ataque Gusano::ejecutar(Accion accion) {
+    Ataque ataqueARealizar;
+    b2Vec2 posicion; //Posicion donde se va a realizar el ataque
+    int tiempoEspera; //Delay
     ArmaDeseada armaQueQuiero;
 
     tipoAccion accionDeseada;
@@ -168,23 +261,27 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
     switch (accionDeseada) {
     case ESTAQUIETO:
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
     case MOVERSE:
         {
-        // std::pair<coordX, coordY> coordsIniciales;
-        // this->cuerpo.SetLinearVelocity;
-        
-        // b2Vec2 fuerzamovimiento(100.0f, 0.0f);
-        // b2Vec2 fuerzamovimiento;
         Direccion direccionDeseada;
         direccionDeseada = accion.dir;
-        // fuerzamovimiento =
         // WARNING: Aca se ejecuta el movimiento
         realizarMovimiento(direccionDeseada);
 
-        // this->cuerpo.SetLinearVelocity(std::ref(fuerzamovimiento));
-
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
         }
     case EQUIPARSE: 
@@ -197,24 +294,56 @@ ArmaDeseada Gusano::ejecutar(Accion accion) {
         Arma armaSeleccionada(armaElegida);
         this->armaSeleccionada = armaSeleccionada;
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
+
         break;
         }
     case PREPARAR:
         std::cout << "PREPARAR\n";
         this->preparar(accion);
         armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.arma = NADA_P;
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         break;
     case ATAQUE:
-        if (armaEquipada == TELETRANSPORTACION_P)  
-	  this->teletransportarse();
+        tiempoEspera = 0;
+        if (armaEquipada == TELETRANSPORTACION_P) {
+	        this->teletransportarse();
+        }  
+
         armaQueQuiero = this->armaEquipada;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        // tiempoEspera = 99;
+        if(armaEquipada == DINAMITA_P) {
+	        tiempoEspera = TIEMPOESPERADINAMITA;
+        } else {
+	        tiempoEspera = 0;
+        }
+
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
         std::cout << "ATACO\n";
+        break;
+    case INVAL_ACCION:
+        std::cout << "INVALID ACCION\n";
         break;
     }
 
 
-    return armaQueQuiero;
+    return ataqueARealizar;
     
 
 }
@@ -226,13 +355,14 @@ void Gusano::teletransportarse() {
     b2Vec2 vectorDestino = deCoordAb2Vec(destino);
 
 
-    std::pair<coordX, coordY> origen = this->getCoords();
-    b2Vec2 inicio = deCoordAb2Vec(origen);
+    // std::pair<coordX, coordY> origen = this->getCoords();
+    // b2Vec2 inicio = deCoordAb2Vec(origen);
 
-    b2Vec2 quiero = vectorDestino - inicio;
+    // b2Vec2 quiero = vectorDestino - inicio;
+    // b2Vec2 quiero(5.0f,53.0f);
 
 
-    this->cuerpo->ApplyLinearImpulseToCenter(quiero, true);
+    this->cuerpo->SetTransform(vectorDestino, true);
 }
 
 void Gusano::giveGun(ArmaProtocolo arma) {

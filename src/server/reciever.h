@@ -25,7 +25,7 @@ class Reciever: public Thread {
     Cliente *cliente;
     idJugador miId;
 
-    void lobby();
+    bool lobby();
 
     void recibirEstado() override;
 
