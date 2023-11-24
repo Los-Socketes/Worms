@@ -16,9 +16,13 @@ Gusano *Jugador::getGusanoDeTurno() {
 Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
 
+    int posicionInicial = this->gusanoActualPos;
     //Busco el primer gusano no muerto
     while (gusanoActual == nullptr) {
         this->gusanoActualPos += 1;
+        if (this->gusanoActualPos == posicionInicial) {
+            return nullptr;
+        }
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
         if (this->gusanoActualPos >= (int) this->gusanos.size()) {
