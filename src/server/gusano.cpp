@@ -35,6 +35,7 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
     } else if (this->estado == MUERTO
 	     ||
 	     this->estado == AHOGADO) {
+        this->vida = 0;
         //Desabilito al cuerpo para que, una vez muerto, no colisione
         //ras
         // this->cuerpo->SetEnabled(false);
