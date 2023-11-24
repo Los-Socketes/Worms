@@ -29,7 +29,7 @@ class Camara {
 
     void setPosicion(int& x, int& y);
     void setDimension(int ancho, int alto);
-    void setDimensionMapa(int& ancho, int& alto);
+    void setDimensionMapa(coordX& ancho, coordY& alto);
 
     Rect getRectangulo();
 };

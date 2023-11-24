@@ -48,12 +48,8 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     mixer.SetMusicVolume(volumen);
     mixer.SetVolume(-1, volumen);
 
-    // TODO: obtener info del mapa desde el servidor.
-    int ancho_mapa = MAPA_ANCHO;
-    int alto_mapa = MAPA_ALTO;
-
-    camara.setDimensionMapa(ancho_mapa, alto_mapa);
-    dibujador.setDimensionMapa(ancho_mapa, alto_mapa);
+    camara.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
+    dibujador.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
 
     // Inicializar animaciones.
     dibujador.inicializar(renderizador, mixer);

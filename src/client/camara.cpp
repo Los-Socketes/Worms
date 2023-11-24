@@ -62,7 +62,7 @@ void Camara::setDimension(int ancho, int alto) {
     dimension.second = alto;
 }
 
-void Camara::setDimensionMapa(int& ancho, int& alto) {
+void Camara::setDimensionMapa(coordX& ancho, coordY& alto) {
     dimension_mapa.first = ancho * PIXELS_POR_METRO;
     dimension_mapa.second = alto * PIXELS_POR_METRO;
 }

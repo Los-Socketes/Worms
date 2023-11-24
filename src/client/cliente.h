@@ -23,14 +23,6 @@ using namespace SDL2pp;
 #define TAM_QUEUE 500
 #define FPS 30
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-// A reemplazar cuando reciba datos del mapa.
-// Mapa de 75 metros de ancho por 40 de alto.
-const int MAPA_ANCHO = 75;
-const int MAPA_ALTO = 40;
-
 class Cliente {
  private:
     SDL sdl;

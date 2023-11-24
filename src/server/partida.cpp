@@ -16,17 +16,39 @@ Partida::Partida(std::string mapa)
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
     this->finPartida = false;
+    this->dimensiones = std::pair<coordX, coordY>(75,40);
 
 
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(13.0f, 20.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(23.0f, 20.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(33.0f, 20.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(43.0f, 20.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(15.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(50.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(60.0f, 10.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(70.0f, 10.0f));
+    
+    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
+    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
+
+    this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
+    this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
+    
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(37.5f, 18.0f));
+
+    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(27.0f, 13.0f));
+    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
+
+    this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 11.0f)});
+    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(15.0f, 11.0f)});
+    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(25.0f, 11.0f)});
+    this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 11.0f)});
+    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 11.0f)});
+    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 11.0f)});
+
+    this->cantidad_gusanos_insertados = 0;
 }
 
 //Esto tendria que estar en el YAML?
-#define CANTGUSANOS 1
+#define CANTGUSANOS 3
 
 // Usado para castear un puntero a una reference y hacer
 // el codigo mas explicito
@@ -179,6 +201,12 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
     groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
 
+    RepresentacionViga vigaEnMapa;
+    vigaEnMapa.angulo = angulo;
+    vigaEnMapa.longitud = longitud * 2;
+    vigaEnMapa.posicionInicial = posicionInicial;
+    this->vigasEnMapa.push_back(vigaEnMapa);
+
 }
 
 
@@ -187,14 +215,12 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
-    for (int i = 0 ;i < CANTGUSANOS; i++) {
-        //TODO Hacer las coordenadas distintas
-
-        std::pair<coordX, coordY> coordsIniciales(15.0f,23.0f);
-      
-        Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
+    for (int i = 0; i < CANTGUSANOS; i++) {
+              
+        Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
 
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
+        cantidad_gusanos_insertados += 1;
 
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
@@ -208,6 +234,8 @@ InformacionInicial Partida::obtenerInfoInicial() {
     infoInicial.jugador = idNuevoJugador;
 
     //Leo las vigas
+    /* En vez de hacer esto añado las vigas cuando se crean en
+     * un atributo de la clase
     std::vector<RepresentacionViga> vigasEnMapa;
     for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
     {
@@ -221,14 +249,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
         RepresentacionViga vigaActual;
         vigaActual.angulo = b->GetAngle();
-        // Juampi: creo que el problema de que no estaban alineadas las vigas era que le 
-        // estabas pasando el 8 hardcodeado para graficar y la longitud de la viga en box2d es 
-        // LONGITUDVIGAGRANDE que es 14, pero no estoy seguro.
-        // Me parece que 14 es mucho y se van a superponer, así que lo volví a 6.
-        // El centro de la viga al parecer no es la esquina inferior izquierda, es el centro de 
-        // la caja puede ser? Probe usando ese centro en cliente y se veian bien.
-        // En teoría con esto así debería andar si se le pone un valor más chico en el def.
-        vigaActual.longitud = LONGITUDVIGAGRANDE;
+        vigaActual.longitud = 
         b2Vec2 posicion = b->GetPosition();
         std::pair<coordX, coordY> posicionProtocolo;
         posicionProtocolo.enX = posicion.x;
@@ -237,8 +258,9 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
         vigasEnMapa.push_back(vigaActual);
     }
-
-    infoInicial.vigas = vigasEnMapa;
+    */
+    infoInicial.vigas = this->vigasEnMapa;
+    infoInicial.dimensiones = this->dimensiones;
 
 
     return infoInicial;

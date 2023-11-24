@@ -74,6 +74,10 @@ class Partida : public Thread {
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;
+    std::vector<RepresentacionViga> vigasEnMapa;
+    std::pair<coordX, coordY> dimensiones;
+    std::map<int, std::pair<coordX, coordY>> posicionesGusanos;
+    int cantidad_gusanos_insertados;
 
     std::vector<Cliente *> clientes;
     std::mutex mtx;
