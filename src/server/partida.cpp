@@ -146,6 +146,10 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     nuevoGusano->setCuerpo(body);
 
     this->gusanos.push_back(nuevoGusano);
+    int idGusano;
+    idGusano = this->gusanos.size() - 1;
+    nuevoGusano->giveId(idGusano);
+    std::cout << "ID: " << idGusano << "\n";
 
     return nuevoGusano;
 }
@@ -188,9 +192,6 @@ InformacionInicial Partida::obtenerInfoInicial() {
         Gusano *nuevoGusano = this->anadirGusano(coordsIniciales);
 
         gusanosParaElNuevoJugador.push_back(nuevoGusano);
-        int idGusano;
-        idGusano = this->gusanos.size() - 1;
-        nuevoGusano->giveId(idGusano);
 
     }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
