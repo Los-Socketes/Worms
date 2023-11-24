@@ -21,6 +21,11 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 }
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
+    //Si esta muerto, no cambia mas
+    if (this->estado == MUERTO)
+        return;
+
+
     this->estado = nuevoEstado;
 
     //Si se esta cayendo queremos cancelar todo tipo de velocidad y
