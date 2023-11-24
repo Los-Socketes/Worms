@@ -16,6 +16,7 @@ Partida::Partida(std::string mapa)
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
     this->finPartida = false;
+    this->colisiones.finPartida = false;
     this->dimensiones = std::pair<coordX, coordY>(75,40);
 
 
