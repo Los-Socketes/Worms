@@ -5,6 +5,7 @@
 
 using namespace SDL2pp;
 
+// Clase que se encarga de cargar y reproducir un sonido.
 class Sonido {
  private:
     Mixer& mixer;

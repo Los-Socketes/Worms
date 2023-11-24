@@ -18,6 +18,8 @@ enum Centro {
    ESQUINA_INF_DER
 };
 
+// Clase que se encarga de dibujar una animacion. Posee una textura con todos los frames
+// de la animacion, y permite dibujar un frame dado un angulo o una iteracion del loop.
 class Animacion {
  private:
     Renderer& renderizador;
@@ -33,6 +35,7 @@ class Animacion {
     radianes min;
     radianes max;
     
+    // Metodo comun para dibujar la animacion, llamado por los otros metodos dibujar.
     void dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& angulo, bool& flip, int& frame_actual);
  public:
    Animacion(Renderer& render, const std::string& ruta_textura, int tam_x, int tam_y, int frames, bool seguir_camara, bool es_loop, Centro centro = CENTRO, radianes min = -M_PI/2, radianes max = M_PI/2);

@@ -167,9 +167,15 @@ Cuenta con tres opciones: crear partida, unirse a partida y salir.
 - Teclas del '0' al '9': seleccionan el arma del gusano controlado.
 - Tecla 'R': desequipa el arma del gusano controlado.
 - Tecla 'T': cambia el temporizador del arma del gusano controlado (si tiene temporizador).
+
 - Movimiento del mouse: mueve la cámara.
 - Click izquierdo del mouse: selecciona un lugar del mapa para aquellas armas que requieran coordenadas.
 - Tecla ESCAPE: bloquea la cámara.
+
+- Tecla '+': aumenta el volumen del juego.
+- Tecla '-': disminuye el volumen del juego.
+- Tecla 'M': silencia el juego.
+
 - Tecla 'Q': sale de la partida y cierra el juego.
 
 

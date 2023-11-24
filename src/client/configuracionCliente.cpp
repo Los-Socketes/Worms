@@ -3,7 +3,6 @@
 
 #include "yaml-cpp/yaml.h"
 
-
 ConfiguracionCliente::ConfiguracionCliente() {
     std::ifstream fin("./configCliente.yaml");
     YAML::Node config = YAML::Load(fin);

@@ -136,7 +136,7 @@ void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int
     renderizador.Copy(textura_cuenta, NullOpt, Rect(coord_x, coord_y, 16, 14));
 }
 
-void Dibujador::setDimensionMapa(int ancho, int alto) {
+void Dibujador::setDimensionMapa(coordX& ancho, coordY& alto) {
     ancho_mapa = ancho * PIXELS_POR_METRO;
     alto_mapa = alto * PIXELS_POR_METRO;
     gestor_multimedia.setDimensionMapa(ancho_mapa, alto_mapa);

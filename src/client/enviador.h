@@ -12,6 +12,7 @@
 #include "protocolo.h"
 #include "defs.h"
 
+// Hilo que se encarga de enviar los comandos al servidor.
 class Enviador: public Thread {
 private:
     Protocolo& protocolo;
@@ -22,7 +23,7 @@ private:
 public:
     Enviador(Protocolo& protocolo, Queue<std::shared_ptr<AccionCliente>>& envio_comandos, std::atomic<bool>& es_turno);
 
-    // Hilo que se encarga de enviar los comandos al servidor.
+    
     void run() override;
 
     // Para cerrar el hilo.
