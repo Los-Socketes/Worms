@@ -78,7 +78,7 @@ class Partida : public Thread {
     ResolvedorQuery query;
     //WARNING Actualmente solo usado para sacar los cuerpos creados en
     //las explosiones
-    std::set<b2Body *> cuerposADestruir;
+    std::vector<b2Body *> cuerposADestruir;
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;

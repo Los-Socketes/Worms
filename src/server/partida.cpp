@@ -477,6 +477,8 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  fd.filter.groupIndex = -1; // particles should not collide with each other
 	  body->CreateFixture( &fd );
 	  nuevaEntidad->proyectil.proyectil = body;
+
+	  this->cuerposADestruir.push_back(body);
         }
     }
       
@@ -561,6 +563,15 @@ void Partida::gameLoop() {
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;
+
+        //TODO Hacer esto una funcion
+        //Borro todos los cuerpos a destruir
+        for (b2Body *cuerpo : this->cuerposADestruir) {
+	  this->world.DestroyBody(cuerpo);
+        }
+        //LImpio la lista para no tener doble free
+        this->cuerposADestruir.clear();
+
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 
