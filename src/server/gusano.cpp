@@ -20,6 +20,7 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
     this->cuerpo = nuevoCuerpo;
 }
 
+
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     this->estado = nuevoEstado;
 
@@ -31,6 +32,12 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
         direccion.x = 0.0f;
         direccion.y = 0.0f;
         this->cuerpo->SetLinearVelocity(direccion);
+    } else if (this->estado == MUERTO
+	     ||
+	     this->estado == AHOGADO) {
+        //Desabilito al cuerpo para que, una vez muerto, no colisione
+        //ras
+        this->cuerpo->SetEnabled(false);
     }
 }
 
@@ -224,11 +231,6 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
     if (this->vida < danio) {
         this->vida = 0;
         this->setEstado(MUERTO);
-
-        //Desabilito al cuerpo para que, una vez muerto, no colisione
-        //ras
-        this->cuerpo->SetEnabled(false);
-
     } else {
         this->vida -= danio;
     }

@@ -46,6 +46,8 @@ Partida::Partida(std::string mapa)
     this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 11.0f)});
 
     this->cantidad_gusanos_insertados = 0;
+
+    this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));
 }
 
 //Esto tendria que estar en el YAML?
@@ -72,7 +74,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         // abort();
     }
 
-    if (entidadA->tipo == TipoEntidad::PROYECTIL
+    else if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoA->GetLinearVelocity();
@@ -100,6 +102,14 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         cuerpoA->ApplyLinearImpulseToCenter(b2Vec2(100.0f, 1000.0f), true);
   }
       
+    else if (entidadA->tipo == TipoEntidad::OCEANO
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
+        // b2Vec2 dir = cuerpoA->GetLinearVelocity();
+        entidadB->gusano->setEstado(AHOGADO);
+        printf("AHOGADO\n");
+        // abort();
+    }
   // abort();
 }
 
@@ -210,6 +220,27 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     vigaEnMapa.longitud = longitud * 2;
     vigaEnMapa.posicionInicial = posicionInicial;
     this->vigasEnMapa.push_back(vigaEnMapa);
+
+}
+
+void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::OCEANO;
+
+    b2BodyDef oceanoDef;
+    oceanoDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    oceanoDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2PolygonShape oceano;
+    oceano.SetAsBox(999999, ANCHOVIGA / 2);
+
+    b2Body* oceanoCuerpo = world.CreateBody(&oceanoDef);
+
+    oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
+    
+
+
+
 
 }
 
