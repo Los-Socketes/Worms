@@ -15,7 +15,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
     entrada_teclado(envio_comandos, comandos_teclado, camara),
-    recibidor(protocolo, recepcion_estados, es_turno),
+    recibidor(protocolo, recepcion_estados, envio_comandos, es_turno),
     enviador(protocolo, envio_comandos, es_turno),
     pos_cursor(0, 0),
     volumen(config.getVolumenInicial()),
@@ -33,7 +33,7 @@ InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
 
 void Cliente::loop_principal(InformacionInicial& info_inicial) {
     // Inicializar SDL.  
-    Window ventana("Worms",
+    Window ventana("Worms - Jugador " + std::to_string(info_inicial.jugador),
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         config.getDimensionesIniciales().first,
@@ -60,6 +60,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);
+    printf("Mi id es: %d\n", info_inicial.jugador - 1);
 
     // Obtengo colores de los jugadores.
     std::vector<colorJugador> colores = config.getColoresJugadores();

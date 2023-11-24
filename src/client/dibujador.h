@@ -14,6 +14,8 @@
 #include "controliteracion.h"
 #include "configuracionCliente.h"
 
+#define TIEMPO_TURNO 20
+
 using namespace SDL2pp;
 
 class Dibujador {
@@ -28,6 +30,7 @@ class Dibujador {
       Font fuente1;
       Font fuente2;
       int segundos_turno;
+      bool esperando_movimiento;
 
       void actualizarGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
@@ -49,6 +52,7 @@ class Dibujador {
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
       void dibujarCuentaRegresiva(Renderer& renderizador);
+      void dibujarTextoTurno(Renderer& renderizador);
 };
 
 #endif // DIBUJADOR_H_

@@ -23,6 +23,7 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     escenario[RETICULA] = std::make_shared<Animacion>(renderizador, "assets/sprites/crshairc.png", 60, 60, 32, true, true);
     escenario[VIGA_GRANDE] = std::make_shared<Animacion>(renderizador, "assets/sprites/grdl4.png", 140, 20, 1, true, false);
     escenario[VIGA_CHICA] = std::make_shared<Animacion>(renderizador, "assets/sprites/grds4.png", 70, 20, 1, true, false);
+    escenario[FLECHA_GUSANO] = std::make_shared<Animacion>(renderizador, "assets/sprites/arrowdnc.png", 60, 60, 30, true, true);
 
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false, false);
@@ -183,10 +184,10 @@ void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGu
             break;
         case SALTANDO:
         // case PIRUETA:
-        //     if (iterador.it == 0) {
-        //         sonidos[SONIDO_GUSANO_SALTA]->reproducir();
-        //     }
-        //     break;
+             if (iterador.it == 0) {
+                 sonidos[SONIDO_GUSANO_SALTA]->reproducir();
+             }
+             break;
         case DISPARANDO:
             if (iterador.it == 0) {
                 if (arma == BATE_P)
@@ -309,6 +310,10 @@ void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo
     }
     escenario[EXPLOSION]->dibujar(camara, pos_x, pos_y, false, iteraciones.getIteracionProyectil(id_proyectil), 1);
     reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, true);
+}
+
+void GestorMultimedia::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
+    escenario[FLECHA_GUSANO]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
 void GestorMultimedia::reproducirSonido(TipoSonido tipo) {

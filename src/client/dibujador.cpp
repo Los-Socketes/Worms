@@ -9,7 +9,8 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     gusano_actual(),
     fuente1("assets/fonts/AdLibRegular.ttf", 32),
     fuente2("assets/fonts/ANDYB.TTF", 32),
-    segundos_turno(0) {
+    segundos_turno(0),
+    esperando_movimiento(true) {
     // Inicializo el gusano actual con valores por defecto.
     gusano_actual.idGusano = -1;
     gusano_actual.estado = QUIETO;
@@ -20,8 +21,12 @@ void Dibujador::actualizarGusanoActual() {
     // Chequeo que el jugador y el gusano de turno existan.
     if (estado_juego->gusanos.find(estado_juego->jugadorDeTurno) != estado_juego->gusanos.end() &&
         estado_juego->gusanos[estado_juego->jugadorDeTurno].find(estado_juego->gusanoDeTurno) != estado_juego->gusanos[estado_juego->jugadorDeTurno].end()) {
-        
         gusano_actual = estado_juego->gusanos.at(estado_juego->jugadorDeTurno).at(estado_juego->gusanoDeTurno);
+    }
+    if (estado_juego->segundosRestantes == TIEMPO_TURNO) {
+        esperando_movimiento = true;
+    } else if (gusano_actual.estado != QUIETO) {
+        esperando_movimiento = false;
     }
 }
 
@@ -164,6 +169,7 @@ void Dibujador::dibujar(Renderer& renderizador,
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
     dibujarBarrasVida(renderizador, colores);
     dibujarCuentaRegresiva(renderizador);
+    dibujarTextoTurno(renderizador);
 
     renderizador.Present();
 }
@@ -226,7 +232,12 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
                 int pos_y = pos_cursor.second;
                 gestor_multimedia.dibujarCursor(pos_x, pos_y, iteraciones.getIteracionGlobal());
             }
-                                
+            // Si recien empezo el turno y el gusano todavía no se movio, dibujo la flecha.
+            if (gusano.idGusano == gusano_actual.idGusano && esperando_movimiento) {
+                int pos_x = posicion.first;
+                int pos_y = posicion.second - 60;
+                gestor_multimedia.dibujarFlechaGusano(pos_x, pos_y, iteraciones.getIteracionGlobal());
+            }
         }
     }
 
@@ -369,3 +380,22 @@ void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador) {
     segundos_turno = estado_juego->segundosRestantes;
 }
 
+void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
+    // En los primeros 2 segundos del turno, dibujo el texto "Turno de Jugador X".
+    // Luego hago que desaparezca gradualmente.
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    posicion.first = ancho_pantalla / 2 - 100;
+    posicion.second = alto_pantalla / 2 - 50;
+    // Dibujo el texto en blanco.
+    SDL_Color color = {255, 255, 255, 255};
+    if (estado_juego->segundosRestantes >= TIEMPO_TURNO - 2) {
+        fuente1.SetOutline(2);
+        Texture textura_turno_outline(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), {0, 0, 0, 255}));
+        renderizador.Copy(textura_turno_outline, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+        fuente1.SetOutline(0);
+        Texture textura_turno(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), color));
+        renderizador.Copy(textura_turno, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+    }
+}

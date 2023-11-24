@@ -20,7 +20,8 @@ enum ItemEscenario {
     RETICULA,
     VIGA_GRANDE,
     VIGA_CHICA,
-    EXPLOSION
+    EXPLOSION,
+    FLECHA_GUSANO
 };
 
 enum TipoSonido {
@@ -69,6 +70,7 @@ class GestorMultimedia {
     void dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y);
     void dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones);
     void dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
+    void dibujarFlechaGusano(int& pos_x, int& pos_y, int& it);
     void reproducirSonido(TipoSonido tipo);
 };
 
