@@ -26,7 +26,7 @@ Partida::Partida(std::string mapa)
 }
 
 //Esto tendria que estar en el YAML?
-#define CANTGUSANOS 1
+#define CANTGUSANOS 2
 
 // Usado para castear un puntero a una reference y hacer
 // el codigo mas explicito
@@ -268,8 +268,8 @@ bool Partida::enviarEstadoAJugadores() {
 
         if (jugador == this->posJugadorActual) {
 	  estadoActual->jugadorDeTurno = jugador;
-	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoActual()->getId();
-	  estadoActual->segundosRestantes = jugadorActual->getGusanoActual()->getTiempoQueMeQueda();
+	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
+	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
 	  // std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
@@ -498,7 +498,7 @@ void Partida::gameLoop() {
     jugadorActual = this->siguienteJugador(NULL);
 
     Gusano *gusanoActual;
-    gusanoActual = jugadorActual->getGusanoActual();
+    gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
     while (this->finPartida == false) {
         tiempoActual = time(NOW);

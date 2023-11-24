@@ -1,9 +1,17 @@
 #include "jugador.h"
 
+#include <iostream>
+
 Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
     this->gusanos = gusanos;
 }
+
+
+Gusano *Jugador::getGusanoDeTurno() {
+    return this->gusanos.at(this->gusanoActualPos);
+}
+
 
 Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
@@ -20,7 +28,7 @@ Gusano *Jugador::getGusanoActual() {
 
     //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
     //con el proximo
-
+    std::cout << "gusano actual: " << gusanoActualPos << "\n";
     return gusanoActual;
 }
 
