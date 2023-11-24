@@ -90,6 +90,7 @@ public:
     void setCuerpo(b2Body* nuevoCuerpo);
 
     void setEstado(EstadoGusano nuevoEstado);
+    EstadoGusano getEstado();
 
     int getId();
 

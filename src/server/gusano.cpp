@@ -425,6 +425,10 @@ void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
 }
 
+EstadoGusano Gusano::getEstado() {
+    return this->estado;
+}
+
 
 RepresentacionGusano Gusano::getRepresentacion() {
     RepresentacionGusano repre;

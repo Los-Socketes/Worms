@@ -21,9 +21,14 @@ Gusano *Jugador::getGusanoActual() {
         this->gusanoActualPos += 1;
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
-        if (this->gusanoActualPos >= (int) this->gusanos.size())
-	  this->gusanoActualPos = 0;
-        gusanoActual = this->gusanos.at(gusanoActualPos);
+        if (this->gusanoActualPos >= (int) this->gusanos.size()) {
+	        this->gusanoActualPos = 0;
+        }
+        if (!((this->gusanos.at(gusanoActualPos))->getEstado() == MUERTO) && 
+            !((this->gusanos.at(gusanoActualPos))->getEstado() == AHOGADO) ) {
+
+                gusanoActual = this->gusanos.at(gusanoActualPos);
+        }
     }
 
     //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
