@@ -4,6 +4,7 @@
 
 #define SLEEPSEGS 1
 #define NOW NULL
+#define NOT !
 
 int esperar = 0;
 
@@ -487,8 +488,6 @@ void Partida::gameLoop() {
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
-    bool hayJugadores = true;
-
     time_t tiempoActual;
     tiempoActual = time(NOW);
 
@@ -498,7 +497,7 @@ void Partida::gameLoop() {
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
     gusanoActual->esMiTurno(tiempoActual);
-    while (hayJugadores) {
+    while (this->finPartida == false) {
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
@@ -508,7 +507,10 @@ void Partida::gameLoop() {
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 
-        hayJugadores = this->enviarEstadoAJugadores();
+        //Fabri was here
+        this->finPartida = NOT this->enviarEstadoAJugadores();
+        if (this->finPartida == true)
+	  break;
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;
