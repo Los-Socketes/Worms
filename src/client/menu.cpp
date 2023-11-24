@@ -19,6 +19,7 @@ Menu::Menu(Protocolo& protocolo) : protocolo(protocolo) {}
 InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     InformacionInicial informacion;
     informacion.jugador = -1;
+    salio = false;
     bool continuar_menu = true;
     int pos = 0;
     int sub_opcion;
@@ -186,6 +187,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     });
 
     QObject::connect(salir, &QPushButton::clicked, [&]() {
+        salio = true;
         mainWindow->close();
     });
 
@@ -196,3 +198,6 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
     return informacion;
 }
 
+bool Menu::salioDelMenu() {
+    return salio;
+}

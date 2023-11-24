@@ -40,6 +40,7 @@ class Cliente {
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
     Queue<Comando> comandos_teclado;
     std::atomic<bool> es_turno;
+    bool inicio;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
@@ -58,6 +59,9 @@ class Cliente {
 
     // Loop principal del cliente.
     void loop_principal(InformacionInicial& info_inicial);
+
+    // Indica si se salio desde el menu.
+    bool salioDesdeMenu();
 
     // Destructor.
     ~Cliente();

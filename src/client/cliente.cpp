@@ -14,6 +14,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
+    inicio(false),
     entrada_teclado(envio_comandos, comandos_teclado, camara),
     recibidor(protocolo, recepcion_estados, envio_comandos, es_turno),
     enviador(protocolo, envio_comandos, es_turno),
@@ -25,6 +26,7 @@ void Cliente::iniciar() {
     entrada_teclado.start();
     enviador.start();
     recibidor.start();
+    inicio = true;
 }
 
 InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
@@ -156,14 +158,20 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     }
 }
 
+bool Cliente::salioDesdeMenu() {
+    return menu.salioDelMenu();
+}
+
 Cliente::~Cliente() {
-    comandos_teclado.close();
-    recepcion_estados.close();
-    envio_comandos.close();
-    entrada_teclado.stop();
-    enviador.stop();
-    recibidor.stop();
-    entrada_teclado.join();
-    enviador.join();
-    recibidor.join();
+    if (inicio) {  
+        comandos_teclado.close();
+        recepcion_estados.close();
+        envio_comandos.close();
+        entrada_teclado.stop();
+        enviador.stop();
+        recibidor.stop();
+        entrada_teclado.join();
+        enviador.join();
+        recibidor.join();
+    }
 }     

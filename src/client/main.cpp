@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
         // Inicializo el cliente.
         Cliente cliente(std::move(socket), config);
         InformacionInicial informacion = cliente.ejecutar_menu(argc, argv);
-        if (informacion.jugador != -1) {
+        if (!cliente.salioDesdeMenu()) {
             cliente.loop_principal(informacion);
         }      
     } catch (const std::exception& e) {

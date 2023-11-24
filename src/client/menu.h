@@ -13,10 +13,14 @@
 class Menu {
  private:
     Protocolo& protocolo;
+    bool salio;
  public:
     Menu(Protocolo& protocolo);
 
     InformacionInicial ejecutar(int argc, char* argv[]);
+
+    // Indica si se salio desde el menu.
+    bool salioDelMenu();
 };
 
 #endif // MENU_H_
