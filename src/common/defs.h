@@ -29,7 +29,7 @@ typedef float cambioY;
 #define noIgn [[nodiscard]]
 
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
-enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HACE_PIRUETA, MUERTO};
+enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HACE_PIRUETA, MUERTO, AHOGADO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Terminan con _P para diferenciarlas de las clases Arma y cada una en particular

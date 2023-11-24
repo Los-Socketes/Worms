@@ -227,8 +227,7 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
 
         //Desabilito al cuerpo para que, una vez muerto, no colisione
         //ras
-        this->cuerpo->SetEnabled(false);
-
+        //this->cuerpo->SetEnabled(false);
     } else {
         this->vida -= danio;
     }
