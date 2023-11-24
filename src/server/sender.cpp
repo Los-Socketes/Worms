@@ -20,7 +20,7 @@ void Sender::enviarEstado() {
             }
         }
         // atrapo error de que se cierre la queue
-        catch(const ClosedQueue *e)
+        catch(const ClosedQueue e)
         {
             // std::cerr << e.what() << '\n';
             return;
