@@ -13,6 +13,7 @@ Gusano::Gusano() : armaSeleccionada(NADA_P)
     this->armaEquipada = NADA_P;
     this->estado = CAYENDO;
     this->armaSeleccionada.setAngulo(0); 
+    this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO;
 }
 
 void Gusano::setCuerpo(b2Body* nuevoCuerpo) {

@@ -106,7 +106,6 @@ add_executable(server
   "${SERVERDIR}/aceptador.cpp"
   "${SERVERDIR}/monitorPartida.cpp"
   "${SERVERDIR}/arma.cpp"
-  "${COMMONDIR}/config.yaml"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
@@ -189,6 +188,9 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_
 
 # Copiamos la configuracion del cliente a la carpeta de build
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/client/configCliente.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copiamos la configuracion del server a la carpeta de build
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/common/config.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el
