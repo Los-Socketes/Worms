@@ -18,12 +18,12 @@ Gusano *Jugador::getGusanoActual() {
 
     //Busco el primer gusano no muerto
     while (gusanoActual == nullptr) {
-        gusanoActual = this->gusanos.at(gusanoActualPos);
         this->gusanoActualPos += 1;
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
         if (this->gusanoActualPos >= (int) this->gusanos.size())
 	  this->gusanoActualPos = 0;
+        gusanoActual = this->gusanos.at(gusanoActualPos);
     }
 
     //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
