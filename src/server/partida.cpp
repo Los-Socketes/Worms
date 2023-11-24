@@ -14,6 +14,7 @@ Partida::Partida(std::string mapa)
     this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
+    this->finPartida = false;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
@@ -76,6 +77,11 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
+    //Esto nos evita reads invalidos en caso de que el programa haya
+    //terminado
+    if (this->finPartida == true)
+        return;
+
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
@@ -538,6 +544,9 @@ void Partida::gameLoop() {
 
 
 Partida::~Partida() {
+    this->finPartida = true;
+    this->colisiones.finPartida = true;
+
     if (!this->acciones.is_closed()) {
         this->acciones.close();
     }
