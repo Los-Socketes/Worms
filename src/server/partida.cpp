@@ -597,5 +597,6 @@ Partida::~Partida() {
     for (auto &&proyectil : this->proyectiles) {
         delete proyectil;
     }
+
     
 }

@@ -44,6 +44,9 @@ void Aceptador::reap_dead() {
 }
 
 void Aceptador::kill() {
+    reap_dead();
+    this->socket.shutdown(SHUT_RDWR);
+    this->socket.close();
     for (auto &&cliente : this->listaClientes) {
         if (!cliente->estaMuerto()) {
             cliente->cerrarSocket(SHUT_RDWR);
@@ -51,7 +54,4 @@ void Aceptador::kill() {
             delete cliente;
         }
     }
-    reap_dead();
-    this->socket.shutdown(SHUT_RDWR);
-    this->socket.close();
 }
