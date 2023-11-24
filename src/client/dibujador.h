@@ -38,7 +38,7 @@ class Dibujador {
       void dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color);
       void dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i);
       void dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia);
-      void dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, int& cuenta_regresiva);
+      void dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, float& cuenta_regresiva);
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
       void setDimensionMapa(int ancho, int alto);
@@ -46,12 +46,12 @@ class Dibujador {
       void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
       void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
-      void dibujarProyectiles(ControlIteracion& iteraciones);
+      void dibujarProyectiles(Renderer& renderizador, ControlIteracion& iteraciones);
       void dibujarAguaDetras(ControlIteracion& iteraciones);
       void dibujarAguaDelante(ControlIteracion& iteraciones);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
-      void dibujarCuentaRegresiva(Renderer& renderizador);
+      void dibujarCuentaRegresivaTurno(Renderer& renderizador);
       void dibujarTextoTurno(Renderer& renderizador);
 };
 

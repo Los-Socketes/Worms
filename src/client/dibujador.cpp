@@ -77,9 +77,9 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
 }
 
 void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i) {
-    int tamanio = i * 20;
-    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i * (60 - 10))) * direccion - tamanio / 2;
-    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i * (60 - 10))) - tamanio / 2;
+    int tamanio = i * 0.2;
+    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) * direccion - tamanio / 2;
+    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) - tamanio / 2;
 
     std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tamanio, tamanio));
     
@@ -99,13 +99,13 @@ void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,in
 void Dibujador::dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia) {
     // Potencia va de 0 a 1, y avanza en 0.05.
     // Dibujo cuadrado con SDL que van creciendo en tamaño, para el angulo y la direccion.
-    for (float i = 0; i <= potencia; i += 0.1) {
+    for (float i = 0; i <= potencia; i += 10) {
         dibujarCuadradoPotencia(renderizador, posicion, angulo, direccion, i);
     }
 }
 
-void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, int& cuenta_regresiva) {
-    // Dibujo el temporizador al lado del gusano.
+void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, float& cuenta_regresiva) {
+    // Dibujo el temporizador al lado del gusano o proyectil.
     int pos_x = posicion.first + 20;
     int pos_y = posicion.second - 30;
 
@@ -118,16 +118,22 @@ void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int
     if (!rect_interseccion) {
         return;
     }
+    
+    // Me quedo sólo con los 3 primeros digitos.
+    std::string cuenta_regresiva_str = std::to_string(cuenta_regresiva);
+    if (cuenta_regresiva_str.size() > 4) {
+        cuenta_regresiva_str = cuenta_regresiva_str.substr(0, 4);
+    }
 
     // Dibujo el borde del temporizador.
     fuente1.SetOutline(2);
-    Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(std::to_string(cuenta_regresiva), {0, 0, 0, 255}));
-    renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(coord_x, coord_y, 12, 12));
+    Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(cuenta_regresiva_str, {0, 0, 0, 255}));
+    renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(coord_x, coord_y, 16, 14));
 
     // Dibujo el temporizador.
     fuente1.SetOutline(0);
-    Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(std::to_string(cuenta_regresiva), {255, 255, 255, 255}));
-    renderizador.Copy(textura_cuenta, NullOpt, Rect(coord_x, coord_y, 12, 12));
+    Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(cuenta_regresiva_str, {255, 255, 255, 255}));
+    renderizador.Copy(textura_cuenta, NullOpt, Rect(coord_x, coord_y, 16, 14));
 }
 
 void Dibujador::setDimensionMapa(int ancho, int alto) {
@@ -164,11 +170,11 @@ void Dibujador::dibujar(Renderer& renderizador,
     dibujarMapa(vigas);
     dibujarAguaDetras(iteraciones);
     dibujarGusanos(renderizador, iteraciones, pos_cursor, colores);
-    dibujarProyectiles(iteraciones);
+    dibujarProyectiles(renderizador, iteraciones);
     dibujarAguaDelante(iteraciones);
     dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
     dibujarBarrasVida(renderizador, colores);
-    dibujarCuentaRegresiva(renderizador);
+    dibujarCuentaRegresivaTurno(renderizador);
     dibujarTextoTurno(renderizador);
 
     renderizador.Present();
@@ -222,7 +228,8 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
             }
             // Dibujo la cuenta regresiva del arma si la tiene.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneCuentaRegresiva) {
-                dibujarCuentaRegresiva(renderizador, posicion, gusano.armaEquipada.cuentaRegresiva);
+                float cuenta_regresiva = gusano.armaEquipada.cuentaRegresiva;
+                dibujarCuentaRegresiva(renderizador, posicion, cuenta_regresiva);
             }
             // Dibujo el cursor si el gusano no disparo y no esta usando un arma que requiera apuntar.
             if (gusano.estado != DISPARANDO && 
@@ -243,7 +250,7 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
 
 }
 
-void Dibujador::dibujarProyectiles(ControlIteracion& iteraciones) {
+void Dibujador::dibujarProyectiles(Renderer& renderizador, ControlIteracion& iteraciones) {
     for(auto& proyectil : estado_juego->proyectiles) {
         // Traduzco las coordenadas del proyectil.
         std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
@@ -252,6 +259,13 @@ void Dibujador::dibujarProyectiles(ControlIteracion& iteraciones) {
             gestor_multimedia.dibujarExplosion(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, iteraciones);
         } else {
             gestor_multimedia.dibujarProyectil(proyectil.id, proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo, iteraciones);
+            // Dibujo la cuenta regresiva del proyectil si la tiene.
+            if (proyectil.cuentaRegresiva >= 0) {
+                // Dibujo la cuenta regresiva del proyectil
+                // La cuenta regresiva es un int de segundos * 30, lo paso a float de segundos.
+                float cuenta_regresiva = proyectil.cuentaRegresiva / 30.0;
+                dibujarCuentaRegresiva(renderizador, posicion, cuenta_regresiva);
+            }
         }
     }    
 }
@@ -352,7 +366,7 @@ void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugad
     }    
 }
 
-void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador) {
+void Dibujador::dibujarCuentaRegresivaTurno(Renderer& renderizador) {
     // Dibujo los segundos restantes arriba a la derecha de la pantalla.
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;

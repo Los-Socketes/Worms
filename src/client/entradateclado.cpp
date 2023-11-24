@@ -6,7 +6,6 @@ EntradaTeclado::EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_coma
     envio_comandos(envio_comandos),
     comandos_teclado(comandos_teclado),
     cont(true),
-    potencia(0),
     cuenta_regresiva(5),
     camara(camara) {}
 
@@ -55,9 +54,7 @@ void EntradaTeclado::run() {
                             comandos_teclado.push(Comando(TOGGLE_CAMARA));
                         break;
                     case SDLK_SPACE:
-                        if (potencia < 1.0)
-                            potencia = potencia + 0.05;
-                        envio_comandos.push(std::make_shared<AccionCambiarPotencia>(potencia));
+                        envio_comandos.push(std::make_shared<AccionCambiarPotencia>(5));
                         break;                    
                     case SDLK_1:
                         if(evento.key.repeat == 0)
@@ -130,8 +127,8 @@ void EntradaTeclado::run() {
                         envio_comandos.push(std::make_shared<AccionMoverGusano>(FIN_DER));
                         break;
                     case SDLK_SPACE:
-                        potencia = 0;
                         envio_comandos.push(std::make_shared<AccionDisparar>());
+                        envio_comandos.push(std::make_shared<AccionCambiarPotencia>(0));
                         break;
                     default:
                         break;
