@@ -65,7 +65,8 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoB->GetLinearVelocity();
-        cuerpoA->ApplyLinearImpulseToCenter(dir, true);
+        // cuerpoA->ApplyLinearImpulseToCenter(dir, true);
+        entidadA->gusano->recibirDano(dir, entidadB->proyectil.arma);
         printf("A\n");
         // abort();
     }
@@ -73,6 +74,8 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
+        b2Vec2 dir = cuerpoA->GetLinearVelocity();
+        entidadB->gusano->recibirDano(dir, entidadA->proyectil.arma);
         printf("B\n");
         // abort();
     }
@@ -287,8 +290,8 @@ bool Partida::enviarEstadoAJugadores() {
 
         if (jugador == this->posJugadorActual) {
 	  estadoActual->jugadorDeTurno = jugador;
-	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoActual()->getId();
-	  estadoActual->segundosRestantes = jugadorActual->getGusanoActual()->getTiempoQueMeQueda();
+	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
+	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
 	  // std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
@@ -395,7 +398,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	      continue;
 
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-	  entidadA->gusano->recibirDano(golpe);
+	  entidadA->gusano->recibirDano(golpe, BATE_P);
 
 	  // printf("PEGO\n");
         }
@@ -413,6 +416,8 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  std::cout << i << "\n";
 	  Entidad *nuevaEntidad = new Entidad;
 	  nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+      nuevaEntidad->proyectil.arma = DINAMITA_P;
+
 	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
 	  b2Vec2 rayDir( sinf(angle), cosf(angle) );
 
@@ -439,7 +444,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
 	  fd.filter.groupIndex = -1; // particles should not collide with each other
 	  body->CreateFixture( &fd );
-	  nuevaEntidad->proyectil = body;
+	  nuevaEntidad->proyectil.proyectil = body;
         }
     }
       
@@ -515,7 +520,7 @@ void Partida::gameLoop() {
     jugadorActual = this->siguienteJugador(NULL);
 
     Gusano *gusanoActual;
-    gusanoActual = jugadorActual->getGusanoActual();
+    gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
     while (this->finPartida == false) {
         tiempoActual = time(NOW);

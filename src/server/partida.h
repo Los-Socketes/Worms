@@ -21,6 +21,13 @@
 
 enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
+// se usa para poder saber que tipo de proyectil es
+// TODO: agregar si es fragmento
+struct ProyectilAsociado {
+    b2Body *proyectil;
+    ArmaProtocolo arma;
+};
+
 // Este struct se usa para asociar facilmente un body de box2d a
 // alguna de nuestras clases. En teoria se podria usar solo el puntero,
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
@@ -32,7 +39,8 @@ struct Entidad {
         Gusano *gusano;
         // Viga *viga;
         // Arma *arma;
-        b2Body *proyectil;
+        ProyectilAsociado proyectil;
+        // b2Body *proyectil;
     };
 };
 
