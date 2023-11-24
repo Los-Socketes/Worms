@@ -277,8 +277,6 @@ bool Partida::enviarEstadoAJugadores() {
         representacionGusanos.insert({jugador, gusanosJugActual});
     }
     estadoActual->gusanos = representacionGusanos;
-    // TODO: actualizar para que sea el posta
-    estadoActual->gusanoDeTurno = 0;
 
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
