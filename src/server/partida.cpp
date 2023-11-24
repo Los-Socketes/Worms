@@ -600,3 +600,8 @@ Partida::~Partida() {
 
     
 }
+
+void Partida::stop() {
+    this->finPartida = true;
+    this->colisiones.finPartida = true;
+}

@@ -119,7 +119,8 @@ public:
 
     void anadirCliente(Cliente *clienteNuevo);
 
-    void gameLoop();
+    void gameLoop() override;
+    void stop() override;
 
     ~Partida();
 };

@@ -44,6 +44,7 @@ void Aceptador::reap_dead() {
 }
 
 void Aceptador::kill() {
+    this->partidas.kill();
     reap_dead();
     this->socket.shutdown(SHUT_RDWR);
     this->socket.close();
