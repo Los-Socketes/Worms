@@ -4,6 +4,7 @@
 
 #define SLEEPSEGS 1
 #define NOW NULL
+#define NOT !
 
 int esperar = 0;
 
@@ -14,6 +15,7 @@ Partida::Partida(std::string mapa)
     this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
+    this->finPartida = false;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(03.0f, 20.0f));
@@ -76,6 +78,11 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
+    //Esto nos evita reads invalidos en caso de que el programa haya
+    //terminado
+    if (this->finPartida == true)
+        return;
+
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
@@ -124,9 +131,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Gusano *nuevoGusano = new Gusano();
     nuevaEntidad->gusano = nuevoGusano;
 
-    //ATTENTION: Hacemos que el cuerpo sea dinamico
-    //ya que los gusanos se van a mover
-
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
@@ -149,7 +153,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     int idGusano;
     idGusano = this->gusanos.size() - 1;
     nuevoGusano->giveId(idGusano);
-    std::cout << "ID: " << idGusano << "\n";
 
     return nuevoGusano;
 }
@@ -274,8 +277,6 @@ bool Partida::enviarEstadoAJugadores() {
         representacionGusanos.insert({jugador, gusanosJugActual});
     }
     estadoActual->gusanos = representacionGusanos;
-    // TODO: actualizar para que sea el posta
-    estadoActual->gusanoDeTurno = 0;
 
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
@@ -485,8 +486,6 @@ void Partida::gameLoop() {
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
-    bool hayJugadores = true;
-
     time_t tiempoActual;
     tiempoActual = time(NOW);
 
@@ -496,7 +495,7 @@ void Partida::gameLoop() {
     Gusano *gusanoActual;
     gusanoActual = jugadorActual->getGusanoActual();
     gusanoActual->esMiTurno(tiempoActual);
-    while (hayJugadores) {
+    while (this->finPartida == false) {
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
@@ -506,7 +505,10 @@ void Partida::gameLoop() {
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 
-        hayJugadores = this->enviarEstadoAJugadores();
+        //Fabri was here
+        this->finPartida = NOT this->enviarEstadoAJugadores();
+        if (this->finPartida == true)
+	  break;
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;
@@ -542,10 +544,19 @@ void Partida::gameLoop() {
 
 
 Partida::~Partida() {
+    this->finPartida = true;
+    this->colisiones.finPartida = true;
+
     if (!this->acciones.is_closed()) {
         this->acciones.close();
     }
-    // TODO: destruir cuerposADestruir
+
+    for ( b2Body* b = world.GetBodyList(); b != NULL; b = b->GetNext()) {
+
+        Entidad *entidadB = (Entidad *) b->GetUserData().pointer;
+        delete entidadB;
+        world.DestroyBody(b);
+    }
 
     for (auto &&gusano : this->gusanos) {
         delete gusano;

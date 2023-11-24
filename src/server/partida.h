@@ -43,6 +43,7 @@ struct Entidad {
 
 class ResolvedorColisiones : public b2ContactListener {
 public:
+    std::atomic<bool> finPartida;
     void BeginContact(b2Contact* contact);
  
     void EndContact(b2Contact* contact);
@@ -60,6 +61,7 @@ public:
 };
 
 class Partida : public Thread {
+    std::atomic<bool> finPartida;
     Queue<Accion> acciones;
 
     //World de box2d de la partida
