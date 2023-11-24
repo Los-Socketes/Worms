@@ -218,8 +218,15 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
 
 void Gusano::recibirDano(b2Vec2 golpe) {
     //TODO switch dependiendo del arma de this
-    this->vida -= 20;
+    // this->vida -= 20;
+    if (this->vida < 20) {
+        this->vida = 0;
+        this->setEstado(MUERTO);
+    } else {
+        this->vida -= 20;
+    }
     this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    std::cout << "Vida nueva: " << this->vida << "\n";
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
