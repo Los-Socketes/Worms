@@ -40,7 +40,8 @@ enum TipoSonido {
     SONIDO_TELETRANSPORTE,
     SONIDO_TICK,
     SONIDO_DINAMITA,
-    SONIDO_BATE
+    SONIDO_BATE,
+    SONIDO_AGUA
 };
 
 // Clase que se encarga de cargar y reproducir todos los recursos multimedia del juego.
