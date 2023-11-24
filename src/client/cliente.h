@@ -23,6 +23,8 @@ using namespace SDL2pp;
 #define TAM_QUEUE 500
 #define FPS 30
 
+// Clase principal del cliente. Se encarga de ejecutar el menu, iniciar los hilos,
+// y ejecutar el loop principal del juego.
 class Cliente {
  private:
     SDL sdl;

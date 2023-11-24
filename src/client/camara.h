@@ -9,6 +9,9 @@
 
 using namespace SDL2pp;
 
+// Clase que representa la camara del cliente. A partir de la posicion de la camara
+// y sus dimensiones, se puede calcular el rectangulo que se ve en la pantalla y donde
+// se debe dibujar cada objeto.
 class Camara {
  private:
     std::pair<int, int> posicion;  // Pos x, y.
@@ -18,6 +21,7 @@ class Camara {
  public:
     Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa);
     
+    // Mueve la camara en deltaX y deltaY, chequeando que no se salga del mapa.
     void mover(int& deltaX, int& deltaY);
 
     std::pair<coordX, coordY> traducirCoordenadas(int x, int y);

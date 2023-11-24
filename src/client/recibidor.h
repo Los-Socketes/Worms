@@ -11,6 +11,7 @@
 #include "defs.h"
 #include "accioncliente.h"
 
+ // Hilo que se encarga de recibir los estados del juego.
 class Recibidor: public Thread {
 private:
     Protocolo& protocolo;
@@ -24,7 +25,6 @@ private:
 public:
     Recibidor(Protocolo& protocolo, Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados, Queue<std::shared_ptr<AccionCliente>>& envio_comandos, std::atomic<bool>& es_turno);
 
-    // Hilo que se encarga de recibir los estados del juego.
     void run() override;
 
     // Setea el id del jugador.

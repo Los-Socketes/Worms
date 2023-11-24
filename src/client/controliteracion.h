@@ -30,9 +30,13 @@ class ControlIteracion {
 
  public:
     ControlIteracion(std::shared_ptr<EstadoDelJuego>& estado_juego);
+
+    // Actualiza los mapas de iteracion de gusanos y proyectiles segun el estado del juego.
     void actualizarEntidades();
 
     int& getIteracionGlobal();
+
+    // Aumenta la iteracion global y la de cada gusano y proyectil segun la cantidad pasada.
     void aumentarIteraciones(int cant);
 
     IteradorGusano& getIteradorGusano(id id);

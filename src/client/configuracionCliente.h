@@ -12,6 +12,7 @@
 
 typedef std::vector<uint8_t> colorJugador;
 
+// Clase que se encarga de leer el archivo de configuracion del cliente.
 class ConfiguracionCliente {
 private:
     std::pair<int, int> dimensionesIniciales;

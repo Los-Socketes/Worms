@@ -18,6 +18,7 @@
 
 using namespace SDL2pp;
 
+// Clase que se encarga de dibujar todos los elementos del juego.
 class Dibujador {
  private:
       Camara& camara;
