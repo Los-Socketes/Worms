@@ -238,10 +238,20 @@ void Gusano::preparar(Accion& accion) {
         std::cout << "Cambio: " << configDeseado.angulo << "\n";
         std::cout << "Angulo nuevo: " << anguloActual << "\n";
         this->armaSeleccionada.setAngulo(anguloActual);
+        break;
         }
-        break;
     case POTENCIA:
+        {
+        float potenciaActual = this->armaSeleccionada.getPotencia();
+        potenciaActual += configDeseado.potencia;
+        if (!this->armaSeleccionada.getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
+            potenciaActual = 100;
+        } 
+        std::cout << "Cambio: " << configDeseado.potencia << "\n";
+        std::cout << "Potencia nueva: " << potenciaActual << "\n";
+        this->armaSeleccionada.setPotencia(potenciaActual);
         break;
+        }
     case CUENTA_REGRESIVA:
         break;
     case COORDENADAS:

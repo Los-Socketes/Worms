@@ -98,8 +98,8 @@ Arma::Arma(ArmaProtocolo idArma) {
     this->fragmentos = municionesYFragmentos.second;
     this->danio = danio;
     this->danioFragmento = danioFragmento;
-    this->potencia = 1;
-    this->cuentaRegresiva = 0;
+    this->potencia = caracteristicas.tienePotenciaVariable ? 0 : 1;
+    this->cuentaRegresiva = caracteristicas.tieneCuentaRegresiva ? 5 : 0;
     this->angulo = 0;
     
 }
