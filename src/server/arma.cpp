@@ -30,7 +30,7 @@ std::pair<int,int> leerArchivo(YAML::Node& config, const std::string& arma, Cara
 
 
 Arma::Arma(ArmaProtocolo idArma) {
-    std::ifstream fin("../src/common/config.yaml");
+    std::ifstream fin("./config.yaml");
     YAML::Node config = YAML::Load(fin);
     CaracteristicasArma caracteristicas;
     Danio danio;

@@ -122,8 +122,7 @@ git clone git@github.com:Los-Socketes/Worms.git
 cd Worms
 mkdir build
 cd build
-cmake ..
-make -j4
+cmake --build . -- -k
 ```
 
 ## Ejecución del juego
