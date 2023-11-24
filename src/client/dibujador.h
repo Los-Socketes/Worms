@@ -18,6 +18,7 @@
 
 using namespace SDL2pp;
 
+// Clase que se encarga de dibujar todos los elementos del juego.
 class Dibujador {
  private:
       Camara& camara;
@@ -41,7 +42,7 @@ class Dibujador {
       void dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, float& cuenta_regresiva);
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
-      void setDimensionMapa(int ancho, int alto);
+      void setDimensionMapa(coordX& ancho, coordY& alto);
       void inicializar(Renderer& renderizador, Mixer& mixer);
       void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);

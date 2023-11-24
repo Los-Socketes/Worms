@@ -89,14 +89,28 @@ void MonitorPartida::reapDead() {
     }
 }
 
-MonitorPartida::~MonitorPartida() {
+void MonitorPartida::kill() {
     for (auto const& [idPartida, partida] : this->mapa) {
         if (partida == nullptr || !partida->is_alive()) {
             continue;
         }
 
         // TODO: verificar que el destructor de partida esta bien y no leakea memoria
+        partida->stop();
         partida->join();
         delete partida;
+        this->mapa[idPartida] = nullptr;
     }
 }
+
+// MonitorPartida::~MonitorPartida() {
+//     for (auto const& [idPartida, partida] : this->mapa) {
+//         if (partida == nullptr || !partida->is_alive()) {
+//             continue;
+//         }
+
+//         // TODO: verificar que el destructor de partida esta bien y no leakea memoria
+//         partida->join();
+//         delete partida;
+//     }
+// }

@@ -1,4 +1,5 @@
 #include "sender.h"
+#include "liberror.h"
 
 
 Sender::Sender(Protocolo& protocolo) 
@@ -21,6 +22,11 @@ void Sender::enviarEstado() {
         }
         // atrapo error de que se cierre la queue
         catch(const ClosedQueue& e)
+        {
+            // std::cerr << e.what() << '\n';
+            return;
+        }
+        catch(const LibError& e)
         {
             // std::cerr << e.what() << '\n';
             return;

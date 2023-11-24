@@ -28,7 +28,9 @@ public:
 
     void reapDead();
 
-    ~MonitorPartida();
+    void kill();
+
+    // ~MonitorPartida();
 
 };
 

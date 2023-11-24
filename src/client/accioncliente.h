@@ -16,6 +16,7 @@ enum TipoComando{
     TOGGLE_MUTEAR
 };
 
+// Comandos internos del cliente.
 struct Comando{
     TipoComando tipo;
     std::pair<int, int> parametros;
@@ -25,12 +26,14 @@ struct Comando{
     Comando(TipoComando tipo, int p1, int p2) : tipo(tipo), parametros(p1,p2) {}
 };
 
+// Clase abstracta que representa una accion que el cliente puede realizar.
 class AccionCliente {
  public:
     virtual void enviar(Protocolo& protocolo) = 0;
     virtual ~AccionCliente() = default;
 };
 
+// Accion de movimiento. Se envia la direccion a la que se mueve.
 class AccionMoverGusano : public AccionCliente {
  private:
     Direccion direccion;
@@ -40,6 +43,7 @@ class AccionMoverGusano : public AccionCliente {
     ~AccionMoverGusano() override = default;
 };
 
+// Accion de cambio de angulo. Se envia el cambio a realizar.
 class AccionCambiarAngulo : public AccionCliente {
  private:
     radianes angulo;
@@ -49,6 +53,7 @@ class AccionCambiarAngulo : public AccionCliente {
     ~AccionCambiarAngulo() override = default;
 };
 
+// Accion de cambio de coordenadas. Se envian las nuevas coordenadas.
 class AccionCambiarCoordenadas : public AccionCliente {
  private:
     coordX x;
@@ -59,6 +64,7 @@ class AccionCambiarCoordenadas : public AccionCliente {
     ~AccionCambiarCoordenadas() override = default;
 };
 
+// Accion de cambio de potencia. Se envia el cambio a realizar.
 class AccionCambiarPotencia : public AccionCliente {
  private:
     float potencia;
@@ -68,6 +74,7 @@ class AccionCambiarPotencia : public AccionCliente {
     ~AccionCambiarPotencia() override = default;
 };
 
+// Accion de cambio de cuenta regresiva. Se envia la nueva cuenta regresiva.
 class AccionCambiarCuentaRegresiva : public AccionCliente {
  private:
     int cuenta_regresiva;
@@ -77,6 +84,7 @@ class AccionCambiarCuentaRegresiva : public AccionCliente {
     ~AccionCambiarCuentaRegresiva() override = default;
 };
 
+// Accion de disparo. Solamente se indica que se dispara el arma equipada.
 class AccionDisparar : public AccionCliente {
  public:
     AccionDisparar();
@@ -84,6 +92,7 @@ class AccionDisparar : public AccionCliente {
     ~AccionDisparar() override = default;
 };
 
+// Accion de cambio de arma. Se envia el arma a equipar.
 class AccionEquiparArma : public AccionCliente {
  private:
     ArmaProtocolo arma;

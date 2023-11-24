@@ -21,6 +21,13 @@
 
 enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
+// se usa para poder saber que tipo de proyectil es
+// TODO: agregar si es fragmento
+struct ProyectilAsociado {
+    b2Body *proyectil;
+    ArmaProtocolo arma;
+};
+
 // Este struct se usa para asociar facilmente un body de box2d a
 // alguna de nuestras clases. En teoria se podria usar solo el puntero,
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
@@ -32,7 +39,8 @@ struct Entidad {
         Gusano *gusano;
         // Viga *viga;
         // Arma *arma;
-        b2Body *proyectil;
+        ProyectilAsociado proyectil;
+        // b2Body *proyectil;
     };
 };
 
@@ -74,6 +82,10 @@ class Partida : public Thread {
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;
+    std::vector<RepresentacionViga> vigasEnMapa;
+    std::pair<coordX, coordY> dimensiones;
+    std::map<int, std::pair<coordX, coordY>> posicionesGusanos;
+    int cantidad_gusanos_insertados;
 
     std::vector<Cliente *> clientes;
     std::mutex mtx;
@@ -107,7 +119,8 @@ public:
 
     void anadirCliente(Cliente *clienteNuevo);
 
-    void gameLoop();
+    void gameLoop() override;
+    void stop() override;
 
     ~Partida();
 };

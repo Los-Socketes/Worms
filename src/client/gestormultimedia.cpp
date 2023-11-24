@@ -253,12 +253,13 @@ void GestorMultimedia::dibujarPanorama(int& pos_x, int& pos_y) {
 
 void GestorMultimedia::dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo) {
     int it = 0;
-    if (largo > 10) {
+    radianes ang = -angulo;
+    if (largo > 3) {
         escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
-        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, it, 1, angulo);
+        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, it, 1, ang);
     } else {
         escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
-        escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, it, 1, angulo);
+        escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, it, 1, ang);
     }    
 }
 

@@ -43,6 +43,9 @@ enum TipoSonido {
     SONIDO_BATE
 };
 
+// Clase que se encarga de cargar y reproducir todos los recursos multimedia del juego.
+// Dado un patrón de estado, tanto para gusanos como para proyectiles, dibuja la animación
+// correspondiente y reproduce sonidos segun la iteracion actual.
 class GestorMultimedia {
  private:
     Camara& camara;

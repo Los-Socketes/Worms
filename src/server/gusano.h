@@ -80,7 +80,7 @@ public:
     void preparar(Accion& accion);
 
     //TODO: Esta funcion recibe el arma o tipo de dano
-    void recibirDano(b2Vec2 golpe);
+    void recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma);
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
