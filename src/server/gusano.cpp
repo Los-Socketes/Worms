@@ -223,7 +223,12 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
     // this->vida -= 20;
     if (this->vida < danio) {
         this->vida = 0;
-        // this->setEstado(MUERTO);
+        this->setEstado(MUERTO);
+
+        //Desabilito al cuerpo para que, una vez muerto, no colisione
+        //ras
+        this->cuerpo->SetEnabled(false);
+
     } else {
         this->vida -= danio;
     }
