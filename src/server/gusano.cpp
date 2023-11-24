@@ -223,7 +223,7 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
     // this->vida -= 20;
     if (this->vida < danio) {
         this->vida = 0;
-        // this->setEstado(MUERTO);
+        this->setEstado(MUERTO);
     } else {
         this->vida -= danio;
     }
