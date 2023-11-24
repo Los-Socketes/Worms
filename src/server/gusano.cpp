@@ -216,14 +216,16 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-void Gusano::recibirDano(b2Vec2 golpe) {
-    //TODO switch dependiendo del arma de this
+void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
+    //TODO cambiar a que no tenga que crear el arma para obtener el danio
+    Arma armaUsada(tipoArma);
+    u_int danio = armaUsada.getDanio().epicentro;
     // this->vida -= 20;
-    if (this->vida < 20) {
+    if (this->vida < danio) {
         this->vida = 0;
-        this->setEstado(MUERTO);
+        // this->setEstado(MUERTO);
     } else {
-        this->vida -= 20;
+        this->vida -= danio;
     }
     this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
