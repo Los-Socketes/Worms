@@ -18,7 +18,6 @@ private:
     Queue<std::shared_ptr<AccionCliente>>& envio_comandos;
     Queue<Comando>& comandos_teclado;
     std::atomic<bool> cont;
-    float potencia;
     int cuenta_regresiva;
     Camara& camara;
 public:

@@ -77,9 +77,9 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
 }
 
 void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i) {
-    int tamanio = i * 20;
-    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i * (60 - 10))) * direccion - tamanio / 2;
-    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i * (60 - 10))) - tamanio / 2;
+    int tamanio = i * 0.2;
+    int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) * direccion - tamanio / 2;
+    int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) - tamanio / 2;
 
     std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(pos_x, pos_y, tamanio, tamanio));
     
@@ -99,7 +99,7 @@ void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,in
 void Dibujador::dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia) {
     // Potencia va de 0 a 1, y avanza en 0.05.
     // Dibujo cuadrado con SDL que van creciendo en tamaño, para el angulo y la direccion.
-    for (float i = 0; i <= potencia; i += 0.1) {
+    for (float i = 0; i <= potencia; i += 10) {
         dibujarCuadradoPotencia(renderizador, posicion, angulo, direccion, i);
     }
 }

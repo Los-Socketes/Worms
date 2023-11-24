@@ -245,7 +245,9 @@ void Gusano::preparar(Accion& accion) {
         {
         float potenciaActual = this->armaSeleccionada.getPotencia();
         potenciaActual += configDeseado.potencia;
-        if (!this->armaSeleccionada.getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
+        if (configDeseado.potencia == 0) {
+            potenciaActual = 0;
+        }else if (!this->armaSeleccionada.getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
             potenciaActual = 100;
         } 
         std::cout << "Cambio: " << configDeseado.potencia << "\n";
@@ -254,6 +256,10 @@ void Gusano::preparar(Accion& accion) {
         break;
         }
     case CUENTA_REGRESIVA:
+        if (!this->armaSeleccionada.getCaracteristicas().tieneCuentaRegresiva) {
+            break;
+        }
+        this->armaSeleccionada.setCuentaRegresiva(configDeseado.cuentaRegresiva);
         break;
     case COORDENADAS:
         this->armaSeleccionada.setCoordenadasTeletransporte(configDeseado.coordenadas);
