@@ -220,7 +220,9 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
             // Dibujo al gusano.
             gestor_multimedia.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
-            dibujarVida(renderizador, posicion, gusano.vida, colores.at(jugador.first));
+            if (gusano.estado != MUERTO && gusano.estado != AHOGADO) {
+                dibujarVida(renderizador, posicion, gusano.vida, colores.at(jugador.first));
+            }
             // Dibujo la reticula del gusano si esta apuntando.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
