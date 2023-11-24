@@ -24,7 +24,7 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     escenario[VIGA_GRANDE] = std::make_shared<Animacion>(renderizador, "assets/sprites/grdl4.png", 140, 20, 1, true, false);
     escenario[VIGA_CHICA] = std::make_shared<Animacion>(renderizador, "assets/sprites/grds4.png", 70, 20, 1, true, false);
     escenario[FLECHA_GUSANO] = std::make_shared<Animacion>(renderizador, "assets/sprites/arrowdnc.png", 60, 60, 30, true, true);
-
+    
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false, false);
     iconos[BATE_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/ibaseball.png", 32, 32, 1, false, false);
@@ -50,12 +50,20 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     gusanos[std::make_pair(CAYENDO, NADA_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wfall.png", 60, 60, 2, true, true);
     gusanos[std::make_pair(DISPARANDO, NADA_P)] = gusanos[std::make_pair(QUIETO, NADA_P)];
+    gusanos[std::make_pair(HERIDO, NADA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wroll.png", 60, 60, 32, true, true);
+    gusanos[std::make_pair(HACE_PIRUETA, NADA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wbackflp.png", 60, 60, 20, true, false);
+    gusanos[std::make_pair(MUERTO, NADA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wdie.png", 60, 60, 69, true, false);
+    gusanos[std::make_pair(AHOGADO, NADA_P)] = std::make_shared<Animacion>(
+        renderizador, "assets/sprites/wgrave.png", 60, 60, 1, true, false);
 
     // Asigno todas las animaciones que no cambian.
     // Recorro todas las armas.
     for (int i = 1; i < 11; i++) {
         // Recorro todos los estados.
-        for (int j = 0; j < 5; j++) {
+        for (int j = 0; j < 8; j++) {
             gusanos[std::make_pair(EstadoGusano(j), ArmaProtocolo(i))] = gusanos[std::make_pair(EstadoGusano(j), NADA_P)];
         }
     } 
@@ -167,6 +175,7 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     sonidos[SONIDO_TICK] = std::make_shared<Sonido>(mixer, "assets/sounds/TIMERTICK.WAV");
     sonidos[SONIDO_DINAMITA] = std::make_shared<Sonido>(mixer, "assets/sounds/FUSE.WAV");
     sonidos[SONIDO_BATE] = std::make_shared<Sonido>(mixer, "assets/sounds/BaseBallBatImpact.wav");
+    sonidos[SONIDO_AGUA] = std::make_shared<Sonido>(mixer, "assets/sounds/Splash.wav");
 
 }
 
@@ -183,7 +192,7 @@ void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGu
             }
             break;
         case SALTANDO:
-        // case PIRUETA:
+        case HACE_PIRUETA:
              if (iterador.it == 0) {
                  sonidos[SONIDO_GUSANO_SALTA]->reproducir();
              }
@@ -198,6 +207,15 @@ void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGu
                     sonidos[SONIDO_TELETRANSPORTE]->reproducir();
             }                
             break;
+        case AHOGADO:
+            if (iterador.it == 0) {
+                sonidos[SONIDO_AGUA]->reproducir();
+            }
+            break;
+        case MUERTO:
+            if (iterador.it == 59) {
+                sonidos[SONIDO_EXPLOSION]->reproducir();
+            }
         default:
             break;
     }

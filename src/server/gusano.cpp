@@ -22,6 +22,11 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
+    //Si esta muerto, no cambia mas
+    if (this->estado == MUERTO)
+        return;
+
+
     this->estado = nuevoEstado;
 
     //Si se esta cayendo queremos cancelar todo tipo de velocidad y
@@ -231,6 +236,10 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
     if (this->vida < danio) {
         this->vida = 0;
         this->setEstado(MUERTO);
+
+        //Desabilito al cuerpo para que, una vez muerto, no colisione
+        //ras
+        //this->cuerpo->SetEnabled(false);
     } else {
         this->vida -= danio;
     }
