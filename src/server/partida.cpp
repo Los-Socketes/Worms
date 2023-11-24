@@ -124,9 +124,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Gusano *nuevoGusano = new Gusano();
     nuevaEntidad->gusano = nuevoGusano;
 
-    //ATTENTION: Hacemos que el cuerpo sea dinamico
-    //ya que los gusanos se van a mover
-
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(coords.enX, coords.enY);
@@ -149,7 +146,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     int idGusano;
     idGusano = this->gusanos.size() - 1;
     nuevoGusano->giveId(idGusano);
-    std::cout << "ID: " << idGusano << "\n";
 
     return nuevoGusano;
 }
@@ -545,7 +541,6 @@ Partida::~Partida() {
     if (!this->acciones.is_closed()) {
         this->acciones.close();
     }
-    // TODO: destruir cuerposADestruir
 
     for ( b2Body* b = world.GetBodyList(); b != NULL; b = b->GetNext()) {
 
