@@ -19,7 +19,7 @@
 
 #define MINJUGADORES 2
 
-enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
+enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL, OCEANO};
 
 // se usa para poder saber que tipo de proyectil es
 // TODO: agregar si es fragmento
@@ -107,6 +107,8 @@ class Partida : public Thread {
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
+    void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 

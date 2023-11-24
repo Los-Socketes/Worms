@@ -20,6 +20,7 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
     this->cuerpo = nuevoCuerpo;
 }
 
+
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     //Si esta muerto, no cambia mas
     if (this->estado == MUERTO)
@@ -36,6 +37,12 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
         direccion.x = 0.0f;
         direccion.y = 0.0f;
         this->cuerpo->SetLinearVelocity(direccion);
+    } else if (this->estado == MUERTO
+	     ||
+	     this->estado == AHOGADO) {
+        //Desabilito al cuerpo para que, una vez muerto, no colisione
+        //ras
+        // this->cuerpo->SetEnabled(false);
     }
 }
 
