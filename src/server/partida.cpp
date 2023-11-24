@@ -547,6 +547,10 @@ Partida::~Partida() {
     }
     // TODO: destruir cuerposADestruir
 
+    for ( b2Body* b = world.GetBodyList(); b != NULL; b = b->GetNext()) {
+		world.DestroyBody(b);
+	}
+
     for (auto &&gusano : this->gusanos) {
         delete gusano;
     }

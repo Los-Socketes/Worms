@@ -17,7 +17,7 @@
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-#define MINJUGADORES 2
+#define MINJUGADORES 1
 
 enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL};
 
