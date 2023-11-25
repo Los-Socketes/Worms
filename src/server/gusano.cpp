@@ -69,8 +69,10 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
 
     //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
     cambiaDeTurno = (noTengoMasTiempo ||
-        this->turno.recibioDano == true ||
-        this->turno.usoSuArma == true);
+        this->turno.recibioDano == true
+        // ||
+        // this->turno.usoSuArma == true
+		 );
 
     if (cambiaDeTurno == true) {
         std::cout << cuantoTiempoLlevo << "\n";
