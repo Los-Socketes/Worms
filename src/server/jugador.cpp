@@ -16,23 +16,26 @@ Gusano *Jugador::getGusanoDeTurno() {
 Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
 
-    int posicionInicial = this->gusanoActualPos;
+    // int posicionInicial = this->gusanoActualPos;
     //Busco el primer gusano no muerto
-    while (gusanoActual == nullptr) {
+    for (int i = 0; i <= (int)this->gusanos.size(); i++) {
         this->gusanoActualPos += 1;
-        if (this->gusanoActualPos == posicionInicial) {
-            return nullptr;
-        }
+        // if (this->gusanoActualPos == posicionInicial) {
+        //     return nullptr;
+        // }
 
         //WARNING Casteo falopa. En teoria nada deberia explotar
         if (this->gusanoActualPos >= (int) this->gusanos.size()) {
 	        this->gusanoActualPos = 0;
         }
-        if (!((this->gusanos.at(gusanoActualPos))->getEstado() == MUERTO) && 
-            !((this->gusanos.at(gusanoActualPos))->getEstado() == AHOGADO) ) {
+
+        if (!((this->gusanos.at(gusanoActualPos))->getEstado() == MUERTO) &&
+            !((this->gusanos.at(gusanoActualPos))->getEstado() == AHOGADO)) {
 
                 gusanoActual = this->gusanos.at(gusanoActualPos);
+                break;
         }
+
     }
 
     //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
