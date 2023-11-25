@@ -26,6 +26,9 @@ enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL, OCEANO};
 struct ProyectilAsociado {
     b2Body *proyectil;
     ArmaProtocolo arma;
+    time_t horaDeCreacion;
+    //Esto se usa para chequear cuando se destruye algo
+    int tiempoMinimoDeVida;
 };
 
 // Este struct se usa para asociar facilmente un body de box2d a
