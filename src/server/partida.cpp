@@ -478,7 +478,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  body->CreateFixture( &fd );
 	  nuevaEntidad->proyectil.proyectil = body;
 	  nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
-	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 10;
+	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
 
 	  this->cuerposADestruir.push_back(body);
         }
@@ -592,6 +592,7 @@ void Partida::gameLoop() {
 	  loBorro = destruirProyectil(cuerpoABorrar);
 	  // NO HACER delete entidad. Tira invalid delete
 	  if (loBorro == true) {
+	      std::cout << "Delete\n";
 	      Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
 	      delete entidadB;
 	      this->world.DestroyBody(cuerpoABorrar);

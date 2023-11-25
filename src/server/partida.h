@@ -28,7 +28,7 @@ struct ProyectilAsociado {
     ArmaProtocolo arma;
     time_t horaDeCreacion;
     //Esto se usa para chequear cuando se destruye algo
-    int tiempoMinimoDeVida;
+    double tiempoMinimoDeVida;
 };
 
 // Este struct se usa para asociar facilmente un body de box2d a
