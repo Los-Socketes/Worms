@@ -26,6 +26,9 @@ enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL, OCEANO};
 struct ProyectilAsociado {
     b2Body *proyectil;
     ArmaProtocolo arma;
+    time_t horaDeCreacion;
+    //Esto se usa para chequear cuando se destruye algo
+    double tiempoMinimoDeVida;
 };
 
 // Este struct se usa para asociar facilmente un body de box2d a
@@ -78,7 +81,7 @@ class Partida : public Thread {
     ResolvedorQuery query;
     //WARNING Actualmente solo usado para sacar los cuerpos creados en
     //las explosiones
-    std::set<b2Body *> cuerposADestruir;
+    std::vector<b2Body *> cuerposADestruir;
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;

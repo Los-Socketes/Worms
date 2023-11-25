@@ -477,6 +477,10 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  fd.filter.groupIndex = -1; // particles should not collide with each other
 	  body->CreateFixture( &fd );
 	  nuevaEntidad->proyectil.proyectil = body;
+	  nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
+	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
+
+	  this->cuerposADestruir.push_back(body);
         }
     }
       
@@ -506,13 +510,35 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
-    jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
-    gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+    gusanoDeTurno = nullptr;
+    for (int i = 0; i <= (int)this->jugadores.size(); i++) {
+        jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
+        gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+        if (gusanoDeTurno != nullptr) {
+            break;
+        }
+    }
+    gusanoActual->giveGun(NADA_P);
     gusanoDeTurno->esMiTurno(tiempoActual);
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
     return gusanoYJugador;
+}
+
+bool destruirProyectil(b2Body *proyectil) {
+    Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
+    time_t horaDeCreacion;
+    horaDeCreacion = entidad->proyectil.horaDeCreacion;
+    time_t horaActual;
+    horaActual = time(NOW);
+    double diferencia;
+    diferencia = difftime(horaActual, horaDeCreacion);
+
+    bool expirado;
+    expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
+
+    return expirado;
 }
 
 void Partida::gameLoop() {
@@ -559,8 +585,32 @@ void Partida::gameLoop() {
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
+        // se quedo sin gusanos posibles para jugar
+        if (gusanoYJugador.first == nullptr) {
+            break;
+        }
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;
+
+        //TODO Hacer esto una funcion
+        //Borro todos los cuerpos a destruir
+        //Leo la lista al reves para no tener problemas del offset al
+        //borrar elementos
+        for(int i = this->cuerposADestruir.size() - 1 ; i > 0 ; i--) {
+	  b2Body *cuerpoABorrar;
+	  cuerpoABorrar = this->cuerposADestruir.at(i);
+	  bool loBorro;
+	  loBorro = destruirProyectil(cuerpoABorrar);
+	  // NO HACER delete entidad. Tira invalid delete
+	  if (loBorro == true) {
+	      std::cout << "Delete\n";
+	      Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+	      delete entidadB;
+	      this->world.DestroyBody(cuerpoABorrar);
+	      this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+	  }
+	  
+        }
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 

@@ -2,11 +2,11 @@
 
 Recibidor::Recibidor(Protocolo& protocolo,
     Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados,
-    Queue<std::shared_ptr<AccionCliente>>& envio_comandos,
+    // Queue<std::shared_ptr<AccionCliente>>& envio_comandos,
     std::atomic<bool>& es_turno) : 
     protocolo(protocolo),
     recepcion_estados(recepcion_estados),
-    envio_comandos(envio_comandos),
+    // envio_comandos(envio_comandos),
     estado_juego(std::make_shared<EstadoDelJuego>()),
     cont(true),
     id_jugador(0),
@@ -21,8 +21,8 @@ void Recibidor::run() {
                 es_turno = true;
             else
                 es_turno = false;
-            if (estado_juego->segundosRestantes == 0)
-                envio_comandos.push(std::make_shared<AccionEquiparArma>(NADA_P));
+            // if (estado_juego->segundosRestantes == 0)
+            //     envio_comandos.push(std::make_shared<AccionEquiparArma>(NADA_P));
                 
             recepcion_estados.push(estado_juego);                                              
         }

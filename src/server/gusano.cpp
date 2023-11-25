@@ -40,6 +40,7 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
     } else if (this->estado == MUERTO
 	     ||
 	     this->estado == AHOGADO) {
+    this->turno.recibioDano = true;
         this->vida = 0;
         //Desabilito al cuerpo para que, una vez muerto, no colisione
         //ras
@@ -244,6 +245,7 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
     } else {
         this->vida -= danio;
     }
+    this->turno.recibioDano = true;
     this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
@@ -378,6 +380,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
+        this->turno.usoSuArma = true;
         std::cout << "ATACO\n";
         break;
     case INVAL_ACCION:
@@ -410,6 +413,8 @@ void Gusano::teletransportarse() {
 
 void Gusano::giveGun(ArmaProtocolo arma) {
     this->armaEquipada = arma;
+    Arma armaNueva(arma);
+    this->armaSeleccionada = armaNueva;
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {
@@ -423,6 +428,10 @@ std::pair<coordX, coordY> Gusano::getCoords() {
 
 void Gusano::setDireccion(DireccionGusano nuevaDireccion) {
     this->direccion = nuevaDireccion;
+}
+
+EstadoGusano Gusano::getEstado() {
+    return this->estado;
 }
 
 
