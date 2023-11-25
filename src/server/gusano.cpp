@@ -412,6 +412,8 @@ void Gusano::teletransportarse() {
 
 void Gusano::giveGun(ArmaProtocolo arma) {
     this->armaEquipada = arma;
+    Arma armaNueva(arma);
+    this->armaSeleccionada = armaNueva;
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {
