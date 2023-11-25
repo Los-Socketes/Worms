@@ -591,8 +591,12 @@ void Partida::gameLoop() {
 	  bool loBorro;
 	  loBorro = destruirProyectil(cuerpoABorrar);
 	  // NO HACER delete entidad. Tira invalid delete
-	  if (loBorro == true)
+	  if (loBorro == true) {
+	      Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+	      delete entidadB;
+	      this->world.DestroyBody(cuerpoABorrar);
 	      this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+	  }
 	  
         }
 
