@@ -510,8 +510,15 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
-    jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
-    gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+    gusanoDeTurno = nullptr;
+    for (int i = 0; i <= (int)this->jugadores.size(); i++) {
+        jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
+        gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+        if (gusanoDeTurno != nullptr) {
+            break;
+        }
+    }
+    gusanoActual->giveGun(NADA_P);
     gusanoDeTurno->esMiTurno(tiempoActual);
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
@@ -578,6 +585,10 @@ void Partida::gameLoop() {
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
+        // se quedo sin gusanos posibles para jugar
+        if (gusanoYJugador.first == nullptr) {
+            break;
+        }
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;
 
