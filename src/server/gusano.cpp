@@ -26,7 +26,8 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     //Si esta muerto, no cambia mas
-    if (this->estado == MUERTO)
+    if (this->estado == MUERTO ||
+        this->estado == AHOGADO)
         return;
 
 

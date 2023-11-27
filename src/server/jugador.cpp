@@ -5,6 +5,7 @@
 Jugador::Jugador(std::vector<Gusano*> gusanos) {
     this->gusanoActualPos = 0;
     this->gusanos = gusanos;
+    this->miSituacion = JUGANDO;
 }
 
 
@@ -43,6 +44,35 @@ Gusano *Jugador::getGusanoActual() {
     std::cout << "gusano actual: " << gusanoActualPos << "\n";
     return gusanoActual;
 }
+
+void Jugador::chequearSiPerdi() {
+    int cantVivos;
+    cantVivos = 0;
+    for (Gusano *gusano : this->gusanos) {
+        EstadoGusano estado;
+        estado = gusano->getEstado();
+        if (estado == MUERTO ||
+	  estado == AHOGADO)
+	  continue;
+
+        cantVivos += 1;
+    }
+
+    bool perdi;
+    perdi = (cantVivos == 0);
+
+    if (perdi)
+        this->miSituacion = PERDISTE;
+}
+
+SituacionJugador Jugador::getSituacion() {
+    return this->miSituacion;
+}
+
+void Jugador::avisarQueGane() {
+    this->miSituacion = GANASTE;
+}
+
 
 //Flatmap
 std::map<id, RepresentacionGusano> Jugador::getRepresentacionGusanos() {
