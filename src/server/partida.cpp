@@ -676,37 +676,15 @@ void Partida::gameLoop() {
     gusanoActual->esMiTurno(tiempoActual);
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
-
         
-        // // bool hayQueEjecutar = true;
-        // bool seTieneQueCambiar = false;
-        // // Se termino el tiempo, hay que ver que este todo para poder arrancar el siguiente turno
-        // if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
-        //     // si ya exploto todo verificar que los gusanos esten quietos/ muertos
-        //     if (this->cuerposADestruir.size() == 0) {
-        //         for (auto &&gusano : this->gusanos) {
-        //             if (gusano->getEstado() == QUIETO || gusano->getEstado() == MUERTO || gusano->getEstado() == AHOGADO) {
-        //                 seTieneQueCambiar = true;
-        //             } else {
-        //                 seTieneQueCambiar = false;
-        //                 // hayQueEjecutar = false;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
-
-        // se cumplen las condiciones para cambiar el turno
-        // if (seTieneQueCambiar) {
-            std::pair<Gusano *, Jugador *> gusanoYJugador;
-            gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
-            // se quedo sin gusanos posibles para jugar
-            if (gusanoYJugador.first == nullptr) {
-                break;
-            }
-            gusanoActual = gusanoYJugador.first;
-            jugadorActual = gusanoYJugador.second;
-        // }
+        std::pair<Gusano *, Jugador *> gusanoYJugador;
+        gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
+        // se quedo sin gusanos posibles para jugar
+        if (gusanoYJugador.first == nullptr) {
+	  break;
+        }
+        gusanoActual = gusanoYJugador.first;
+        jugadorActual = gusanoYJugador.second;
 
         //TODO Hacer esto una funcion
         //Borro todos los cuerpos a destruir
@@ -744,9 +722,7 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        // if (hayQueEjecutar) {
-            ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
-        // }
+        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         if (nuevoProyectil->countdown == 0) {
             nuevoProyectil->armaOrigen = ataqueARealizar.arma;
