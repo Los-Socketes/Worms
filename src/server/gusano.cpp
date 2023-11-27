@@ -312,6 +312,10 @@ void Gusano::preparar(Accion& accion) {
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
+    if (this->getTiempoQueMeQueda() <= 0)
+        return ataqueARealizar;
+
+
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
     int tiempoEspera; //Delay
     ArmaDeseada armaQueQuiero;
@@ -468,4 +472,34 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.armaEquipada = arma;
 
     return repre;
+}
+
+//Puede ser que haya mas de un estado que represente que el gusano se
+//murio
+bool Gusano::estaMuerto() {
+    bool meMori;
+    meMori = (this->estado == MUERTO);
+
+    bool meAhoge;
+    meAhoge = (this->estado == AHOGADO);
+
+    bool estoyMuerto;
+    estoyMuerto = (meAhoge ||
+	         meMori);
+
+    return estoyMuerto;
+}
+
+bool Gusano::estaQuieto() {
+    bool estaQuieto;
+    estaQuieto = (this->estado == QUIETO);
+
+    bool estoyMuerto;
+    estoyMuerto = this->estaMuerto();
+
+    bool estoyQuieto;
+    estoyQuieto = (estaQuieto ||
+	       estoyMuerto);
+
+    return estoyQuieto;
 }

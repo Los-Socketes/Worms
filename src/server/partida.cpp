@@ -4,7 +4,6 @@
 
 #define SLEEPSEGS 1
 #define NOW NULL
-#define NOT !
 
 int esperar = 0;
 
@@ -527,19 +526,50 @@ Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
     return jugadorActual;
 }
 
-std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual) {
+std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
     std::pair<Gusano *, Jugador *> gusanoYJugador;
     Gusano *gusanoDeTurno = gusanoActual;
     Jugador *jugadorDeTurno = jugadorTurnoActual;
     gusanoYJugador.first = gusanoActual;
     gusanoYJugador.second = jugadorDeTurno;
 
+    bool todoExploto;
+    todoExploto = (proyectil->countdown <= 0);
+    std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
+
+    bool todoEstaQuieto = true;
+    for (int i = 0; (i < (int) this->clientes.size())
+		&&
+		//Apenas sea false, no quiero seguir iterando
+		(todoEstaQuieto == true);
+         i++) {
+        Gusano *gusano;
+        gusano = this->gusanos.at(i);
+
+        bool gusanoEstaQuieto;
+        gusanoEstaQuieto = gusano->estaQuieto();
+
+        //Con que uno de estos sea false, ya te hace el valor false
+        todoEstaQuieto = todoEstaQuieto && gusanoEstaQuieto;
+    }
+    std::cout << "Todo quieto: " << std::boolalpha << todoEstaQuieto << "\n";
+
+    
+
+    bool finDelGusano;
+    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    std::cout << "Fin gusano actual" << std::boolalpha << finDelGusano << "\n";
 
     bool cambioDeTurno;
-    cambioDeTurno = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    cambioDeTurno = (todoExploto &&
+		 todoEstaQuieto &&
+		 finDelGusano);
+
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)
         return gusanoYJugador;
+
+    std::cout << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
 
     //Antes de nada me fijo si el jugador actual perdio
     jugadorTurnoActual->chequearSiPerdi();
@@ -548,18 +578,18 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
     //WARNING: Nota fabri. No entendi esto. Por que chequeamos si es
     //null?
-    // gusanoDeTurno = nullptr;
-    // for (int i = 0; i <= (int)this->jugadores.size(); i++) {
-    //     jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
-    //     gusanoDeTurno = jugadorDeTurno->getGusanoActual();
-    //     if (gusanoDeTurno != nullptr) {
-    //         break;
-    //     }
-    // }
-    // if (gusanoDeTurno != nullptr) {
-    //     gusanoActual->giveGun(NADA_P);
-    //     gusanoDeTurno->esMiTurno(tiempoActual);
-    // }
+    gusanoDeTurno = nullptr;
+    for (int i = 0; i <= (int)this->jugadores.size(); i++) {
+        jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
+        gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+        if (gusanoDeTurno != nullptr) {
+            break;
+        }
+    }
+    if (gusanoDeTurno != nullptr) {
+        gusanoActual->giveGun(NADA_P);
+        gusanoDeTurno->esMiTurno(tiempoActual);
+    }
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
@@ -570,8 +600,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 		&&
 		//Apenas sea false, no quiero seguir iterando
 		(elProximoGano == true);
-         i++)
-    {
+         i++) {
         Jugador *jugadorAChequear;
         jugadorAChequear = this->jugadores.at(i);
 
@@ -649,28 +678,28 @@ void Partida::gameLoop() {
         tiempoActual = time(NOW);
 
         
-        // bool hayQueEjecutar = true;
-        bool seTieneQueCambiar = false;
-        // Se termino el tiempo, hay que ver que este todo para poder arrancar el siguiente turno
-        if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
-            // si ya exploto todo verificar que los gusanos esten quietos/ muertos
-            if (this->cuerposADestruir.size() == 0) {
-                for (auto &&gusano : this->gusanos) {
-                    if (gusano->getEstado() == QUIETO || gusano->getEstado() == MUERTO || gusano->getEstado() == AHOGADO) {
-                        seTieneQueCambiar = true;
-                    } else {
-                        seTieneQueCambiar = false;
-                        // hayQueEjecutar = false;
-                        break;
-                    }
-                }
-            }
-        }
+        // // bool hayQueEjecutar = true;
+        // bool seTieneQueCambiar = false;
+        // // Se termino el tiempo, hay que ver que este todo para poder arrancar el siguiente turno
+        // if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
+        //     // si ya exploto todo verificar que los gusanos esten quietos/ muertos
+        //     if (this->cuerposADestruir.size() == 0) {
+        //         for (auto &&gusano : this->gusanos) {
+        //             if (gusano->getEstado() == QUIETO || gusano->getEstado() == MUERTO || gusano->getEstado() == AHOGADO) {
+        //                 seTieneQueCambiar = true;
+        //             } else {
+        //                 seTieneQueCambiar = false;
+        //                 // hayQueEjecutar = false;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
 
         // se cumplen las condiciones para cambiar el turno
         // if (seTieneQueCambiar) {
             std::pair<Gusano *, Jugador *> gusanoYJugador;
-            gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
+            gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
             // se quedo sin gusanos posibles para jugar
             if (gusanoYJugador.first == nullptr) {
                 break;

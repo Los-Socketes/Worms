@@ -17,7 +17,7 @@
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-#define MINJUGADORES 2
+#define MINJUGADORES 1
 
 // Uso potencia de 2 para operaciones con bits (con quien colisiona cada clase)
 enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
@@ -116,7 +116,7 @@ class Partida : public Thread {
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
-    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
 
 public:
     Partida(const std::string mapa);
