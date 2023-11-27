@@ -20,7 +20,11 @@ void Aceptador::aceptarClientes() {
         }
         // catch de que se cerro el socket
         catch(const LibError& e) {
-            // std::cerr << e.what() << '\n';
+            std::cerr << "[ACEPTADOR] " << e.what() << '\n';
+            break;
+        }
+        catch(const std::runtime_error& e) {
+            std::cerr << "[ACEPTADOR] " << e.what() << '\n';
             break;
         }
         
