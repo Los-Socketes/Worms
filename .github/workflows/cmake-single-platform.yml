@@ -2,13 +2,13 @@
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
 name: CMake on a single platform
 
-on:
-  push:
-    branches-ignore:
-      - "main"
-  pull_request:
-    branches-ignore:
-          - "main"
+# on:
+#   push:
+#     branches-ignore:
+#       - "main"
+#   pull_request:
+#     branches-ignore:
+#           - "main"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
