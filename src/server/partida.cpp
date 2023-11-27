@@ -668,7 +668,7 @@ void Partida::gameLoop() {
         }
 
         // se cumplen las condiciones para cambiar el turno
-        if (seTieneQueCambiar) {
+        // if (seTieneQueCambiar) {
             std::pair<Gusano *, Jugador *> gusanoYJugador;
             gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
             // se quedo sin gusanos posibles para jugar
@@ -677,8 +677,7 @@ void Partida::gameLoop() {
             }
             gusanoActual = gusanoYJugador.first;
             jugadorActual = gusanoYJugador.second;
-
-        }
+        // }
 
         //TODO Hacer esto una funcion
         //Borro todos los cuerpos a destruir
