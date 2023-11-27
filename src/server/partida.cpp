@@ -647,31 +647,47 @@ void Partida::gameLoop() {
         tiempoActual = time(NOW);
 
         std::pair<Gusano *, Jugador *> gusanoYJugador;
-        gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
-        // se quedo sin gusanos posibles para jugar
-        if (gusanoYJugador.first == nullptr) {
-            break;
+        bool seTieneQueCambiar = false;
+        if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
+            if (this->cuerposADestruir.size() == 0) {
+                for (auto &&gusano : this->gusanos) {
+                    if (gusano->getEstado() == QUIETO || gusano->getEstado() == MUERTO || gusano->getEstado() == AHOGADO) {
+                        seTieneQueCambiar = true;
+                    } else {
+                        seTieneQueCambiar = false;
+                        break;
+                    }
+                }
+            }
         }
-        gusanoActual = gusanoYJugador.first;
-        jugadorActual = gusanoYJugador.second;
+        if (seTieneQueCambiar) {
+            gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
+            // se quedo sin gusanos posibles para jugar
+            if (gusanoYJugador.first == nullptr) {
+                break;
+            }
+            gusanoActual = gusanoYJugador.first;
+            jugadorActual = gusanoYJugador.second;
+
+        }
 
         //TODO Hacer esto una funcion
         //Borro todos los cuerpos a destruir
         //Leo la lista al reves para no tener problemas del offset al
         //borrar elementos
-        for(int i = this->cuerposADestruir.size() - 1 ; i > 0 ; i--) {
-	  b2Body *cuerpoABorrar;
-	  cuerpoABorrar = this->cuerposADestruir.at(i);
-	  bool loBorro;
-	  loBorro = destruirProyectil(cuerpoABorrar);
-	  // NO HACER delete entidad. Tira invalid delete
-	  if (loBorro == true) {
-	      std::cout << "Delete\n";
-	      Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-	      delete entidadB;
-	      this->world.DestroyBody(cuerpoABorrar);
-	      this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
-	  }
+        for(int i = this->cuerposADestruir.size() - 1 ; i >= 0 ; i--) {
+            b2Body *cuerpoABorrar;
+            cuerpoABorrar = this->cuerposADestruir.at(i);
+            bool loBorro;
+            loBorro = destruirProyectil(cuerpoABorrar);
+            // NO HACER delete entidad. Tira invalid delete
+            if (loBorro == true) {
+                std::cout << "Delete\n";
+                Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+                delete entidadB;
+                this->world.DestroyBody(cuerpoABorrar);
+                this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+            }
 	  
         }
 
