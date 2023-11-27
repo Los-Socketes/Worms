@@ -649,7 +649,7 @@ void Partida::gameLoop() {
         tiempoActual = time(NOW);
 
         
-        bool hayQueEjecutar = true;
+        // bool hayQueEjecutar = true;
         bool seTieneQueCambiar = false;
         // Se termino el tiempo, hay que ver que este todo para poder arrancar el siguiente turno
         if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
@@ -660,7 +660,7 @@ void Partida::gameLoop() {
                         seTieneQueCambiar = true;
                     } else {
                         seTieneQueCambiar = false;
-                        hayQueEjecutar = false;
+                        // hayQueEjecutar = false;
                         break;
                     }
                 }
@@ -715,9 +715,9 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        if (hayQueEjecutar) {
+        // if (hayQueEjecutar) {
             ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
-        }
+        // }
 
         if (nuevoProyectil->countdown == 0) {
             nuevoProyectil->armaOrigen = ataqueARealizar.arma;
