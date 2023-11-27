@@ -363,7 +363,9 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     estado->gusanoDeTurno = (id)2;
     estado->segundosRestantes = 30;
     estado->momento = EN_MARCHA;
-    estado->situacion = PERDISTE;
+    std::map<idJugador, SituacionJugador> situacionJugadores;
+    situacionJugadores.insert({jugador, PERDISTE});
+    estado->situacionJugadores = situacionJugadores;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());
@@ -371,7 +373,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
     REQUIRE(resultado->segundosRestantes == estado->segundosRestantes);
     REQUIRE(resultado->momento == estado->momento);
-    REQUIRE(resultado->situacion == estado->situacion);
+    REQUIRE(resultado->situacionJugadores == estado->situacionJugadores);
     std::map<id, RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == mapaGusanos.size());
 

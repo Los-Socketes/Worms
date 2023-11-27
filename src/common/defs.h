@@ -157,7 +157,7 @@ struct EstadoDelJuego {
     id gusanoDeTurno;
     int segundosRestantes;
     MomentoDePartida momento;
-    SituacionJugador situacion;    
+    std::map<idJugador, SituacionJugador> situacionJugadores;    
 };
 
 struct Configuracion {
