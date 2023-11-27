@@ -536,8 +536,10 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
             break;
         }
     }
-    gusanoActual->giveGun(NADA_P);
-    gusanoDeTurno->esMiTurno(tiempoActual);
+    if (gusanoDeTurno != nullptr) {
+        gusanoActual->giveGun(NADA_P);
+        gusanoDeTurno->esMiTurno(tiempoActual);
+    }
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
