@@ -36,6 +36,8 @@ enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 enum ArmaProtocolo {NADA_P, BAZOOKA_P, MORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
                     GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
                     TELETRANSPORTACION_P};
+enum MomentoDePartida {ESPERANDO, EN_MARCHA, TERMINADA};
+enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};                    
 /*
  *0. El gusano esta quieto
  *1. El gusano se mueve
@@ -154,6 +156,8 @@ struct EstadoDelJuego {
     idJugador jugadorDeTurno;
     id gusanoDeTurno;
     int segundosRestantes;
+    MomentoDePartida momento;
+    SituacionJugador situacion;    
 };
 
 struct Configuracion {

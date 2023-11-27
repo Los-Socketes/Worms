@@ -182,6 +182,9 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
 
+    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::GUSANO;
+    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL;
+
     body->CreateFixture(&fixtureDef);
     nuevoGusano->setCuerpo(body);
 
@@ -213,7 +216,15 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
     b2Body* groundBody = world.CreateBody(&vigaDef);
 
-    groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &viga;
+    fixtureDef.density = MASACUERPOESTATICO;
+
+    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::VIGA;
+    fixtureDef.filter.maskBits = 1;
+
+    groundBody->CreateFixture(&fixtureDef);
+    // groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
 
     RepresentacionViga vigaEnMapa;
     vigaEnMapa.angulo = angulo;
@@ -236,11 +247,15 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
 
     b2Body* oceanoCuerpo = world.CreateBody(&oceanoDef);
 
-    oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
-    
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &oceano;
+    fixtureDef.density = MASACUERPOESTATICO;
 
+    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::OCEANO;
+    fixtureDef.filter.maskBits = 1;
 
-
+    oceanoCuerpo->CreateFixture(&fixtureDef);
+    // oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
 
 }
 
@@ -476,6 +491,9 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  fd.friction = 0; // friction not necessary
 	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
 	  fd.filter.groupIndex = -1; // particles should not collide with each other
+
+      fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+      fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
 	  body->CreateFixture( &fd );
 	  nuevaEntidad->proyectil.proyectil = body;
 	  nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
@@ -521,8 +539,10 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
             break;
         }
     }
-    gusanoActual->giveGun(NADA_P);
-    gusanoDeTurno->esMiTurno(tiempoActual);
+    if (gusanoDeTurno != nullptr) {
+        gusanoActual->giveGun(NADA_P);
+        gusanoDeTurno->esMiTurno(tiempoActual);
+    }
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
