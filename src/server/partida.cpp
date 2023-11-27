@@ -546,18 +546,20 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
     gusanoActual->setEstado(QUIETO);
 
-    gusanoDeTurno = nullptr;
-    for (int i = 0; i <= (int)this->jugadores.size(); i++) {
-        jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
-        gusanoDeTurno = jugadorDeTurno->getGusanoActual();
-        if (gusanoDeTurno != nullptr) {
-            break;
-        }
-    }
-    if (gusanoDeTurno != nullptr) {
-        gusanoActual->giveGun(NADA_P);
-        gusanoDeTurno->esMiTurno(tiempoActual);
-    }
+    //WARNING: Nota fabri. No entendi esto. Por que chequeamos si es
+    //null?
+    // gusanoDeTurno = nullptr;
+    // for (int i = 0; i <= (int)this->jugadores.size(); i++) {
+    //     jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
+    //     gusanoDeTurno = jugadorDeTurno->getGusanoActual();
+    //     if (gusanoDeTurno != nullptr) {
+    //         break;
+    //     }
+    // }
+    // if (gusanoDeTurno != nullptr) {
+    //     gusanoActual->giveGun(NADA_P);
+    //     gusanoDeTurno->esMiTurno(tiempoActual);
+    // }
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
 
