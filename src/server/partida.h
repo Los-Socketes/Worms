@@ -19,7 +19,8 @@
 
 #define MINJUGADORES 2
 
-enum class TipoEntidad { GUSANO, VIGA, ARMA, PROYECTIL, OCEANO};
+// Uso potencia de 2 para operaciones con bits (con quien colisiona cada clase)
+enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
 
 // se usa para poder saber que tipo de proyectil es
 // TODO: agregar si es fragmento
