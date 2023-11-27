@@ -26,7 +26,8 @@ void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
 
 void Gusano::setEstado(EstadoGusano nuevoEstado) {
     //Si esta muerto, no cambia mas
-    if (this->estado == MUERTO)
+    if (this->estado == MUERTO ||
+        this->estado == AHOGADO)
         return;
 
 
@@ -412,15 +413,13 @@ void Gusano::teletransportarse() {
     std::cout << destino.first << " " << destino.second << "\n";
     b2Vec2 vectorDestino = deCoordAb2Vec(destino);
 
-
-    // std::pair<coordX, coordY> origen = this->getCoords();
-    // b2Vec2 inicio = deCoordAb2Vec(origen);
-
-    // b2Vec2 quiero = vectorDestino - inicio;
-    // b2Vec2 quiero(5.0f,53.0f);
-
-
     this->cuerpo->SetTransform(vectorDestino, true);
+
+    //LE aplico alguito de velociadad para qeu se actualice y caiga
+    b2Vec2 direccion;
+    direccion.x = 0.0f;
+    direccion.y = 1.0f;
+    this->cuerpo->SetLinearVelocity(direccion);
 }
 
 void Gusano::giveGun(ArmaProtocolo arma) {

@@ -38,12 +38,12 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(27.0f, 13.0f));
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
 
-    this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 11.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(15.0f, 11.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(25.0f, 11.0f)});
-    this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 11.0f)});
-    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 11.0f)});
-    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 11.0f)});
+    this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
+    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(15.0f, 19.0f)});
+    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(25.0f, 19.0f)});
+    this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
+    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 19.0f)});
+    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 19.0f)});
 
     this->cantidad_gusanos_insertados = 0;
 
@@ -331,6 +331,8 @@ bool Partida::enviarEstadoAJugadores() {
     std::shared_ptr<EstadoDelJuego> estadoActual(new EstadoDelJuego);
 
     std::map<idJugador, std::map<id, RepresentacionGusano>> representacionGusanos;
+    std::map<idJugador, SituacionJugador> situaciones;
+
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
@@ -347,8 +349,17 @@ bool Partida::enviarEstadoAJugadores() {
         gusanosJugActual = jugadorActual->getRepresentacionGusanos();
 
         representacionGusanos.insert({jugador, gusanosJugActual});
+
+        //Aca configuro las situaciones
+        SituacionJugador situacion;
+        situacion = jugadorActual->getSituacion();
+
+        situaciones.insert({jugador, situacion});
+
+        
     }
     estadoActual->gusanos = representacionGusanos;
+    estadoActual->situacionJugadores = situaciones;
 
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
@@ -523,11 +534,15 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     gusanoYJugador.first = gusanoActual;
     gusanoYJugador.second = jugadorDeTurno;
 
+
     bool cambioDeTurno;
     cambioDeTurno = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)
         return gusanoYJugador;
+
+    //Antes de nada me fijo si el jugador actual perdio
+    jugadorTurnoActual->chequearSiPerdi();
 
     gusanoActual->setEstado(QUIETO);
 
@@ -545,6 +560,35 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     }
     gusanoYJugador.first = gusanoDeTurno;
     gusanoYJugador.second = jugadorDeTurno;
+
+    //Este for loop chequea si el proximo gano
+    bool elProximoGano = true;
+    // for (Jugador *jugador : this->jugadores)
+    for (int i = 0; (i < (int) this->jugadores.size())
+		&&
+		//Apenas sea false, no quiero seguir iterando
+		(elProximoGano == true);
+         i++)
+    {
+        Jugador *jugadorAChequear;
+        jugadorAChequear = this->jugadores.at(i);
+
+        if (jugadorAChequear == jugadorDeTurno)
+	  continue;
+
+        SituacionJugador situacion;
+        situacion = jugadorAChequear->getSituacion();
+        bool jugadorPerdio;
+        jugadorPerdio = (situacion == PERDISTE);
+
+        //Con que uno de estos sea false, ya te hace el valorFalse
+        elProximoGano = elProximoGano && jugadorPerdio;
+    }
+
+    if (elProximoGano == true) {
+        std::cout << "TENEMOS UN GANADOR" << "\n";
+        jugadorDeTurno->avisarQueGane();
+    }
 
     return gusanoYJugador;
 }

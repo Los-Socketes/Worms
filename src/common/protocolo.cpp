@@ -407,18 +407,26 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
         return estado;
     }
 
-    int8_t situacion;
-    socket.recvall(&situacion, sizeof(situacion), &was_closed);
-    if (was_closed) {
-        return estado;
-    }
-
     int16_t cantJugadores;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
     if (was_closed) {
         return estado;
     }
     cantJugadores = ntohs(cantJugadores);
+
+    std::map<idJugador, SituacionJugador> situacionJugadores;
+    for (int16_t i = 0; i < cantJugadores; i++) {
+        id idJugador = obtenerId();
+        if (idJugador == INVAL_ID) {
+            return estado;
+        }
+        int8_t situacion;
+        socket.recvall(&situacion, sizeof(situacion), &was_closed);
+        if (was_closed) {
+            return estado;
+        }
+        situacionJugadores.insert({idJugador, (SituacionJugador)situacion});
+    }
 
     std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos;
     for (int16_t i = 0; i < cantJugadores; i++) {
@@ -667,7 +675,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->gusanoDeTurno = gusanoDeTurno;
     estado->segundosRestantes = segundosRestantes;
     estado->momento = (MomentoDePartida)momento;
-    estado->situacion = (SituacionJugador)situacion;
+    estado->situacionJugadores = situacionJugadores;
 
     return estado;
 }
@@ -930,18 +938,25 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     if (was_closed) {
         return false;
     }
-
-    int8_t situacion = estado->situacion;
-    socket.sendall(&situacion, sizeof(situacion), &was_closed);
-    if (was_closed) {
-        return false;
-    }
     
     //envio cantJugadores
     int cant = estado->gusanos.size();
     is_open = enviarCantidad(cant);
     if (!is_open) {
         return false;
+    }
+
+    for (auto const& [idJugador, situacionJugador] : estado->situacionJugadores) {
+        is_open = enviarId(idJugador);
+        if (!is_open) {
+            return false;
+        }
+
+        int8_t situacion = situacionJugador;
+        socket.sendall(&situacion, sizeof(situacion), &was_closed);
+        if (was_closed) {
+            return false;
+        }
     }
 
     for (auto const& [idJugador, mapaGusanos] : estado->gusanos) {

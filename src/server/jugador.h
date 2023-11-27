@@ -12,6 +12,8 @@ private:
 
     std::vector<Gusano*> gusanos;
 
+    SituacionJugador miSituacion;
+
 public:
     Jugador(std::vector<Gusano*> gusanos);
 
@@ -19,6 +21,12 @@ public:
     Gusano *getGusanoDeTurno();
 
     std::map<id, RepresentacionGusano> getRepresentacionGusanos();
+
+    [[nodiscard]] SituacionJugador getSituacion();
+
+    void avisarQueGane();
+
+    void chequearSiPerdi();
 
 };
 
