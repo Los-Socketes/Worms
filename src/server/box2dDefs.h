@@ -42,6 +42,8 @@ typedef b2Vec2 finCaja;
 #define inicio first
 #define fin second
 
+#define POTENCIASALTO 1000.0f
+
 [[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2 vec) {
     std::pair<coordX, coordY> representacionCoord;
     representacionCoord.enX = vec.x;
