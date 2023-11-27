@@ -646,21 +646,28 @@ void Partida::gameLoop() {
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
 
-        std::pair<Gusano *, Jugador *> gusanoYJugador;
+        
+        bool hayQueEjecutar = true;
         bool seTieneQueCambiar = false;
+        // Se termino el tiempo, hay que ver que este todo para poder arrancar el siguiente turno
         if (gusanoActual->hayQueCambiarDeTurno(tiempoActual)) {
+            // si ya exploto todo verificar que los gusanos esten quietos/ muertos
             if (this->cuerposADestruir.size() == 0) {
                 for (auto &&gusano : this->gusanos) {
                     if (gusano->getEstado() == QUIETO || gusano->getEstado() == MUERTO || gusano->getEstado() == AHOGADO) {
                         seTieneQueCambiar = true;
                     } else {
                         seTieneQueCambiar = false;
+                        hayQueEjecutar = false;
                         break;
                     }
                 }
             }
         }
+
+        // se cumplen las condiciones para cambiar el turno
         if (seTieneQueCambiar) {
+            std::pair<Gusano *, Jugador *> gusanoYJugador;
             gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
             // se quedo sin gusanos posibles para jugar
             if (gusanoYJugador.first == nullptr) {
@@ -707,7 +714,9 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        if (hayQueEjecutar) {
+            ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        }
 
         if (nuevoProyectil->countdown == 0) {
             nuevoProyectil->armaOrigen = ataqueARealizar.arma;

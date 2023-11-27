@@ -63,11 +63,16 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 }
 
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
+    double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
+    if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - 3) {
+        this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
+    }
+
     bool cambiaDeTurno;
 
     //Esto, en teoria, da la rta en segundos
     bool noTengoMasTiempo;
-    double cuantoTiempoLlevo;
+    // double cuantoTiempoLlevo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
 
@@ -86,7 +91,7 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
 
 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
-
+    std::cout << "tiempo restante: " << this->tiempoQueMeQueda << "\n";
     return cambiaDeTurno;
 }
 
