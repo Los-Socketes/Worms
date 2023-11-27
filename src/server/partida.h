@@ -105,7 +105,7 @@ class Partida : public Thread {
     bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
-		     Accion& ultimaAccion);
+		     Gusano* gusanoActual);
 
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 

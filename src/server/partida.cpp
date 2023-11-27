@@ -371,17 +371,18 @@ bool Partida::enviarEstadoAJugadores() {
 
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
-			Accion& ultimaAccion) {
+			Gusano* gusanoActual) {
     Accion accionAEjecutar;
     //Si la ultima accion fue de movimiento y no obtuvimos nada
     //nuevo; ejecutamos esa accion de movimiento.
     //AKA: Nos movemos a la Izquierda hasta que nos digan de detenernos
+    Accion ultimaAccion = gusanoActual->getUltimaAccion();
 
     tipoAccion tipoUltimaAccion;
     tipoUltimaAccion = ultimaAccion.accion;
     if (obtuvoNueva == true) {
         accionAEjecutar = accionObtenida;
-        ultimaAccion = accionAEjecutar;
+        // ultimaAccion = accionAEjecutar;
     }
     //Si entra en estos otros if es porque NO se obtuvo algo nuevo
     else if (tipoUltimaAccion == MOVERSE &&
@@ -510,6 +511,8 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
+    gusanoActual->setEstado(QUIETO);
+
     gusanoDeTurno = nullptr;
     for (int i = 0; i <= (int)this->jugadores.size(); i++) {
         jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
@@ -553,10 +556,6 @@ void Partida::gameLoop() {
     int32 positionIterations = 2;
 
 
-    Accion ultimaAccion;
-    ultimaAccion.idGusano = INVAL_ID;
-    // WARNING valor basura para que no rompa valgrind
-    ultimaAccion.accion = ESTAQUIETO;
     bool exploto = false;
 
     b2Vec2 origen(0,0);
@@ -626,7 +625,7 @@ void Partida::gameLoop() {
 
         Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
-				      ultimaAccion);
+				      gusanoActual);
 
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
@@ -639,6 +638,7 @@ void Partida::gameLoop() {
         
         else {
             nuevoProyectil->countdown -= 1;
+	  Accion ultimaAccion = gusanoActual->getUltimaAccion();
             ataqueARealizar.arma = ultimaAccion.armaAEquipar;
             ataqueARealizar.posicion = nuevoProyectil->posicion;
         }

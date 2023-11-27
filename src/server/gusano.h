@@ -41,6 +41,10 @@ private:
     int idGusano;
     int tiempoQueMeQueda;
 
+
+    //Guardo la ultima accion que realizo el gusano
+    Accion ultimaAccion;
+
     condicionDeTurno turno;
 
     //Arma armaequipada;
@@ -61,6 +65,8 @@ private:
 public:
 
     Gusano();
+
+    Accion getUltimaAccion();
 
     /*
      * Le pregunta al gusano si su turno esta terminado o no.
