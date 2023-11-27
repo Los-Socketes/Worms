@@ -401,6 +401,17 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     }
     segundosRestantes = ntohl(segundosRestantes);
 
+    int8_t momento;
+    socket.recvall(&momento, sizeof(momento), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+
+    int8_t situacion;
+    socket.recvall(&situacion, sizeof(situacion), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
 
     int16_t cantJugadores;
     socket.recvall(&cantJugadores, sizeof(cantJugadores), &was_closed);
@@ -655,6 +666,8 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->jugadorDeTurno = jugadorDeTurno;
     estado->gusanoDeTurno = gusanoDeTurno;
     estado->segundosRestantes = segundosRestantes;
+    estado->momento = (MomentoDePartida)momento;
+    estado->situacion = (SituacionJugador)situacion;
 
     return estado;
 }
@@ -908,6 +921,18 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     bool was_closed = false;
     int32_t tiempoRestante = htonl(estado->segundosRestantes);
     socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int8_t momento = estado->momento;
+    socket.sendall(&momento, sizeof(momento), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int8_t situacion = estado->situacion;
+    socket.sendall(&situacion, sizeof(situacion), &was_closed);
     if (was_closed) {
         return false;
     }
