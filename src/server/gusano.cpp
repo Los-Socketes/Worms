@@ -14,6 +14,9 @@ Gusano::Gusano() : armaSeleccionada(NADA_P)
     this->estado = CAYENDO;
     this->armaSeleccionada.setAngulo(0); 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO;
+    this->ultimaAccion.idGusano = INVAL_ID;
+    // WARNING valor basura para que no rompa valgrind
+    this->ultimaAccion.accion = ESTAQUIETO;
 }
 
 void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
@@ -94,6 +97,10 @@ int Gusano::getId() {
     int idGusano;
     idGusano = this->idGusano;
     return idGusano;
+}
+
+Accion Gusano::getUltimaAccion() {
+    return this->ultimaAccion;
 }
 
 std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
@@ -390,6 +397,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     }
 
+
+    //Hago que el gusano se acuerde que fue lo ulitmo que realizo;
+    this->ultimaAccion = accion;
 
     return ataqueARealizar;
     
