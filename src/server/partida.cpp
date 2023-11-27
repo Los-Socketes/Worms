@@ -510,6 +510,8 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
+    gusanoActual->setEstado(QUIETO);
+
     gusanoDeTurno = nullptr;
     for (int i = 0; i <= (int)this->jugadores.size(); i++) {
         jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
