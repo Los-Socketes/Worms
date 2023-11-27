@@ -34,7 +34,10 @@
 
 #define MASACUERPOESTATICO 0.0f
 
+#define DISTANCIAENTREVIGAS 7    
+
 #define TAMANOGUSANO 20
+#define CANTIDADVIGAS 3
 
 typedef b2Vec2 inicioCaja;
 typedef b2Vec2 finCaja;
