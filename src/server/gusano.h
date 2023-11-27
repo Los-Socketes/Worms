@@ -68,6 +68,11 @@ public:
 
     Accion getUltimaAccion();
 
+    [[nodiscard]] bool estaMuerto();
+
+    //Es medio tetrica esta funcion si miras la implementacion
+    [[nodiscard]] bool estaQuieto();
+
     /*
      * Le pregunta al gusano si su turno esta terminado o no.
      */

@@ -116,7 +116,7 @@ class Partida : public Thread {
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
-    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
 
 public:
     Partida(const std::string mapa);

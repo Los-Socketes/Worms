@@ -39,6 +39,8 @@
 #define TAMANOGUSANO 20
 #define CANTIDADVIGAS 3
 
+#define NOT !
+
 typedef b2Vec2 inicioCaja;
 typedef b2Vec2 finCaja;
 

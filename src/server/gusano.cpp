@@ -63,11 +63,16 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 }
 
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
+    double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
+    if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - 3) {
+        this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
+    }
+
     bool cambiaDeTurno;
 
     //Esto, en teoria, da la rta en segundos
     bool noTengoMasTiempo;
-    double cuantoTiempoLlevo;
+    // double cuantoTiempoLlevo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
 
@@ -86,7 +91,7 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
 
 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
-
+    std::cout << "tiempo restante: " << this->tiempoQueMeQueda << "\n";
     return cambiaDeTurno;
 }
 
@@ -312,6 +317,10 @@ void Gusano::preparar(Accion& accion) {
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
+    if (this->getTiempoQueMeQueda() <= 0)
+        return ataqueARealizar;
+
+
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
     int tiempoEspera; //Delay
     ArmaDeseada armaQueQuiero;
@@ -468,4 +477,34 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.armaEquipada = arma;
 
     return repre;
+}
+
+//Puede ser que haya mas de un estado que represente que el gusano se
+//murio
+bool Gusano::estaMuerto() {
+    bool meMori;
+    meMori = (this->estado == MUERTO);
+
+    bool meAhoge;
+    meAhoge = (this->estado == AHOGADO);
+
+    bool estoyMuerto;
+    estoyMuerto = (meAhoge ||
+	         meMori);
+
+    return estoyMuerto;
+}
+
+bool Gusano::estaQuieto() {
+    bool estaQuieto;
+    estaQuieto = (this->estado == QUIETO);
+
+    bool estoyMuerto;
+    estoyMuerto = this->estaMuerto();
+
+    bool estoyQuieto;
+    estoyQuieto = (estaQuieto ||
+	       estoyMuerto);
+
+    return estoyQuieto;
 }
