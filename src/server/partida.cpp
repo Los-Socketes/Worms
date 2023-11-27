@@ -182,6 +182,8 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
 
+    fixtureDef.filter.groupIndex = -1;
+
     body->CreateFixture(&fixtureDef);
     nuevoGusano->setCuerpo(body);
 
@@ -237,10 +239,6 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
     b2Body* oceanoCuerpo = world.CreateBody(&oceanoDef);
 
     oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
-    
-
-
-
 
 }
 
