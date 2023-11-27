@@ -4,7 +4,6 @@
 #include <math.h>       /* sin */
 #include <time.h>
 
-#define TIEMPOCAMBIOTURNO 20
 
 Gusano::Gusano() : armaSeleccionada(NADA_P) 
       {
@@ -64,7 +63,7 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
-    if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - 3) {
+    if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - TIEMPOCHANGUI) {
         this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
     }
 
