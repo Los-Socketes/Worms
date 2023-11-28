@@ -120,7 +120,10 @@ void EntradaTeclado::run() {
                         break;
                     case SDLK_m:
                         comandos_teclado.push(Comando(TOGGLE_MUTEAR));
-                        break;                    
+                        break;
+                    case SDLK_c:
+                        envio_comandos.push(std::make_shared<AccionEmpezarPartida>());
+                        break;                   
                     default:
                         break;
                 }

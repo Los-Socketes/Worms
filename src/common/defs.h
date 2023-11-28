@@ -33,10 +33,11 @@ enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HAC
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
+// si los valores predeterminados cambiaran -> cambiar for en constructor de gusano
 enum ArmaProtocolo {NADA_P, BAZOOKA_P, MORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
                     GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
-                    TELETRANSPORTACION_P};
-enum MomentoDePartida {ESPERANDO, EN_MARCHA, TERMINADA};
+                    TELETRANSPORTACION_P, INVAL_ARMA_P};
+enum MomentoDePartida {ESPERANDO, POR_INICIAR, EN_MARCHA, TERMINADA};
 enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};                    
 /*
  *0. El gusano esta quieto
@@ -60,6 +61,7 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 #define PEDIDO 5
 #define EXITO 6
 #define ERROR 7
+#define EMPEZAR 13
 
 #define ESTADO 8
 // Codigos para acciones 
@@ -181,6 +183,7 @@ struct Accion {
     Direccion dir;
     ArmaProtocolo armaAEquipar;
     Configuracion configARealizar;
+    bool esEmpezar;
 
 };
 

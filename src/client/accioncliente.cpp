@@ -49,3 +49,8 @@ void AccionDisparar::enviar(Protocolo& protocolo) {
     protocolo.atacar();
 }
 
+
+void AccionEmpezarPartida::enviar(Protocolo& protocolo) {
+    protocolo.iniciarPartida();
+}
+

@@ -5,18 +5,25 @@
 #include <time.h>
 
 
-Gusano::Gusano() : armaSeleccionada(NADA_P) 
-      {
+Gusano::Gusano() {
     this->direccion = DERECHA;
     this->vida = 100;
     this->armaEquipada = NADA_P;
     this->estado = CAYENDO;
-    this->armaSeleccionada.setAngulo(0); 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO;
     this->ultimaAccion.idGusano = INVAL_ID;
     // WARNING valor basura para que no rompa valgrind
     this->ultimaAccion.accion = ESTAQUIETO;
     this->golpeado = false;
+
+    // forma que encontre de iterar un enum
+    for (int i = 0; i < INVAL_ARMA_P; i++) {
+        Arma armaActual((ArmaProtocolo)i);
+        this->armas.push_back(armaActual);
+    } 
+
+    this->armaSeleccionada = &this->armas[NADA_P];
+    this->armaSeleccionada->setAngulo(0); 
 }
 
 void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
@@ -134,7 +141,7 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
      */
     float potencia = 9;
     float hipotenusa = 9 * potencia;
-    float angulo = this->armaSeleccionada.getAngulo();
+    float angulo = this->armaSeleccionada->getAngulo();
 
     //SOHCAHTOA
     float adyacente;
@@ -155,7 +162,7 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
 
-    std::cout << "ANGULO" << this->armaSeleccionada.getAngulo() << "\n";
+    std::cout << "ANGULO" << this->armaSeleccionada->getAngulo() << "\n";
 
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
@@ -308,38 +315,38 @@ void Gusano::preparar(Accion& accion) {
     switch (configDeseado.caracteristica) {
     case ANGULO:
         {
-        float anguloActual = this->armaSeleccionada.getAngulo();
+        float anguloActual = this->armaSeleccionada->getAngulo();
         anguloActual += configDeseado.angulo;
-        if (!this->armaSeleccionada.getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
+        if (!this->armaSeleccionada->getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
             break;
         } 
         std::cout << "Cambio: " << configDeseado.angulo << "\n";
         std::cout << "Angulo nuevo: " << anguloActual << "\n";
-        this->armaSeleccionada.setAngulo(anguloActual);
+        this->armaSeleccionada->setAngulo(anguloActual);
         break;
         }
     case POTENCIA:
         {
-        float potenciaActual = this->armaSeleccionada.getPotencia();
+        float potenciaActual = this->armaSeleccionada->getPotencia();
         potenciaActual += configDeseado.potencia;
         if (configDeseado.potencia == 0) {
             potenciaActual = 0;
-        }else if (!this->armaSeleccionada.getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
+        }else if (!this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
             potenciaActual = 100;
         } 
         std::cout << "Cambio: " << configDeseado.potencia << "\n";
         std::cout << "Potencia nueva: " << potenciaActual << "\n";
-        this->armaSeleccionada.setPotencia(potenciaActual);
+        this->armaSeleccionada->setPotencia(potenciaActual);
         break;
         }
     case CUENTA_REGRESIVA:
-        if (!this->armaSeleccionada.getCaracteristicas().tieneCuentaRegresiva) {
+        if (!this->armaSeleccionada->getCaracteristicas().tieneCuentaRegresiva) {
             break;
         }
-        this->armaSeleccionada.setCuentaRegresiva(configDeseado.cuentaRegresiva);
+        this->armaSeleccionada->setCuentaRegresiva(configDeseado.cuentaRegresiva);
         break;
     case COORDENADAS:
-        this->armaSeleccionada.setCoordenadasTeletransporte(configDeseado.coordenadas);
+        this->armaSeleccionada->setCoordenadasTeletransporte(configDeseado.coordenadas);
         break;
     }
 }
@@ -391,8 +398,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         armaElegida = accion.armaAEquipar;
 
         this->armaEquipada = armaElegida;
-        Arma armaSeleccionada(armaElegida);
-        this->armaSeleccionada = armaSeleccionada;
+        // Arma armaSeleccionada(armaElegida);
+        this->armaSeleccionada = &this->armas[armaElegida];
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -416,18 +423,31 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.arma = armaQueQuiero;
         break;
     case ATAQUE:
+        {
         tiempoEspera = 0;
+        armaQueQuiero = this->armaEquipada;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        // si no tiene municiones -> no ataco
+        int municionesDisponibles = this->armaSeleccionada->getMuniciones();
+        if (municionesDisponibles == 0) {
+            ataqueARealizar.arma = NADA_P;
+            ataqueARealizar.posicion = posicion;
+            ataqueARealizar.tiempoEspera = tiempoEspera;
+            ataqueARealizar.arma = armaQueQuiero;
+            break;
+        }
+
+        // tengo munciones disponibles
         if (armaEquipada == TELETRANSPORTACION_P) {
 	        this->teletransportarse();
         }  
 
-        armaQueQuiero = this->armaEquipada;
-        posicion = (deCoordAb2Vec(this->getCoords()));
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P) {
-	        tiempoEspera = this->armaSeleccionada.getCuentaRegresiva() * 30;
+	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
         } else {
 	        tiempoEspera = 0;
         }
@@ -437,7 +457,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
         std::cout << "ATACO\n";
+        this->armaSeleccionada->usar();
         break;
+        }
     case INVAL_ACCION:
         std::cout << "INVALID ACCION\n";
         break;
@@ -453,13 +475,15 @@ Ataque Gusano::ejecutar(Accion accion) {
 }
 
 void Gusano::teletransportarse() {
-    std::pair<coordX, coordY> destino = this->armaSeleccionada.getCoordenadasTeletransporte();
+    std::pair<coordX, coordY> destino = this->armaSeleccionada->getCoordenadasTeletransporte();
 
     std::cout << destino.first << " " << destino.second << "\n";
     b2Vec2 vectorDestino = deCoordAb2Vec(destino);
 
     this->cuerpo->SetTransform(vectorDestino, true);
 
+    this->armaSeleccionada->usar();
+    
     //LE aplico alguito de velociadad para qeu se actualice y caiga
     b2Vec2 direccion;
     direccion.x = 0.0f;
@@ -469,8 +493,7 @@ void Gusano::teletransportarse() {
 
 void Gusano::giveGun(ArmaProtocolo arma) {
     this->armaEquipada = arma;
-    Arma armaNueva(arma);
-    this->armaSeleccionada = armaNueva;
+    this->armaSeleccionada = &this->armas[arma];
 }
 
 std::pair<coordX, coordY> Gusano::getCoords() {
@@ -500,7 +523,7 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.posicion = this->getCoords();
     //TODO Ahora est hardcodeado. Hacer algo generico.
     //Esto solo aplica al bate
-    RepresentacionArma arma = this->armaSeleccionada.getRepresentacion();
+    RepresentacionArma arma = this->armaSeleccionada->getRepresentacion();
     // std::cout << "Angulo a enviar: " << arma.anguloRad << "\n";
     // arma.municiones = 100000;
     // arma.arma = this->armaEquipada;

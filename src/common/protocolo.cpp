@@ -263,6 +263,10 @@ InformacionInicial Protocolo::unirseAPartida(id idPartida) {
 }
 
 
+bool Protocolo::iniciarPartida() {
+    return enviarCodigo(EMPEZAR);
+}
+
 bool Protocolo::moverGusano(Direccion direccion) {
     bool is_open = enviarCodigo(MOV);
     if (!is_open) {
@@ -832,7 +836,12 @@ Accion Protocolo::obtenerAccion() {
     Accion accion;
     accion.accion = INVAL_ACCION;
     if (codigo != MOV && codigo != ATACAR && 
-        codigo != EQUIPAR && codigo != CALIBRAR) {
+        codigo != EQUIPAR && codigo != CALIBRAR && codigo != EMPEZAR) {
+        return accion;
+    }
+    
+    if (codigo == EMPEZAR) {
+        accion.esEmpezar = true;
         return accion;
     }
 
@@ -845,11 +854,13 @@ Accion Protocolo::obtenerAccion() {
 
         accion.accion = EQUIPARSE;
         accion.armaAEquipar = (ArmaProtocolo)arma;
+        accion.esEmpezar = false;
         return accion;
     }
 
     if (codigo == ATACAR) {
         accion.accion = ATAQUE;
+        accion.esEmpezar = false;
         return accion;
     }
 
@@ -891,6 +902,7 @@ Accion Protocolo::obtenerAccion() {
 
         accion.accion = PREPARAR;
         accion.configARealizar = config;
+        accion.esEmpezar = false;
         return accion;
         
     }
@@ -905,6 +917,7 @@ Accion Protocolo::obtenerAccion() {
     // TODO: ampliar a los otros tipos de accion
     accion.accion = MOVERSE;
     accion.dir = (Direccion)dir;
+    accion.esEmpezar = false;
     return accion;
 }
 

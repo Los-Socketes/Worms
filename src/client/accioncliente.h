@@ -103,5 +103,10 @@ class AccionEquiparArma : public AccionCliente {
     ~AccionEquiparArma() override = default;
 };
 
+class AccionEmpezarPartida : public AccionCliente {
+public:
+   void enviar(Protocolo& protocolo) override;
+};
+
 
 #endif  // ACCIONCLIENTE_H_

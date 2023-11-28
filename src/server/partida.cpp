@@ -18,6 +18,7 @@ Partida::Partida(std::string mapa)
     this->colisiones.finPartida = false;
     this->dimensiones = std::pair<coordX, coordY>(75,40);
     this->termino = false;
+    this->momento = ESPERANDO;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
@@ -388,12 +389,13 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
-    if (this->clientes.size() < MINJUGADORES)
-        estadoActual->momento = ESPERANDO;
-    else if (this->termino == true)
-        estadoActual->momento = TERMINADA;
-    else
-        estadoActual->momento = EN_MARCHA;
+    // if (this->clientes.size() < MINJUGADORES)
+    //     estadoActual->momento = ESPERANDO;
+    // else if (this->termino == true)
+    //     estadoActual->momento = TERMINADA;
+    // else
+    //     estadoActual->momento = EN_MARCHA;
+    estadoActual->momento = this->momento;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
@@ -630,6 +632,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
         std::cout << "TENEMOS UN GANADOR" << "\n";
         jugadorDeTurno->avisarQueGane();
         this->termino = true;
+        this->momento = TERMINADA;
     }
 
     return gusanoYJugador;
@@ -681,6 +684,30 @@ void Partida::gameLoop() {
     //Esperamos hasta que se unan todos los jugadores necesarios
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
+    
+    this->momento = POR_INICIAR;
+
+    while (this->finPartida == false) {
+        //FIXME Esto estaria bueno, pero tira excepcion :(
+        // if (this->clientes.size() >= MINJUGADORES) {
+        // 	  this->momento = POR_INICIAR;
+        // }
+
+        this->finPartida = NOT this->enviarEstadoAJugadores();
+        if (this->finPartida) {
+            break;
+        }
+        Accion accionRecibida;
+        accionRecibida.idGusano = INVAL_ID;
+        bool pudeObtenerla;
+        pudeObtenerla = acciones.try_pop(accionRecibida);
+
+        if (accionRecibida.esEmpezar && pudeObtenerla) {
+            this->momento = EN_MARCHA;
+            break;
+        }
+        std::this_thread::sleep_for(frameDuration);
+    }
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
@@ -704,12 +731,13 @@ void Partida::gameLoop() {
     time_t tiempoActual;
     tiempoActual = time(NOW);
 
-    Jugador *jugadorActual;
+    Jugador *jugadorActual = nullptr;
     jugadorActual = this->siguienteJugador(NULL);
 
-    Gusano *gusanoActual;
+    Gusano *gusanoActual = nullptr;
     gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
+
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
         
@@ -717,7 +745,7 @@ void Partida::gameLoop() {
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
         // se quedo sin gusanos posibles para jugar
         if (gusanoYJugador.first == nullptr) {
-	  break;
+            break;
         }
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;

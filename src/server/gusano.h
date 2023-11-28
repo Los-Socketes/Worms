@@ -48,8 +48,9 @@ private:
     condicionDeTurno turno;
 
     //Arma armaequipada;
+    std::vector<Arma> armas;
     ArmaProtocolo armaEquipada;
-    Arma armaSeleccionada;
+    Arma* armaSeleccionada;
 
     EstadoGusano estado;
 
