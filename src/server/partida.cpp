@@ -688,6 +688,11 @@ void Partida::gameLoop() {
     this->momento = POR_INICIAR;
 
     while (this->finPartida == false) {
+        //FIXME Esto estaria bueno, pero tira excepcion :(
+        // if (this->clientes.size() >= MINJUGADORES) {
+        // 	  this->momento = POR_INICIAR;
+        // }
+
         this->finPartida = NOT this->enviarEstadoAJugadores();
         if (this->finPartida) {
             break;
