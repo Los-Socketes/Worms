@@ -59,6 +59,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
     // Seteo el id del jugador.
     recibidor.setIdJugador(info_inicial.jugador - 1);
+    dibujador.setIdJugador(info_inicial.jugador - 1);
     printf("Mi id es: %d\n", info_inicial.jugador - 1);
 
     // Obtengo colores de los jugadores.

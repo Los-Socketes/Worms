@@ -10,7 +10,8 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     fuente1("assets/fonts/AdLibRegular.ttf", 32),
     fuente2("assets/fonts/ANDYB.TTF", 32),
     segundos_turno(0),
-    esperando_movimiento(true) {
+    esperando_movimiento(true),
+    idJugador(0) {
     // Inicializo el gusano actual con valores por defecto.
     gusano_actual.idGusano = -1;
     gusano_actual.estado = QUIETO;
@@ -142,6 +143,10 @@ void Dibujador::setDimensionMapa(coordX& ancho, coordY& alto) {
     gestor_multimedia.setDimensionMapa(ancho_mapa, alto_mapa);
 }
 
+void Dibujador::setIdJugador(int id) {
+    idJugador = id;
+}
+
 void Dibujador::inicializar(Renderer& renderizador, Mixer& mixer) {
     gestor_multimedia.inicializar(renderizador, mixer);
     teclas_armas[NADA_P] = "R";
@@ -172,10 +177,15 @@ void Dibujador::dibujar(Renderer& renderizador,
     dibujarGusanos(renderizador, iteraciones, pos_cursor, colores);
     dibujarProyectiles(renderizador, iteraciones);
     dibujarAguaDelante(iteraciones);
-    dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
-    dibujarBarrasVida(renderizador, colores);
-    dibujarCuentaRegresivaTurno(renderizador);
-    dibujarTextoTurno(renderizador);
+    if (estado_juego->momento != TERMINADA) {
+        dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
+        dibujarBarrasVida(renderizador, colores);
+        dibujarCuentaRegresivaTurno(renderizador);
+        dibujarTextoTurno(renderizador);
+    }
+    else {
+        dibujarFinalPartida(renderizador, colores);
+    }
 
     renderizador.Present();
 }
@@ -415,5 +425,32 @@ void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
         fuente1.SetOutline(0);
         Texture textura_turno(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), color));
         renderizador.Copy(textura_turno, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+    }
+}
+
+void Dibujador::dibujarFinalPartida(Renderer& renderizador, std::vector<colorJugador>& colores) {
+    // Dibujo el texto segun el resultado de la partida.
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    posicion.first = ancho_pantalla / 2 - 100;
+    posicion.second = alto_pantalla / 2 - 50;
+    SDL_Color color = {colores.at(idJugador)[0], colores.at(idJugador)[1], colores.at(idJugador)[2], 255};
+    if (estado_juego->situacionJugadores.at(idJugador) == GANASTE) {
+        // Dibujo el texto "Ganaste!" en el color del jugador.
+        fuente1.SetOutline(2);
+        Texture textura_ganaste_outline(renderizador, fuente1.RenderText_Blended("Ganaste!", {0, 0, 0, 255}));
+        renderizador.Copy(textura_ganaste_outline, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+        fuente1.SetOutline(0);
+        Texture textura_ganaste(renderizador, fuente1.RenderText_Blended("Ganaste!", color));
+        renderizador.Copy(textura_ganaste, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+    } else if (estado_juego->situacionJugadores.at(idJugador) == PERDISTE) {
+        // Dibujo el texto "Perdiste!" en el color del jugador.
+        fuente1.SetOutline(2);
+        Texture textura_perdiste_outline(renderizador, fuente1.RenderText_Blended("Perdiste!", {0, 0, 0, 255}));
+        renderizador.Copy(textura_perdiste_outline, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+        fuente1.SetOutline(0);
+        Texture textura_perdiste(renderizador, fuente1.RenderText_Blended("Perdiste!", color));
+        renderizador.Copy(textura_perdiste, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
     }
 }
