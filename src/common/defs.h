@@ -33,9 +33,10 @@ enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HAC
 enum DireccionGusano {IZQUIERDA, DERECHA};
 enum tipoInfo {PARTIDA, MAPA, INVAL_TIPO};
 // Terminan con _P para diferenciarlas de las clases Arma y cada una en particular
+// si los valores predeterminados cambiaran -> cambiar for en constructor de gusano
 enum ArmaProtocolo {NADA_P, BAZOOKA_P, MORTERO_P, GRANADA_VERDE_P, GRANADA_ROJA_P, 
                     GRANADA_SANTA_P, BANANA_P, DINAMITA_P, BATE_P, ATAQUE_AEREO_P, 
-                    TELETRANSPORTACION_P};
+                    TELETRANSPORTACION_P, INVAL_ARMA_P};
 enum MomentoDePartida {ESPERANDO, EN_MARCHA, TERMINADA};
 enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};                    
 /*
