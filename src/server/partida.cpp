@@ -478,7 +478,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         }
     }
 
-    else if (arma == DINAMITA_P) {
+    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
         if (countdown > 0)
 	  return;
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
@@ -529,14 +529,15 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 
 	  this->cuerposADestruir.push_back(body);
         } 
-    } else if (arma == DINAMITA_P) {
-        if (countdown > 0)
-	  return;
-        //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-        // proyectil->exploto = true;
+    }
+    // else if (arma == DINAMITA_P) {
+    //     if (countdown > 0)
+    // 	  return;
+    //     //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
+    //     // proyectil->exploto = true;
 
         
-    }
+    // }
       
 }
 Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
