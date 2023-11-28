@@ -3,7 +3,6 @@
 
 #include "cliente.h"
 #include "defs.h"
-#include "gusano.h"
 #include "thread.h"
 #include <utility>
 #include <vector>
@@ -20,33 +19,13 @@
 #define MINJUGADORES 2
 
 // Uso potencia de 2 para operaciones con bits (con quien colisiona cada clase)
-enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
 
-// se usa para poder saber que tipo de proyectil es
-// TODO: agregar si es fragmento
-struct ProyectilAsociado {
-    b2Body *proyectil;
-    ArmaProtocolo arma;
-    time_t horaDeCreacion;
-    //Esto se usa para chequear cuando se destruye algo
-    double tiempoMinimoDeVida;
-};
 
 // Este struct se usa para asociar facilmente un body de box2d a
 // alguna de nuestras clases. En teoria se podria usar solo el puntero,
 // pero esto nos evita casteos falopas y hace que todas los bodies tengan
 // lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
 
-struct Entidad {
-    TipoEntidad tipo;
-    union {
-        Gusano *gusano;
-        // Viga *viga;
-        // Arma *arma;
-        ProyectilAsociado proyectil;
-        // b2Body *proyectil;
-    };
-};
 
 // class ResolvedorDestruccion : public b2DestructionListener {
 //     void SayGoodbye(b2Fixture *fixture); 	
@@ -115,6 +94,8 @@ class Partida : public Thread {
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
+
+    void borrarCuerpos(); 
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 

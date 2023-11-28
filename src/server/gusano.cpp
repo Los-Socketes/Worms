@@ -16,6 +16,7 @@ Gusano::Gusano() : armaSeleccionada(NADA_P)
     this->ultimaAccion.idGusano = INVAL_ID;
     // WARNING valor basura para que no rompa valgrind
     this->ultimaAccion.accion = ESTAQUIETO;
+    this->golpeado = false;
 }
 
 void Gusano::setCuerpo(b2Body* nuevoCuerpo) {
@@ -64,6 +65,9 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - TIEMPOCHANGUI) {
+	  
+        std::cout << "KILL YOU\n";
+        this->setEstado(QUIETO);
         this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
     }
 
@@ -82,15 +86,15 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
         // this->turno.usoSuArma == true
 		 );
 
-    if (cambiaDeTurno == true) {
-        std::cout << cuantoTiempoLlevo << "\n";
-        std::cout << this->idGusano << "\n";
-        std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    }
+    // if (cambiaDeTurno == true) {
+    //     std::cout << cuantoTiempoLlevo << "\n";
+    //     std::cout << this->idGusano << "\n";
+    //     std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    // }
 
 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
-    std::cout << "tiempo restante: " << this->tiempoQueMeQueda << "\n";
+    // std::cout << "tiempo restante: " << this->tiempoQueMeQueda << "\n";
     return cambiaDeTurno;
 }
 
@@ -249,12 +253,26 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     }
 }
 
-void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
+void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
+    if (this->golpeado == true)
+        return;
+    ArmaProtocolo tipoArma;
+    tipoArma = entidad->proyectil.arma;
+    int distancia;
+    distancia = distanciaEntreVectores(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
+    std::cout << "DISTANCIA: " << distancia << "\n";
     //TODO cambiar a que no tenga que crear el arma para obtener el danio
     Arma armaUsada(tipoArma);
     u_int danio = armaUsada.getDanio().epicentro;
-    // this->vida -= 20;
-    if (this->vida < danio) {
+    // distancia 0 = danio full
+    // distancia 4 = dano 0
+    //TODO Hacer que cada arma tenga esta formula
+    // la formula es -12.5 * distancia + 50 = danio
+    int danioReal;
+    danioReal = -12.5 * distancia + 50;
+
+    std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
+    if (this->vida < (u_int) danioReal) {
         this->vida = 0;
         this->setEstado(MUERTO);
 
@@ -262,14 +280,26 @@ void Gusano::recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma) {
         //ras
         //this->cuerpo->SetEnabled(false);
     } else {
-        this->vida -= danio;
+        printf("RECIBI DANO\n");
+        this->vida -= danioReal;
     }
     this->turno.recibioDano = true;
-    this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+
+    std::cout << "SORETE SORETE " << golpe.x << " " << golpe.y << "\n";
+    std::cout << "SORETE SORETE " << this->cuerpo->GetPosition().x << " " << this->cuerpo->GetPosition().y << "\n";
+
+    // golpe.x *= distancia;
+    // golpe.y *= distancia;
+    // b2Vec2 golpeton(0.0f, 0.0f);
+
+    // this->cuerpo->ApplyLinearImpulseToCenter(golpeton, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+
+
+    this->golpeado = true;
 }
 
 void Gusano::preparar(Accion& accion) {
@@ -316,8 +346,10 @@ void Gusano::preparar(Accion& accion) {
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
-    if (this->getTiempoQueMeQueda() <= 0)
+    if (this->getTiempoQueMeQueda() <= 0) {
+        this->setEstado(QUIETO);
         return ataqueARealizar;
+    }
 
 
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
