@@ -85,6 +85,7 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+
     bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
@@ -97,6 +98,8 @@ class Partida : public Thread {
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 
     void borrarCuerpos(); 
+
+    void generarExplosion(Proyectil *proyectil, Ataque ataque);
 
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 

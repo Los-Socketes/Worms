@@ -449,6 +449,56 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     return accionAEjecutar;
 }
 
+void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
+    proyectil->exploto = true;
+
+    printf("KATAPUM\n");
+    //Fuente: https://www.iforce2d.net/b2dtut/explosions
+    int numRays = 32;
+    for (int i = 0; i < numRays; i++) {
+        std::cout << i << "\n";
+        Entidad *nuevaEntidad = new Entidad;
+        nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+    nuevaEntidad->proyectil.arma = DINAMITA_P;
+
+        float angle = (i / (float)numRays) * 360 * DEGTORAD;
+        b2Vec2 rayDir( sinf(angle), cosf(angle) );
+
+        b2BodyDef bd;
+        bd.type = b2_dynamicBody;
+        bd.fixedRotation = true; // rotation not necessary
+        bd.bullet = true; // prevent tunneling at high speed
+        // bd.linearDamping = 10; // drag due to moving through air
+        bd.gravityScale = 0; // ignore gravity
+        bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+        b2Vec2 coords = ataque.posicion;
+        nuevaEntidad->proyectil.posInicial = coords;
+        bd.position = coords;
+        // bd.linearVelocity = blastPower * rayDir;
+        bd.linearVelocity = 60 * rayDir;
+        b2Body* body = this->world.CreateBody( &bd );
+
+        b2CircleShape circleShape;
+        circleShape.m_radius = 0.05; // very small
+
+        b2FixtureDef fd;
+        fd.shape = &circleShape;
+        fd.density = 60 / (float)numRays; // very high - shared across all particles
+        fd.friction = 0; // friction not necessary
+        fd.restitution = 0.99f; // high restitution to reflect off obstacles
+        fd.filter.groupIndex = -1; // particles should not collide with each other
+
+    fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
+        body->CreateFixture( &fd );
+        nuevaEntidad->proyectil.proyectil = body;
+        nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
+        nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
+
+        this->cuerposADestruir.push_back(body);
+    }
+}
+
 void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
     ArmaDeseada arma;
     arma = ataque.arma;
@@ -486,54 +536,8 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
         if (countdown > 0)
 	  return;
+        this->generarExplosion(proyectil, ataque);
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-        proyectil->exploto = true;
-
-        printf("KATAPUM\n");
-        //Fuente: https://www.iforce2d.net/b2dtut/explosions
-        int numRays = 32;
-        for (int i = 0; i < numRays; i++) {
-	  std::cout << i << "\n";
-	  Entidad *nuevaEntidad = new Entidad;
-	  nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-      nuevaEntidad->proyectil.arma = DINAMITA_P;
-
-	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
-	  b2Vec2 rayDir( sinf(angle), cosf(angle) );
-
-	  b2BodyDef bd;
-	  bd.type = b2_dynamicBody;
-	  bd.fixedRotation = true; // rotation not necessary
-	  bd.bullet = true; // prevent tunneling at high speed
-	  // bd.linearDamping = 10; // drag due to moving through air
-	  bd.gravityScale = 0; // ignore gravity
-	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-	  b2Vec2 coords = ataque.posicion;
-	  nuevaEntidad->proyectil.posInicial = coords;
-	  bd.position = coords;
-	  // bd.linearVelocity = blastPower * rayDir;
-	  bd.linearVelocity = 60 * rayDir;
-	  b2Body* body = this->world.CreateBody( &bd );
-
-	  b2CircleShape circleShape;
-	  circleShape.m_radius = 0.05; // very small
-
-	  b2FixtureDef fd;
-	  fd.shape = &circleShape;
-	  fd.density = 60 / (float)numRays; // very high - shared across all particles
-	  fd.friction = 0; // friction not necessary
-	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
-	  fd.filter.groupIndex = -1; // particles should not collide with each other
-
-      fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-      fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
-	  body->CreateFixture( &fd );
-	  nuevaEntidad->proyectil.proyectil = body;
-	  nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
-	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
-
-	  this->cuerposADestruir.push_back(body);
-        } 
     }
     // else if (arma == DINAMITA_P) {
     //     if (countdown > 0)
