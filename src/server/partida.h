@@ -76,6 +76,8 @@ class Partida : public Thread {
     std::atomic<bool> finPartida;
     Queue<Accion> acciones;
 
+    bool termino;
+
     //World de box2d de la partida
     b2World world;
     ResolvedorColisiones colisiones;
