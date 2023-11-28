@@ -247,14 +247,13 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         break;
         }
     case PIRUETA:
-        std::cout << "PIRUETA" << "\n";
         {
-        std::cout << "Salto" << "\n";
+        std::cout << "PIRUETA" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
-        this->setEstado(PIRUETA);
+        this->setEstado(HACE_PIRUETA);
         break;
         }
     case INVAL_DIR:
