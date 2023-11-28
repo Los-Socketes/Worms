@@ -144,13 +144,17 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     if(entidadA->tipo == TipoEntidad::VIGA
        &&
        entidadB->tipo == TipoEntidad::GUSANO) {
-        entidadB->gusano->setEstado(CAYENDO);
+        if (entidadB->gusano->getEstado() != SALTANDO) {
+            entidadB->gusano->setEstado(CAYENDO);
+        }
     }
 
     if(entidadB->tipo == TipoEntidad::VIGA
        &&
        entidadA->tipo == TipoEntidad::GUSANO) {
-        entidadA->gusano->setEstado(CAYENDO);
+        if (entidadB->gusano->getEstado() != SALTANDO) {
+            entidadB->gusano->setEstado(CAYENDO);
+        }
     }
     std::cout << "FIN CONTACTO\n";
 }
@@ -431,8 +435,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     }
     else if (tipoUltimaAccion == ATAQUE) {
         accionAEjecutar = ultimaAccion;
-    }
-    else {
+    } else {
         accionAEjecutar = ultimaAccion;
         accionAEjecutar.accion = ESTAQUIETO;
     }
