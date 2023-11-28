@@ -461,13 +461,16 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         b2Vec2 adelante;
         adelante = this->cuerpo->GetPosition(); 
-        adelante.x += 2;
-        adelante.y += 2;
-        proyectil->cuerpo->SetTransform(adelante , true);
         std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
-        proyectil->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(1.0f, 1.0f), true);
+        if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
+	  adelante.x += 2;
+	  adelante.y += 0;
+	  proyectil->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(1.0f, 1.0f), true);
+        }
+        proyectil->cuerpo->SetTransform(adelante , true);
+
         std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
