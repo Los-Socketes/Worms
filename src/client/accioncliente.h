@@ -13,7 +13,8 @@ enum TipoComando{
     MOVER_CURSOR,
     VOLUMEN_MAS,
     VOLUMEN_MENOS,
-    TOGGLE_MUTEAR
+    TOGGLE_MUTEAR,
+    SIN_MUNICIONES
 };
 
 // Comandos internos del cliente.

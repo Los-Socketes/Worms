@@ -14,8 +14,6 @@
 #include "controliteracion.h"
 #include "configuracionCliente.h"
 
-#define TIEMPO_TURNO 20
-
 using namespace SDL2pp;
 
 // Clase que se encarga de dibujar todos los elementos del juego.
@@ -32,6 +30,7 @@ class Dibujador {
       Font fuente2;
       int segundos_turno;
       bool esperando_movimiento;
+      int idJugador;
 
       void actualizarGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
@@ -43,7 +42,9 @@ class Dibujador {
  public:
       Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
       void setDimensionMapa(coordX& ancho, coordY& alto);
+      void setIdJugador(int id);
       void inicializar(Renderer& renderizador, Mixer& mixer);
+      void reproducirSonido(TipoSonido tipo); // A refactorizar.
       void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
       void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
@@ -51,9 +52,12 @@ class Dibujador {
       void dibujarAguaDetras(ControlIteracion& iteraciones);
       void dibujarAguaDelante(ControlIteracion& iteraciones);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
+      void dibujarMuniciones(Renderer& renderizador, RepresentacionArma& arma);
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
       void dibujarCuentaRegresivaTurno(Renderer& renderizador);
       void dibujarTextoTurno(Renderer& renderizador);
+      void dibujarPantallaEspera(Renderer& renderizador);
+      void dibujarFinalPartida(Renderer& renderizador, std::vector<colorJugador>& colores);
 };
 
 #endif // DIBUJADOR_H_

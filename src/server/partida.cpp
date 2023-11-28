@@ -17,6 +17,7 @@ Partida::Partida(std::string mapa)
     this->finPartida = false;
     this->colisiones.finPartida = false;
     this->dimensiones = std::pair<coordX, coordY>(75,40);
+    this->termino = false;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
@@ -49,7 +50,7 @@ Partida::Partida(std::string mapa)
     this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));
 }
 
-//Esto tendria que estar en el YAML?
+//Esto tendria que estar en el YAML? Posiblemente
 #define CANTGUSANOS 3
 
 // Usado para castear un puntero a una reference y hacer
@@ -316,11 +317,13 @@ InformacionInicial Partida::obtenerInfoInicial() {
 }
 
 void Partida::anadirCliente(Cliente *clienteNuevo) {
-    //TODO: Lock
+    std::cout << "Nuevo cliente\n";
     clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
 
     //Anadimos al jugador a la partida
     this->clientes.push_back(clienteNuevo);
+
+    this->enviarEstadoAJugadores();
 
     //Aviso que se unio un jugador
     this->seUnioJugador.notify_all();
@@ -383,6 +386,13 @@ bool Partida::enviarEstadoAJugadores() {
         proyectilesRepre.push_back(repre);
     }
     estadoActual->proyectiles = proyectilesRepre;
+
+    if (this->clientes.size() < MINJUGADORES)
+        estadoActual->momento = ESPERANDO;
+    else if (this->termino == true)
+        estadoActual->momento = TERMINADA;
+    else
+        estadoActual->momento = EN_MARCHA;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
@@ -576,8 +586,6 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
     gusanoActual->setEstado(QUIETO);
 
-    //WARNING: Nota fabri. No entendi esto. Por que chequeamos si es
-    //null?
     gusanoDeTurno = nullptr;
     for (int i = 0; i <= (int)this->jugadores.size(); i++) {
         jugadorDeTurno = this->siguienteJugador(jugadorTurnoActual);
@@ -619,6 +627,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (elProximoGano == true) {
         std::cout << "TENEMOS UN GANADOR" << "\n";
         jugadorDeTurno->avisarQueGane();
+        this->termino = true;
     }
 
     return gusanoYJugador;
