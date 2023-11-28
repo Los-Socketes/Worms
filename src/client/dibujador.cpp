@@ -181,7 +181,7 @@ void Dibujador::dibujar(Renderer& renderizador,
     if (estado_juego->momento == ESPERANDO) {
         dibujarPantallaEspera(renderizador);
     }
-    else if (estado_juego->momento != EN_MARCHA) {
+    else if (estado_juego->momento == EN_MARCHA) {
         dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
         dibujarBarrasVida(renderizador, colores);
         dibujarCuentaRegresivaTurno(renderizador);
