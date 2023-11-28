@@ -114,6 +114,8 @@ class Partida : public Thread {
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 
+    void borrarCuerpos(); 
+
     void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
     std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
