@@ -639,6 +639,27 @@ bool destruirProyectil(b2Body *proyectil) {
     return expirado;
 }
 
+void Partida::borrarCuerpos() {
+    //Borro todos los cuerpos a destruir
+    //Leo la lista al reves para no tener problemas del offset al
+    //borrar elementos
+    for(int i = this->cuerposADestruir.size() - 1 ; i >= 0 ; i--) {
+        b2Body *cuerpoABorrar;
+        cuerpoABorrar = this->cuerposADestruir.at(i);
+        bool loBorro;
+        loBorro = destruirProyectil(cuerpoABorrar);
+        // NO HACER delete entidad. Tira invalid delete
+        if (loBorro == true) {
+	  std::cout << "Delete\n";
+	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+	  delete entidadB;
+	  this->world.DestroyBody(cuerpoABorrar);
+	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+        }
+
+    }
+}
+
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 
@@ -686,25 +707,7 @@ void Partida::gameLoop() {
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;
 
-        //TODO Hacer esto una funcion
-        //Borro todos los cuerpos a destruir
-        //Leo la lista al reves para no tener problemas del offset al
-        //borrar elementos
-        for(int i = this->cuerposADestruir.size() - 1 ; i >= 0 ; i--) {
-            b2Body *cuerpoABorrar;
-            cuerpoABorrar = this->cuerposADestruir.at(i);
-            bool loBorro;
-            loBorro = destruirProyectil(cuerpoABorrar);
-            // NO HACER delete entidad. Tira invalid delete
-            if (loBorro == true) {
-                std::cout << "Delete\n";
-                Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-                delete entidadB;
-                this->world.DestroyBody(cuerpoABorrar);
-                this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
-            }
-	  
-        }
+        this->borrarCuerpos();
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 
