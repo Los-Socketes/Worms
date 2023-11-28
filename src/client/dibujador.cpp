@@ -172,12 +172,16 @@ void Dibujador::dibujar(Renderer& renderizador,
 
     actualizarGusanoActual();
 
+
     dibujarMapa(vigas);
     dibujarAguaDetras(iteraciones);
     dibujarGusanos(renderizador, iteraciones, pos_cursor, colores);
     dibujarProyectiles(renderizador, iteraciones);
     dibujarAguaDelante(iteraciones);
-    if (estado_juego->momento != TERMINADA) {
+    if (estado_juego->momento == ESPERANDO) {
+        dibujarPantallaEspera(renderizador);
+    }
+    else if (estado_juego->momento != EN_MARCHA) {
         dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
         dibujarBarrasVida(renderizador, colores);
         dibujarCuentaRegresivaTurno(renderizador);
@@ -426,6 +430,22 @@ void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
         Texture textura_turno(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), color));
         renderizador.Copy(textura_turno, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
     }
+}
+
+void Dibujador::dibujarPantallaEspera(Renderer& renderizador) {
+    // Dibujo el texto "Esperando a los demas jugadores..." en blanco.
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    posicion.first = ancho_pantalla / 2 - 200;
+    posicion.second = alto_pantalla / 2 - 50;
+    SDL_Color color = {255, 255, 255, 255};
+    fuente1.SetOutline(2);
+    Texture textura_espera_outline(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", {0, 0, 0, 255}));
+    renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
+    fuente1.SetOutline(0);
+    Texture textura_espera(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", color));
+    renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
 }
 
 void Dibujador::dibujarFinalPartida(Renderer& renderizador, std::vector<colorJugador>& colores) {

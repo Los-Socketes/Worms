@@ -54,6 +54,7 @@ class Dibujador {
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
       void dibujarCuentaRegresivaTurno(Renderer& renderizador);
       void dibujarTextoTurno(Renderer& renderizador);
+      void dibujarPantallaEspera(Renderer& renderizador);
       void dibujarFinalPartida(Renderer& renderizador, std::vector<colorJugador>& colores);
 };
 

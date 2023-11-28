@@ -17,7 +17,7 @@ void Recibidor::run() {
         cont = true;
         while (cont) {
             estado_juego = protocolo.obtenerEstadoDelJuego();
-            if (estado_juego->jugadorDeTurno == id_jugador && estado_juego->momento != TERMINADA)
+            if (estado_juego->jugadorDeTurno == id_jugador && estado_juego->momento == EN_MARCHA)
                 es_turno = true;
             else
                 es_turno = false;
