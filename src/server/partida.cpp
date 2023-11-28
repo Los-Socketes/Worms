@@ -381,7 +381,7 @@ bool Partida::enviarEstadoAJugadores() {
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
 
-        std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
         repre.angulo = 0.0f;
