@@ -43,7 +43,7 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
     //Si se esta cayendo queremos cancelar todo tipo de velocidad y
     //que caiga directo. TODO: Esto lo hace "re duro". Podriamos hacer
     //que se conserve ALGO de la velocidad
-    if (this->estado == CAYENDO) {
+    if (this->estado == CAYENDO || this->estado == QUIETO) {
         b2Vec2 direccion;
         direccion.x = 0.0f;
         direccion.y = 0.0f;
@@ -239,20 +239,23 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     case SALTO:
         {
         std::cout << "Salto" << "\n";
-        if (this->direccion == DERECHA)
-	  direccion.enX = POTENCIASALTO;
-        else
-	  direccion.enX = -POTENCIASALTO;
-        direccion.enY = POTENCIASALTO;
-        b2Vec2 salto;
-        salto = deCoordAb2Vec(direccion);
-        std::cout << "SALTO: " << salto.x << " " << salto.y << "\n";
-        this->cuerpo->SetLinearVelocity(salto);
-    }
+        direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
+        direccion.enY = POTENCIASALTO*2;
+        b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
+        this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
+        this->setEstado(SALTANDO);
         break;
+        }
     case PIRUETA:
+        {
         std::cout << "PIRUETA" << "\n";
+        direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
+        direccion.enY = POTENCIASALTO*2;
+        b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
+        this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
+        this->setEstado(HACE_PIRUETA);
         break;
+        }
     case INVAL_DIR:
         std::cout << "Invalid dir" << "\n";
         abort();
