@@ -8,6 +8,7 @@ GestorMultimedia::GestorMultimedia(Camara& camara, int ancho_mapa, int alto_mapa
 void GestorMultimedia::setDimensionMapa(int ancho, int alto) {
     ancho_mapa = ancho;
     alto_mapa = alto;
+    escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
 }
 
 void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {

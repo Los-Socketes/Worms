@@ -27,10 +27,15 @@ using namespace SDL2pp;
 // y ejecutar el loop principal del juego.
 class Cliente {
  private:
+    ConfiguracionCliente& config;
+ // SDL
     SDL sdl;
     SDLTTF ttf;
+    Window ventana;
+    Renderer renderizador;
+    Mixer mixer;
+    Music music;
     Protocolo protocolo;
-    ConfiguracionCliente& config;
     std::shared_ptr<EstadoDelJuego> estado_juego;
     Camara camara;
     Dibujador dibujador;
@@ -49,8 +54,21 @@ class Cliente {
     int volumen;
     bool muteado;
 
+    // Configura SDL, SDL_mixer.
+    void configurarSDL(InformacionInicial& info_inicial);
+
+    // Configura camara.
+    void configurarCamara(InformacionInicial& info_inicial);
+
+    // Configura dibujador.
+    void configurarDibujador(InformacionInicial& info_inicial);
+
     // Inicia los hilos.
-    void iniciar();
+    void iniciarHilos(InformacionInicial& info_inicial);
+
+    // Dado un comando local, ejecuta la accion correspondiente.
+    // Setea los flags continuar y mover_camara.
+    void ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mover_camara);
 
  public:
     Cliente(Socket&& skt, ConfiguracionCliente& config);
