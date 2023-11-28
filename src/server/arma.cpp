@@ -180,3 +180,10 @@ std::pair<coordX, coordY> Arma::getCoordenadasTeletransporte() {
 void Arma::setCoordenadasTeletransporte(std::pair<coordX, coordY> coordenadas) {
     this->coordenadasTeletransporte = coordenadas;
 }
+
+void Arma::usar() {
+    if (municiones <= 0) {
+        return;
+    }
+    this->municiones -= 1;
+}

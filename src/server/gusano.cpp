@@ -423,13 +423,26 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.arma = armaQueQuiero;
         break;
     case ATAQUE:
+        {
         tiempoEspera = 0;
+        armaQueQuiero = this->armaEquipada;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        // si no tiene municiones -> no ataco
+        int municionesDisponibles = this->armaSeleccionada->getMuniciones();
+        if (municionesDisponibles == 0) {
+            ataqueARealizar.arma = NADA_P;
+            ataqueARealizar.posicion = posicion;
+            ataqueARealizar.tiempoEspera = tiempoEspera;
+            ataqueARealizar.arma = armaQueQuiero;
+            break;
+        }
+
+        // tengo munciones disponibles
         if (armaEquipada == TELETRANSPORTACION_P) {
 	        this->teletransportarse();
         }  
 
-        armaQueQuiero = this->armaEquipada;
-        posicion = (deCoordAb2Vec(this->getCoords()));
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
@@ -444,7 +457,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
         std::cout << "ATACO\n";
+        this->armaSeleccionada->usar();
         break;
+        }
     case INVAL_ACCION:
         std::cout << "INVALID ACCION\n";
         break;
@@ -467,6 +482,8 @@ void Gusano::teletransportarse() {
 
     this->cuerpo->SetTransform(vectorDestino, true);
 
+    this->armaSeleccionada->usar();
+    
     //LE aplico alguito de velociadad para qeu se actualice y caiga
     b2Vec2 direccion;
     direccion.x = 0.0f;
