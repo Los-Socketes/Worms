@@ -14,8 +14,6 @@
 #include "controliteracion.h"
 #include "configuracionCliente.h"
 
-#define TIEMPO_TURNO 20
-
 using namespace SDL2pp;
 
 // Clase que se encarga de dibujar todos los elementos del juego.

@@ -23,7 +23,7 @@ void Dibujador::actualizarGusanoActual() {
         estado_juego->gusanos[estado_juego->jugadorDeTurno].find(estado_juego->gusanoDeTurno) != estado_juego->gusanos[estado_juego->jugadorDeTurno].end()) {
         gusano_actual = estado_juego->gusanos.at(estado_juego->jugadorDeTurno).at(estado_juego->gusanoDeTurno);
     }
-    if (estado_juego->segundosRestantes == TIEMPO_TURNO) {
+    if (estado_juego->segundosRestantes == TIEMPOCAMBIOTURNO) {
         esperando_movimiento = true;
     } else if (gusano_actual.estado != QUIETO) {
         esperando_movimiento = false;
@@ -369,31 +369,33 @@ void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugad
 }
 
 void Dibujador::dibujarCuentaRegresivaTurno(Renderer& renderizador) {
-    // Dibujo los segundos restantes arriba a la derecha de la pantalla.
-    int ancho_pantalla = renderizador.GetOutputSize().x;
-    int alto_pantalla = renderizador.GetOutputSize().y;
-    std::pair<int, int> posicion;
-    posicion.first = ancho_pantalla - 40;
-    posicion.second = 20;
-    // Determino el color blanco como default.
-    SDL_Color color = {255, 255, 255, 255};
-    // Si quedan 5 o menos segundos, dibujo en rojo.
-    if (estado_juego->segundosRestantes <= 5) {
-        color = {255, 0, 0, 255};
+    if (estado_juego->segundosRestantes >= 0) {
+        // Dibujo los segundos restantes arriba a la derecha de la pantalla.
+        int ancho_pantalla = renderizador.GetOutputSize().x;
+        int alto_pantalla = renderizador.GetOutputSize().y;
+        std::pair<int, int> posicion;
+        posicion.first = ancho_pantalla - 40;
+        posicion.second = 20;
+        // Determino el color blanco como default.
+        SDL_Color color = {255, 255, 255, 255};
+        // Si quedan 5 o menos segundos, dibujo en rojo.
+        if (estado_juego->segundosRestantes <= 5) {
+            color = {255, 0, 0, 255};
+        }
+        // Dibujo el borde del temporizador.
+        fuente1.SetOutline(2);
+        Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), {0, 0, 0, 255}));
+        renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
+        // Dibujo el temporizador.
+        fuente1.SetOutline(0);
+        Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), color));
+        renderizador.Copy(textura_cuenta, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
+        // Si quedan 5 o menos segundos, reproduzco el sonido de tick al principio de cada segundo.
+        if (estado_juego->segundosRestantes <= 5 && segundos_turno != estado_juego->segundosRestantes) {
+            gestor_multimedia.reproducirSonido(SONIDO_TICK);
+        }
+        segundos_turno = estado_juego->segundosRestantes;
     }
-    // Dibujo el borde del temporizador.
-    fuente1.SetOutline(2);
-    Texture textura_cuenta_outline(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), {0, 0, 0, 255}));
-    renderizador.Copy(textura_cuenta_outline, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
-    // Dibujo el temporizador.
-    fuente1.SetOutline(0);
-    Texture textura_cuenta(renderizador, fuente1.RenderText_Blended(std::to_string(estado_juego->segundosRestantes), color));
-    renderizador.Copy(textura_cuenta, NullOpt, Rect(posicion.first, posicion.second, 20, 40));
-    // Si quedan 5 o menos segundos, reproduzco el sonido de tick al principio de cada segundo.
-    if (estado_juego->segundosRestantes <= 5 && segundos_turno != estado_juego->segundosRestantes) {
-        gestor_multimedia.reproducirSonido(SONIDO_TICK);
-    }
-    segundos_turno = estado_juego->segundosRestantes;
 }
 
 void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
@@ -406,7 +408,7 @@ void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
     posicion.second = alto_pantalla / 2 - 50;
     // Dibujo el texto en blanco.
     SDL_Color color = {255, 255, 255, 255};
-    if (estado_juego->segundosRestantes >= TIEMPO_TURNO - 2) {
+    if (estado_juego->segundosRestantes >= TIEMPOCAMBIOTURNO - 2) {
         fuente1.SetOutline(2);
         Texture textura_turno_outline(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), {0, 0, 0, 255}));
         renderizador.Copy(textura_turno_outline, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
