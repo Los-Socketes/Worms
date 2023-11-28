@@ -16,12 +16,13 @@ struct Proyectil {
     b2Vec2 posicion;
     int id;
     int countdown;
-    b2Vec2 *cuerpo;
+    b2Body *cuerpo;
     bool exploto;
 };
 
 struct Ataque {
     b2Vec2 posicion;
+    int potencia;
     int tiempoEspera;
     ArmaDeseada arma;
     Proyectil *proyectilAsociado;
@@ -108,7 +109,7 @@ public:
 
     int getId();
 
-    [[nodiscard]] Ataque ejecutar(Accion accion);
+    [[nodiscard]] Ataque ejecutar(Accion accion, Proyectil *proyectil);
 
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 

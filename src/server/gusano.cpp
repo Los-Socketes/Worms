@@ -323,8 +323,8 @@ void Gusano::preparar(Accion& accion) {
         if (!this->armaSeleccionada->getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
             break;
         } 
-        std::cout << "Cambio: " << configDeseado.angulo << "\n";
-        std::cout << "Angulo nuevo: " << anguloActual << "\n";
+        // std::cout << "Cambio: " << configDeseado.angulo << "\n";
+        // std::cout << "Angulo nuevo: " << anguloActual << "\n";
         this->armaSeleccionada->setAngulo(anguloActual);
         break;
         }
@@ -337,8 +337,8 @@ void Gusano::preparar(Accion& accion) {
         }else if (!this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
             potenciaActual = 100;
         } 
-        std::cout << "Cambio: " << configDeseado.potencia << "\n";
-        std::cout << "Potencia nueva: " << potenciaActual << "\n";
+        // std::cout << "Cambio: " << configDeseado.potencia << "\n";
+        // std::cout << "Potencia nueva: " << potenciaActual << "\n";
         this->armaSeleccionada->setPotencia(potenciaActual);
         break;
         }
@@ -354,7 +354,7 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
-Ataque Gusano::ejecutar(Accion accion) {
+Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
         this->setEstado(QUIETO);
@@ -415,7 +415,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         }
     case PREPARAR:
         std::cout << "PREPARAR\n";
+
         this->preparar(accion);
+
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -424,6 +426,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
+        ataqueARealizar.potencia = this->armaSeleccionada->getPotencia();
+        // std::cout << "AYUDA AYUDA" << accion.configARealizar.potencia << "\n";
         break;
     case ATAQUE:
         {
@@ -444,16 +448,83 @@ Ataque Gusano::ejecutar(Accion accion) {
         // tengo munciones disponibles
         if (armaEquipada == TELETRANSPORTACION_P) {
 	        this->teletransportarse();
-        }  
+        }
 
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P) {
+        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
         } else {
 	        tiempoEspera = 0;
         }
+
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+
+        b2Vec2 adelante;
+        adelante = this->cuerpo->GetPosition(); 
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+
+        if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
+
+
+
+
+
+
+	  float angulo = this->armaSeleccionada->getAngulo();
+
+	  float adyacente = cos(angulo);
+	  if (this->direccion == IZQUIERDA)
+	      adyacente *= -1;
+	  float opuesto = sin(angulo);
+
+	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
+	  float potenicaAplicada = 0.3f;
+	  potenicaAplicada *= this->armaSeleccionada->getPotencia();
+
+	  if (this->direccion == IZQUIERDA)
+	      adyacente -= potenicaAplicada;
+	  else
+	      adyacente += potenicaAplicada;
+	  opuesto += potenicaAplicada;
+
+
+	  b2Vec2 golpeDeseado(adyacente, opuesto);
+
+	  std::cout << "Vector: " << golpeDeseado.x << " " << golpeDeseado.y << "\n";
+
+
+
+        // float potencia = 9;
+        // float hipotenusa = 9 * potencia;
+        // std::cout << "ANGULO: " << angulo << "\n";
+
+        // //SOHCAHTOA
+        // float adyacente;
+        // adyacente = cos(angulo) * hipotenusa;
+        // if (this->direccion == IZQUIERDA)
+        // 	  adyacente *= -1;
+        // std::cout << adyacente << "\n";
+
+        // float opuesto;
+        // opuesto = sin(angulo) * hipotenusa;
+
+
+
+
+
+	  adelante.x += 0;
+
+	  adelante.y += 1;
+        proyectil->cuerpo->SetTransform(adelante , true);
+	  proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
+        }
+
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;

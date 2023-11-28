@@ -386,7 +386,10 @@ bool Partida::enviarEstadoAJugadores() {
         repre.id = proyectil->id;
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
-        repre.posicion = deb2VecACoord(proyectil->posicion);
+
+        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
+        repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
+        
         repre.angulo = 0.0f;
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
@@ -480,7 +483,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         }
     }
 
-    else if (arma == DINAMITA_P) {
+    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
         if (countdown > 0)
 	  return;
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
@@ -530,8 +533,16 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
 
 	  this->cuerposADestruir.push_back(body);
-        }
+        } 
     }
+    // else if (arma == DINAMITA_P) {
+    //     if (countdown > 0)
+    // 	  return;
+    //     //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
+    //     // proyectil->exploto = true;
+
+        
+    // }
       
 }
 Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
@@ -589,7 +600,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     if (cambioDeTurno == false)
         return gusanoYJugador;
 
-    std::cout << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
+    // std::cout << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
 
     //Antes de nada me fijo si el jugador actual perdio
     jugadorTurnoActual->chequearSiPerdi();
@@ -729,7 +740,35 @@ void Partida::gameLoop() {
     nuevoProyectil->posicion = origen;
     nuevoProyectil->id = 0;
     nuevoProyectil->countdown = 0;
-    nuevoProyectil->cuerpo = nullptr;
+
+
+
+
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2CircleShape circleShape;
+    circleShape.m_radius = 0.05; // very small
+  
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circleShape;
+    fixtureDef.density = 3.5f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture( &fixtureDef );
+
+    nuevoProyectil->cuerpo = body;
+
+
+
+
+
     nuevoProyectil->exploto = false;
     this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
@@ -774,7 +813,7 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar, nuevoProyectil);
 
         //TODO: Tener fe
         if (nuevoProyectil->countdown == 0) {
