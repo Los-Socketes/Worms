@@ -320,8 +320,8 @@ void Gusano::preparar(Accion& accion) {
         if (!this->armaSeleccionada->getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
             break;
         } 
-        std::cout << "Cambio: " << configDeseado.angulo << "\n";
-        std::cout << "Angulo nuevo: " << anguloActual << "\n";
+        // std::cout << "Cambio: " << configDeseado.angulo << "\n";
+        // std::cout << "Angulo nuevo: " << anguloActual << "\n";
         this->armaSeleccionada->setAngulo(anguloActual);
         break;
         }
@@ -334,8 +334,8 @@ void Gusano::preparar(Accion& accion) {
         }else if (!this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
             potenciaActual = 100;
         } 
-        std::cout << "Cambio: " << configDeseado.potencia << "\n";
-        std::cout << "Potencia nueva: " << potenciaActual << "\n";
+        // std::cout << "Cambio: " << configDeseado.potencia << "\n";
+        // std::cout << "Potencia nueva: " << potenciaActual << "\n";
         this->armaSeleccionada->setPotencia(potenciaActual);
         break;
         }
@@ -351,7 +351,7 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
-Ataque Gusano::ejecutar(Accion accion) {
+Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
         this->setEstado(QUIETO);
@@ -412,7 +412,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         }
     case PREPARAR:
         std::cout << "PREPARAR\n";
+
         this->preparar(accion);
+
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -421,6 +423,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
+        ataqueARealizar.potencia = this->armaSeleccionada->getPotencia();
+        // std::cout << "AYUDA AYUDA" << accion.configARealizar.potencia << "\n";
         break;
     case ATAQUE:
         {
@@ -441,16 +445,31 @@ Ataque Gusano::ejecutar(Accion accion) {
         // tengo munciones disponibles
         if (armaEquipada == TELETRANSPORTACION_P) {
 	        this->teletransportarse();
-        }  
+        }
 
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P) {
+        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
         } else {
 	        tiempoEspera = 0;
         }
+
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+
+        b2Vec2 adelante;
+        adelante = this->cuerpo->GetPosition(); 
+        adelante.x += 2;
+        adelante.y += 2;
+        proyectil->cuerpo->SetTransform(adelante , true);
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+
+        proyectil->cuerpo->ApplyLinearImpulseToCenter(b2Vec2(1.0f, 1.0f), true);
+        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;

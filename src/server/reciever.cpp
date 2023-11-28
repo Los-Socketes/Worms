@@ -106,7 +106,7 @@ void Reciever::run() {
             accionDeseada.jugador = this->miId;
 
             this->acciones->push(accionDeseada);
-            std::cout << "PUSHEO: " << accionDeseada.esEmpezar << "\n";
+            // std::cout << "PUSHEO: " << accionDeseada.esEmpezar << "\n";
         }
     }
     catch( ... ) {
