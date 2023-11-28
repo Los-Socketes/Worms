@@ -176,6 +176,7 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     sonidos[SONIDO_DINAMITA] = std::make_shared<Sonido>(mixer, "assets/sounds/FUSE.WAV");
     sonidos[SONIDO_BATE] = std::make_shared<Sonido>(mixer, "assets/sounds/BaseBallBatImpact.wav");
     sonidos[SONIDO_AGUA] = std::make_shared<Sonido>(mixer, "assets/sounds/Splash.wav");
+    sonidos[SONIDO_SIN_MUNICIONES] = std::make_shared<Sonido>(mixer, "assets/sounds/NoAmmo.mp3");
 
 }
 

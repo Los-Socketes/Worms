@@ -161,7 +161,7 @@ RepresentacionArma Arma::getRepresentacion() {
     arma.tieneMira = this->caracteristicas.tieneMira;
     arma.tienePotenciaVariable = this->caracteristicas.tienePotenciaVariable;
     arma.tieneCuentaRegresiva = this->caracteristicas.tieneCuentaRegresiva;
-    arma.municiones = 100000;
+    arma.municiones = this->municiones;
     arma.fragmentos = this->fragmentos;
     arma.danio.epicentro = this->danio.epicentro;
     arma.danio.radio = this->danio.radio;

@@ -470,7 +470,7 @@ RepresentacionGusano Gusano::getRepresentacion() {
     //Esto solo aplica al bate
     RepresentacionArma arma = this->armaSeleccionada.getRepresentacion();
     // std::cout << "Angulo a enviar: " << arma.anguloRad << "\n";
-    arma.municiones = 100000;
+    // arma.municiones = 100000;
     // arma.arma = this->armaEquipada;
 
     repre.armaEquipada = arma;

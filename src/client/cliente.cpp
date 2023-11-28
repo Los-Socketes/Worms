@@ -14,9 +14,10 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     envio_comandos(TAM_QUEUE),
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
+    municiones_agotadas(true),
     inicio(false),
-    entrada_teclado(envio_comandos, comandos_teclado, camara),
-    recibidor(protocolo, recepcion_estados, es_turno),
+    entrada_teclado(envio_comandos, comandos_teclado, camara, municiones_agotadas),
+    recibidor(protocolo, recepcion_estados, es_turno, municiones_agotadas),
     // recibidor(protocolo, recepcion_estados, envio_comandos, es_turno),
     enviador(protocolo, envio_comandos, es_turno),
     pos_cursor(0, 0),
@@ -131,6 +132,9 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
                         mixer.SetMusicVolume(0);
                         mixer.SetVolume(-1, 0);
                     }
+                    break;
+                case SIN_MUNICIONES:
+                    dibujador.reproducirSonido(SONIDO_SIN_MUNICIONES);
                     break;
                 default:
                     break;

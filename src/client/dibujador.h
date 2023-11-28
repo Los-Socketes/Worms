@@ -44,6 +44,7 @@ class Dibujador {
       void setDimensionMapa(coordX& ancho, coordY& alto);
       void setIdJugador(int id);
       void inicializar(Renderer& renderizador, Mixer& mixer);
+      void reproducirSonido(TipoSonido tipo); // A refactorizar.
       void dibujar(Renderer& renderizador, ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
       void dibujarGusanos(Renderer& renderizador, ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
@@ -51,6 +52,7 @@ class Dibujador {
       void dibujarAguaDetras(ControlIteracion& iteraciones);
       void dibujarAguaDelante(ControlIteracion& iteraciones);
       void dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada);
+      void dibujarMuniciones(Renderer& renderizador, RepresentacionArma& arma);
       void dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores);
       void dibujarCuentaRegresivaTurno(Renderer& renderizador);
       void dibujarTextoTurno(Renderer& renderizador);

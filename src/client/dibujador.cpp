@@ -162,6 +162,9 @@ void Dibujador::inicializar(Renderer& renderizador, Mixer& mixer) {
     teclas_armas[TELETRANSPORTACION_P] = "0";
 }
 
+void Dibujador::reproducirSonido(TipoSonido tipo) {
+    gestor_multimedia.reproducirSonido(tipo);
+}
 
 void Dibujador::dibujar(Renderer& renderizador,
     ControlIteracion& iteraciones,
@@ -183,6 +186,7 @@ void Dibujador::dibujar(Renderer& renderizador,
     }
     else if (estado_juego->momento == EN_MARCHA) {
         dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
+        dibujarMuniciones(renderizador, gusano_actual.armaEquipada);
         dibujarBarrasVida(renderizador, colores);
         dibujarCuentaRegresivaTurno(renderizador);
         dibujarTextoTurno(renderizador);
@@ -338,8 +342,30 @@ void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_eq
             alto_pantalla - 62,
             ancho_pantalla - 32 * (10 - i) - 30 - 1,
             alto_pantalla - 30 - 1);   
+    }       
+}
+
+void Dibujador::dibujarMuniciones(Renderer& renderizador, RepresentacionArma& arma) {
+    if (arma.arma != NADA_P) {
+        int ancho_pantalla = renderizador.GetOutputSize().x;
+        int alto_pantalla = renderizador.GetOutputSize().y;
+        std::pair<int, int> posicion;
+        // Dibujo la cantidad de municiones del arma equipada.
+        posicion.first = ancho_pantalla - 32 * 11 - 14;
+        posicion.second = alto_pantalla - 46;
+        std::string texto = "Municiones: ";
+        if (arma.municiones == -1) {
+            texto += "Infinitas";
+        } else {
+            texto += std::to_string(arma.municiones);
+        }
+        fuente1.SetOutline(2);
+        Texture textura_municiones_outline(renderizador, fuente1.RenderText_Blended(texto, {0, 0, 0, 255}));
+        renderizador.Copy(textura_municiones_outline, NullOpt, Rect(posicion.first, posicion.second + 20, 120, 20));
+        fuente1.SetOutline(0);
+        Texture textura_municiones(renderizador, fuente1.RenderText_Blended(texto, {255, 255, 255, 255}));
+        renderizador.Copy(textura_municiones, NullOpt, Rect(posicion.first, posicion.second + 20, 120, 20));
     }
-        
 }
 
 void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores) {

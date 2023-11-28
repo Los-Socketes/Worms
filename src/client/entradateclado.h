@@ -20,10 +20,11 @@ private:
     Queue<std::shared_ptr<AccionCliente>>& envio_comandos;
     Queue<Comando>& comandos_teclado;
     std::atomic<bool> cont;
+    std::atomic<bool>& municiones_agotadas;
     int cuenta_regresiva;
     Camara& camara;
 public:
-    EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos, Queue<Comando>& comandos_teclado, Camara& camara);
+    EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos, Queue<Comando>& comandos_teclado, Camara& camara, std::atomic<bool>& municiones_agotadas);
 
     void run() override;
 
