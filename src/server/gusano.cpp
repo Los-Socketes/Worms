@@ -64,6 +64,9 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - TIEMPOCHANGUI) {
+	  
+        std::cout << "KILL YOU\n";
+        this->setEstado(QUIETO);
         this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
     }
 
@@ -316,8 +319,10 @@ void Gusano::preparar(Accion& accion) {
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
-    if (this->getTiempoQueMeQueda() <= 0)
+    if (this->getTiempoQueMeQueda() <= 0) {
+        this->setEstado(QUIETO);
         return ataqueARealizar;
+    }
 
 
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
