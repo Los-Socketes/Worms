@@ -100,12 +100,13 @@ void Reciever::run() {
         while (true) {
             Accion accionDeseada;
             accionDeseada = this->protocolo.obtenerAccion();
-            if (accionDeseada.accion == INVAL_ACCION) {
+            if (accionDeseada.accion == INVAL_ACCION && !accionDeseada.esEmpezar) {
                 break;
             }
             accionDeseada.jugador = this->miId;
 
             this->acciones->push(accionDeseada);
+            std::cout << "PUSHEO: " << accionDeseada.esEmpezar << "\n";
         }
     }
     catch( ... ) {

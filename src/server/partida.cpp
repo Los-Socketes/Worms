@@ -18,6 +18,7 @@ Partida::Partida(std::string mapa)
     this->colisiones.finPartida = false;
     this->dimensiones = std::pair<coordX, coordY>(75,40);
     this->termino = false;
+    this->momento = ESPERANDO;
 
 
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
@@ -388,12 +389,13 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
-    if (this->clientes.size() < MINJUGADORES)
-        estadoActual->momento = ESPERANDO;
-    else if (this->termino == true)
-        estadoActual->momento = TERMINADA;
-    else
-        estadoActual->momento = EN_MARCHA;
+    // if (this->clientes.size() < MINJUGADORES)
+    //     estadoActual->momento = ESPERANDO;
+    // else if (this->termino == true)
+    //     estadoActual->momento = TERMINADA;
+    // else
+    //     estadoActual->momento = EN_MARCHA;
+    estadoActual->momento = this->momento;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
@@ -545,6 +547,18 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     gusanoYJugador.first = gusanoActual;
     gusanoYJugador.second = jugadorDeTurno;
 
+    // primer turno, recien arranca
+    if (this->momento == EN_MARCHA && jugadorDeTurno == nullptr && gusanoDeTurno == nullptr) {
+        std::cout << "SETEANDO POR PRIMERA VEZ\n";
+        jugadorDeTurno = this->siguienteJugador(NULL);
+
+        gusanoDeTurno = jugadorDeTurno->getGusanoDeTurno();
+        gusanoDeTurno->esMiTurno(tiempoActual);
+        gusanoYJugador.first = gusanoDeTurno;
+        gusanoYJugador.second = jugadorDeTurno;
+        return gusanoYJugador;
+    }
+
     bool todoExploto;
     todoExploto = (proyectil->countdown <= 0);
     // std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
@@ -630,6 +644,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
         std::cout << "TENEMOS UN GANADOR" << "\n";
         jugadorDeTurno->avisarQueGane();
         this->termino = true;
+        this->momento = TERMINADA;
     }
 
     return gusanoYJugador;
@@ -681,6 +696,8 @@ void Partida::gameLoop() {
     //Esperamos hasta que se unan todos los jugadores necesarios
     while (this->clientes.size() < MINJUGADORES)
         this->seUnioJugador.wait(lck);
+    
+    this->momento = POR_INICIAR;
 
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
@@ -702,25 +719,28 @@ void Partida::gameLoop() {
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     time_t tiempoActual;
-    tiempoActual = time(NOW);
+    // tiempoActual = time(NOW);
 
-    Jugador *jugadorActual;
-    jugadorActual = this->siguienteJugador(NULL);
+    Jugador *jugadorActual = nullptr;
+    // jugadorActual = this->siguienteJugador(NULL);
 
-    Gusano *gusanoActual;
-    gusanoActual = jugadorActual->getGusanoDeTurno();
-    gusanoActual->esMiTurno(tiempoActual);
+    Gusano *gusanoActual = nullptr;
+    // gusanoActual = jugadorActual->getGusanoDeTurno();
+    // gusanoActual->esMiTurno(tiempoActual);
+
     while (this->finPartida == false) {
-        tiempoActual = time(NOW);
-        
-        std::pair<Gusano *, Jugador *> gusanoYJugador;
-        gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
-        // se quedo sin gusanos posibles para jugar
-        if (gusanoYJugador.first == nullptr) {
-	  break;
+        if (this->momento == EN_MARCHA) {
+            tiempoActual = time(NOW);
+            
+            std::pair<Gusano *, Jugador *> gusanoYJugador;
+            gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual, nuevoProyectil);
+            // se quedo sin gusanos posibles para jugar
+            if (gusanoYJugador.first == nullptr) {
+                break;
+            }
+            gusanoActual = gusanoYJugador.first;
+            jugadorActual = gusanoYJugador.second;
         }
-        gusanoActual = gusanoYJugador.first;
-        jugadorActual = gusanoYJugador.second;
 
         this->borrarCuerpos();
 
@@ -735,6 +755,17 @@ void Partida::gameLoop() {
         accionRecibida.idGusano = INVAL_ID;
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
+
+        if (accionRecibida.esEmpezar && pudeObtenerla) {
+            std::cout << "----------ENTRE----------\n";
+            this->momento = EN_MARCHA;
+            std::this_thread::sleep_for(frameDuration);
+            continue;
+        }
+        if (this->momento != EN_MARCHA) {
+            std::this_thread::sleep_for(frameDuration);
+            continue;
+        }
 
         Accion accionAEjecutar;
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,

@@ -36,6 +36,7 @@ public:
     std::vector<id> obtenerPartidas();
     InformacionInicial crearPartida(id mapaSeleccionado);
     InformacionInicial unirseAPartida(id idPartida);
+    bool iniciarPartida();
     bool moverGusano(Direccion direccion);
     bool equiparArma(ArmaProtocolo arma);
     bool configurarAngulo(float angulo);

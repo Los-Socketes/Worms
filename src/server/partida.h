@@ -56,6 +56,7 @@ class Partida : public Thread {
     Queue<Accion> acciones;
 
     bool termino;
+    MomentoDePartida momento;
 
     //World de box2d de la partida
     b2World world;
