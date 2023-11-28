@@ -482,6 +482,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         proyectil->exploto = true;
 
         printf("KATAPUM\n");
+        //Fuente: https://www.iforce2d.net/b2dtut/explosions
         int numRays = 32;
         for (int i = 0; i < numRays; i++) {
 	  std::cout << i << "\n";
@@ -770,6 +771,7 @@ void Partida::gameLoop() {
 
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
+        //TODO: Tener fe
         if (nuevoProyectil->countdown == 0) {
             nuevoProyectil->armaOrigen = ataqueARealizar.arma;
             nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
