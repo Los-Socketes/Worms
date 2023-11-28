@@ -50,7 +50,7 @@ Partida::Partida(std::string mapa)
     this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));
 }
 
-//Esto tendria que estar en el YAML?
+//Esto tendria que estar en el YAML? Posiblemente
 #define CANTGUSANOS 3
 
 // Usado para castear un puntero a una reference y hacer
