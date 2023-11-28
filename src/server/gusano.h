@@ -16,7 +16,7 @@ struct Proyectil {
     b2Vec2 posicion;
     int id;
     int countdown;
-    b2Vec2 *cuerpo;
+    b2Body *cuerpo;
     bool exploto;
 };
 
