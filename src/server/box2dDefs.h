@@ -4,6 +4,9 @@
 #include <box2d/box2d.h>
 #include "defs.h"
 
+//Forward declaration
+class Gusano;
+
     /*
      *Coordenadas en Box2d:
      *Arranca abajo a la izquierda.
@@ -64,6 +67,52 @@ typedef b2Vec2 finCaja;
 
     return representacionVec;
 }
+
+//Gracias algebra 2
+[[nodiscard]] inline int distanciaEntreVectores(b2Vec2 a, b2Vec2 b) {
+    /* √((x_2-x_1)²+(y_2-y_1)²) */
+    int distEnX;
+    distEnX = a.x - b.x;
+
+    int distEnY;
+    distEnY = a.y - b.y;
+
+    int cuadradoX;
+    cuadradoX = distEnX * distEnX;
+
+    int cuadradoY;
+    cuadradoY = distEnY * distEnY;
+
+    int distancia;
+    distancia = sqrt(cuadradoX + cuadradoY);
+
+    return distancia;
+}
+
+enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
+
+// se usa para poder saber que tipo de proyectil es
+// TODO: agregar si es fragmento
+struct ProyectilAsociado {
+    b2Body *proyectil;
+    ArmaProtocolo arma;
+    time_t horaDeCreacion;
+    //Esto se usa para chequear cuando se destruye algo
+    double tiempoMinimoDeVida;
+    //Guardo la posicion donde se creo el proyectil
+    b2Vec2 posInicial;
+};
+
+struct Entidad {
+    TipoEntidad tipo;
+    // union {
+        Gusano *gusano;
+        // Viga *viga;
+        // Arma *arma;
+        ProyectilAsociado proyectil;
+        // b2Body *proyectil;
+    // };
+};
 
 #define TIEMPOESPERADINAMITA 99
 

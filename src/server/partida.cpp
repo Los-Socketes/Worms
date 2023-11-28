@@ -68,8 +68,8 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadA->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoB->GetLinearVelocity();
         // cuerpoA->ApplyLinearImpulseToCenter(dir, true);
-        entidadA->gusano->recibirDano(dir, entidadB->proyectil.arma);
         printf("A\n");
+        entidadA->gusano->recibirDano(dir, entidadB);
         // abort();
     }
 
@@ -77,8 +77,9 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoA->GetLinearVelocity();
-        entidadB->gusano->recibirDano(dir, entidadA->proyectil.arma);
+        // std::cout << "SORETE SORETE " << entidadA->proyectil.posInicial.x << " " << entidadA->proyectil.posInicial.y << "\n";
         printf("B\n");
+        entidadB->gusano->recibirDano(dir, entidadA);
         // abort();
     }
 
@@ -456,7 +457,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	      continue;
 
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-	  entidadA->gusano->recibirDano(golpe, BATE_P);
+	  entidadA->gusano->recibirDano(golpe, entidadA);
 
 	  // printf("PEGO\n");
         }
@@ -487,9 +488,10 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
 	  bd.gravityScale = 0; // ignore gravity
 	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 	  b2Vec2 coords = ataque.posicion;
+	  nuevaEntidad->proyectil.posInicial = coords;
 	  bd.position = coords;
 	  // bd.linearVelocity = blastPower * rayDir;
-	  bd.linearVelocity = 200 * rayDir;
+	  bd.linearVelocity = 60 * rayDir;
 	  b2Body* body = this->world.CreateBody( &bd );
 
 	  b2CircleShape circleShape;
@@ -535,7 +537,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
     bool todoExploto;
     todoExploto = (proyectil->countdown <= 0);
-    std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
+    // std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
 
     bool todoEstaQuieto = true;
     for (int i = 0; (i < (int) this->clientes.size())
@@ -552,13 +554,13 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
         //Con que uno de estos sea false, ya te hace el valor false
         todoEstaQuieto = todoEstaQuieto && gusanoEstaQuieto;
     }
-    std::cout << "Todo quieto: " << std::boolalpha << todoEstaQuieto << "\n";
+    // std::cout << "Todo quieto: " << std::boolalpha << todoEstaQuieto << "\n";
 
     
 
     bool finDelGusano;
     finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
-    std::cout << "Fin gusano actual" << std::boolalpha << finDelGusano << "\n";
+    // std::cout << "Fin gusano actual" << std::boolalpha << finDelGusano << "\n";
 
     bool cambioDeTurno;
     cambioDeTurno = (todoExploto &&
@@ -657,6 +659,10 @@ void Partida::borrarCuerpos() {
 	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
         }
 
+    }
+
+    for (Gusano *gusano : this->gusanos) {
+        gusano->golpeado = false;
     }
 }
 

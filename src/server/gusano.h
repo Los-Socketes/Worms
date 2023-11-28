@@ -64,6 +64,8 @@ private:
 
 public:
 
+    bool golpeado;
+
     Gusano();
 
     Accion getUltimaAccion();
@@ -91,7 +93,7 @@ public:
     void preparar(Accion& accion);
 
     //TODO: Esta funcion recibe el arma o tipo de dano
-    void recibirDano(b2Vec2 golpe, ArmaProtocolo tipoArma);
+    void recibirDano(b2Vec2 golpe, Entidad *entidad);
 
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
