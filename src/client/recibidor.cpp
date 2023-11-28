@@ -27,7 +27,8 @@ void Recibidor::run() {
                 municiones_agotadas = true;
             } else
                 municiones_agotadas = false;
-            if ((estado_juego->jugadorDeTurno == id_jugador && estado_juego->momento == EN_MARCHA) || (estado_juego->momento == POR_INICIAR))
+            if ((estado_juego->jugadorDeTurno == id_jugador && estado_juego->momento == EN_MARCHA) || 
+                (estado_juego->momento == POR_INICIAR && id_jugador == 0))
                 es_turno = true;
             else
                 es_turno = false;
