@@ -161,7 +161,8 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
 
     sonidos[SONIDO_GUSANO_CAMINA_INICIO] = std::make_shared<Sonido>(mixer, "assets/sounds/Walk-Expand.wav");
     sonidos[SONIDO_GUSANO_CAMINA_FIN] = std::make_shared<Sonido>(mixer, "assets/sounds/Walk-Compress.wav");
-    sonidos[SONIDO_GUSANO_SALTA] = std::make_shared<Sonido>(mixer, "assets/sounds/WORMSPRING.WAV");
+    sonidos[SONIDO_GUSANO_SALTA] = std::make_shared<Sonido>(mixer, "assets/sounds/JUMP1.WAV");
+    sonidos[SONIDO_GUSANO_PIRUETA] = std::make_shared<Sonido>(mixer, "assets/sounds/WORMSPRING.WAV");
     sonidos[SONIDO_CARGANDO_ARMA] = std::make_shared<Sonido>(mixer, "assets/sounds/ROCKETPOWERUP.WAV");
     sonidos[SONIDO_CARGANDO_LANZAMIENTO] = std::make_shared<Sonido>(mixer, "assets/sounds/THROWPOWERUP.WAV");
     sonidos[SONIDO_DISPARO] = std::make_shared<Sonido>(mixer, "assets/sounds/ROCKETRELEASE.WAV");
@@ -193,9 +194,13 @@ void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGu
             }
             break;
         case SALTANDO:
-        case HACE_PIRUETA:
              if (iterador.it == 0) {
                  sonidos[SONIDO_GUSANO_SALTA]->reproducir();
+             }
+             break;
+        case HACE_PIRUETA:
+             if (iterador.it == 0) {
+                 sonidos[SONIDO_GUSANO_PIRUETA]->reproducir();
              }
              break;
         case DISPARANDO:
