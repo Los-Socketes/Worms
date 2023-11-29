@@ -251,6 +251,9 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         }
     case PIRUETA:
         {
+        if (this->estado == HACE_PIRUETA) {
+            break;
+        }
         std::cout << "PIRUETA" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
