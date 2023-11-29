@@ -677,7 +677,7 @@ Proyectil *Partida::proyectilConstructor() {
 
     Proyectil * nuevoProyectil = new Proyectil();
     nuevoProyectil->armaOrigen = NADA_P;
-    nuevoProyectil->posicion = origen;
+    // nuevoProyectil->posicion = origen;
     nuevoProyectil->id = 0;
     nuevoProyectil->countdown = 0;
 
@@ -848,7 +848,7 @@ void Partida::gameLoop() {
         if (nuevoProyectil->countdown == 0) {
             nuevoProyectil->armaOrigen = ataqueARealizar.arma;
             nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
-            nuevoProyectil->posicion = ataqueARealizar.posicion;
+            // nuevoProyectil->posicion = ataqueARealizar.posicion;
             nuevoProyectil->exploto = false;
         }
         
@@ -856,7 +856,7 @@ void Partida::gameLoop() {
             nuevoProyectil->countdown -= 1;
 	  Accion ultimaAccion = gusanoActual->getUltimaAccion();
             ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-            ataqueARealizar.posicion = nuevoProyectil->posicion;
+            // ataqueARealizar.posicion = nuevoProyectil->posicion;
         }
 
 

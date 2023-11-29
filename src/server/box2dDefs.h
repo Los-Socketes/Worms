@@ -105,7 +105,7 @@ struct ProyectilAsociado {
 
 struct Proyectil {
     ArmaProtocolo armaOrigen;
-    b2Vec2 posicion;
+    // b2Vec2 posicion;
     int id;
     int countdown;
     b2Body *cuerpo;
