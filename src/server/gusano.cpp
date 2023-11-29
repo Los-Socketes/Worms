@@ -481,14 +481,23 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 
 	  float angulo = this->armaSeleccionada->getAngulo();
+      // TODO: cambiar a potencia posta
+      float potencia = 100/100.0f;
       std::cout << "ANGULO: " << angulo << "\n"; 
 	  float adyacente = cos(angulo);
-	//   float opuesto = sin(angulo);
-      float hipotenusa = this->armaSeleccionada->getPotencia()/50;
-    //   opuesto *= hipotenusa;
+	  float opuesto = sin(angulo);
+    //   float hipotenusa = 1 * potencia;
+    //   opuesto *= hipotenusa*1.6;
+    //   float hipotenusa = 0.8 * potencia;
+    //   opuesto *= hipotenusa*2;
+    //   float hipotenusa = 0.85 * potencia;
+    //   opuesto *= hipotenusa*2;
+    //   float hipotenusa = 0.5 * potencia;
+    //   opuesto *= hipotenusa*3;
+      float hipotenusa = 0.5 * potencia;
+      opuesto *= hipotenusa*3.1;
       adyacente *= hipotenusa;
 
-      float opuesto = std::sqrt(std::pow(hipotenusa,2) + std::pow(adyacente,2));
 
       if (angulo == 0) {
           opuesto = 0;

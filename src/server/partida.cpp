@@ -758,9 +758,14 @@ void Partida::gameLoop() {
   
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
-    fixtureDef.density = 3.5f;
+    fixtureDef.density = 3.0f;
     // fixtureDef.density = 1.2f;
     fixtureDef.friction = 0.3f;
+
+    // si esta en 0 no golpea con nada
+    // sirve para testear la parabola
+    // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    // fixtureDef.filter.maskBits = 0;
 
     body->CreateFixture( &fixtureDef );
 
