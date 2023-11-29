@@ -590,16 +590,12 @@ Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
     return jugadorActual;
 }
 
-std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
-    std::pair<Gusano *, Jugador *> gusanoYJugador;
-    Gusano *gusanoDeTurno = gusanoActual;
-    Jugador *jugadorDeTurno = jugadorTurnoActual;
-    gusanoYJugador.first = gusanoActual;
-    gusanoYJugador.second = jugadorDeTurno;
 
+bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
     bool todoExploto;
     todoExploto = (proyectil->countdown <= 0);
-    // std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
+    if (todoExploto == false)
+        return false;
 
     bool todoEstaQuieto = true;
     for (int i = 0; (i < (int) this->clientes.size())
@@ -616,18 +612,43 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
         //Con que uno de estos sea false, ya te hace el valor false
         todoEstaQuieto = todoEstaQuieto && gusanoEstaQuieto;
     }
+    if (todoEstaQuieto == false)
+        return false;
+
+    bool finDelGusano;
+    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    if (finDelGusano == false)
+        return false;
+
+
+
+    //Si llegue hasta aca, significa que todas las otras condiciones
+    //se cumplieron, entonces se que se puede cambiar de turno
+    return true;
+
+}
+
+std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
+    std::pair<Gusano *, Jugador *> gusanoYJugador;
+    Gusano *gusanoDeTurno = gusanoActual;
+    Jugador *jugadorDeTurno = jugadorTurnoActual;
+    gusanoYJugador.first = gusanoActual;
+    gusanoYJugador.second = jugadorDeTurno;
+
+    // std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
+
     // std::cout << "Todo quieto: " << std::boolalpha << todoEstaQuieto << "\n";
 
     
 
-    bool finDelGusano;
-    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
     // std::cout << "Fin gusano actual" << std::boolalpha << finDelGusano << "\n";
 
     bool cambioDeTurno;
-    cambioDeTurno = (todoExploto &&
-		 todoEstaQuieto &&
-		 finDelGusano);
+    // cambioDeTurno = (todoExploto &&
+    // 		 todoEstaQuieto &&
+    // 		 finDelGusano);
+
+    cambioDeTurno = this->sePuedeCambiarDeJugador(gusanoActual, tiempoActual, proyectil);
 
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)

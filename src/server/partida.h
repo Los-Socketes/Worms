@@ -99,6 +99,10 @@ class Partida : public Thread {
 
     void borrarCuerpos(); 
 
+    bool sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
+
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
+
     //Bueno que lo construye
     Proyectil *proyectilConstructor();
 
@@ -106,7 +110,6 @@ class Partida : public Thread {
 
     void crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
-    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
 
 public:
     Partida(const std::string mapa);
