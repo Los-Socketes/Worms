@@ -85,6 +85,7 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+    Proyectil *crearProyectil();
 
     bool enviarEstadoAJugadores();
 

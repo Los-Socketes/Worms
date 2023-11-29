@@ -659,6 +659,51 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
+Proyectil *Partida::crearProyectil() {
+    b2Vec2 origen(0,0);
+
+    Proyectil * nuevoProyectil = new Proyectil();
+    nuevoProyectil->armaOrigen = NADA_P;
+    nuevoProyectil->posicion = origen;
+    nuevoProyectil->id = 0;
+    nuevoProyectil->countdown = 0;
+
+
+
+
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2CircleShape circleShape;
+    circleShape.m_radius = 0.05; // very small
+  
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circleShape;
+    fixtureDef.density = 3.5f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture( &fixtureDef );
+
+    nuevoProyectil->cuerpo = body;
+
+
+
+
+
+    nuevoProyectil->exploto = false;
+    this->proyectiles.push_back(nuevoProyectil);
+
+    return nuevoProyectil;
+}
+
+
+
 bool destruirProyectil(b2Body *proyectil) {
     Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
     time_t horaDeCreacion;
@@ -737,44 +782,9 @@ void Partida::gameLoop() {
 
     bool exploto = false;
 
-    b2Vec2 origen(0,0);
+    Proyectil *nuevoProyectil = this->crearProyectil();
+
     Ataque ataqueARealizar;
-    Proyectil * nuevoProyectil = new Proyectil();
-    nuevoProyectil->armaOrigen = NADA_P;
-    nuevoProyectil->posicion = origen;
-    nuevoProyectil->id = 0;
-    nuevoProyectil->countdown = 0;
-
-
-
-
-    Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-
-    b2Body* body = world.CreateBody(&bodyDef);
-
-    b2CircleShape circleShape;
-    circleShape.m_radius = 0.05; // very small
-  
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &circleShape;
-    fixtureDef.density = 3.5f;
-    fixtureDef.friction = 0.3f;
-
-    body->CreateFixture( &fixtureDef );
-
-    nuevoProyectil->cuerpo = body;
-
-
-
-
-
-    nuevoProyectil->exploto = false;
-    this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     time_t tiempoActual;
