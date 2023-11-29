@@ -198,7 +198,9 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
 
 void Gusano::realizarMovimiento(Direccion direccionDeseada) {
-    if (this->estado == CAYENDO)
+    if (this->estado == CAYENDO ||
+        this->estado == SALTANDO ||
+        this->estado == HACE_PIRUETA)
         return;
 
     // b2Vec2 direccion;
