@@ -103,16 +103,20 @@ struct ProyectilAsociado {
     b2Vec2 posInicial;
 };
 
+enum TipoProyectil { Ningun, Colision, Countdown };
+
 struct Proyectil {
     ArmaProtocolo armaOrigen;
+    TipoProyectil tipo;
     // b2Vec2 posicion;
     int id;
-    int countdown;
     b2Body *cuerpo;
     bool exploto;
-    //Esto se usa para armas como la bazooka para saber cuando
+    //Estos se usa para armas como la bazooka para saber cuando
     //colisionaron
-    bool colisiono;
+    bool enElAire;
+
+    int countdown;
 };
 
 struct Entidad {
@@ -122,7 +126,7 @@ struct Entidad {
         // Viga *viga;
         // Arma *arma;
         ProyectilAsociado proyectil;
-    Proyectil proyectilReal;
+    Proyectil *proyectilReal;
     // };
 };
 

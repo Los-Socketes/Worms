@@ -117,14 +117,21 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
 
 
-    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL) {
+    //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
+    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
+	   &&
+	   entidadB->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL A\n");
-        entidadA->proyectilReal.colisiono = true;
+        entidadA->proyectilReal->enElAire = false;
+        entidadA->proyectilReal->exploto = true;
     }
 
-    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL) {
+    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
+	   &&
+	   entidadA->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL B\n");
-        entidadB->proyectilReal.colisiono = true;
+        entidadB->proyectilReal->enElAire = false;
+        entidadB->proyectilReal->exploto = true;
     }
 }
 
@@ -388,7 +395,8 @@ bool Partida::enviarEstadoAJugadores() {
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
         //TODO: Hack momentaneo
-        if (proyectil->armaOrigen == NADA_P
+        if (
+	  proyectil->armaOrigen == NADA_P
 	  ||
 	  proyectil->armaOrigen == TELETRANSPORTACION_P
 	  ||
@@ -400,7 +408,7 @@ bool Partida::enviarEstadoAJugadores() {
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
 
-        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
+        std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
         repre.angulo = 0.0f;
@@ -514,8 +522,9 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
 
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
     ArmaDeseada arma;
-    arma = ataque.arma;
+    arma = proyectil->armaOrigen;
     int countdown = proyectil->countdown;
+    bool exploto = proyectil->exploto;
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -553,8 +562,12 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
     }
     else if (arma == BAZOOKA_P) {
-        if (countdown > 0)
+        if (exploto == false)
 	  return;
+        std::cout << "BAZOOKA\n";
+        std::cout << "BAZOOKA\n";
+        std::cout << "BAZOOKA\n";
+        std::cout << "BAZOOKA\n";
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
         // proyectil->exploto = true;
 
@@ -679,15 +692,17 @@ Proyectil *Partida::proyectilConstructor() {
     nuevoProyectil->armaOrigen = NADA_P;
     // nuevoProyectil->posicion = origen;
     nuevoProyectil->id = 0;
-    nuevoProyectil->countdown = 0;
+    nuevoProyectil->tipo = TipoProyectil::Ningun;
 
-    nuevoProyectil->colisiono = false;
+    nuevoProyectil->countdown = 0;
+    nuevoProyectil->enElAire = false;
 
 
 
 
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
+    nuevaEntidad->proyectilReal = nuevoProyectil;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -845,19 +860,34 @@ void Partida::gameLoop() {
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar, nuevoProyectil);
 
         //TODO: Tener fe
-        if (nuevoProyectil->countdown == 0) {
-            nuevoProyectil->armaOrigen = ataqueARealizar.arma;
-            nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
-            // nuevoProyectil->posicion = ataqueARealizar.posicion;
-            nuevoProyectil->exploto = false;
+        if (nuevoProyectil->tipo == TipoProyectil::Countdown) {
+	  if (nuevoProyectil->countdown == 0
+	      // && nuevoProyectil->tipo == TipoProyectil::Countdown
+	      ) {
+	      nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+	      nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
+	      nuevoProyectil->exploto = false;
+	  }
+
+	  else {
+	      nuevoProyectil->countdown -= 1;
+	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
+	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	      // ataqueARealizar.posicion = nuevoProyectil->posicion;
+	  }
         }
-        
-        else {
-            nuevoProyectil->countdown -= 1;
-	  Accion ultimaAccion = gusanoActual->getUltimaAccion();
-            ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-            // ataqueARealizar.posicion = nuevoProyectil->posicion;
+
+        else if (nuevoProyectil->tipo == TipoProyectil::Colision) {
+	  if (nuevoProyectil->enElAire == false && nuevoProyectil->exploto == false) {
+	      nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+	      nuevoProyectil->enElAire = true;
+	  }
+	  // else {
+	  //     Accion ultimaAccion = gusanoActual->getUltimaAccion();
+	  //     ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	  // }
         }
+        // std::cout << nuevoProyectil->armaOrigen << "\n";
 
 
         this->crearProyectiles(gusanoActual, ataqueARealizar, nuevoProyectil);

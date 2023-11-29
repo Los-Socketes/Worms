@@ -418,7 +418,9 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         this->preparar(accion);
 
+        // armaQueQuiero = NADA_P;
         armaQueQuiero = NADA_P;
+
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
 
@@ -428,6 +430,13 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         ataqueARealizar.arma = armaQueQuiero;
         ataqueARealizar.potencia = this->armaSeleccionada->getPotencia();
         // std::cout << "AYUDA AYUDA" << accion.configARealizar.potencia << "\n";
+        // if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P
+	 
+        // 	 ) {
+        // 	        proyectil->tipo = TipoProyectil::Countdown;
+        // } else if (armaEquipada == BAZOOKA_P) {
+        // 	  proyectil->tipo = TipoProyectil::Colision;
+        // }
         break;
     case ATAQUE:
         {
@@ -453,9 +462,17 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P) {
+        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P
+	 
+	 ) {
+	        proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
-        } else {
+	        tiempoEspera = 100;
+	        std::cout << "Tiempo: " << tiempoEspera << "\n";
+        } else if (armaEquipada == BAZOOKA_P) {
+	  proyectil->tipo = TipoProyectil::Colision;
+        }
+        else {
 	        tiempoEspera = 0;
         }
 
