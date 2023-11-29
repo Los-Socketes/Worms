@@ -95,12 +95,22 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if(entidadA->tipo == TipoEntidad::VIGA
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
+        float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
+        float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
+        if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
+            std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
+        }
         entidadB->gusano->setEstado(QUIETO);
     }
 
     else if(entidadB->tipo == TipoEntidad::VIGA 
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
+        float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
+        float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
+        if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
+            std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
+        }
         entidadA->gusano->setEstado(QUIETO);
     }
 
