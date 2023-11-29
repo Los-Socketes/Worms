@@ -560,7 +560,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         }
     }
 
-    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
+    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P) {
         if (countdown > 0)
 	  return;
         this->generarExplosion(proyectil, ataque);
@@ -718,7 +718,7 @@ Proyectil *Partida::proyectilConstructor() {
   
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
-    fixtureDef.density = 3.5f;
+    fixtureDef.density = 3.0f;
     fixtureDef.friction = 0.3f;
 
     body->CreateFixture( &fixtureDef );

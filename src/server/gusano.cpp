@@ -238,6 +238,9 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         break;
     case SALTO:
         {
+        if (this->estado == SALTANDO) {
+            break;
+        }
         std::cout << "Salto" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
@@ -248,6 +251,9 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         }
     case PIRUETA:
         {
+        if (this->estado == HACE_PIRUETA) {
+            break;
+        }
         std::cout << "PIRUETA" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
@@ -462,8 +468,9 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P
-	 
+        if(armaEquipada == DINAMITA_P ||
+	 armaEquipada == GRANADA_VERDE_P ||
+	 armaEquipada == GRANADA_SANTA_P 
 	 ) {
 	        proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
@@ -498,21 +505,72 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	  float angulo = this->armaSeleccionada->getAngulo();
 
-	  float adyacente = cos(angulo);
+      float throwPower = this->armaSeleccionada->getPotencia();
+      float minPower = 5.0f;
+      float maxPower = 100.0f;
+      float minSpeed = 5.0f;  // Adjust this value for the minimum throw speed
+      float maxSpeed = 20.0f;  // Adjust this value for the maximum throw speed
+
+      // Map throwPower to the throw speed range using linear interpolation
+      float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
+
+      // TODO: cambiar a potencia posta
+      float potencia = 100/100.0f;
+      std::cout << "ANGULO: " << angulo << "\n"; 
+	  float adyacente = cos(angulo) * throwSpeed;
+	  float opuesto = sin(angulo) * throwSpeed;
+    //   float hipotenusa = 1 * potencia;
+    //   opuesto *= hipotenusa*1.6;
+    //   float hipotenusa = 0.8 * potencia;
+    //   opuesto *= hipotenusa*2;
+    //   float hipotenusa = 0.85 * potencia;
+    //   opuesto *= hipotenusa*2;
+    //   float hipotenusa = 0.5 * potencia;
+    //   opuesto *= hipotenusa*3;
+    //   float hipotenusa = 0.5 * potencia;
+    //   opuesto *= hipotenusa*3.1;
+    // //   float hipotenusa = 0.5 * potencia;
+    // //   opuesto *= hipotenusa;
+    // //   opuesto += 1;
+    // //   adyacente *= hipotenusa;
+
+
+    // // // si es muy chico no hay que subirle el largo y bajarle el alto
+    // //   if (angulo < 0.5) {
+    // //       opuesto -= 0.3;
+    // //       adyacente += 0.3;
+    // // // si es muy alto hay que bajarle el alto (ya sube mucho de base)
+    // //   } else if (angulo > 1.3) {
+    // //       opuesto -= 0.2;
+    // //   } else if (angulo > 1) {
+    // //       opuesto += 0.3;
+    // //   }
 	  if (this->direccion == IZQUIERDA)
 	      adyacente *= -1;
-	  float opuesto = sin(angulo);
+	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
+	//   float potenicaAplicada = 0.03f;
+	//   potenicaAplicada *= this->armaSeleccionada->getPotencia();
+	  // float opuesto = sin(angulo);
 
-	  // std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
-	  float potenicaAplicada = 0.3f;
-	  potenicaAplicada *= this->armaSeleccionada->getPotencia();
+	  // // std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 
-	  if (this->direccion == IZQUIERDA)
-	      adyacente -= potenicaAplicada;
-	  else
-	      adyacente += potenicaAplicada;
-	  opuesto += potenicaAplicada;
+	  // float potenicaAplicada = 0.3f;
+	  // potenicaAplicada *= this->armaSeleccionada->getPotencia();
 
+	  // if (this->direccion == IZQUIERDA)
+	  //     adyacente -= potenicaAplicada;
+	  // else
+	  //     adyacente += potenicaAplicada;
+	  // opuesto += potenicaAplicada;
+
+	//   if (this->direccion == IZQUIERDA)
+	//       adyacente -= potenicaAplicada;
+	//   else
+	//       adyacente += potenicaAplicada;
+	//   opuesto += potenicaAplicada;
+    //   float hipotenusa = this->armaSeleccionada->getPotencia()/70;
+    //   opuesto *= potencia;
+    //   adyacente *= potencia;
 
 	  b2Vec2 golpeDeseado(adyacente, opuesto);
 
@@ -538,7 +596,12 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 
 
-	  proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
+        // 	  adelante.x += 0;
+
+        // 	//   adelante.y += 1;
+        // proyectil->cuerpo->SetTransform(adelante , true);
+	//   proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
+      // proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
         }
 
         // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
