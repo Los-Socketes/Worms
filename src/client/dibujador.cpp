@@ -24,7 +24,7 @@ Dibujador::Dibujador(Renderer& renderizador,
     gusano_actual.armaEquipada.arma = NADA_P;
 
     // Inicializo gestor multimedia.
-    gestor_multimedia.inicializar(renderizador, mixer);
+    gestor_multimedia.inicializar(renderizador, this->mixer);
 
     // Inicializo el mapa de teclas de armas.
     teclas_armas[NADA_P] = "R";
