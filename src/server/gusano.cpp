@@ -522,8 +522,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
     // //   } else if (angulo > 1) {
     // //       opuesto += 0.3;
     // //   }
-	// //   if (this->direccion == IZQUIERDA)
-	// //       adyacente *= -1;
+	  if (this->direccion == IZQUIERDA)
+	      adyacente *= -1;
 	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 	//   float potenicaAplicada = 0.03f;
 	//   potenicaAplicada *= this->armaSeleccionada->getPotencia();
