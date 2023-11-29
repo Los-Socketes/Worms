@@ -483,7 +483,7 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         }
     }
 
-    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
+    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P) {
         if (countdown > 0)
 	  return;
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE

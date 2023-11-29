@@ -459,7 +459,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P) {
+        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P || armaEquipada == GRANADA_SANTA_P) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
         } else {
 	        tiempoEspera = 0;
