@@ -89,7 +89,7 @@ typedef b2Vec2 finCaja;
     return distancia;
 }
 
-enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
+enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 16};
 
 // se usa para poder saber que tipo de proyectil es
 // TODO: agregar si es fragmento

@@ -475,22 +475,32 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 
 	  float angulo = this->armaSeleccionada->getAngulo();
-
+      std::cout << "ANGULO: " << angulo << "\n"; 
 	  float adyacente = cos(angulo);
+	//   float opuesto = sin(angulo);
+      float hipotenusa = this->armaSeleccionada->getPotencia()/50;
+    //   opuesto *= hipotenusa;
+      adyacente *= hipotenusa;
+
+      float opuesto = std::sqrt(std::pow(hipotenusa,2) + std::pow(adyacente,2));
+
+      if (angulo == 0) {
+          opuesto = 0;
+      }
 	  if (this->direccion == IZQUIERDA)
 	      adyacente *= -1;
-	  float opuesto = sin(angulo);
-
 	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
-	  float potenicaAplicada = 0.3f;
-	  potenicaAplicada *= this->armaSeleccionada->getPotencia();
+	//   float potenicaAplicada = 0.03f;
+	//   potenicaAplicada *= this->armaSeleccionada->getPotencia();
 
-	  if (this->direccion == IZQUIERDA)
-	      adyacente -= potenicaAplicada;
-	  else
-	      adyacente += potenicaAplicada;
-	  opuesto += potenicaAplicada;
-
+	//   if (this->direccion == IZQUIERDA)
+	//       adyacente -= potenicaAplicada;
+	//   else
+	//       adyacente += potenicaAplicada;
+	//   opuesto += potenicaAplicada;
+    //   float hipotenusa = this->armaSeleccionada->getPotencia()/70;
+    //   opuesto *= potencia;
+    //   adyacente *= potencia;
 
 	  b2Vec2 golpeDeseado(adyacente, opuesto);
 

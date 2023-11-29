@@ -759,6 +759,7 @@ void Partida::gameLoop() {
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
     fixtureDef.density = 3.5f;
+    // fixtureDef.density = 1.2f;
     fixtureDef.friction = 0.3f;
 
     body->CreateFixture( &fixtureDef );
