@@ -24,7 +24,7 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 17.0f));
     this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
     this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 23.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(26.5f, 17.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(27.0f, 17.0f));
     
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
@@ -45,8 +45,8 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
 
     this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(26.5f, 19.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(26.5f, 19.0f)});
+    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(28.5f, 19.0f)});
+    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(28.5f, 19.0f)});
     this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
     this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 19.0f)});
     this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 19.0f)});
@@ -64,7 +64,7 @@ Partida::Partida(std::string mapa)
 #define REFERENCE *
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
-    std::cout << "CONTACTO\n";
+    // std::cout << "CONTACTO\n";
     
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
@@ -77,7 +77,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadA->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoB->GetLinearVelocity();
         // cuerpoA->ApplyLinearImpulseToCenter(dir, true);
-        printf("A\n");
+        // printf("A\n");
         entidadA->gusano->recibirDano(dir, entidadB);
         // abort();
     }
@@ -87,7 +87,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoA->GetLinearVelocity();
         // std::cout << "SORETE SORETE " << entidadA->proyectil.posInicial.x << " " << entidadA->proyectil.posInicial.y << "\n";
-        printf("B\n");
+        // printf("B\n");
         entidadB->gusano->recibirDano(dir, entidadA);
         // abort();
     }
@@ -183,7 +183,7 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
             entidadB->gusano->setEstado(CAYENDO);
         }
     }
-    std::cout << "FIN CONTACTO\n";
+    // std::cout << "FIN CONTACTO\n";
 }
 
 
@@ -413,7 +413,7 @@ bool Partida::enviarEstadoAJugadores() {
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
 
-        std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
         repre.angulo = 0.0f;
@@ -483,7 +483,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
     //Fuente: https://www.iforce2d.net/b2dtut/explosions
     int numRays = 32;
     for (int i = 0; i < numRays; i++) {
-        std::cout << i << "\n";
+        // std::cout << i << "\n";
         Entidad *nuevaEntidad = new Entidad;
         nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
     nuevaEntidad->proyectil.arma = DINAMITA_P;
@@ -785,7 +785,7 @@ void Partida::borrarCuerpos() {
         loBorro = destruirProyectil(cuerpoABorrar);
         // NO HACER delete entidad. Tira invalid delete
         if (loBorro == true) {
-	  std::cout << "Delete\n";
+	  // std::cout << "Delete\n";
 	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
 	  delete entidadB;
 	  this->world.DestroyBody(cuerpoABorrar);

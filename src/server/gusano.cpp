@@ -278,7 +278,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     tipoArma = entidad->proyectil.arma;
     int distancia;
     distancia = distanciaEntreVectores(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
-    std::cout << "DISTANCIA: " << distancia << "\n";
     //TODO cambiar a que no tenga que crear el arma para obtener el danio
     Arma armaUsada(tipoArma);
     u_int danio = armaUsada.getDanio().epicentro;
@@ -287,7 +286,15 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     //TODO Hacer que cada arma tenga esta formula
     // la formula es -12.5 * distancia + 50 = danio
     int danioReal;
-    danioReal = -12.5 * distancia + 50;
+    std::cout << "DISTANCIA: " << distancia << "\n";
+    if (distancia > 4) 
+        danioReal = 0;
+    else
+        danioReal = -12.5 * distancia + 50;
+
+    std::cout << "DANIO: " << danioReal << "\n";
+    std::cout << "Vida: " << this->vida << "\n";
+
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
     if (this->vida < (u_int) danioReal) {
