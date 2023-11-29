@@ -494,13 +494,23 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
     //   opuesto *= hipotenusa*2;
     //   float hipotenusa = 0.5 * potencia;
     //   opuesto *= hipotenusa*3;
+    //   float hipotenusa = 0.5 * potencia;
+    //   opuesto *= hipotenusa*3.1;
       float hipotenusa = 0.5 * potencia;
-      opuesto *= hipotenusa*3.1;
+      opuesto *= hipotenusa;
+      opuesto += 1;
       adyacente *= hipotenusa;
 
 
-      if (angulo == 0) {
-          opuesto = 0;
+    // si es muy chico no hay que subirle el largo y bajarle el alto
+      if (angulo < 0.5) {
+          opuesto -= 0.3;
+          adyacente += 0.3;
+    // si es muy alto hay que bajarle el alto (ya sube mucho de base)
+      } else if (angulo > 1.3) {
+          opuesto -= 0.2;
+      } else if (angulo > 1) {
+          opuesto += 0.3;
       }
 	  if (this->direccion == IZQUIERDA)
 	      adyacente *= -1;
@@ -543,7 +553,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	  adelante.x += 0;
 
-	  adelante.y += 1;
+	//   adelante.y += 1;
         proyectil->cuerpo->SetTransform(adelante , true);
 	  proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
         }
