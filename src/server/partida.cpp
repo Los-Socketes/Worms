@@ -496,7 +496,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
         std::cout << i << "\n";
         Entidad *nuevaEntidad = new Entidad;
         nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-    nuevaEntidad->proyectil.arma = DINAMITA_P;
+        nuevaEntidad->proyectil.arma = proyectil->armaOrigen;
 
         float angle = (i / (float)numRays) * 360 * DEGTORAD;
         b2Vec2 rayDir( sinf(angle), cosf(angle) );
