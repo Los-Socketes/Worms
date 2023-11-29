@@ -499,7 +499,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
     }
 }
 
-void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
+void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
     ArmaDeseada arma;
     arma = ataque.arma;
     int countdown = proyectil->countdown;
@@ -539,14 +539,14 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
         this->generarExplosion(proyectil, ataque);
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
     }
-    // else if (arma == DINAMITA_P) {
-    //     if (countdown > 0)
-    // 	  return;
-    //     //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-    //     // proyectil->exploto = true;
+    else if (arma == BAZOOKA_P) {
+        if (countdown > 0)
+	  return;
+        //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
+        // proyectil->exploto = true;
 
         
-    // }
+    }
       
 }
 Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
@@ -659,7 +659,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
-Proyectil *Partida::crearProyectil() {
+Proyectil *Partida::proyectilConstructor() {
     b2Vec2 origen(0,0);
 
     Proyectil * nuevoProyectil = new Proyectil();
@@ -782,7 +782,7 @@ void Partida::gameLoop() {
 
     bool exploto = false;
 
-    Proyectil *nuevoProyectil = this->crearProyectil();
+    Proyectil *nuevoProyectil = this->proyectilConstructor();
 
     Ataque ataqueARealizar;
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
@@ -845,7 +845,7 @@ void Partida::gameLoop() {
         }
 
 
-        this->crearProjectil(gusanoActual, ataqueARealizar, nuevoProyectil);
+        this->crearProyectiles(gusanoActual, ataqueARealizar, nuevoProyectil);
 
         std::this_thread::sleep_for(frameDuration);
     }
