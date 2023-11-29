@@ -85,6 +85,7 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+
     bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
@@ -98,7 +99,12 @@ class Partida : public Thread {
 
     void borrarCuerpos(); 
 
-    void crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
+    //Bueno que lo construye
+    Proyectil *proyectilConstructor();
+
+    void generarExplosion(Proyectil *proyectil, Ataque ataque);
+
+    void crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
 
     std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
 

@@ -21,6 +21,11 @@ Partida::Partida(std::string mapa)
     this->momento = ESPERANDO;
 
 
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 17.0f));
+    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
+    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 23.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(26.5f, 17.0f));
+    
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
@@ -31,7 +36,7 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
 
-    this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
+    // this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
     this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
     
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(37.5f, 18.0f));
@@ -40,8 +45,8 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
 
     this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(15.0f, 19.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(25.0f, 19.0f)});
+    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(26.5f, 19.0f)});
+    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(26.5f, 19.0f)});
     this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
     this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 19.0f)});
     this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 19.0f)});
@@ -59,6 +64,8 @@ Partida::Partida(std::string mapa)
 #define REFERENCE *
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
+    std::cout << "CONTACTO\n";
+    
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
@@ -112,7 +119,25 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         printf("AHOGADO\n");
         // abort();
     }
-  // abort();
+
+
+
+    //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
+    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
+	   &&
+	   entidadB->tipo == TipoEntidad::VIGA) {
+        printf("PROYECTIL REAL A\n");
+        entidadA->proyectilReal->enElAire = false;
+        entidadA->proyectilReal->colisiono = true;
+    }
+
+    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
+	   &&
+	   entidadA->tipo == TipoEntidad::VIGA) {
+        printf("PROYECTIL REAL B\n");
+        entidadB->proyectilReal->enElAire = false;
+        entidadB->proyectilReal->colisiono = true;
+    }
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
@@ -375,7 +400,8 @@ bool Partida::enviarEstadoAJugadores() {
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
         //TODO: Hack momentaneo
-        if (proyectil->armaOrigen == NADA_P
+        if (
+	  proyectil->armaOrigen == NADA_P
 	  ||
 	  proyectil->armaOrigen == TELETRANSPORTACION_P
 	  ||
@@ -387,7 +413,7 @@ bool Partida::enviarEstadoAJugadores() {
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = false;
 
-        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
+        std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
         repre.angulo = 0.0f;
@@ -449,10 +475,61 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     return accionAEjecutar;
 }
 
-void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
+void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
+    proyectil->exploto = true;
+
+    printf("KATAPUM\n");
+    //Fuente: https://www.iforce2d.net/b2dtut/explosions
+    int numRays = 32;
+    for (int i = 0; i < numRays; i++) {
+        std::cout << i << "\n";
+        Entidad *nuevaEntidad = new Entidad;
+        nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+    nuevaEntidad->proyectil.arma = DINAMITA_P;
+
+        float angle = (i / (float)numRays) * 360 * DEGTORAD;
+        b2Vec2 rayDir( sinf(angle), cosf(angle) );
+
+        b2BodyDef bd;
+        bd.type = b2_dynamicBody;
+        bd.fixedRotation = true; // rotation not necessary
+        bd.bullet = true; // prevent tunneling at high speed
+        // bd.linearDamping = 10; // drag due to moving through air
+        bd.gravityScale = 0; // ignore gravity
+        bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+        b2Vec2 coords = proyectil->cuerpo->GetPosition();
+        nuevaEntidad->proyectil.posInicial = coords;
+        bd.position = coords;
+        // bd.linearVelocity = blastPower * rayDir;
+        bd.linearVelocity = 60 * rayDir;
+        b2Body* body = this->world.CreateBody( &bd );
+
+        b2CircleShape circleShape;
+        circleShape.m_radius = 0.05; // very small
+
+        b2FixtureDef fd;
+        fd.shape = &circleShape;
+        fd.density = 60 / (float)numRays; // very high - shared across all particles
+        fd.friction = 0; // friction not necessary
+        fd.restitution = 0.99f; // high restitution to reflect off obstacles
+        fd.filter.groupIndex = -1; // particles should not collide with each other
+
+    fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
+        body->CreateFixture( &fd );
+        nuevaEntidad->proyectil.proyectil = body;
+        nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
+        nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
+
+        this->cuerposADestruir.push_back(body);
+    }
+}
+
+void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
     ArmaDeseada arma;
-    arma = ataque.arma;
+    arma = proyectil->armaOrigen;
     int countdown = proyectil->countdown;
+    bool colisiono = proyectil->colisiono;
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -486,63 +563,18 @@ void Partida::crearProjectil(Gusano *gusano, Ataque ataque, Proyectil* proyectil
     else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P) {
         if (countdown > 0)
 	  return;
+        this->generarExplosion(proyectil, ataque);
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-        proyectil->exploto = true;
-
-        printf("KATAPUM\n");
-        //Fuente: https://www.iforce2d.net/b2dtut/explosions
-        int numRays = 32;
-        for (int i = 0; i < numRays; i++) {
-	  std::cout << i << "\n";
-	  Entidad *nuevaEntidad = new Entidad;
-	  nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-      nuevaEntidad->proyectil.arma = DINAMITA_P;
-
-	  float angle = (i / (float)numRays) * 360 * DEGTORAD;
-	  b2Vec2 rayDir( sinf(angle), cosf(angle) );
-
-	  b2BodyDef bd;
-	  bd.type = b2_dynamicBody;
-	  bd.fixedRotation = true; // rotation not necessary
-	  bd.bullet = true; // prevent tunneling at high speed
-	  // bd.linearDamping = 10; // drag due to moving through air
-	  bd.gravityScale = 0; // ignore gravity
-	  bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-	  b2Vec2 coords = ataque.posicion;
-	  nuevaEntidad->proyectil.posInicial = coords;
-	  bd.position = coords;
-	  // bd.linearVelocity = blastPower * rayDir;
-	  bd.linearVelocity = 60 * rayDir;
-	  b2Body* body = this->world.CreateBody( &bd );
-
-	  b2CircleShape circleShape;
-	  circleShape.m_radius = 0.05; // very small
-
-	  b2FixtureDef fd;
-	  fd.shape = &circleShape;
-	  fd.density = 60 / (float)numRays; // very high - shared across all particles
-	  fd.friction = 0; // friction not necessary
-	  fd.restitution = 0.99f; // high restitution to reflect off obstacles
-	  fd.filter.groupIndex = -1; // particles should not collide with each other
-
-      fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-      fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
-	  body->CreateFixture( &fd );
-	  nuevaEntidad->proyectil.proyectil = body;
-	  nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
-	  nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
-
-	  this->cuerposADestruir.push_back(body);
-        } 
     }
-    // else if (arma == DINAMITA_P) {
-    //     if (countdown > 0)
-    // 	  return;
-    //     //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-    //     // proyectil->exploto = true;
+    else if (arma == BAZOOKA_P) {
+        if (colisiono == false)
+	  return;
+        //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
+        // proyectil->exploto = true;
+        this->generarExplosion(proyectil, ataque);
 
         
-    // }
+    }
       
 }
 Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
@@ -655,6 +687,56 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
+Proyectil *Partida::proyectilConstructor() {
+    b2Vec2 origen(0,0);
+
+    Proyectil * nuevoProyectil = new Proyectil();
+    nuevoProyectil->armaOrigen = NADA_P;
+    // nuevoProyectil->posicion = origen;
+    nuevoProyectil->id = 0;
+    nuevoProyectil->tipo = TipoProyectil::Ningun;
+
+    nuevoProyectil->countdown = 0;
+    nuevoProyectil->enElAire = false;
+    nuevoProyectil->colisiono = false;
+
+
+
+
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
+    nuevaEntidad->proyectilReal = nuevoProyectil;
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2Body* body = world.CreateBody(&bodyDef);
+
+    b2CircleShape circleShape;
+    circleShape.m_radius = 0.05; // very small
+  
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circleShape;
+    fixtureDef.density = 3.5f;
+    fixtureDef.friction = 0.3f;
+
+    body->CreateFixture( &fixtureDef );
+
+    nuevoProyectil->cuerpo = body;
+
+
+
+
+
+    nuevoProyectil->exploto = false;
+    this->proyectiles.push_back(nuevoProyectil);
+
+    return nuevoProyectil;
+}
+
+
+
 bool destruirProyectil(b2Body *proyectil) {
     Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
     time_t horaDeCreacion;
@@ -733,44 +815,9 @@ void Partida::gameLoop() {
 
     bool exploto = false;
 
-    b2Vec2 origen(0,0);
+    Proyectil *nuevoProyectil = this->proyectilConstructor();
+
     Ataque ataqueARealizar;
-    Proyectil * nuevoProyectil = new Proyectil();
-    nuevoProyectil->armaOrigen = NADA_P;
-    nuevoProyectil->posicion = origen;
-    nuevoProyectil->id = 0;
-    nuevoProyectil->countdown = 0;
-
-
-
-
-    Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-
-    b2Body* body = world.CreateBody(&bodyDef);
-
-    b2CircleShape circleShape;
-    circleShape.m_radius = 0.05; // very small
-  
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &circleShape;
-    fixtureDef.density = 3.5f;
-    fixtureDef.friction = 0.3f;
-
-    body->CreateFixture( &fixtureDef );
-
-    nuevoProyectil->cuerpo = body;
-
-
-
-
-
-    nuevoProyectil->exploto = false;
-    this->proyectiles.push_back(nuevoProyectil);
     ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     time_t tiempoActual;
@@ -816,22 +863,40 @@ void Partida::gameLoop() {
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar, nuevoProyectil);
 
         //TODO: Tener fe
-        if (nuevoProyectil->countdown == 0) {
-            nuevoProyectil->armaOrigen = ataqueARealizar.arma;
-            nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
-            nuevoProyectil->posicion = ataqueARealizar.posicion;
-            nuevoProyectil->exploto = false;
-        }
-        
-        else {
-            nuevoProyectil->countdown -= 1;
-	  Accion ultimaAccion = gusanoActual->getUltimaAccion();
-            ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-            ataqueARealizar.posicion = nuevoProyectil->posicion;
+        if (nuevoProyectil->tipo == TipoProyectil::Countdown) {
+	  if (nuevoProyectil->countdown == 0
+	      // && nuevoProyectil->tipo == TipoProyectil::Countdown
+	      ) {
+	      nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+	      nuevoProyectil->countdown = ataqueARealizar.tiempoEspera;
+	      nuevoProyectil->exploto = false;
+	  }
+
+	  else {
+	      nuevoProyectil->countdown -= 1;
+	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
+	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	      // ataqueARealizar.posicion = nuevoProyectil->posicion;
+	  }
         }
 
+        else if (nuevoProyectil->tipo == TipoProyectil::Colision) {
+	  if (nuevoProyectil->enElAire == false && nuevoProyectil->colisiono == false) {
+	      nuevoProyectil->armaOrigen = ataqueARealizar.arma;
+	      nuevoProyectil->enElAire = true;
+	  }
+	  else if (nuevoProyectil->exploto == true) {
+	      nuevoProyectil->exploto = false;
+	      nuevoProyectil->colisiono = false;
 
-        this->crearProjectil(gusanoActual, ataqueARealizar, nuevoProyectil);
+	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
+	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	  }
+        }
+        // std::cout << nuevoProyectil->armaOrigen << "\n";
+
+
+        this->crearProyectiles(gusanoActual, ataqueARealizar, nuevoProyectil);
 
         std::this_thread::sleep_for(frameDuration);
     }
