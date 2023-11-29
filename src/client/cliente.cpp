@@ -10,6 +10,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     music("assets/sounds/music.ogg"),
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
+    es_host(false),
     camara(0, 0, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second, 0, 0),
     dibujador(renderizador, mixer, camara, estado_juego, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second),
     control_iteracion(estado_juego),
@@ -145,7 +146,7 @@ void Cliente::actualizarObjetivoCamara() {
 }
 
 InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
-    return menu.ejecutar(argc, argv);
+    return menu.ejecutar(argc, argv, es_host);
 }
 
 void Cliente::loop_principal(InformacionInicial& info_inicial) {
@@ -173,6 +174,8 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
 
+        printf("Estado del juego: %d\n", estado_juego->momento);
+
         // Actualizo entidades en el iterador.
         control_iteracion.actualizarEntidades();     
 
@@ -185,7 +188,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         actualizarObjetivoCamara();
 
         // Renderizo.
-        dibujador.dibujar(control_iteracion, info_inicial.vigas, pos_cursor, colores);
+        dibujador.dibujar(control_iteracion, info_inicial.vigas, pos_cursor, colores, es_host);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

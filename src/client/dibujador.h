@@ -36,19 +36,17 @@ class Dibujador {
 
       void actualizarGusanoActual();
       std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
-      void dibujarReticula(std::pair<int, int>& posicion, radianes& angulo, int& direccion, ControlIteracion& iteraciones);
+      void dibujarReticula(std::pair<int, int>& posicion,
+          radianes& angulo, int& direccion, ControlIteracion& iteraciones);
       void dibujarVida(std::pair<int, int>& posicion, hp& vida, colorJugador& color);
-      void dibujarCuadradoPotencia(std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i);
-      void dibujarBarraPotencia(std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia);
+      void dibujarCuadradoPotencia(std::pair<int,int>& posicion,
+          radianes& angulo, int& direccion, float& i);
+      void dibujarBarraPotencia(std::pair<int,int>& posicion,
+          radianes& angulo, int& direccion, float& potencia);
       void dibujarCuentaRegresiva(std::pair<int,int>& posicion, float& cuenta_regresiva);
- public:
-      Dibujador(Renderer& renderizador, Mixer& mixer, Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa);
-      void setDimensionMapa(coordX& ancho, coordY& alto);
-      void setIdJugador(int id);
-      void reproducirSonido(TipoSonido tipo); // A refactorizar.
-      void dibujar(ControlIteracion& iteraciones, std::vector<RepresentacionViga>& vigas, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarMapa(std::vector<RepresentacionViga>& vigas);
-      void dibujarGusanos(ControlIteracion& iteraciones, std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
+      void dibujarGusanos(ControlIteracion& iteraciones,
+          std::pair<int, int>& pos_cursor, std::vector<colorJugador>& colores);
       void dibujarProyectiles(ControlIteracion& iteraciones);
       void dibujarAguaDetras(ControlIteracion& iteraciones);
       void dibujarAguaDelante(ControlIteracion& iteraciones);
@@ -57,8 +55,25 @@ class Dibujador {
       void dibujarBarrasVida(std::vector<colorJugador>& colores);
       void dibujarCuentaRegresivaTurno();
       void dibujarTextoTurno();
-      void dibujarPantallaEspera();
+      void dibujarPantallaEspera(MomentoDePartida& momento, 
+          std::vector<colorJugador>& colores, bool& es_host);
       void dibujarFinalPartida(std::vector<colorJugador>& colores);
+ public:
+      Dibujador(Renderer& renderizador,
+          Mixer& mixer,
+          Camara& camara,
+          std::shared_ptr<EstadoDelJuego>& estado_juego,
+          int ancho_mapa, int alto_mapa);
+
+      void setDimensionMapa(coordX& ancho, coordY& alto);
+      void setIdJugador(int id);
+      void reproducirSonido(TipoSonido tipo); // A refactorizar.
+
+      void dibujar(ControlIteracion& iteraciones,
+          std::vector<RepresentacionViga>& vigas,
+          std::pair<int, int>& pos_cursor,
+          std::vector<colorJugador>& colores,
+          bool& es_host);
 };
 
 #endif // DIBUJADOR_H_

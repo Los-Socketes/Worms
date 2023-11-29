@@ -26,16 +26,20 @@ using namespace SDL2pp;
 // y ejecutar el loop principal del juego.
 class Cliente {
  private:
+    // Configuracion
     ConfiguracionCliente& config;
- // SDL
+    // SDL
     SDL sdl;
     SDLTTF ttf;
     Window ventana;
     Renderer renderizador;
     Mixer mixer;
     Music music;
+    // Conexion a servidor
     Protocolo protocolo;
     std::shared_ptr<EstadoDelJuego> estado_juego;
+    // Juego
+    bool es_host;
     Camara camara;
     Dibujador dibujador;
     ControlIteracion control_iteracion;

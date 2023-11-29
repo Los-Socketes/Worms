@@ -176,7 +176,8 @@ void Dibujador::reproducirSonido(TipoSonido tipo) {
 void Dibujador::dibujar(ControlIteracion& iteraciones,
     std::vector<RepresentacionViga>& vigas,
     std::pair<int, int>& pos_cursor,
-    std::vector<colorJugador>& colores) {
+    std::vector<colorJugador>& colores,
+    bool& es_host) {
     renderizador.Clear();
 
     actualizarGusanoActual();
@@ -186,8 +187,8 @@ void Dibujador::dibujar(ControlIteracion& iteraciones,
     dibujarGusanos(iteraciones, pos_cursor, colores);
     dibujarProyectiles(iteraciones);
     dibujarAguaDelante(iteraciones);
-    if (estado_juego->momento == ESPERANDO) {
-        dibujarPantallaEspera();
+    if (estado_juego->momento == ESPERANDO || estado_juego->momento == POR_INICIAR) {
+        dibujarPantallaEspera(estado_juego->momento, colores, es_host);
     }
     else if (estado_juego->momento == EN_MARCHA) {
         dibujarBarraArmas(gusano_actual.armaEquipada.arma);
@@ -462,20 +463,32 @@ void Dibujador::dibujarTextoTurno() {
     }
 }
 
-void Dibujador::dibujarPantallaEspera() {
-    // Dibujo el texto "Esperando a los demas jugadores..." en blanco.
+void Dibujador::dibujarPantallaEspera(MomentoDePartida& momento, 
+    std::vector<colorJugador>& colores, bool& es_host) {
+    // Dibujo el texto "Esperando a los demas jugadores..." en el color del jugador.
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
     std::pair<int, int> posicion;
-    posicion.first = ancho_pantalla / 2 - 200;
+    posicion.first = ancho_pantalla / 2 - 250;
     posicion.second = alto_pantalla / 2 - 50;
-    SDL_Color color = {255, 255, 255, 255};
+    SDL_Color color = {colores.at(idJugador)[0], colores.at(idJugador)[1], colores.at(idJugador)[2], 255};
     fuente1.SetOutline(2);
     Texture textura_espera_outline(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", {0, 0, 0, 255}));
-    renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
+    renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
     fuente1.SetOutline(0);
     Texture textura_espera(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", color));
-    renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
+    renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
+    // Si ya hay suficientes jugadores y soy el host, dibujo el texto "Presiona C para comenzar la partida".
+    if (momento == POR_INICIAR && es_host) {
+        posicion.first = ancho_pantalla / 2 - 125;
+        posicion.second = alto_pantalla / 2 + 30;
+        fuente1.SetOutline(2);
+        Texture textura_comenzar_outline(renderizador, fuente1.RenderText_Blended("Presiona C para comenzar la partida", {0, 0, 0, 255}));
+        renderizador.Copy(textura_comenzar_outline, NullOpt, Rect(posicion.first, posicion.second, 250, 25));
+        fuente1.SetOutline(0);
+        Texture textura_comenzar(renderizador, fuente1.RenderText_Blended("Presiona C para comenzar la partida", {255, 255, 255, 255}));
+        renderizador.Copy(textura_comenzar, NullOpt, Rect(posicion.first, posicion.second, 250, 25));        
+    }
 }
 
 void Dibujador::dibujarFinalPartida(std::vector<colorJugador>& colores) {
