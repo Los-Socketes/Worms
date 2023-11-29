@@ -115,6 +115,7 @@ struct Proyectil {
     //Estos se usa para armas como la bazooka para saber cuando
     //colisionaron
     bool enElAire;
+    bool colisiono;
 
     int countdown;
 };

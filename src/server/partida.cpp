@@ -21,6 +21,11 @@ Partida::Partida(std::string mapa)
     this->momento = ESPERANDO;
 
 
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 17.0f));
+    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
+    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 23.0f));
+    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(26.5f, 17.0f));
+    
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
@@ -31,7 +36,7 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
 
-    this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
+    // this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
     this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
     
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(37.5f, 18.0f));
@@ -40,8 +45,8 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
 
     this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(15.0f, 19.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(25.0f, 19.0f)});
+    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(26.5f, 19.0f)});
+    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(26.5f, 19.0f)});
     this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
     this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 19.0f)});
     this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 19.0f)});
@@ -123,7 +128,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 	   entidadB->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL A\n");
         entidadA->proyectilReal->enElAire = false;
-        entidadA->proyectilReal->exploto = true;
+        entidadA->proyectilReal->colisiono = true;
     }
 
     else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
@@ -131,7 +136,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 	   entidadA->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL B\n");
         entidadB->proyectilReal->enElAire = false;
-        entidadB->proyectilReal->exploto = true;
+        entidadB->proyectilReal->colisiono = true;
     }
 }
 
@@ -492,7 +497,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
         // bd.linearDamping = 10; // drag due to moving through air
         bd.gravityScale = 0; // ignore gravity
         bd.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
-        b2Vec2 coords = ataque.posicion;
+        b2Vec2 coords = proyectil->cuerpo->GetPosition();
         nuevaEntidad->proyectil.posInicial = coords;
         bd.position = coords;
         // bd.linearVelocity = blastPower * rayDir;
@@ -524,7 +529,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
     ArmaDeseada arma;
     arma = proyectil->armaOrigen;
     int countdown = proyectil->countdown;
-    bool exploto = proyectil->exploto;
+    bool colisiono = proyectil->colisiono;
     //Si no quiere equiparse nada, no hacemos nada
     if (arma == NADA_P)
         return;
@@ -562,14 +567,11 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
     }
     else if (arma == BAZOOKA_P) {
-        if (exploto == false)
+        if (colisiono == false)
 	  return;
-        std::cout << "BAZOOKA\n";
-        std::cout << "BAZOOKA\n";
-        std::cout << "BAZOOKA\n";
-        std::cout << "BAZOOKA\n";
         //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
         // proyectil->exploto = true;
+        this->generarExplosion(proyectil, ataque);
 
         
     }
@@ -696,6 +698,7 @@ Proyectil *Partida::proyectilConstructor() {
 
     nuevoProyectil->countdown = 0;
     nuevoProyectil->enElAire = false;
+    nuevoProyectil->colisiono = false;
 
 
 
@@ -878,14 +881,17 @@ void Partida::gameLoop() {
         }
 
         else if (nuevoProyectil->tipo == TipoProyectil::Colision) {
-	  if (nuevoProyectil->enElAire == false && nuevoProyectil->exploto == false) {
+	  if (nuevoProyectil->enElAire == false && nuevoProyectil->colisiono == false) {
 	      nuevoProyectil->armaOrigen = ataqueARealizar.arma;
 	      nuevoProyectil->enElAire = true;
 	  }
-	  // else {
-	  //     Accion ultimaAccion = gusanoActual->getUltimaAccion();
-	  //     ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-	  // }
+	  else if (nuevoProyectil->exploto == true) {
+	      nuevoProyectil->exploto = false;
+	      nuevoProyectil->colisiono = false;
+
+	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
+	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
+	  }
         }
         // std::cout << nuevoProyectil->armaOrigen << "\n";
 
