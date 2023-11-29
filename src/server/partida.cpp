@@ -416,7 +416,8 @@ bool Partida::enviarEstadoAJugadores() {
         std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
-        repre.angulo = 0.0f;
+        // repre.angulo = 0.3f;
+        repre.angulo = proyectil->cuerpo->GetAngle();
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
