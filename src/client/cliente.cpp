@@ -174,8 +174,6 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
 
-        printf("Estado del juego: %d\n", estado_juego->momento);
-
         // Actualizo entidades en el iterador.
         control_iteracion.actualizarEntidades();     
 
