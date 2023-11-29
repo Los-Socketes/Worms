@@ -424,7 +424,9 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         this->preparar(accion);
 
+        // armaQueQuiero = NADA_P;
         armaQueQuiero = NADA_P;
+
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
 
@@ -434,6 +436,13 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         ataqueARealizar.arma = armaQueQuiero;
         ataqueARealizar.potencia = this->armaSeleccionada->getPotencia();
         // std::cout << "AYUDA AYUDA" << accion.configARealizar.potencia << "\n";
+        // if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P
+	 
+        // 	 ) {
+        // 	        proyectil->tipo = TipoProyectil::Countdown;
+        // } else if (armaEquipada == BAZOOKA_P) {
+        // 	  proyectil->tipo = TipoProyectil::Colision;
+        // }
         break;
     case ATAQUE:
         {
@@ -459,19 +468,33 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
-        if(armaEquipada == DINAMITA_P || armaEquipada == GRANADA_VERDE_P || armaEquipada == GRANADA_SANTA_P) {
+        if(armaEquipada == DINAMITA_P ||
+	 armaEquipada == GRANADA_VERDE_P ||
+	 armaEquipada == GRANADA_SANTA_P 
+	 ) {
+	        proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
-        } else {
+	        tiempoEspera = 100;
+	        std::cout << "Tiempo: " << tiempoEspera << "\n";
+        } else if (armaEquipada == BAZOOKA_P) {
+	  proyectil->tipo = TipoProyectil::Colision;
+        }
+        else {
 	        tiempoEspera = 0;
         }
 
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         b2Vec2 adelante;
         adelante = this->cuerpo->GetPosition(); 
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+
+	  adelante.x += 0;
+
+	  adelante.y += 1;
+        proyectil->cuerpo->SetTransform(adelante , true);
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
 
@@ -527,6 +550,18 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 	//   float potenicaAplicada = 0.03f;
 	//   potenicaAplicada *= this->armaSeleccionada->getPotencia();
+	  // float opuesto = sin(angulo);
+
+	  // // std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
+
+	  // float potenicaAplicada = 0.3f;
+	  // potenicaAplicada *= this->armaSeleccionada->getPotencia();
+
+	  // if (this->direccion == IZQUIERDA)
+	  //     adyacente -= potenicaAplicada;
+	  // else
+	  //     adyacente += potenicaAplicada;
+	  // opuesto += potenicaAplicada;
 
 	//   if (this->direccion == IZQUIERDA)
 	//       adyacente -= potenicaAplicada;
@@ -539,7 +574,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	  b2Vec2 golpeDeseado(adyacente, opuesto);
 
-	  std::cout << "Vector: " << golpeDeseado.x << " " << golpeDeseado.y << "\n";
+	  // std::cout << "Vector: " << golpeDeseado.x << " " << golpeDeseado.y << "\n";
 
 
 
@@ -561,16 +596,16 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 
 
-	  adelante.x += 0;
+        // 	  adelante.x += 0;
 
-	//   adelante.y += 1;
-        proyectil->cuerpo->SetTransform(adelante , true);
+        // 	//   adelante.y += 1;
+        // proyectil->cuerpo->SetTransform(adelante , true);
 	//   proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
-      proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
+      // proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
         }
 
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;

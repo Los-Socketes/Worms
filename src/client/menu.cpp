@@ -16,7 +16,7 @@
 
 Menu::Menu(Protocolo& protocolo) : protocolo(protocolo) {}
 
-InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
+InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
     InformacionInicial informacion;
     informacion.jugador = -1;
     salio = false;
@@ -153,6 +153,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[]) {
                 mainWindow->close();
             });
         }
+        es_host = true;
         QCoreApplication::processEvents();
     });
 

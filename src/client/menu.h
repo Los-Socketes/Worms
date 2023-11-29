@@ -17,7 +17,7 @@ class Menu {
  public:
     Menu(Protocolo& protocolo);
 
-    InformacionInicial ejecutar(int argc, char* argv[]);
+    InformacionInicial ejecutar(int argc, char* argv[], bool& es_host);
 
     // Indica si se salio desde el menu.
     bool salioDelMenu();

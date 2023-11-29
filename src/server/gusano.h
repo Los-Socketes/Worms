@@ -10,16 +10,6 @@
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
 
-
-struct Proyectil {
-    ArmaProtocolo armaOrigen;
-    b2Vec2 posicion;
-    int id;
-    int countdown;
-    b2Body *cuerpo;
-    bool exploto;
-};
-
 struct Ataque {
     b2Vec2 posicion;
     int potencia;

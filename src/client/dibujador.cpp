@@ -1,6 +1,12 @@
 #include "dibujador.h"
 
-Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_juego, int ancho_mapa, int alto_mapa) :
+Dibujador::Dibujador(Renderer& renderizador,
+    Mixer& mixer,
+    Camara& camara,
+    std::shared_ptr<EstadoDelJuego>& estado_juego,
+    int ancho_mapa, int alto_mapa) :
+    renderizador(renderizador),
+    mixer(mixer),
     camara(camara),
     estado_juego(estado_juego),
     ancho_mapa(ancho_mapa),
@@ -16,6 +22,22 @@ Dibujador::Dibujador(Camara& camara, std::shared_ptr<EstadoDelJuego>& estado_jue
     gusano_actual.idGusano = -1;
     gusano_actual.estado = QUIETO;
     gusano_actual.armaEquipada.arma = NADA_P;
+
+    // Inicializo gestor multimedia.
+    gestor_multimedia.inicializar(renderizador, this->mixer);
+
+    // Inicializo el mapa de teclas de armas.
+    teclas_armas[NADA_P] = "R";
+    teclas_armas[BAZOOKA_P] = "1";
+    teclas_armas[MORTERO_P] = "2";
+    teclas_armas[GRANADA_VERDE_P] = "3";
+    teclas_armas[GRANADA_ROJA_P] = "4";
+    teclas_armas[GRANADA_SANTA_P] = "5";
+    teclas_armas[BANANA_P] = "6";
+    teclas_armas[DINAMITA_P] = "7";
+    teclas_armas[BATE_P] = "8";
+    teclas_armas[ATAQUE_AEREO_P] = "9";
+    teclas_armas[TELETRANSPORTACION_P] = "0";
     }
 
 void Dibujador::actualizarGusanoActual() {
@@ -44,7 +66,7 @@ void Dibujador::dibujarReticula(std::pair<int, int>& posicion, radianes& angulo,
     gestor_multimedia.dibujarReticula(pos_x, pos_y, iteraciones.getIteracionGlobal());
 }
 
-void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicion, hp& vida, colorJugador& color) {
+void Dibujador::dibujarVida(std::pair<int, int>& posicion, hp& vida, colorJugador& color) {
     // Acomodo la posicion para que quede centrada en el gusano.
     int pos_x = posicion.first - 8;
     int pos_y = posicion.second - 30;
@@ -77,7 +99,7 @@ void Dibujador::dibujarVida(Renderer& renderizador, std::pair<int, int>& posicio
     renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 16, 16));
 }
 
-void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i) {
+void Dibujador::dibujarCuadradoPotencia(std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& i) {
     int tamanio = i * 0.2;
     int pos_x = posicion.first + (sin(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) * direccion - tamanio / 2;
     int pos_y = posicion.second + (cos(angulo + M_PI / 2) * (10 + i/100 * (60 - 10))) - tamanio / 2;
@@ -97,15 +119,15 @@ void Dibujador::dibujarCuadradoPotencia(Renderer& renderizador, std::pair<int,in
     renderizador.FillRect(coord_x, coord_y, coord_x + tamanio, coord_y + tamanio);
 }
 
-void Dibujador::dibujarBarraPotencia(Renderer& renderizador, std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia) {
+void Dibujador::dibujarBarraPotencia(std::pair<int,int>& posicion, radianes& angulo, int& direccion, float& potencia) {
     // Potencia va de 0 a 1, y avanza en 0.05.
     // Dibujo cuadrado con SDL que van creciendo en tamaño, para el angulo y la direccion.
     for (float i = 0; i <= potencia; i += 10) {
-        dibujarCuadradoPotencia(renderizador, posicion, angulo, direccion, i);
+        dibujarCuadradoPotencia(posicion, angulo, direccion, i);
     }
 }
 
-void Dibujador::dibujarCuentaRegresiva(Renderer& renderizador, std::pair<int,int>& posicion, float& cuenta_regresiva) {
+void Dibujador::dibujarCuentaRegresiva(std::pair<int,int>& posicion, float& cuenta_regresiva) {
     // Dibujo el temporizador al lado del gusano o proyectil.
     int pos_x = posicion.first + 20;
     int pos_y = posicion.second - 30;
@@ -147,52 +169,36 @@ void Dibujador::setIdJugador(int id) {
     idJugador = id;
 }
 
-void Dibujador::inicializar(Renderer& renderizador, Mixer& mixer) {
-    gestor_multimedia.inicializar(renderizador, mixer);
-    teclas_armas[NADA_P] = "R";
-    teclas_armas[BAZOOKA_P] = "1";
-    teclas_armas[MORTERO_P] = "2";
-    teclas_armas[GRANADA_VERDE_P] = "3";
-    teclas_armas[GRANADA_ROJA_P] = "4";
-    teclas_armas[GRANADA_SANTA_P] = "5";
-    teclas_armas[BANANA_P] = "6";
-    teclas_armas[DINAMITA_P] = "7";
-    teclas_armas[BATE_P] = "8";
-    teclas_armas[ATAQUE_AEREO_P] = "9";
-    teclas_armas[TELETRANSPORTACION_P] = "0";
-}
-
 void Dibujador::reproducirSonido(TipoSonido tipo) {
     gestor_multimedia.reproducirSonido(tipo);
 }
 
-void Dibujador::dibujar(Renderer& renderizador,
-    ControlIteracion& iteraciones,
+void Dibujador::dibujar(ControlIteracion& iteraciones,
     std::vector<RepresentacionViga>& vigas,
     std::pair<int, int>& pos_cursor,
-    std::vector<colorJugador>& colores) {
+    std::vector<colorJugador>& colores,
+    bool& es_host) {
     renderizador.Clear();
 
     actualizarGusanoActual();
 
-
     dibujarMapa(vigas);
     dibujarAguaDetras(iteraciones);
-    dibujarGusanos(renderizador, iteraciones, pos_cursor, colores);
-    dibujarProyectiles(renderizador, iteraciones);
+    dibujarGusanos(iteraciones, pos_cursor, colores);
+    dibujarProyectiles(iteraciones);
     dibujarAguaDelante(iteraciones);
-    if (estado_juego->momento == ESPERANDO) {
-        dibujarPantallaEspera(renderizador);
+    if (estado_juego->momento == ESPERANDO || estado_juego->momento == POR_INICIAR) {
+        dibujarPantallaEspera(estado_juego->momento, colores, es_host);
     }
     else if (estado_juego->momento == EN_MARCHA) {
-        dibujarBarraArmas(renderizador, gusano_actual.armaEquipada.arma);
-        dibujarMuniciones(renderizador, gusano_actual.armaEquipada);
-        dibujarBarrasVida(renderizador, colores);
-        dibujarCuentaRegresivaTurno(renderizador);
-        dibujarTextoTurno(renderizador);
+        dibujarBarraArmas(gusano_actual.armaEquipada.arma);
+        dibujarMuniciones(gusano_actual.armaEquipada);
+        dibujarBarrasVida(colores);
+        dibujarCuentaRegresivaTurno();
+        dibujarTextoTurno();
     }
     else {
-        dibujarFinalPartida(renderizador, colores);
+        dibujarFinalPartida(colores);
     }
 
     renderizador.Present();
@@ -217,8 +223,7 @@ void Dibujador::dibujarMapa(std::vector<RepresentacionViga>& vigas) {
 }
 
 
-void Dibujador::dibujarGusanos(Renderer& renderizador,
-    ControlIteracion& iteraciones,
+void Dibujador::dibujarGusanos(ControlIteracion& iteraciones,
     std::pair<int, int>& pos_cursor,
     std::vector<colorJugador>& colores) {
     RepresentacionGusano gusano;
@@ -233,13 +238,13 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
             // Dibujo la barra de potencia del gusano si esta cargando.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tienePotenciaVariable) {
                 int direccion = gusano.dir == DERECHA ? 1 : -1;
-                dibujarBarraPotencia(renderizador, posicion, gusano.armaEquipada.anguloRad, direccion, gusano.armaEquipada.potencia);
+                dibujarBarraPotencia(posicion, gusano.armaEquipada.anguloRad, direccion, gusano.armaEquipada.potencia);
             }
             // Dibujo al gusano.
             gestor_multimedia.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
             if (gusano.estado != MUERTO && gusano.estado != AHOGADO) {
-                dibujarVida(renderizador, posicion, gusano.vida, colores.at(jugador.first));
+                dibujarVida(posicion, gusano.vida, colores.at(jugador.first));
             }
             // Dibujo la reticula del gusano si esta apuntando.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneMira) {
@@ -249,7 +254,7 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
             // Dibujo la cuenta regresiva del arma si la tiene.
             if (gusano.estado == QUIETO && gusano.armaEquipada.tieneCuentaRegresiva) {
                 float cuenta_regresiva = gusano.armaEquipada.cuentaRegresiva;
-                dibujarCuentaRegresiva(renderizador, posicion, cuenta_regresiva);
+                dibujarCuentaRegresiva(posicion, cuenta_regresiva);
             }
             // Dibujo el cursor si el gusano no disparo y no esta usando un arma que requiera apuntar.
             if (gusano.estado != DISPARANDO && 
@@ -270,7 +275,7 @@ void Dibujador::dibujarGusanos(Renderer& renderizador,
 
 }
 
-void Dibujador::dibujarProyectiles(Renderer& renderizador, ControlIteracion& iteraciones) {
+void Dibujador::dibujarProyectiles(ControlIteracion& iteraciones) {
     for(auto& proyectil : estado_juego->proyectiles) {
         // Traduzco las coordenadas del proyectil.
         std::pair<int, int> posicion = traducirCoordenadas(proyectil.posicion.first, proyectil.posicion.second);
@@ -284,7 +289,7 @@ void Dibujador::dibujarProyectiles(Renderer& renderizador, ControlIteracion& ite
                 // Dibujo la cuenta regresiva del proyectil
                 // La cuenta regresiva es un int de segundos * 30, lo paso a float de segundos.
                 float cuenta_regresiva = proyectil.cuentaRegresiva / 30.0;
-                dibujarCuentaRegresiva(renderizador, posicion, cuenta_regresiva);
+                dibujarCuentaRegresiva(posicion, cuenta_regresiva);
             }
         }
     }    
@@ -317,7 +322,7 @@ void Dibujador::dibujarAguaDelante(ControlIteracion& iteraciones) {
     }
 }
 
-void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_equipada) {
+void Dibujador::dibujarBarraArmas(ArmaProtocolo& arma_equipada) {
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
     std::pair<int, int> posicion;
@@ -345,7 +350,7 @@ void Dibujador::dibujarBarraArmas(Renderer& renderizador, ArmaProtocolo& arma_eq
     }       
 }
 
-void Dibujador::dibujarMuniciones(Renderer& renderizador, RepresentacionArma& arma) {
+void Dibujador::dibujarMuniciones(RepresentacionArma& arma) {
     if (arma.arma != NADA_P) {
         int ancho_pantalla = renderizador.GetOutputSize().x;
         int alto_pantalla = renderizador.GetOutputSize().y;
@@ -368,7 +373,7 @@ void Dibujador::dibujarMuniciones(Renderer& renderizador, RepresentacionArma& ar
     }
 }
 
-void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugador>& colores) {
+void Dibujador::dibujarBarrasVida(std::vector<colorJugador>& colores) {
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
     std::pair<int, int> posicion;
@@ -408,7 +413,7 @@ void Dibujador::dibujarBarrasVida(Renderer& renderizador, std::vector<colorJugad
     }    
 }
 
-void Dibujador::dibujarCuentaRegresivaTurno(Renderer& renderizador) {
+void Dibujador::dibujarCuentaRegresivaTurno() {
     if (estado_juego->segundosRestantes >= 0) {
         // Dibujo los segundos restantes arriba a la derecha de la pantalla.
         int ancho_pantalla = renderizador.GetOutputSize().x;
@@ -438,7 +443,7 @@ void Dibujador::dibujarCuentaRegresivaTurno(Renderer& renderizador) {
     }
 }
 
-void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
+void Dibujador::dibujarTextoTurno() {
     // En los primeros 2 segundos del turno, dibujo el texto "Turno de Jugador X".
     // Luego hago que desaparezca gradualmente.
     int ancho_pantalla = renderizador.GetOutputSize().x;
@@ -458,23 +463,35 @@ void Dibujador::dibujarTextoTurno(Renderer& renderizador) {
     }
 }
 
-void Dibujador::dibujarPantallaEspera(Renderer& renderizador) {
-    // Dibujo el texto "Esperando a los demas jugadores..." en blanco.
+void Dibujador::dibujarPantallaEspera(MomentoDePartida& momento, 
+    std::vector<colorJugador>& colores, bool& es_host) {
+    // Dibujo el texto "Esperando a los demas jugadores..." en el color del jugador.
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
     std::pair<int, int> posicion;
-    posicion.first = ancho_pantalla / 2 - 200;
+    posicion.first = ancho_pantalla / 2 - 250;
     posicion.second = alto_pantalla / 2 - 50;
-    SDL_Color color = {255, 255, 255, 255};
+    SDL_Color color = {colores.at(idJugador)[0], colores.at(idJugador)[1], colores.at(idJugador)[2], 255};
     fuente1.SetOutline(2);
     Texture textura_espera_outline(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", {0, 0, 0, 255}));
-    renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
+    renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
     fuente1.SetOutline(0);
     Texture textura_espera(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", color));
-    renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 400, 50));
+    renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
+    // Si ya hay suficientes jugadores y soy el host, dibujo el texto "Presiona C para comenzar la partida".
+    if (momento == POR_INICIAR && es_host) {
+        posicion.first = ancho_pantalla / 2 - 125;
+        posicion.second = alto_pantalla / 2 + 30;
+        fuente1.SetOutline(2);
+        Texture textura_comenzar_outline(renderizador, fuente1.RenderText_Blended("Presiona C para comenzar la partida", {0, 0, 0, 255}));
+        renderizador.Copy(textura_comenzar_outline, NullOpt, Rect(posicion.first, posicion.second, 250, 25));
+        fuente1.SetOutline(0);
+        Texture textura_comenzar(renderizador, fuente1.RenderText_Blended("Presiona C para comenzar la partida", {255, 255, 255, 255}));
+        renderizador.Copy(textura_comenzar, NullOpt, Rect(posicion.first, posicion.second, 250, 25));        
+    }
 }
 
-void Dibujador::dibujarFinalPartida(Renderer& renderizador, std::vector<colorJugador>& colores) {
+void Dibujador::dibujarFinalPartida(std::vector<colorJugador>& colores) {
     // Dibujo el texto segun el resultado de la partida.
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
