@@ -481,11 +481,21 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 
 	  float angulo = this->armaSeleccionada->getAngulo();
+
+      float throwPower = this->armaSeleccionada->getPotencia();
+      float minPower = 5.0f;
+      float maxPower = 100.0f;
+      float minSpeed = 5.0f;  // Adjust this value for the minimum throw speed
+      float maxSpeed = 20.0f;  // Adjust this value for the maximum throw speed
+
+      // Map throwPower to the throw speed range using linear interpolation
+      float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
+
       // TODO: cambiar a potencia posta
       float potencia = 100/100.0f;
       std::cout << "ANGULO: " << angulo << "\n"; 
-	  float adyacente = cos(angulo);
-	  float opuesto = sin(angulo);
+	  float adyacente = cos(angulo) * throwSpeed;
+	  float opuesto = sin(angulo) * throwSpeed;
     //   float hipotenusa = 1 * potencia;
     //   opuesto *= hipotenusa*1.6;
     //   float hipotenusa = 0.8 * potencia;
@@ -496,24 +506,24 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
     //   opuesto *= hipotenusa*3;
     //   float hipotenusa = 0.5 * potencia;
     //   opuesto *= hipotenusa*3.1;
-      float hipotenusa = 0.5 * potencia;
-      opuesto *= hipotenusa;
-      opuesto += 1;
-      adyacente *= hipotenusa;
+    // //   float hipotenusa = 0.5 * potencia;
+    // //   opuesto *= hipotenusa;
+    // //   opuesto += 1;
+    // //   adyacente *= hipotenusa;
 
 
-    // si es muy chico no hay que subirle el largo y bajarle el alto
-      if (angulo < 0.5) {
-          opuesto -= 0.3;
-          adyacente += 0.3;
-    // si es muy alto hay que bajarle el alto (ya sube mucho de base)
-      } else if (angulo > 1.3) {
-          opuesto -= 0.2;
-      } else if (angulo > 1) {
-          opuesto += 0.3;
-      }
-	  if (this->direccion == IZQUIERDA)
-	      adyacente *= -1;
+    // // // si es muy chico no hay que subirle el largo y bajarle el alto
+    // //   if (angulo < 0.5) {
+    // //       opuesto -= 0.3;
+    // //       adyacente += 0.3;
+    // // // si es muy alto hay que bajarle el alto (ya sube mucho de base)
+    // //   } else if (angulo > 1.3) {
+    // //       opuesto -= 0.2;
+    // //   } else if (angulo > 1) {
+    // //       opuesto += 0.3;
+    // //   }
+	// //   if (this->direccion == IZQUIERDA)
+	// //       adyacente *= -1;
 	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 	//   float potenicaAplicada = 0.03f;
 	//   potenicaAplicada *= this->armaSeleccionada->getPotencia();
@@ -555,7 +565,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	//   adelante.y += 1;
         proyectil->cuerpo->SetTransform(adelante , true);
-	  proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
+	//   proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
+      proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
         }
 
         std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
