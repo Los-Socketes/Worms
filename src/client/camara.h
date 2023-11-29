@@ -7,6 +7,9 @@
 
 #include "defs.h"
 
+#define FPS 30
+#define SEGUNDOS_ESPERA_MOUSE 3
+
 using namespace SDL2pp;
 
 // Clase que representa la camara del cliente. A partir de la posicion de la camara
@@ -17,14 +20,21 @@ class Camara {
     std::pair<int, int> posicion;  // Pos x, y.
     std::pair<int, int> dimension;  // Ancho, alto.
     std::pair<int, int> dimension_mapa;  // Ancho, alto del mapa.
+    std::pair<int, int> objetivo;  // Pos x, y del objetivo a seguir.
+
+    int tiempo_espera_mouse;
 
  public:
     Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa);
     
     // Mueve la camara en deltaX y deltaY, chequeando que no se salga del mapa.
     void mover(int& deltaX, int& deltaY);
+    void moverConMouse(int& deltaX, int& deltaY);
+    void moverHaciaObjetivo();
 
-    std::pair<coordX, coordY> traducirCoordenadas(int x, int y);
+    std::pair<coordX, coordY> traducirCoordenadasInversa(int x, int y);
+
+    void actualizarObjetivo(coordX& x, coordY& y);
 
     int getPosicionX();
     int getPosicionY();
@@ -34,6 +44,8 @@ class Camara {
     void setPosicion(int& x, int& y);
     void setDimension(int ancho, int alto);
     void setDimensionMapa(coordX& ancho, coordY& alto);
+
+    bool usadaPorMouse();
 
     Rect getRectangulo();
 };

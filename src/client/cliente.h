@@ -21,17 +21,25 @@
 using namespace SDL2pp;
 
 #define TAM_QUEUE 500
-#define FPS 30
 
 // Clase principal del cliente. Se encarga de ejecutar el menu, iniciar los hilos,
 // y ejecutar el loop principal del juego.
 class Cliente {
  private:
+    // Configuracion
+    ConfiguracionCliente& config;
+    // SDL
     SDL sdl;
     SDLTTF ttf;
+    Window ventana;
+    Renderer renderizador;
+    Mixer mixer;
+    Music music;
+    // Conexion a servidor
     Protocolo protocolo;
-    ConfiguracionCliente& config;
     std::shared_ptr<EstadoDelJuego> estado_juego;
+    // Juego
+    bool es_host;
     Camara camara;
     Dibujador dibujador;
     ControlIteracion control_iteracion;
@@ -49,8 +57,24 @@ class Cliente {
     int volumen;
     bool muteado;
 
+    // Configura SDL, SDL_mixer.
+    void configurarSDL(InformacionInicial& info_inicial);
+
+    // Configura camara.
+    void configurarCamara(InformacionInicial& info_inicial);
+
+    // Configura dibujador.
+    void configurarDibujador(InformacionInicial& info_inicial);
+
     // Inicia los hilos.
-    void iniciar();
+    void iniciarHilos(InformacionInicial& info_inicial);
+
+    // Dado un comando local, ejecuta la accion correspondiente.
+    // Setea los flags continuar y mover_camara.
+    void ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mover_camara);
+
+    // Busca el objetivo para enfocar la camara.
+    void actualizarObjetivoCamara();
 
  public:
     Cliente(Socket&& skt, ConfiguracionCliente& config);
