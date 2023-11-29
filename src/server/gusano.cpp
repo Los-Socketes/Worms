@@ -238,6 +238,9 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         break;
     case SALTO:
         {
+        if (this->estado == SALTANDO) {
+            break;
+        }
         std::cout << "Salto" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
