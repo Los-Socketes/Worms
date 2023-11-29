@@ -459,8 +459,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	        tiempoEspera = 0;
         }
 
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         b2Vec2 adelante;
         adelante = this->cuerpo->GetPosition(); 
@@ -469,8 +469,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	  adelante.y += 1;
         proyectil->cuerpo->SetTransform(adelante , true);
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
 
@@ -486,7 +486,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	      adyacente *= -1;
 	  float opuesto = sin(angulo);
 
-	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
+	  // std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 	  float potenicaAplicada = 0.3f;
 	  potenicaAplicada *= this->armaSeleccionada->getPotencia();
 
@@ -499,7 +499,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
 	  b2Vec2 golpeDeseado(adyacente, opuesto);
 
-	  std::cout << "Vector: " << golpeDeseado.x << " " << golpeDeseado.y << "\n";
+	  // std::cout << "Vector: " << golpeDeseado.x << " " << golpeDeseado.y << "\n";
 
 
 
@@ -524,8 +524,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  proyectil->cuerpo->ApplyLinearImpulseToCenter(golpeDeseado, true);
         }
 
-        std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
+        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
 
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;

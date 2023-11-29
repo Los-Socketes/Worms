@@ -59,6 +59,8 @@ Partida::Partida(std::string mapa)
 #define REFERENCE *
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
+    std::cout << "CONTACTO\n";
+    
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
 
@@ -112,7 +114,18 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         printf("AHOGADO\n");
         // abort();
     }
-  // abort();
+
+
+
+    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL) {
+        printf("PROYECTIL REAL A\n");
+        entidadA->proyectilReal.colisiono = true;
+    }
+
+    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL) {
+        printf("PROYECTIL REAL B\n");
+        entidadB->proyectilReal.colisiono = true;
+    }
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
@@ -668,11 +681,13 @@ Proyectil *Partida::proyectilConstructor() {
     nuevoProyectil->id = 0;
     nuevoProyectil->countdown = 0;
 
+    nuevoProyectil->colisiono = false;
+
 
 
 
     Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;

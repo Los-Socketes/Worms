@@ -89,7 +89,7 @@ typedef b2Vec2 finCaja;
     return distancia;
 }
 
-enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10};
+    enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 10, PROYECTILREAL = 32};
 
 // se usa para poder saber que tipo de proyectil es
 // TODO: agregar si es fragmento
@@ -103,6 +103,18 @@ struct ProyectilAsociado {
     b2Vec2 posInicial;
 };
 
+struct Proyectil {
+    ArmaProtocolo armaOrigen;
+    b2Vec2 posicion;
+    int id;
+    int countdown;
+    b2Body *cuerpo;
+    bool exploto;
+    //Esto se usa para armas como la bazooka para saber cuando
+    //colisionaron
+    bool colisiono;
+};
+
 struct Entidad {
     TipoEntidad tipo;
     // union {
@@ -110,7 +122,7 @@ struct Entidad {
         // Viga *viga;
         // Arma *arma;
         ProyectilAsociado proyectil;
-        // b2Body *proyectil;
+    Proyectil proyectilReal;
     // };
 };
 
