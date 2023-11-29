@@ -60,7 +60,7 @@ void Cliente::ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mo
             break;
         case MOVER_CAMARA:
             if (mover_camara)
-                camara.mover(comando.parametros.first, comando.parametros.second);
+                camara.moverConMouse(comando.parametros.first, comando.parametros.second);
             break;
         case TOGGLE_CAMARA:
             mover_camara = !mover_camara;
@@ -106,6 +106,44 @@ void Cliente::ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mo
     }
 }
 
+void Cliente::actualizarObjetivoCamara() {
+    // Busco en estado de juego algún objetivo en este orden de prioridad:
+    // 1) Proyectil no explotado.
+    // 2) Gusano no quieto.
+    // 3) Gusano de turno.
+    bool encontre = false;
+    for (auto& proyectil : estado_juego->proyectiles) {
+        if (!proyectil.exploto) {
+            camara.actualizarObjetivo(proyectil.posicion.first, proyectil.posicion.second);
+            encontre = true;
+            break;
+        }
+    }
+    if (!encontre) {
+        for (auto& jugador : estado_juego->gusanos) {
+            for(auto& gusano : jugador.second) {
+                if (gusano.second.estado != QUIETO && gusano.second.estado != MUERTO) {
+                    camara.actualizarObjetivo(gusano.second.posicion.first, gusano.second.posicion.second);
+                    encontre = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (!encontre) {
+        for (auto& jugador : estado_juego->gusanos) {
+            for(auto& gusano : jugador.second) {
+                if (gusano.second.idGusano == estado_juego->gusanoDeTurno) {
+                    camara.actualizarObjetivo(gusano.second.posicion.first, gusano.second.posicion.second);
+                    encontre = true;
+                    break;
+                }
+            }
+        }
+    }
+    camara.moverHaciaObjetivo();
+}
+
 InformacionInicial Cliente::ejecutar_menu(int argc, char* argv[]) {
     return menu.ejecutar(argc, argv);
 }
@@ -142,6 +180,9 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         while (comandos_teclado.try_pop(comando)) {
             ejecutarComandoTeclado(comando, continuar, mover_camara);
         }
+
+        // Actualizo la camara.
+        actualizarObjetivoCamara();
 
         // Renderizo.
         dibujador.dibujar(control_iteracion, info_inicial.vigas, pos_cursor, colores);

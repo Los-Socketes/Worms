@@ -157,7 +157,7 @@ void EntradaTeclado::run() {
                     // se está procesando el evento, pero no es un problema grave porque se
                     // obtiene una posición aproximada.
                     comandos_teclado.push(Comando(MOVER_CURSOR, evento.button.x + camara.getPosicionX(), evento.button.y + camara.getPosicionY()));
-                    std::pair<coordX, coordY> coordenadas = camara.traducirCoordenadas(evento.button.x, evento.button.y);
+                    std::pair<coordX, coordY> coordenadas = camara.traducirCoordenadasInversa(evento.button.x, evento.button.y);
                     envio_comandos.push(std::make_shared<AccionCambiarCoordenadas>(coordenadas.first, coordenadas.second));
                 }
             }

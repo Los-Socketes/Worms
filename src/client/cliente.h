@@ -21,7 +21,6 @@
 using namespace SDL2pp;
 
 #define TAM_QUEUE 500
-#define FPS 30
 
 // Clase principal del cliente. Se encarga de ejecutar el menu, iniciar los hilos,
 // y ejecutar el loop principal del juego.
@@ -69,6 +68,9 @@ class Cliente {
     // Dado un comando local, ejecuta la accion correspondiente.
     // Setea los flags continuar y mover_camara.
     void ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mover_camara);
+
+    // Busca el objetivo para enfocar la camara.
+    void actualizarObjetivoCamara();
 
  public:
     Cliente(Socket&& skt, ConfiguracionCliente& config);

@@ -3,7 +3,9 @@
 Camara::Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa) :
     posicion(x, y),
     dimension(ancho, alto),
-    dimension_mapa(ancho_mapa, alto_mapa) {}
+    dimension_mapa(ancho_mapa, alto_mapa),
+    objetivo(ancho_mapa / 2, alto_mapa / 2),
+    tiempo_espera_mouse(0) {}
 
 void Camara::mover(int& deltaX, int& deltaY) {
     int nueva_pos_x = posicion.first + deltaX;
@@ -25,7 +27,43 @@ void Camara::mover(int& deltaX, int& deltaY) {
     posicion.second = nueva_pos_y;
 }
 
-std::pair<coordX, coordY> Camara::traducirCoordenadas(int x, int y) {
+void Camara::moverConMouse(int& deltaX, int& deltaY) {
+    tiempo_espera_mouse = SEGUNDOS_ESPERA_MOUSE * FPS;
+    mover(deltaX, deltaY);
+}
+
+void Camara::moverHaciaObjetivo() {
+    // Si no se movio el mouse en los ultimos 3 segundos, se mueve la camara hacia el objetivo.
+    if (tiempo_espera_mouse == 0) {
+        // Calculo el vector unitario entre la posicion de la camara y el objetivo.
+        int deltaX = objetivo.first - posicion.first - dimension.first / 2;
+        int deltaY = objetivo.second - posicion.second + dimension.second / 2;
+
+        // Si ya esta en el objetivo, no se mueve.
+        if (deltaX == 0 && deltaY == 0) {
+            return;
+        }
+
+        int norma = sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (norma < 5) {
+            // Si la norma es menor a 5, se mueve directamente al objetivo.
+            posicion.first = objetivo.first;
+            posicion.second = objetivo.second;
+        } else {
+            // Si no, se mueve 20 pixeles en la direccion del objetivo graduando la velocidad.
+            deltaX = deltaX * 20 / norma;
+            deltaY = deltaY * 20 / norma;
+        }
+
+        mover(deltaX, deltaY);
+    } else {
+        // Si el mouse se movio en los ultimos 3 segundos, se decrementa el contador.
+        tiempo_espera_mouse--;
+    }
+}
+
+
+std::pair<coordX, coordY> Camara::traducirCoordenadasInversa(int x, int y) {
     // Teniendo la conversion metro a pixel como:
     // x_pixeles = x_metro * PIXELS_POR_METRO - camara.x
     // y_pixeles = alto_mapa - y_metro * PIXELS_POR_METRO - camara.y
@@ -34,6 +72,11 @@ std::pair<coordX, coordY> Camara::traducirCoordenadas(int x, int y) {
     // y_metro = (alto_mapa - y_pixeles - camara.y) / PIXELS_POR_METRO
     return std::make_pair((x + posicion.first) / PIXELS_POR_METRO,
         (dimension_mapa.second - y - posicion.second) / PIXELS_POR_METRO);
+}
+
+void Camara::actualizarObjetivo(coordX& x, coordY& y) {
+    objetivo.first = x * PIXELS_POR_METRO;
+    objetivo.second = dimension_mapa.second - y * PIXELS_POR_METRO;
 }
 
 int Camara::getPosicionX() {
@@ -65,6 +108,10 @@ void Camara::setDimension(int ancho, int alto) {
 void Camara::setDimensionMapa(coordX& ancho, coordY& alto) {
     dimension_mapa.first = ancho * PIXELS_POR_METRO;
     dimension_mapa.second = alto * PIXELS_POR_METRO;
+}
+
+bool Camara::usadaPorMouse() {
+    return tiempo_espera_mouse > 0;
 }
 
 Rect Camara::getRectangulo() {
