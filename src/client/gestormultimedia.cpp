@@ -20,12 +20,24 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     escenario[AGUA] = std::make_shared<Animacion>(renderizador, "assets/sprites/water.png", 128, 100, 12, true, true);
     escenario[PANORAMA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backforest.png", 640, 159, 1, true, false);
     escenario[FONDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, true, false);
-    escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
+    escenario[FONDOESPERA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backwait.png", 3000, 2000, 1, false, false);
+    escenario[IMAGENGUSANOESPERA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backwaitworm.png", 1024, 768, 1, false, false);
     escenario[RETICULA] = std::make_shared<Animacion>(renderizador, "assets/sprites/crshairc.png", 60, 60, 32, true, true);
     escenario[VIGA_GRANDE] = std::make_shared<Animacion>(renderizador, "assets/sprites/grdl4.png", 140, 20, 1, true, false);
     escenario[VIGA_CHICA] = std::make_shared<Animacion>(renderizador, "assets/sprites/grds4.png", 70, 20, 1, true, false);
     escenario[FLECHA_GUSANO] = std::make_shared<Animacion>(renderizador, "assets/sprites/arrowdnc.png", 60, 60, 30, true, true);
     
+    escenario[VOLUMEN_0] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume0.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_0]->setDimensiones(35, 35);
+    escenario[VOLUMEN_1] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume1.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_1]->setDimensiones(35, 35);
+    escenario[VOLUMEN_2] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume2.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_2]->setDimensiones(35, 35);
+    escenario[VOLUMEN_3] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume3.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_3]->setDimensiones(35, 35);
+    escenario[VOLUMEN_MUTEADO] = std::make_shared<Animacion>(renderizador, "assets/sprites/volumemute.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_MUTEADO]->setDimensiones(35, 35);
+
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false, false);
     iconos[BATE_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/ibaseball.png", 32, 32, 1, false, false);
@@ -271,6 +283,28 @@ void GestorMultimedia::dibujarFondo() {
     escenario[FONDO]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
+void GestorMultimedia::dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla) {
+    int pos_x = ancho_pantalla / 2;
+    int pos_y = alto_pantalla / 2;
+    int it = 0;
+    escenario[FONDOESPERA]->setDimensiones(ancho_pantalla, alto_pantalla);
+    escenario[FONDOESPERA]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+
+void GestorMultimedia::dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla) {
+    // Cambio el tamaño y la posicion segun el tamaño de la pantalla.
+    // La imagen tiene relacion de aspecto 4:3, hago que siempre ocupe el 50% del ancho de la pantalla.
+    int tam_x = ancho_pantalla / 2;
+    int tam_y = tam_x * 3 / 4;
+    escenario[IMAGENGUSANOESPERA]->setDimensiones(tam_x, tam_y);
+    // Lo dibujo abajo a la izquierda.
+    int pos_x = tam_x / 2;
+    int pos_y = alto_pantalla - tam_y / 2;
+    int it = 0;
+    escenario[IMAGENGUSANOESPERA]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+
+
 void GestorMultimedia::dibujarPanorama(int& pos_x, int& pos_y) {
     int it = 0;
     escenario[PANORAMA]->dibujar(camara, pos_x, pos_y, false, it, 1);
@@ -340,6 +374,22 @@ void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo
 
 void GestorMultimedia::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
     escenario[FLECHA_GUSANO]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+
+void GestorMultimedia::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y) {
+    int it = 0;
+    // El volumen va de 0 a 128, lo divido en 4 partes.
+    if (muteado) {
+        escenario[VOLUMEN_MUTEADO]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 32) {
+        escenario[VOLUMEN_0]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 64) {
+        escenario[VOLUMEN_1]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 96) {
+        escenario[VOLUMEN_2]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else {
+        escenario[VOLUMEN_3]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    }
 }
 
 void GestorMultimedia::reproducirSonido(TipoSonido tipo) {

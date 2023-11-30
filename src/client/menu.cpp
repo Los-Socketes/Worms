@@ -29,7 +29,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setWindowTitle("Worms");
-
+    
     // creo letra "custom" en base a la tipografia que tenemos
     int fontId = QFontDatabase::addApplicationFont("assets/fonts/AdLibRegular.ttf");
     QString letraCustom = QFontDatabase::applicationFontFamilies(fontId).at(0);
@@ -45,24 +45,32 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
     QLabel *logo = new QLabel(paginaPrincipal);
     logo->setPixmap(fotoLogo);
     logo->setAlignment(Qt::AlignCenter);
+    logo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
     verticalLayoutPrincipal->addWidget(logo);
     // agrego horizontal layout para centrar los botones
     QHBoxLayout *layoutHorizontalPrincipal = new QHBoxLayout();
     QVBoxLayout *botonesPrincipal = new QVBoxLayout();
+    botonesPrincipal->addStretch();
+
     QPushButton *crearPartida = new QPushButton(paginaPrincipal);
     crearPartida->setText("Crear una partida");
     crearPartida->setFont(letraCustom);
+    crearPartida->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     botonesPrincipal->addWidget(crearPartida);
 
     QPushButton *unirsePartida = new QPushButton(paginaPrincipal);
     unirsePartida->setText("Unirse a una partida");
     unirsePartida->setFont(letraCustom);
+    unirsePartida->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
     botonesPrincipal->addWidget(unirsePartida);
 
     QPushButton *salir = new QPushButton(paginaPrincipal);
     salir->setText("Salir");
     salir->setFont(letraCustom);
+    salir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
     botonesPrincipal->addWidget(salir);
+
+    botonesPrincipal->addStretch();
 
     QSpacerItem *espacioIzquierdaBotones = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QSpacerItem *espacioDerechaBotones = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -80,6 +88,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
     QLabel *logoCrear = new QLabel(paginaCrear);
     logoCrear->setPixmap(fotoLogo);
     logoCrear->setAlignment(Qt::AlignCenter);
+    logoCrear->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
     verticalLayoutCrear->addWidget(logoCrear);
 
     QLabel *tituloCrear = new QLabel(paginaCrear);
@@ -110,6 +119,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
     QLabel *logoUnirse = new QLabel(paginaUnirse);
     logoUnirse->setPixmap(fotoLogo);
     logoUnirse->setAlignment(Qt::AlignCenter);
+    logoUnirse->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
     verticalLayoutUnirse->addWidget(logoUnirse);
 
     QLabel *tituloUnirse = new QLabel(paginaUnirse);
@@ -144,15 +154,18 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
         protocolo.pedirInformacion(MAPA);
         opciones_mapa = protocolo.obtenerMapas();
 
+        botonesCrear->addStretch();
         for (int i = 0; i < (int)opciones_mapa.size(); i++) {
             QPushButton *mapa = new QPushButton(QString("%1. %2").arg(i).arg(QString::fromStdString(opciones_mapa[i].nombre)));
             mapa->setFont(letraCustom);
+            mapa->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             botonesCrear->addWidget(mapa);
             QObject::connect(mapa, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_mapa]() {
                 informacion = this->protocolo.crearPartida(opciones_mapa[i].ID);
                 mainWindow->close();
             });
         }
+        botonesCrear->addStretch();
         es_host = true;
         QCoreApplication::processEvents();
     });
@@ -161,7 +174,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
         pantallas->setCurrentIndex(2);
         protocolo.pedirInformacion(PARTIDA);
         opciones_partida = protocolo.obtenerPartidas();
-
+        
         if (opciones_partida.size() == 0) {
             QFont fontTexto;
             fontTexto.setFamily(letraCustom);
@@ -175,21 +188,29 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
             QSpacerItem *espacioUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
             verticalLayoutUnirse->addItem(espacioUnirse);
         }
+        botonesUnirse->addStretch();
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
             QPushButton *partida = new QPushButton(QString("%1").arg(i));
             partida->setFont(letraCustom);
+            partida->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             botonesUnirse->addWidget(partida);
             QObject::connect(partida, &QPushButton::clicked, [this, i, &informacion, &mainWindow, &opciones_partida]() {
                 informacion = this->protocolo.unirseAPartida(opciones_partida[i]);
                 mainWindow->close();
             });
         }
+        botonesUnirse->addStretch();
         QCoreApplication::processEvents();
     });
 
     QObject::connect(salir, &QPushButton::clicked, [&]() {
         salio = true;
         mainWindow->close();
+    });
+
+    // Si se cierra la ventana, se sale del menu.
+    QObject::connect(mainWindow, &QMainWindow::destroyed, [&]() {
+        salio = true;
     });
 
     

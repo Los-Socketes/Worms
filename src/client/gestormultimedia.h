@@ -15,13 +15,20 @@
 
 enum ItemEscenario {
     AGUA,
+    FONDOESPERA,
+    IMAGENGUSANOESPERA,
     FONDO,
     PANORAMA,
     RETICULA,
     VIGA_GRANDE,
     VIGA_CHICA,
     EXPLOSION,
-    FLECHA_GUSANO
+    FLECHA_GUSANO,
+    VOLUMEN_0,
+    VOLUMEN_1,
+    VOLUMEN_2,
+    VOLUMEN_3,
+    VOLUMEN_MUTEADO
 };
 
 enum TipoSonido {
@@ -68,6 +75,8 @@ class GestorMultimedia {
     void inicializar(Renderer& renderizador, Mixer& mixer);
     void dibujarAgua(int& pos_x, int& pos_y, int& it);
     void dibujarFondo();
+    void dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla);
+    void dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla);
     void dibujarPanorama(int& pos_x, int& pos_y);
     void dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo);
     void dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
@@ -77,6 +86,7 @@ class GestorMultimedia {
     void dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones);
     void dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
     void dibujarFlechaGusano(int& pos_x, int& pos_y, int& it);
+    void dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y);
     void reproducirSonido(TipoSonido tipo);
 };
 
