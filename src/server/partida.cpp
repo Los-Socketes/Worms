@@ -433,7 +433,9 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo = std::atan(-velocidad.y/velocidad.x);
             repre.angulo += M_PI/2;
         }
-        
+        if (proyectil->armaOrigen == DINAMITA_P) {
+            repre.angulo = 0;
+        }
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -535,7 +537,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
         this->cuerposADestruir.push_back(body);
     }
 
-    if (proyectil->armaOrigen == BANANA_P) {
+    if (proyectil->armaOrigen == BANANA_P || proyectil->armaOrigen == DINAMITA_P) {
         b2FixtureDef fixtureNuevo;
         b2CircleShape circleShape;
         circleShape.m_radius = 0.05; // very small

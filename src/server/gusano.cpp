@@ -518,9 +518,23 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
             proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
         }
+        if (this->armaEquipada == DINAMITA_P) {
+            b2FixtureDef fixtureNuevo;
+            b2CircleShape circleShape;
+            circleShape.m_radius = 0.05; // very small
+        
+            fixtureNuevo.shape = &circleShape;
+            fixtureNuevo.density = 3.0f;
+            fixtureNuevo.friction = 0.3f;
+            fixtureNuevo.restitution = 0;
+
+            proyectil->cuerpo->DestroyFixture(proyectil->fixture);
+
+            proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
+        }
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
-	  float angulo = this->armaSeleccionada->getAngulo();
+      float angulo = this->armaSeleccionada->getAngulo();
 	  float throwPower = this->armaSeleccionada->getPotencia();
 	  float minPower = 5.0f;
 	  float maxPower = 100.0f;
@@ -530,8 +544,6 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  // Map throwPower to the throw speed range using linear interpolation
 	  float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
 
-	  // TODO: cambiar a potencia posta
-	  float potencia = 100/100.0f;
 	  std::cout << "ANGULO: " << angulo << "\n"; 
 	  float adyacente = cos(angulo) * throwSpeed;
 	  float opuesto = sin(angulo) * throwSpeed;
