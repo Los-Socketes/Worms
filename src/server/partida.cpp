@@ -541,6 +541,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 
 // proyectil = nuevoProyectil
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
+    for (int i = 0; i<2; i++) {
     ArmaProtocolo arma = ataque.arma;
     if (arma == NADA_P) {
         return;
@@ -633,9 +634,11 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 
     }
 
+    ataque.posicion.y += 3 * i;
     nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
     nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
       
+    }
 }
 
 
@@ -809,6 +812,10 @@ Proyectil *Partida::proyectilConstructor() {
     fixtureDef.density = 3.0f;
     fixtureDef.friction = 0.3f;
     fixtureDef.restitution = 0.2;
+    // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
+    // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
+    // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
 
     nuevoProyectil->fixture = body->CreateFixture(&fixtureDef);
 
