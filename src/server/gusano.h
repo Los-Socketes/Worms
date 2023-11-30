@@ -86,7 +86,7 @@ public:
 
     //TODO: Esta funcion recibe el arma o tipo de dano
     void recibirDano(b2Vec2 golpe, Entidad *entidad);
-
+    void recibirDanioCaida(b2Vec2 velocidad);
     // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
     //WARNING: Esta funcion tiene que se ser llamada CERCA, sino AL

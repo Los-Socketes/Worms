@@ -642,3 +642,29 @@ bool Gusano::estaQuieto() {
 
     return estoyQuieto;
 }
+
+void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
+    float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
+    float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
+    if (velocidad.y >= velocidadMax) {
+        this->setEstado(QUIETO);
+        return;
+    }
+
+
+    printf("RECIBI DANO DE CAIDA\n");
+
+    int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
+
+    std::cout << "DISTANCIA QUE CAE: " << distanciaQueCae << "\n";
+    std::cout << "VELOCIDAD QUE CAE: " << velocidad.y << "\n";
+    int vidaMax = 100;
+    float danio = distanciaQueCae * vida / (METROS_SIN_DANIO*3);
+    if (this->vida <= (u_int) danio) {
+        this->vida = 0;
+        this->setEstado(MUERTO);
+        return;
+    }
+    this->vida -= danio;
+    this->setEstado(QUIETO);
+}
