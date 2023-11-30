@@ -501,6 +501,13 @@ Ataque Gusano::ejecutar(Accion accion) {
 	        this->teletransportarse();
         }
 
+        if (armaEquipada == ATAQUE_AEREO_P) {
+	  std::pair<coordX, coordY> ataquePos;
+	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
+	  posicion = deCoordAb2Vec(ataquePos);
+	  std::cout << "POSITION: " << posicion.x << " " << posicion.y << "\n";
+        }
+
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P ||
@@ -544,13 +551,13 @@ Ataque Gusano::ejecutar(Accion accion) {
 
       impulso.x = adyacente;
       impulso.y = opuesto;
+        ataqueARealizar.posicion = adelante;
         }
 
         
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         ataqueARealizar.impulsoInicial = impulso;
-        ataqueARealizar.posicion = adelante;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
         std::cout << ataqueARealizar.arma << "ATACO\n";

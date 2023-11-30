@@ -627,6 +627,12 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevoProyectil->fixture = nuevoProyectil->cuerpo->CreateFixture(&fixtureNuevo);
     }
 
+    else if (arma == ATAQUE_AEREO_P) {
+        std::cout << "POSITION: " << ataque.posicion.x << " " << ataque.posicion.y << "\n";
+
+
+    }
+
     nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
     nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
       
