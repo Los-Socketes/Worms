@@ -556,6 +556,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 
         proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
     }
+    printf("FIN KATAPUM\n");
 }
 
 
@@ -878,6 +879,8 @@ void Partida::borrarCuerpos() {
     //Borro todos los cuerpos a destruir
     //Leo la lista al reves para no tener problemas del offset al
     //borrar elementos
+
+    // std::cout << "AHORA CUERPOS\n";
     for(int i = this->cuerposADestruir.size() - 1 ; i >= 0 ; i--) {
         b2Body *cuerpoABorrar;
         cuerpoABorrar = this->cuerposADestruir.at(i);
@@ -887,13 +890,14 @@ void Partida::borrarCuerpos() {
         if (loBorro == true) {
 	  // std::cout << "Delete\n";
 	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-	  delete entidadB;
+	//   delete entidadB;
 	  this->world.DestroyBody(cuerpoABorrar);
 	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
         }
 
     }
 
+    // std::cout << "AHORA PROYECTILES\n";
     for(int i = this->proyectiles.size() - 1 ; i >= 0 ; i--) {
         Proyectil *proyectil = this->proyectiles[i];
         b2Body *cuerpoABorrar = proyectil->cuerpo;
@@ -901,9 +905,9 @@ void Partida::borrarCuerpos() {
         if (proyectil->exploto) {
             // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-            delete entidadB;
+            // delete entidadB;
             this->world.DestroyBody(cuerpoABorrar);
-            this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+            this->proyectiles.erase(this->proyectiles.begin() + i);
         }
 
     }
@@ -999,7 +1003,7 @@ void Partida::gameLoop() {
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         //TODO: Tener fe
-        std::cout << "CANT: " << this->proyectiles.size();
+        // std::cout << "CANT: " << this->proyectiles.size();
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
         // equivalente a exploto/ borrarlo
