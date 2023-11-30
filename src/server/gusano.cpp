@@ -315,11 +315,13 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // golpe.x *= distancia;
     // golpe.y *= distancia;
     // b2Vec2 golpeton(0.0f, 0.0f);
-
+    
     // this->cuerpo->ApplyLinearImpulseToCenter(golpeton, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
-    this->cuerpo->SetLinearVelocity(golpe);
-    this->estado = HERIDO;
+    if (tipoArma == BATE_P) {
+        this->cuerpo->SetLinearVelocity(golpe);
+    }
+    this->setEstado(HERIDO);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 
