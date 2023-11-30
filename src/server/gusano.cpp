@@ -175,15 +175,15 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     else
         offset = -1;
     coords.enX += offset;
-    coords.enY -= offset;
+    // coords.enY -= offset;
 
     std::pair<inicioCaja, finCaja> vecs;
     b2Vec2 vectorCoordInicio = deCoordAb2Vec(coords);
 
     //reutilizo la variables coords para la segunda coordenada (sup der)
     //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    coords.enX += offset * 1;
-    coords.enY += offset * 1;
+    // coords.enX += offset * 1;
+    // coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
     //WARNING Valores hardcodeados hasta ver cual se ve mejor
@@ -290,6 +290,9 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // la formula es -12.5 * distancia + 50 = danio
 
     int radio = armaUsada.getDanio().radio;
+    if (tipoArma == BATE_P) {
+        radio = 2;
+    }
 
     float danioReal;
     std::cout << "DISTANCIA: " << distanciaGusanoBomba << "\n";
@@ -298,7 +301,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     // // Calculate the graduated damage
     danioReal = (distanciaGusanoBomba > radio) ? 0 : danio * porcentaje;
-    if (tipoArma == BATE_P) {
+    if (tipoArma == BATE_P && distanciaGusanoBomba <= radio) {
         radio = 2;
         danioReal = danio;
     }
