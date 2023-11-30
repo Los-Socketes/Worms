@@ -327,32 +327,6 @@ InformacionInicial Partida::obtenerInfoInicial() {
     idNuevoJugador = (idJugador) this->jugadores.size();
     infoInicial.jugador = idNuevoJugador;
 
-    //Leo las vigas
-    /* En vez de hacer esto añado las vigas cuando se crean en
-     * un atributo de la clase
-    std::vector<RepresentacionViga> vigasEnMapa;
-    for ( b2Body* b = this->world.GetBodyList(); b; b = b->GetNext())
-    {
-
-        b2BodyType tipoDelCuerpo;
-        tipoDelCuerpo = b->GetType();
-        //Ignoramos los que no son estaticos porque los gusanos los
-        //sacamos de los jugadores
-        if (tipoDelCuerpo != b2_staticBody)
-	  continue;
-
-        RepresentacionViga vigaActual;
-        vigaActual.angulo = b->GetAngle();
-        vigaActual.longitud = 
-        b2Vec2 posicion = b->GetPosition();
-        std::pair<coordX, coordY> posicionProtocolo;
-        posicionProtocolo.enX = posicion.x;
-        posicionProtocolo.enY = posicion.y;
-        vigaActual.posicionInicial = posicionProtocolo;
-
-        vigasEnMapa.push_back(vigaActual);
-    }
-    */
     infoInicial.vigas = this->vigasEnMapa;
     infoInicial.dimensiones = this->dimensiones;
 
