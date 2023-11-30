@@ -504,6 +504,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         if (armaEquipada == ATAQUE_AEREO_P) {
 	  std::pair<coordX, coordY> ataquePos;
 	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
+	  ataquePos.enY = MAXALTURA;
 	  posicion = deCoordAb2Vec(ataquePos);
 	  std::cout << "POSITION: " << posicion.x << " " << posicion.y << "\n";
 	  ataqueARealizar.impulsoInicial = b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY);

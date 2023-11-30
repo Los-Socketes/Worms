@@ -16,7 +16,7 @@ Partida::Partida(std::string mapa)
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    this->dimensiones = std::pair<coordX, coordY>(75,40);
+    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA,40);
     this->termino = false;
     this->momento = ESPERANDO;
 
