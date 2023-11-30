@@ -139,8 +139,8 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
       /_____|
       Adyacente(x)
      */
-    float potencia = 9;
-    float hipotenusa = 9 * potencia;
+    float potencia = this->armaSeleccionada->getDanio().epicentro;
+    float hipotenusa = 0.9*potencia;
     float angulo = this->armaSeleccionada->getAngulo();
 
     //SOHCAHTOA
@@ -151,12 +151,15 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     std::cout << adyacente << "\n";
 
     float opuesto;
-    opuesto = sin(angulo) * hipotenusa;
+    opuesto = sin(angulo) * hipotenusa*2;
+    if (opuesto < 1) {
+        opuesto = 1;
+    }
 
     b2Vec2 golpeDeseado(adyacente, opuesto);
     golpeYCaja.first = golpeDeseado;
 
-
+    std::cout << "GOLPE: " << golpeDeseado.x << ", " << golpeDeseado.y << "\n";
 
     //CAJA
     std::pair<coordX, coordY> coords;
@@ -173,20 +176,12 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     else
         offset = -1;
     coords.enX += offset;
-    coords.enY -= offset;
 
     std::pair<inicioCaja, finCaja> vecs;
     b2Vec2 vectorCoordInicio = deCoordAb2Vec(coords);
 
-    //reutilizo la variables coords para la segunda coordenada (sup der)
-    //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    coords.enX += offset * 1;
-    coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
-    //WARNING Valores hardcodeados hasta ver cual se ve mejor
-    // vectorCoordFin.x += vectorCoordInicio.x + offset;
-    // vectorCoordFin.y += vectorCoordInicio.y + 2 * offset;
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
@@ -274,6 +269,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
 void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     if (this->golpeado == true)
         return;
+    this->golpeado = true;
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
 
@@ -288,6 +284,9 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // la formula es -12.5 * distancia + 50 = danio
 
     int radio = armaUsada.getDanio().radio;
+    if (tipoArma == BATE_P) {
+        radio = 2;
+    }
 
     float danioReal;
     std::cout << "DISTANCIA: " << distanciaGusanoBomba << "\n";
@@ -296,6 +295,10 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     // // Calculate the graduated damage
     danioReal = (distanciaGusanoBomba > radio) ? 0 : danio * porcentaje;
+    if (tipoArma == BATE_P && distanciaGusanoBomba <= radio) {
+        radio = 2;
+        danioReal = danio;
+    }
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
     // std::cout << "Danio: " << danio << "\n";
@@ -316,15 +319,38 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // golpe.x *= distancia;
     // golpe.y *= distancia;
     // b2Vec2 golpeton(0.0f, 0.0f);
-
+    
     // this->cuerpo->ApplyLinearImpulseToCenter(golpeton, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
-    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    if (tipoArma == BATE_P) {
+        this->cuerpo->SetLinearVelocity(golpe);
+    } else {
+        float fuerzaX = golpe.x > 0 ? golpe.x : -golpe.x;
+        float fuerzaY = golpe.y > 0 ? golpe.y : -golpe.y;
+        float angulo = std::atan(fuerzaY/fuerzaX);
+        float hipotenusa = 10;
+        // float hipotenusa = danioReal*0.3;
+        float adyacente = cos(angulo) * hipotenusa;
+        if (golpe.x < 0)
+            adyacente *= -1;
+        float opuesto;
+        opuesto = sin(angulo) * hipotenusa*2;
+        if (golpe.y < 0) {
+            opuesto *= -1;
+        }
+
+
+        golpe.x = adyacente;
+        golpe.y = opuesto;
+        std::cout << "FUERZA EMPUJE: " << adyacente << ", " << opuesto << "\n";
+        this->cuerpo->SetLinearVelocity(golpe);
+    }
+    this->setEstado(HERIDO);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 
 
-    this->golpeado = true;
+    // this->golpeado = true;
 }
 
 void Gusano::preparar(Accion& accion) {
@@ -474,7 +500,6 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	        this->teletransportarse();
         }
 
-
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P ||
@@ -490,6 +515,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  proyectil->tipo = TipoProyectil::Colision;
         }
         else {
+            proyectil->tipo = TipoProyectil::Ningun;
 	        tiempoEspera = 0;
         }
 
@@ -518,9 +544,23 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 
             proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
         }
+        if (this->armaEquipada == DINAMITA_P) {
+            b2FixtureDef fixtureNuevo;
+            b2CircleShape circleShape;
+            circleShape.m_radius = 0.05; // very small
+        
+            fixtureNuevo.shape = &circleShape;
+            fixtureNuevo.density = 3.0f;
+            fixtureNuevo.friction = 0.3f;
+            fixtureNuevo.restitution = 0;
+
+            proyectil->cuerpo->DestroyFixture(proyectil->fixture);
+
+            proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
+        }
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
-	  float angulo = this->armaSeleccionada->getAngulo();
+      float angulo = this->armaSeleccionada->getAngulo();
 	  float throwPower = this->armaSeleccionada->getPotencia();
 	  float minPower = 5.0f;
 	  float maxPower = 100.0f;
@@ -530,8 +570,6 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  // Map throwPower to the throw speed range using linear interpolation
 	  float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
 
-	  // TODO: cambiar a potencia posta
-	  float potencia = 100/100.0f;
 	  std::cout << "ANGULO: " << angulo << "\n"; 
 	  float adyacente = cos(angulo) * throwSpeed;
 	  float opuesto = sin(angulo) * throwSpeed;
@@ -551,7 +589,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
-        std::cout << "ATACO\n";
+        std::cout << ataqueARealizar.arma << "ATACO\n";
         this->armaSeleccionada->usar();
         break;
         }

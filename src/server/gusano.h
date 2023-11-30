@@ -6,7 +6,7 @@
 #include "arma.h"
 #include "box2dDefs.h"
 #include <ctime>
-
+#include <atomic>
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
 
@@ -56,7 +56,7 @@ private:
 
 public:
 
-    bool golpeado;
+    std::atomic<bool> golpeado;
 
     Gusano();
 

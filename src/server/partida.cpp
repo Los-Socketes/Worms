@@ -179,7 +179,8 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
        &&
        entidadB->tipo == TipoEntidad::GUSANO) {
         if (entidadB->gusano->getEstado() != SALTANDO &&
-            entidadB->gusano->getEstado() != HACE_PIRUETA) {
+            entidadB->gusano->getEstado() != HACE_PIRUETA &&
+            entidadB->gusano->getEstado() != HERIDO) {
             entidadB->gusano->setEstado(CAYENDO);
         }
     }
@@ -187,9 +188,10 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     if(entidadB->tipo == TipoEntidad::VIGA
        &&
        entidadA->tipo == TipoEntidad::GUSANO) {
-        if (entidadB->gusano->getEstado() != SALTANDO &&
-            entidadB->gusano->getEstado() != HACE_PIRUETA) {
-            entidadB->gusano->setEstado(CAYENDO);
+        if (entidadA->gusano->getEstado() != SALTANDO &&
+            entidadA->gusano->getEstado() != HACE_PIRUETA &&
+            entidadA->gusano->getEstado() != HERIDO) {
+            entidadA->gusano->setEstado(CAYENDO);
         }
     }
     // std::cout << "FIN CONTACTO\n";
@@ -433,7 +435,9 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo = std::atan(-velocidad.y/velocidad.x);
             repre.angulo += M_PI/2;
         }
-        
+        if (proyectil->armaOrigen == DINAMITA_P) {
+            repre.angulo = 0;
+        }
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -535,7 +539,7 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
         this->cuerposADestruir.push_back(body);
     }
 
-    if (proyectil->armaOrigen == BANANA_P) {
+    if (proyectil->armaOrigen == BANANA_P || proyectil->armaOrigen == DINAMITA_P) {
         b2FixtureDef fixtureNuevo;
         b2CircleShape circleShape;
         circleShape.m_radius = 0.05; // very small
@@ -561,6 +565,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         return;
 
     else if (arma == BATE_P) {
+        std::cout << "ESTOY ACA\n";
         std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
         golpeYCaja = gusano->ejecutarGolpe();
         std::pair<inicioCaja, finCaja> coordsGolpe;
@@ -580,7 +585,17 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
 	      continue;
 
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-	  entidadA->gusano->recibirDano(golpe, entidadA);
+
+      Entidad *nuevaEntidad = new Entidad;
+      nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+      nuevaEntidad->proyectil.arma = proyectil->armaOrigen;
+      b2Vec2 coords = golpeYCaja.second.first;
+      nuevaEntidad->proyectil.posInicial = coords;
+
+     
+
+      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
+	//   entidadA->gusano->recibirDano(golpe, entidadA);
 
 	  // printf("PEGO\n");
         }
@@ -941,8 +956,10 @@ void Partida::gameLoop() {
 	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
 	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
 	  }
+        } else {
+        //   std::cout << "Holis " << nuevoProyectil->armaOrigen << "\n";
+          nuevoProyectil->armaOrigen = ataqueARealizar.arma;
         }
-        // std::cout << nuevoProyectil->armaOrigen << "\n";
 
 
         this->crearProyectiles(gusanoActual, ataqueARealizar, nuevoProyectil);
