@@ -534,6 +534,21 @@ void Partida::generarExplosion(Proyectil *proyectil, Ataque ataque) {
 
         this->cuerposADestruir.push_back(body);
     }
+
+    if (proyectil->armaOrigen == BANANA_P) {
+        b2FixtureDef fixtureNuevo;
+        b2CircleShape circleShape;
+        circleShape.m_radius = 0.05; // very small
+    
+        fixtureNuevo.shape = &circleShape;
+        fixtureNuevo.density = 3.0f;
+        fixtureNuevo.friction = 0.3f;
+        fixtureNuevo.restitution = 0.2;
+
+        proyectil->cuerpo->DestroyFixture(proyectil->fixture);
+
+        proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
+    }
 }
 
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil) {
@@ -571,7 +586,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         }
     }
 
-    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P) {
+    else if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
         if (countdown > 0)
 	  return;
         this->generarExplosion(proyectil, ataque);
@@ -719,6 +734,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
+
 Proyectil *Partida::proyectilConstructor() {
     b2Vec2 origen(0,0);
 
@@ -745,15 +761,16 @@ Proyectil *Partida::proyectilConstructor() {
 
     b2Body* body = world.CreateBody(&bodyDef);
 
+    b2FixtureDef fixtureDef;
     b2CircleShape circleShape;
     circleShape.m_radius = 0.05; // very small
   
-    b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
     fixtureDef.density = 3.0f;
     fixtureDef.friction = 0.3f;
+    fixtureDef.restitution = 0.2;
 
-    body->CreateFixture( &fixtureDef );
+    nuevoProyectil->fixture = body->CreateFixture(&fixtureDef);
 
     nuevoProyectil->cuerpo = body;
 

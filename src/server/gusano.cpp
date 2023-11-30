@@ -479,7 +479,8 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P ||
 	 armaEquipada == GRANADA_VERDE_P ||
-	 armaEquipada == GRANADA_SANTA_P 
+	 armaEquipada == GRANADA_SANTA_P ||
+     armaEquipada == BANANA_P 
 	 ) {
 	        proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
@@ -503,6 +504,20 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         proyectil->cuerpo->SetTransform(adelante , true);
         // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
         // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
+        if (this->armaEquipada == BANANA_P) {
+            b2FixtureDef fixtureNuevo;
+            b2CircleShape circleShape;
+            circleShape.m_radius = 0.05; // very small
+        
+            fixtureNuevo.shape = &circleShape;
+            fixtureNuevo.density = 3.0f;
+            fixtureNuevo.friction = 0.3f;
+            fixtureNuevo.restitution = 0.8;
+
+            proyectil->cuerpo->DestroyFixture(proyectil->fixture);
+
+            proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
+        }
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
 	  float angulo = this->armaSeleccionada->getAngulo();
