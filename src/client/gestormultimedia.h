@@ -15,6 +15,8 @@
 
 enum ItemEscenario {
     AGUA,
+    FONDOESPERA,
+    IMAGENGUSANOESPERA,
     FONDO,
     PANORAMA,
     RETICULA,
@@ -68,6 +70,8 @@ class GestorMultimedia {
     void inicializar(Renderer& renderizador, Mixer& mixer);
     void dibujarAgua(int& pos_x, int& pos_y, int& it);
     void dibujarFondo();
+    void dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla);
+    void dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla);
     void dibujarPanorama(int& pos_x, int& pos_y);
     void dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo);
     void dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones);

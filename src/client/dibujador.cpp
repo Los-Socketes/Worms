@@ -182,22 +182,22 @@ void Dibujador::dibujar(ControlIteracion& iteraciones,
 
     actualizarGusanoActual();
 
-    dibujarMapa(vigas);
-    dibujarAguaDetras(iteraciones);
-    dibujarGusanos(iteraciones, pos_cursor, colores);
-    dibujarProyectiles(iteraciones);
-    dibujarAguaDelante(iteraciones);
     if (estado_juego->momento == ESPERANDO || estado_juego->momento == POR_INICIAR) {
         dibujarPantallaEspera(estado_juego->momento, colores, es_host);
     }
-    else if (estado_juego->momento == EN_MARCHA) {
+    else {
+        dibujarMapa(vigas);
+        dibujarAguaDetras(iteraciones);
+        dibujarGusanos(iteraciones, pos_cursor, colores);
+        dibujarProyectiles(iteraciones);
+        dibujarAguaDelante(iteraciones);
         dibujarBarraArmas(gusano_actual.armaEquipada.arma);
         dibujarMuniciones(gusano_actual.armaEquipada);
         dibujarBarrasVida(colores);
         dibujarCuentaRegresivaTurno();
         dibujarTextoTurno();
     }
-    else {
+    if (estado_juego->momento == TERMINADA) {
         dibujarFinalPartida(colores);
     }
 
@@ -465,14 +465,17 @@ void Dibujador::dibujarTextoTurno() {
 
 void Dibujador::dibujarPantallaEspera(MomentoDePartida& momento, 
     std::vector<colorJugador>& colores, bool& es_host) {
-    // Dibujo el texto "Esperando a los demas jugadores..." en el color del jugador.
     int ancho_pantalla = renderizador.GetOutputSize().x;
     int alto_pantalla = renderizador.GetOutputSize().y;
+    // Dibujo el fondo de espera.
+    gestor_multimedia.dibujarFondoEspera(ancho_pantalla, alto_pantalla);
+    gestor_multimedia.dibujarGusanoEspera(ancho_pantalla, alto_pantalla);
+    // Dibujo el texto "Esperando a los demas jugadores..." en el color del jugador.
     std::pair<int, int> posicion;
     posicion.first = ancho_pantalla / 2 - 250;
     posicion.second = alto_pantalla / 2 - 50;
     SDL_Color color = {colores.at(idJugador)[0], colores.at(idJugador)[1], colores.at(idJugador)[2], 255};
-    fuente1.SetOutline(2);
+    fuente1.SetOutline(4);
     Texture textura_espera_outline(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", {0, 0, 0, 255}));
     renderizador.Copy(textura_espera_outline, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
     fuente1.SetOutline(0);
@@ -482,7 +485,7 @@ void Dibujador::dibujarPantallaEspera(MomentoDePartida& momento,
     if (momento == POR_INICIAR && es_host) {
         posicion.first = ancho_pantalla / 2 - 125;
         posicion.second = alto_pantalla / 2 + 30;
-        fuente1.SetOutline(2);
+        fuente1.SetOutline(4);
         Texture textura_comenzar_outline(renderizador, fuente1.RenderText_Blended("Presiona C para comenzar la partida", {0, 0, 0, 255}));
         renderizador.Copy(textura_comenzar_outline, NullOpt, Rect(posicion.first, posicion.second, 250, 25));
         fuente1.SetOutline(0);
