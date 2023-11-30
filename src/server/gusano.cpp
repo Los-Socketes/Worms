@@ -320,6 +320,26 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     std::cout << "Vida nueva: " << this->vida << "\n";
     if (tipoArma == BATE_P) {
         this->cuerpo->SetLinearVelocity(golpe);
+    } else {
+        float fuerzaX = golpe.x > 0 ? golpe.x : -golpe.x;
+        float fuerzaY = golpe.y > 0 ? golpe.y : -golpe.y;
+        float angulo = std::atan(fuerzaY/fuerzaX);
+        float hipotenusa = 10;
+        // float hipotenusa = danioReal*0.3;
+        float adyacente = cos(angulo) * hipotenusa;
+        if (golpe.x < 0)
+            adyacente *= -1;
+        float opuesto;
+        opuesto = sin(angulo) * hipotenusa*2;
+        if (golpe.y < 0) {
+            opuesto *= -1;
+        }
+
+
+        golpe.x = adyacente;
+        golpe.y = opuesto;
+        std::cout << "FUERZA EMPUJE: " << adyacente << ", " << opuesto << "\n";
+        this->cuerpo->SetLinearVelocity(golpe);
     }
     this->setEstado(HERIDO);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
