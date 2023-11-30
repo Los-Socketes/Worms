@@ -284,10 +284,22 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // distancia 4 = dano 0
     //TODO Hacer que cada arma tenga esta formula
     // la formula es -12.5 * distancia + 50 = danio
-    int danioReal;
-    danioReal = -12.5 * distancia + 50;
+
+    // int danioReal;
+    // danioReal = -12.5 * distancia + danio;
+    // danioReal = -12.5 * distancia + 50;
+
+    float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
+    int radio = armaUsada.getDanio().radio;
+    float porcentaje = 1.0f / (1.0f + std::pow(distanciaGusanoBomba / radio,2));
+
+    // Calculate the graduated damage
+    float danioReal = danio * porcentaje;
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
+    std::cout << "Danio: " << danio << "\n";
+    std::cout << "distancia: " << porcentaje << "\n";
+    std::cout << "distancia: " << distanciaGusanoBomba << "\n";
     if (this->vida < (u_int) danioReal) {
         this->vida = 0;
         this->setEstado(MUERTO);
