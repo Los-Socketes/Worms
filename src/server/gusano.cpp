@@ -140,9 +140,7 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
       Adyacente(x)
      */
     float potencia = this->armaSeleccionada->getDanio().epicentro;
-    float hipotenusa = potencia;
-    // float potencia = 9;
-    // float hipotenusa = 9 * potencia;
+    float hipotenusa = 0.9*potencia;
     float angulo = this->armaSeleccionada->getAngulo();
 
     //SOHCAHTOA
@@ -153,7 +151,7 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     std::cout << adyacente << "\n";
 
     float opuesto;
-    opuesto = sin(angulo) * hipotenusa;
+    opuesto = sin(angulo) * hipotenusa*2;
 
     b2Vec2 golpeDeseado(adyacente, opuesto);
     golpeYCaja.first = golpeDeseado;
@@ -175,20 +173,12 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     else
         offset = -1;
     coords.enX += offset;
-    // coords.enY -= offset;
 
     std::pair<inicioCaja, finCaja> vecs;
     b2Vec2 vectorCoordInicio = deCoordAb2Vec(coords);
 
-    //reutilizo la variables coords para la segunda coordenada (sup der)
-    //WARNING: ESTO ES UNA BANDA, ES SOLO PARA QUE ANDE
-    // coords.enX += offset * 1;
-    // coords.enY += offset * 1;
 
     b2Vec2 vectorCoordFin = deCoordAb2Vec(coords);
-    //WARNING Valores hardcodeados hasta ver cual se ve mejor
-    // vectorCoordFin.x += vectorCoordInicio.x + offset;
-    // vectorCoordFin.y += vectorCoordInicio.y + 2 * offset;
 
     vecs.inicio = vectorCoordInicio;
     vecs.fin = vectorCoordFin;
@@ -328,7 +318,8 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     // this->cuerpo->ApplyLinearImpulseToCenter(golpeton, true);
     std::cout << "Vida nueva: " << this->vida << "\n";
-    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
+    this->cuerpo->SetLinearVelocity(golpe);
+    this->estado = HERIDO;
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 

@@ -179,7 +179,8 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
        &&
        entidadB->tipo == TipoEntidad::GUSANO) {
         if (entidadB->gusano->getEstado() != SALTANDO &&
-            entidadB->gusano->getEstado() != HACE_PIRUETA) {
+            entidadB->gusano->getEstado() != HACE_PIRUETA &&
+            entidadB->gusano->getEstado() != HERIDO) {
             entidadB->gusano->setEstado(CAYENDO);
         }
     }
@@ -187,9 +188,10 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     if(entidadB->tipo == TipoEntidad::VIGA
        &&
        entidadA->tipo == TipoEntidad::GUSANO) {
-        if (entidadB->gusano->getEstado() != SALTANDO &&
-            entidadB->gusano->getEstado() != HACE_PIRUETA) {
-            entidadB->gusano->setEstado(CAYENDO);
+        if (entidadA->gusano->getEstado() != SALTANDO &&
+            entidadA->gusano->getEstado() != HACE_PIRUETA &&
+            entidadA->gusano->getEstado() != HERIDO) {
+            entidadA->gusano->setEstado(CAYENDO);
         }
     }
     // std::cout << "FIN CONTACTO\n";
