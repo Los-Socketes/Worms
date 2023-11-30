@@ -95,23 +95,22 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if(entidadA->tipo == TipoEntidad::VIGA
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
-        float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
-        if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
-            std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
-        }
-        entidadB->gusano->setEstado(QUIETO);
+        std::cout << "Viga: " << cuerpoA->GetPosition().y << "\n";
+        entidadB->gusano->recibirDanioCaida(cuerpoB->GetLinearVelocity());
+        // entidadB->gusano->setEstado(QUIETO);
     }
 
     else if(entidadB->tipo == TipoEntidad::VIGA 
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
-        float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
-        if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
-            std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
-        }
-        entidadA->gusano->setEstado(QUIETO);
+        // float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
+        // float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
+        // if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
+        //     std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
+        // }
+        std::cout << "Viga: " << cuerpoB->GetPosition().y << "\n";
+        entidadA->gusano->recibirDanioCaida(cuerpoA->GetLinearVelocity());
+        // entidadA->gusano->setEstado(QUIETO);
     }
 
     else if (entidadA->tipo == TipoEntidad::GUSANO
@@ -386,7 +385,7 @@ bool Partida::enviarEstadoAJugadores() {
 	  estadoActual->jugadorDeTurno = jugador;
 	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
 	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
-	  std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
+	//   std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
@@ -434,9 +433,7 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo = std::atan(-velocidad.y/velocidad.x);
             repre.angulo += M_PI/2;
         }
-        std::cout << "ANGULO A ENVIAR: " << repre.angulo << "\n";
-        // repre.angulo = 0.0f;
-        // repre.angulo = proyectil->cuerpo->GetAngle();
+        
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -444,12 +441,6 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
-    // if (this->clientes.size() < MINJUGADORES)
-    //     estadoActual->momento = ESPERANDO;
-    // else if (this->termino == true)
-    //     estadoActual->momento = TERMINADA;
-    // else
-    //     estadoActual->momento = EN_MARCHA;
     estadoActual->momento = this->momento;
 
     bool hayJugadores = false;
