@@ -433,9 +433,7 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo = std::atan(-velocidad.y/velocidad.x);
             repre.angulo += M_PI/2;
         }
-        // std::cout << "ANGULO A ENVIAR: " << repre.angulo << "\n";
-        // repre.angulo = 0.0f;
-        // repre.angulo = proyectil->cuerpo->GetAngle();
+        
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -443,12 +441,6 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->proyectiles = proyectilesRepre;
 
-    // if (this->clientes.size() < MINJUGADORES)
-    //     estadoActual->momento = ESPERANDO;
-    // else if (this->termino == true)
-    //     estadoActual->momento = TERMINADA;
-    // else
-    //     estadoActual->momento = EN_MARCHA;
     estadoActual->momento = this->momento;
 
     bool hayJugadores = false;
