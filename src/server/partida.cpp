@@ -556,7 +556,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
         nuevoProyectil->tipo = TipoProyectil::Countdown;
     }
-    else if (arma == BAZOOKA_P) {
+    else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P) {
         nuevoProyectil->tipo = TipoProyectil::Colision;
     } else {
         nuevoProyectil->tipo = TipoProyectil::Ningun;

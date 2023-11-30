@@ -506,6 +506,7 @@ Ataque Gusano::ejecutar(Accion accion) {
 	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
 	  posicion = deCoordAb2Vec(ataquePos);
 	  std::cout << "POSITION: " << posicion.x << " " << posicion.y << "\n";
+	  ataqueARealizar.impulsoInicial = b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY);
         }
 
         ataqueARealizar.posicion = posicion;
