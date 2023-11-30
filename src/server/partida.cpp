@@ -902,7 +902,7 @@ void Partida::borrarCuerpos() {
         Proyectil *proyectil = this->proyectiles[i];
         b2Body *cuerpoABorrar = proyectil->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
-        if (proyectil->exploto) {
+        if (proyectil->exploto && proyectil->countdown < 0) {
             // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             // delete entidadB;
@@ -1018,9 +1018,7 @@ void Partida::gameLoop() {
         
             proyectil->countdown -= 1;
             }
-            if (proyectil->countdown <= 0 && !proyectil->exploto) {
-                this->generarExplosion(proyectil);
-            }
+            this->generarExplosion(proyectil);
             // Accion ultimaAccion = gusanoActual->getUltimaAccion();
             // ataqueARealizar.arma = ultimaAccion.armaAEquipar;
 
