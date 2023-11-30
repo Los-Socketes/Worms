@@ -386,7 +386,7 @@ bool Partida::enviarEstadoAJugadores() {
 	  estadoActual->jugadorDeTurno = jugador;
 	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
 	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
-	  // std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
+	  std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
@@ -426,7 +426,16 @@ bool Partida::enviarEstadoAJugadores() {
         // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
-        repre.angulo = 0.0f;
+        b2Vec2 velocidad = proyectil->cuerpo->GetLinearVelocity();
+        if (velocidad.y > 0) {
+            repre.angulo = std::atan(velocidad.y/velocidad.x);
+            repre.angulo = M_PI/2 - repre.angulo;
+        } else {
+            repre.angulo = std::atan(-velocidad.y/velocidad.x);
+            repre.angulo += M_PI/2;
+        }
+        std::cout << "ANGULO A ENVIAR: " << repre.angulo << "\n";
+        // repre.angulo = 0.0f;
         // repre.angulo = proyectil->cuerpo->GetAngle();
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
@@ -602,6 +611,10 @@ Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
 
 
 bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
+    bool finDelGusano;
+    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    if (finDelGusano == false)
+        return false;
     bool todoExploto;
     todoExploto = (proyectil->countdown <= 0);
     if (todoExploto == false)
@@ -625,10 +638,6 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual,
     if (todoEstaQuieto == false)
         return false;
 
-    bool finDelGusano;
-    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
-    if (finDelGusano == false)
-        return false;
 
 
 
