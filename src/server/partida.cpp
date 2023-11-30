@@ -653,7 +653,7 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
         return false;
     bool todoExploto;
     for (auto &&proyectil : this->proyectiles) {
-        if (proyectil->countdown <= 0) {
+        if (!proyectil->exploto) {
             return false;
         }
     }
