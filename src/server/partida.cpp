@@ -426,7 +426,16 @@ bool Partida::enviarEstadoAJugadores() {
         // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
-        repre.angulo = 0.0f;
+        b2Vec2 velocidad = proyectil->cuerpo->GetLinearVelocity();
+        if (velocidad.y > 0) {
+            repre.angulo = std::atan(velocidad.y/velocidad.x);
+            repre.angulo = M_PI/2 - repre.angulo;
+        } else {
+            repre.angulo = std::atan(-velocidad.y/velocidad.x);
+            repre.angulo += M_PI/2;
+        }
+        std::cout << "ANGULO A ENVIAR: " << repre.angulo << "\n";
+        // repre.angulo = 0.0f;
         // repre.angulo = proyectil->cuerpo->GetAngle();
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
