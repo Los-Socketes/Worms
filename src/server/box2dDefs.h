@@ -118,6 +118,7 @@ struct Proyectil {
     //colisionaron
     bool enElAire;
     bool colisiono;
+    b2Fixture* fixture;
 
     int countdown;
 };
