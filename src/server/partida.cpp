@@ -386,7 +386,7 @@ bool Partida::enviarEstadoAJugadores() {
 	  estadoActual->jugadorDeTurno = jugador;
 	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
 	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
-	  // std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
+	  std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
@@ -611,6 +611,10 @@ Jugador *Partida::siguienteJugador(Jugador *viejoJugador) {
 
 
 bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil) {
+    bool finDelGusano;
+    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
+    if (finDelGusano == false)
+        return false;
     bool todoExploto;
     todoExploto = (proyectil->countdown <= 0);
     if (todoExploto == false)
@@ -634,10 +638,6 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual,
     if (todoEstaQuieto == false)
         return false;
 
-    bool finDelGusano;
-    finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
-    if (finDelGusano == false)
-        return false;
 
 
 
