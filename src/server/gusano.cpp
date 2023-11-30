@@ -508,57 +508,20 @@ Ataque Gusano::ejecutar(Accion accion) {
 	 armaEquipada == GRANADA_SANTA_P ||
      armaEquipada == BANANA_P 
 	 ) {
-	        // proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
-	        // tiempoEspera = 100;
 	        std::cout << "Tiempo: " << tiempoEspera << "\n";
         } else if (armaEquipada == BAZOOKA_P) {
-	//   proyectil->tipo = TipoProyectil::Colision;
         }
         else {
-            // proyectil->tipo = TipoProyectil::Ningun;
 	        tiempoEspera = 0;
         }
 
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-
+        
         b2Vec2 adelante;
         adelante = this->cuerpo->GetPosition(); 
 
         adelante.x += 0;
         adelante.y += 1;
-        // proyectil->cuerpo->SetTransform(adelante , true);
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-        // if (this->armaEquipada == BANANA_P) {
-        //     // b2FixtureDef fixtureNuevo;
-        //     // b2CircleShape circleShape;
-        //     // circleShape.m_radius = 0.05; // very small
-        
-        //     // fixtureNuevo.shape = &circleShape;
-        //     // fixtureNuevo.density = 3.0f;
-        //     // fixtureNuevo.friction = 0.3f;
-        //     // fixtureNuevo.restitution = 0.8;
-
-        //     // proyectil->cuerpo->DestroyFixture(proyectil->fixture);
-
-        //     // proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
-        // }
-        // if (this->armaEquipada == DINAMITA_P) {
-        //     b2FixtureDef fixtureNuevo;
-        //     b2CircleShape circleShape;
-        //     circleShape.m_radius = 0.05; // very small
-        
-        //     fixtureNuevo.shape = &circleShape;
-        //     fixtureNuevo.density = 3.0f;
-        //     fixtureNuevo.friction = 0.3f;
-        //     fixtureNuevo.restitution = 0;
-
-        //     proyectil->cuerpo->DestroyFixture(proyectil->fixture);
-
-        //     proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
-        // }
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
       float angulo = this->armaSeleccionada->getAngulo();
@@ -581,13 +544,9 @@ Ataque Gusano::ejecutar(Accion accion) {
 
       impulso.x = adyacente;
       impulso.y = opuesto;
-	//   b2Vec2 golpeDeseado(adyacente, opuesto);
-	//   proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
         }
 
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-
+        
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         ataqueARealizar.impulsoInicial = impulso;

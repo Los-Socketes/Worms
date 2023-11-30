@@ -575,30 +575,13 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     nuevoProyectil->countdown = ataque.tiempoEspera;
 
     if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
-    //     if (countdown > 0)
-	//   return;
-    //     this->generarExplosion(nuevoProyectil, ataque);
         nuevoProyectil->tipo = TipoProyectil::Countdown;
-        //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
     }
     else if (arma == BAZOOKA_P) {
-    //     if (colisiono == false)
-	//   return;
-    //     //WARNING HAY QUE PONER QUE NO EXPLOTO MAS ADELANTE
-    //     // proyectil->exploto = true;
-    //     this->generarExplosion(nuevoProyectil, ataque);
         nuevoProyectil->tipo = TipoProyectil::Colision;
     } else {
         nuevoProyectil->tipo = TipoProyectil::Ningun;
     }
-
-    // ArmaDeseada arma;
-    // arma = proyectil->armaOrigen;
-    // int countdown = proyectil->countdown;
-    // bool colisiono = proyectil->colisiono;
-    //Si no quiere equiparse nada, no hacemos nada
-    // if (arma == NADA_P)
-    //     return;
 
     if (arma == BATE_P) {
         std::cout << "ESTOY ACA\n";
@@ -823,8 +806,6 @@ Proyectil *Partida::proyectilConstructor() {
     nuevoProyectil->colisiono = false;
 
 
-
-
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
     nuevaEntidad->proyectilReal = nuevoProyectil;
@@ -847,9 +828,6 @@ Proyectil *Partida::proyectilConstructor() {
     nuevoProyectil->fixture = body->CreateFixture(&fixtureDef);
 
     nuevoProyectil->cuerpo = body;
-
-
-
 
 
     nuevoProyectil->exploto = false;
@@ -955,10 +933,8 @@ void Partida::gameLoop() {
 
     bool exploto = false;
 
-    // Proyectil *nuevoProyectil = this->proyectilConstructor();
 
     Ataque ataqueARealizar;
-    // ataqueARealizar.proyectilAsociado = nuevoProyectil;
 
     time_t tiempoActual;
     tiempoActual = time(NOW);
@@ -1002,50 +978,13 @@ void Partida::gameLoop() {
 
         ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
-        //TODO: Tener fe
-        // std::cout << "CANT: " << this->proyectiles.size();
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
-        // equivalente a exploto/ borrarlo
-        // if (proyectil->countdown == 0
-        //     ) {
-        //     proyectil->armaOrigen = ataqueARealizar.arma;
-        //     proyectil->countdown = ataqueARealizar.tiempoEspera;
-        //     proyectil->exploto = false;
-        // }
-
-        // baja el tiempo del countdown
-        
             proyectil->countdown -= 1;
             }
             this->generarExplosion(proyectil);
-            // Accion ultimaAccion = gusanoActual->getUltimaAccion();
-            // ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-
-            // ataqueARealizar.posicion = nuevoProyectil->posicion;
         }
-
-        //     else if (proyectil->tipo == TipoProyectil::Colision) {
-        // // si no colisiono -> esta en el aire
-        // if (proyectil->enElAire == false && proyectil->colisiono == false) {
-        //     proyectil->armaOrigen = ataqueARealizar.arma;
-        //     proyectil->enElAire = true;
-        // }
-        // colisiono -> borro
-        // else if (proyectil->exploto == true) {
-        //     proyectil->exploto = false;
-        //     proyectil->colisiono = false;
-
-        //     Accion ultimaAccion = gusanoActual->getUltimaAccion();
-        //     ataqueARealizar.arma = ultimaAccion.armaAEquipar;
-        // }
-            // } else {
-            // //   std::cout << "Holis " << nuevoProyectil->armaOrigen << "\n";
-            // proyectil->armaOrigen = ataqueARealizar.arma;
-            // }
             
-        
-
         this->crearProyectiles(gusanoActual, ataqueARealizar);
 
         std::this_thread::sleep_for(frameDuration);
