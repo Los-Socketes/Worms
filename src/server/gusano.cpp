@@ -395,7 +395,7 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
-Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
+Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
         this->setEstado(QUIETO);
@@ -481,6 +481,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         break;
     case ATAQUE:
         {
+        b2Vec2 impulso(0,0);
         tiempoEspera = 0;
         armaQueQuiero = this->armaEquipada;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -507,57 +508,20 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	 armaEquipada == GRANADA_SANTA_P ||
      armaEquipada == BANANA_P 
 	 ) {
-	        proyectil->tipo = TipoProyectil::Countdown;
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
-	        // tiempoEspera = 100;
 	        std::cout << "Tiempo: " << tiempoEspera << "\n";
         } else if (armaEquipada == BAZOOKA_P) {
-	  proyectil->tipo = TipoProyectil::Colision;
         }
         else {
-            proyectil->tipo = TipoProyectil::Ningun;
 	        tiempoEspera = 0;
         }
 
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-
+        
         b2Vec2 adelante;
         adelante = this->cuerpo->GetPosition(); 
 
         adelante.x += 0;
         adelante.y += 1;
-        proyectil->cuerpo->SetTransform(adelante , true);
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-        if (this->armaEquipada == BANANA_P) {
-            b2FixtureDef fixtureNuevo;
-            b2CircleShape circleShape;
-            circleShape.m_radius = 0.05; // very small
-        
-            fixtureNuevo.shape = &circleShape;
-            fixtureNuevo.density = 3.0f;
-            fixtureNuevo.friction = 0.3f;
-            fixtureNuevo.restitution = 0.8;
-
-            proyectil->cuerpo->DestroyFixture(proyectil->fixture);
-
-            proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
-        }
-        if (this->armaEquipada == DINAMITA_P) {
-            b2FixtureDef fixtureNuevo;
-            b2CircleShape circleShape;
-            circleShape.m_radius = 0.05; // very small
-        
-            fixtureNuevo.shape = &circleShape;
-            fixtureNuevo.density = 3.0f;
-            fixtureNuevo.friction = 0.3f;
-            fixtureNuevo.restitution = 0;
-
-            proyectil->cuerpo->DestroyFixture(proyectil->fixture);
-
-            proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
-        }
 
         if (this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable == true) {
       float angulo = this->armaSeleccionada->getAngulo();
@@ -578,15 +542,15 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	      adyacente *= -1;
 	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 
-	  b2Vec2 golpeDeseado(adyacente, opuesto);
-	  proyectil->cuerpo->SetLinearVelocity(golpeDeseado);
+      impulso.x = adyacente;
+      impulso.y = opuesto;
         }
 
-        // std::cout << "MI POS: " << proyectil->cuerpo->GetPosition().x
-        // 	        << " " << proyectil->cuerpo->GetPosition().y << "\n";
-
+        
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
+        ataqueARealizar.impulsoInicial = impulso;
+        ataqueARealizar.posicion = adelante;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
         std::cout << ataqueARealizar.arma << "ATACO\n";

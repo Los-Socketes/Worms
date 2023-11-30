@@ -99,16 +99,16 @@ class Partida : public Thread {
 
     void borrarCuerpos(); 
 
-    bool sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
+    bool sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual);
 
-    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual, Proyectil *proyectil);
+    std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
 
     //Bueno que lo construye
     Proyectil *proyectilConstructor();
 
-    void generarExplosion(Proyectil *proyectil, Ataque ataque);
+    void generarExplosion(Proyectil *proyectil);
 
-    void crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyectil);
+    void crearProyectiles(Gusano *gusano, Ataque ataque);
 
 
 public:
