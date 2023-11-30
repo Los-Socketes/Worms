@@ -473,6 +473,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         return;
     }
     proyectil->exploto = true;
+    proyectil->colisiono = true;
 
     // printf("KATAPUM\n");
     //Fuente: https://www.iforce2d.net/b2dtut/explosions
@@ -858,7 +859,7 @@ void Partida::borrarCuerpos() {
         Proyectil *proyectil = this->proyectiles[i];
         b2Body *cuerpoABorrar = proyectil->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
-        if (proyectil->exploto && proyectil->countdown < 0) {
+        if (proyectil->exploto && (proyectil->countdown < 0 || proyectil->colisiono)) {
             // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             // delete entidadB;
@@ -936,14 +937,15 @@ void Partida::gameLoop() {
         gusanoActual = gusanoYJugador.first;
         jugadorActual = gusanoYJugador.second;
 
+        //Fabri was here
+        this->finPartida = NOT this->enviarEstadoAJugadores();
+        if (this->finPartida == true)
+	        break;
+
         this->borrarCuerpos();
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
 
-        //Fabri was here
-        this->finPartida = NOT this->enviarEstadoAJugadores();
-        if (this->finPartida == true)
-	  break;
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;
