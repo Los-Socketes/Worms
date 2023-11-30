@@ -298,7 +298,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
     std::cout << "Danio: " << danio << "\n";
-    std::cout << "distancia: " << distanceFactor << "\n";
+    std::cout << "distancia: " << porcentaje << "\n";
     std::cout << "distancia: " << distanciaGusanoBomba << "\n";
     if (this->vida < (u_int) danioReal) {
         this->vida = 0;
