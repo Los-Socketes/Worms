@@ -269,6 +269,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
 void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     if (this->golpeado == true)
         return;
+    this->golpeado = true;
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
 
@@ -349,7 +350,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
 
 
-    this->golpeado = true;
+    // this->golpeado = true;
 }
 
 void Gusano::preparar(Accion& accion) {
