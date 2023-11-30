@@ -177,6 +177,7 @@ void Dibujador::dibujar(ControlIteracion& iteraciones,
     std::vector<RepresentacionViga>& vigas,
     std::pair<int, int>& pos_cursor,
     std::vector<colorJugador>& colores,
+    int& volumen, bool& muteado,
     bool& es_host) {
     renderizador.Clear();
 
@@ -195,6 +196,7 @@ void Dibujador::dibujar(ControlIteracion& iteraciones,
         dibujarMuniciones(gusano_actual.armaEquipada);
         dibujarBarrasVida(colores);
         dibujarCuentaRegresivaTurno();
+        dibujarVolumen(volumen, muteado);
         dibujarTextoTurno();
     }
     if (estado_juego->momento == TERMINADA) {
@@ -243,7 +245,7 @@ void Dibujador::dibujarGusanos(ControlIteracion& iteraciones,
             // Dibujo al gusano.
             gestor_multimedia.dibujarGusano(gusano.idGusano, gusano.estado, gusano.armaEquipada, gusano.dir, posicion.first, posicion.second, iteraciones);
             // Dibujo la vida del gusano.
-            if (gusano.estado != MUERTO && gusano.estado != AHOGADO) {
+            if ((gusano.estado != MUERTO && gusano.estado != AHOGADO) || gusano.vida > 0) {
                 dibujarVida(posicion, gusano.vida, colores.at(jugador.first));
             }
             // Dibujo la reticula del gusano si esta apuntando.
@@ -441,6 +443,16 @@ void Dibujador::dibujarCuentaRegresivaTurno() {
         }
         segundos_turno = estado_juego->segundosRestantes;
     }
+}
+
+void Dibujador::dibujarVolumen(int& volumen, bool& muteado) {
+    // Dibujo el volumen en la esquina superior izquierda.
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    std::pair<int, int> posicion;
+    posicion.first = 30;
+    posicion.second = 30;
+    gestor_multimedia.dibujarVolumen(volumen, muteado, posicion.first, posicion.second);
 }
 
 void Dibujador::dibujarTextoTurno() {

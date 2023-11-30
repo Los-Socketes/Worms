@@ -74,17 +74,29 @@ void Cliente::ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mo
             pos_cursor.second = comando.parametros.second;
             break;
         case VOLUMEN_MAS:
-            if (volumen + 8 <= MIX_MAX_VOLUME) {
+            if (volumen <= MIX_MAX_VOLUME) {
                 volumen += 8;
+                if (volumen > MIX_MAX_VOLUME) {
+                    volumen = MIX_MAX_VOLUME;
+                }
                 mixer.SetMusicVolume(volumen);
                 mixer.SetVolume(-1, volumen);
+                if (muteado) {
+                    muteado = false;
+                }
             }
             break;
         case VOLUMEN_MENOS:
-            if (volumen - 8 >= 0) {
+            if (volumen > 0) {
                 volumen -= 8;
+                if (volumen < 0) {
+                    volumen = 0;
+                }
                 mixer.SetMusicVolume(volumen);
                 mixer.SetVolume(-1, volumen);
+                if (muteado) {
+                    muteado = false;
+                }
             }
             break;
         case TOGGLE_MUTEAR:
@@ -186,7 +198,11 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         actualizarObjetivoCamara();
 
         // Renderizo.
-        dibujador.dibujar(control_iteracion, info_inicial.vigas, pos_cursor, colores, es_host);
+        dibujador.dibujar(control_iteracion,
+            info_inicial.vigas,
+            pos_cursor, colores,
+            volumen, muteado,
+            es_host);
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();

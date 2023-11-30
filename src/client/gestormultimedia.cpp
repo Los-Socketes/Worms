@@ -27,6 +27,17 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
     escenario[VIGA_CHICA] = std::make_shared<Animacion>(renderizador, "assets/sprites/grds4.png", 70, 20, 1, true, false);
     escenario[FLECHA_GUSANO] = std::make_shared<Animacion>(renderizador, "assets/sprites/arrowdnc.png", 60, 60, 30, true, true);
     
+    escenario[VOLUMEN_0] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume0.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_0]->setDimensiones(35, 35);
+    escenario[VOLUMEN_1] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume1.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_1]->setDimensiones(35, 35);
+    escenario[VOLUMEN_2] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume2.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_2]->setDimensiones(35, 35);
+    escenario[VOLUMEN_3] = std::make_shared<Animacion>(renderizador, "assets/sprites/volume3.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_3]->setDimensiones(35, 35);
+    escenario[VOLUMEN_MUTEADO] = std::make_shared<Animacion>(renderizador, "assets/sprites/volumemute.png", 100, 100, 1, false, false);
+    escenario[VOLUMEN_MUTEADO]->setDimensiones(35, 35);
+
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false, false);
     iconos[BATE_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/ibaseball.png", 32, 32, 1, false, false);
@@ -363,6 +374,22 @@ void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo
 
 void GestorMultimedia::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
     escenario[FLECHA_GUSANO]->dibujar(camara, pos_x, pos_y, false, it, 1);
+}
+
+void GestorMultimedia::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y) {
+    int it = 0;
+    // El volumen va de 0 a 128, lo divido en 4 partes.
+    if (muteado) {
+        escenario[VOLUMEN_MUTEADO]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 32) {
+        escenario[VOLUMEN_0]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 64) {
+        escenario[VOLUMEN_1]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else if (volumen < 96) {
+        escenario[VOLUMEN_2]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    } else {
+        escenario[VOLUMEN_3]->dibujar(camara, pos_x, pos_y, false, it, 1);
+    }
 }
 
 void GestorMultimedia::reproducirSonido(TipoSonido tipo) {

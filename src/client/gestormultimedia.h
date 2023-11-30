@@ -23,7 +23,12 @@ enum ItemEscenario {
     VIGA_GRANDE,
     VIGA_CHICA,
     EXPLOSION,
-    FLECHA_GUSANO
+    FLECHA_GUSANO,
+    VOLUMEN_0,
+    VOLUMEN_1,
+    VOLUMEN_2,
+    VOLUMEN_3,
+    VOLUMEN_MUTEADO
 };
 
 enum TipoSonido {
@@ -81,6 +86,7 @@ class GestorMultimedia {
     void dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones);
     void dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones);
     void dibujarFlechaGusano(int& pos_x, int& pos_y, int& it);
+    void dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y);
     void reproducirSonido(TipoSonido tipo);
 };
 

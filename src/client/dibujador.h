@@ -54,6 +54,7 @@ class Dibujador {
       void dibujarMuniciones(RepresentacionArma& arma);
       void dibujarBarrasVida(std::vector<colorJugador>& colores);
       void dibujarCuentaRegresivaTurno();
+      void dibujarVolumen(int& volumen, bool& muteado);
       void dibujarTextoTurno();
       void dibujarPantallaEspera(MomentoDePartida& momento, 
           std::vector<colorJugador>& colores, bool& es_host);
@@ -73,6 +74,7 @@ class Dibujador {
           std::vector<RepresentacionViga>& vigas,
           std::pair<int, int>& pos_cursor,
           std::vector<colorJugador>& colores,
+          int& volumen, bool& muteado,
           bool& es_host);
 };
 
