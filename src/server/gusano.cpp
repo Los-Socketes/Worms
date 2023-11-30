@@ -198,7 +198,9 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
 
 void Gusano::realizarMovimiento(Direccion direccionDeseada) {
-    if (this->estado == CAYENDO)
+    if (this->estado == CAYENDO ||
+        this->estado == SALTANDO ||
+        this->estado == HACE_PIRUETA)
         return;
 
     // b2Vec2 direccion;
@@ -274,9 +276,9 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         return;
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
-    int distancia;
-    distancia = distanciaEntreVectores(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
-    std::cout << "DISTANCIA: " << distancia << "\n";
+
+    float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
+
     //TODO cambiar a que no tenga que crear el arma para obtener el danio
     Arma armaUsada(tipoArma);
     u_int danio = armaUsada.getDanio().epicentro;
@@ -285,36 +287,31 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     //TODO Hacer que cada arma tenga esta formula
     // la formula es -12.5 * distancia + 50 = danio
 
-    // int danioReal;
-    // danioReal = -12.5 * distancia + danio;
-    // danioReal = -12.5 * distancia + 50;
-
-    float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
     int radio = armaUsada.getDanio().radio;
+
+    int danioReal;
+    std::cout << "DISTANCIA: " << distanciaGusanoBomba << "\n";
+
     float porcentaje = 1.0f / (1.0f + std::pow(distanciaGusanoBomba / radio,2));
 
-    // Calculate the graduated damage
-    float danioReal = danio * porcentaje;
+    // // Calculate the graduated damage
+    danioReal = danio * porcentaje;
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
-    std::cout << "Danio: " << danio << "\n";
-    std::cout << "distancia: " << porcentaje << "\n";
-    std::cout << "distancia: " << distanciaGusanoBomba << "\n";
+    // std::cout << "Danio: " << danio << "\n";
+    // std::cout << "Danio: " << danioReal << "\n";
+    // std::cout << "distancia: " << porcentaje << "\n";
+    // std::cout << "distancia: " << distanciaGusanoBomba << "\n";
     if (this->vida < (u_int) danioReal) {
         this->vida = 0;
         this->setEstado(MUERTO);
 
-        //Desabilito al cuerpo para que, una vez muerto, no colisione
-        //ras
-        //this->cuerpo->SetEnabled(false);
     } else {
         printf("RECIBI DANO\n");
         this->vida -= danioReal;
     }
     this->turno.recibioDano = true;
 
-    std::cout << "SORETE SORETE " << golpe.x << " " << golpe.y << "\n";
-    std::cout << "SORETE SORETE " << this->cuerpo->GetPosition().x << " " << this->cuerpo->GetPosition().y << "\n";
 
     // golpe.x *= distancia;
     // golpe.y *= distancia;
