@@ -465,12 +465,16 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 }
 
 void Partida::generarExplosion(Proyectil *proyectil) {
-    if (proyectil->countdown > 0) {
+    if (proyectil->tipo == TipoProyectil::Countdown && proyectil->countdown > 0) {
+        return;
+    }
+
+    else if (proyectil->tipo == TipoProyectil::Colision && proyectil->colisiono == false) {
         return;
     }
     proyectil->exploto = true;
 
-    printf("KATAPUM\n");
+    // printf("KATAPUM\n");
     //Fuente: https://www.iforce2d.net/b2dtut/explosions
     int numRays = 32;
     for (int i = 0; i < numRays; i++) {
@@ -530,7 +534,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 
         proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
     }
-    printf("FIN KATAPUM\n");
+    // printf("FIN KATAPUM\n");
 }
 
 
