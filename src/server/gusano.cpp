@@ -152,6 +152,9 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
     float opuesto;
     opuesto = sin(angulo) * hipotenusa*2;
+    if (opuesto < 1) {
+        opuesto = 1;
+    }
 
     b2Vec2 golpeDeseado(adyacente, opuesto);
     golpeYCaja.first = golpeDeseado;
