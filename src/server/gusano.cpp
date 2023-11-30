@@ -139,8 +139,10 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
       /_____|
       Adyacente(x)
      */
-    float potencia = 9;
-    float hipotenusa = 9 * potencia;
+    float potencia = this->armaSeleccionada->getDanio().epicentro;
+    float hipotenusa = potencia;
+    // float potencia = 9;
+    // float hipotenusa = 9 * potencia;
     float angulo = this->armaSeleccionada->getAngulo();
 
     //SOHCAHTOA
@@ -156,7 +158,7 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     b2Vec2 golpeDeseado(adyacente, opuesto);
     golpeYCaja.first = golpeDeseado;
 
-
+    std::cout << "GOLPE: " << golpeDeseado.x << ", " << golpeDeseado.y << "\n";
 
     //CAJA
     std::pair<coordX, coordY> coords;
@@ -296,6 +298,10 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     // // Calculate the graduated damage
     danioReal = (distanciaGusanoBomba > radio) ? 0 : danio * porcentaje;
+    if (tipoArma == BATE_P) {
+        radio = 2;
+        danioReal = danio;
+    }
 
     std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
     // std::cout << "Danio: " << danio << "\n";
@@ -474,7 +480,6 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	        this->teletransportarse();
         }
 
-
         ataqueARealizar.posicion = posicion;
         // tiempoEspera = 99;
         if(armaEquipada == DINAMITA_P ||
@@ -490,6 +495,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
 	  proyectil->tipo = TipoProyectil::Colision;
         }
         else {
+            proyectil->tipo = TipoProyectil::Ningun;
 	        tiempoEspera = 0;
         }
 
@@ -563,7 +569,7 @@ Ataque Gusano::ejecutar(Accion accion, Proyectil *proyectil) {
         ataqueARealizar.arma = armaQueQuiero;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
-        std::cout << "ATACO\n";
+        std::cout << ataqueARealizar.arma << "ATACO\n";
         this->armaSeleccionada->usar();
         break;
         }

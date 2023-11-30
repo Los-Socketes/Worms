@@ -563,6 +563,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
         return;
 
     else if (arma == BATE_P) {
+        std::cout << "ESTOY ACA\n";
         std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
         golpeYCaja = gusano->ejecutarGolpe();
         std::pair<inicioCaja, finCaja> coordsGolpe;
@@ -582,7 +583,17 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque, Proyectil* proyect
 	      continue;
 
 	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-	  entidadA->gusano->recibirDano(golpe, entidadA);
+
+      Entidad *nuevaEntidad = new Entidad;
+      nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+      nuevaEntidad->proyectil.arma = proyectil->armaOrigen;
+      b2Vec2 coords = golpeYCaja.second.first;
+      nuevaEntidad->proyectil.posInicial = coords;
+
+     
+
+      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
+	//   entidadA->gusano->recibirDano(golpe, entidadA);
 
 	  // printf("PEGO\n");
         }
@@ -943,8 +954,10 @@ void Partida::gameLoop() {
 	      Accion ultimaAccion = gusanoActual->getUltimaAccion();
 	      ataqueARealizar.arma = ultimaAccion.armaAEquipar;
 	  }
+        } else {
+        //   std::cout << "Holis " << nuevoProyectil->armaOrigen << "\n";
+          nuevoProyectil->armaOrigen = ataqueARealizar.arma;
         }
-        // std::cout << nuevoProyectil->armaOrigen << "\n";
 
 
         this->crearProyectiles(gusanoActual, ataqueARealizar, nuevoProyectil);
