@@ -1,18 +1,6 @@
-#include "gestormultimedia.h"
+#include "gestoranimaciones.h"
 
-GestorMultimedia::GestorMultimedia(Camara& camara, int ancho_mapa, int alto_mapa) :
-    camara(camara),
-    ancho_mapa(ancho_mapa),
-    alto_mapa(alto_mapa) {}
-
-void GestorMultimedia::setDimensionMapa(int ancho, int alto) {
-    ancho_mapa = ancho;
-    alto_mapa = alto;
-    escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
-}
-
-void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
-
+GestorAnimaciones::GestorAnimaciones(Renderer& renderizador) {
     // Animaciones
 
     // Animaciones de escenario/interfaz.
@@ -167,123 +155,37 @@ void GestorMultimedia::inicializar(Renderer& renderizador, Mixer& mixer) {
 
     // Explosiones.
     escenario[EXPLOSION] = std::make_shared<Animacion>(renderizador, "assets/sprites/circle50.png", 100, 100, 9, true, false);
-
-    // Sonidos.
-
-    // Sonidos de gusanos.
-
-    sonidos[SONIDO_GUSANO_CAMINA_INICIO] = std::make_shared<Sonido>(mixer, "assets/sounds/Walk-Expand.wav");
-    sonidos[SONIDO_GUSANO_CAMINA_FIN] = std::make_shared<Sonido>(mixer, "assets/sounds/Walk-Compress.wav");
-    sonidos[SONIDO_GUSANO_SALTA] = std::make_shared<Sonido>(mixer, "assets/sounds/JUMP1.WAV");
-    sonidos[SONIDO_GUSANO_PIRUETA] = std::make_shared<Sonido>(mixer, "assets/sounds/WORMSPRING.WAV");
-    sonidos[SONIDO_CARGANDO_ARMA] = std::make_shared<Sonido>(mixer, "assets/sounds/ROCKETPOWERUP.WAV");
-    sonidos[SONIDO_CARGANDO_LANZAMIENTO] = std::make_shared<Sonido>(mixer, "assets/sounds/THROWPOWERUP.WAV");
-    sonidos[SONIDO_DISPARO] = std::make_shared<Sonido>(mixer, "assets/sounds/ROCKETRELEASE.WAV");
-    sonidos[SONIDO_LANZAMIENTO] = std::make_shared<Sonido>(mixer, "assets/sounds/THROWRELEASE.WAV");
-    sonidos[SONIDO_EXPLOSION] = std::make_shared<Sonido>(mixer, "assets/sounds/Explosion2.wav");
-    sonidos[SONIDO_EXPLOSION_GRANDE] = std::make_shared<Sonido>(mixer, "assets/sounds/Explosion1.wav");
-    sonidos[SONIDO_GRANADA_SANTA] = std::make_shared<Sonido>(mixer, "assets/sounds/HOLYGRENADE.WAV");
-    sonidos[SONIDO_ATAQUE_AEREO] = std::make_shared<Sonido>(mixer, "assets/sounds/Airstrike.wav");
-    sonidos[SONIDO_COMUNICACION] = std::make_shared<Sonido>(mixer, "assets/sounds/Communicator.wav");
-    sonidos[SONIDO_TELETRANSPORTE] = std::make_shared<Sonido>(mixer, "assets/sounds/TELEPORT.WAV");
-    sonidos[SONIDO_TICK] = std::make_shared<Sonido>(mixer, "assets/sounds/TIMERTICK.WAV");
-    sonidos[SONIDO_DINAMITA] = std::make_shared<Sonido>(mixer, "assets/sounds/FUSE.WAV");
-    sonidos[SONIDO_BATE] = std::make_shared<Sonido>(mixer, "assets/sounds/BaseBallBatImpact.wav");
-    sonidos[SONIDO_AGUA] = std::make_shared<Sonido>(mixer, "assets/sounds/Splash.wav");
-    sonidos[SONIDO_SIN_MUNICIONES] = std::make_shared<Sonido>(mixer, "assets/sounds/NoAmmo.mp3");
-
 }
 
-void GestorMultimedia::reproducirSonidoGusano(IteradorGusano& iterador, EstadoGusano& estado, ArmaProtocolo& arma) {
-    // Si el iterador está en 0 es porque la animacion cambio, reproduzco sonidos donde
-    // corresponda. Para las animaciones de gusano caminando se reproducen dos sonidos, 
-    // uno al inicio y otro a la mitad.
-    switch (estado) {
-        case CAMINANDO:
-            if (iterador.it % gusanos[std::make_pair(estado, arma)]->getFrames() == 0) {
-                sonidos[SONIDO_GUSANO_CAMINA_INICIO]->reproducir();
-            } else if (iterador.it % gusanos[std::make_pair(estado, arma)]->getFrames() == gusanos[std::make_pair(estado, arma)]->getFrames() / 2) {
-                sonidos[SONIDO_GUSANO_CAMINA_FIN]->reproducir();
-            }
-            break;
-        case SALTANDO:
-             if (iterador.it == 0) {
-                 sonidos[SONIDO_GUSANO_SALTA]->reproducir();
-             }
-             break;
-        case HACE_PIRUETA:
-             if (iterador.it == 0) {
-                 sonidos[SONIDO_GUSANO_PIRUETA]->reproducir();
-             }
-             break;
-        case DISPARANDO:
-            if (iterador.it == 0) {
-                if (arma == BATE_P)
-                    sonidos[SONIDO_BATE]->reproducir();
-                else if (arma == ATAQUE_AEREO_P)
-                    sonidos[SONIDO_COMUNICACION]->reproducir();
-                else if (arma == TELETRANSPORTACION_P)
-                    sonidos[SONIDO_TELETRANSPORTE]->reproducir();
-            }                
-            break;
-        case AHOGADO:
-            if (iterador.it == 0) {
-                sonidos[SONIDO_AGUA]->reproducir();
-            }
-            break;
-        case MUERTO:
-            if (iterador.it == 59) {
-                sonidos[SONIDO_EXPLOSION]->reproducir();
-            }
-        default:
-            break;
-    }
+
+std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionGusano(EstadoGusano& estado, ArmaProtocolo& arma) {
+    return gusanos[std::make_pair(estado, arma)];
 }
 
-void GestorMultimedia::reproducirSonidoProyectil(IteradorProyectil& iterador, ArmaProtocolo& proyectil, bool exploto) {
-    // Si el iterador está en 0 es porque la animacion cambio, reproduzco sonidos donde
-    // corresponda. Para las animaciones con loop, se divide el iterador por la cantidad
-    // de frames de la animacion y se reproduce el sonido cuando el resto es 0.
-    if (iterador.it == 0) {
-        if (proyectil == BAZOOKA_P || proyectil == MORTERO_P) {
-            if (exploto)
-                sonidos[SONIDO_EXPLOSION]->reproducir();
-            else
-                sonidos[SONIDO_DISPARO]->reproducir();
-        }
-        else if (proyectil == GRANADA_VERDE_P || proyectil == GRANADA_ROJA_P || proyectil == GRANADA_SANTA_P || proyectil == BANANA_P || proyectil == DINAMITA_P)
-            if (exploto) {
-                if (proyectil == GRANADA_SANTA_P) {
-                    sonidos[SONIDO_EXPLOSION_GRANDE]->reproducir();
-                    sonidos[SONIDO_GRANADA_SANTA]->reproducir();
-                }
-                else if (proyectil == DINAMITA_P)
-                    sonidos[SONIDO_EXPLOSION_GRANDE]->reproducir();
-                else
-                    sonidos[SONIDO_EXPLOSION]->reproducir();
-            } else {
-                sonidos[SONIDO_LANZAMIENTO]->reproducir();
-            }
-        else if (proyectil == ATAQUE_AEREO_P)
-            sonidos[SONIDO_ATAQUE_AEREO]->reproducir();
-    }
-    if (proyectil == DINAMITA_P && iterador.it % proyectiles[std::make_pair(proyectil, false)]->getFrames() == 0) {
-        sonidos[SONIDO_DINAMITA]->reproducir();
-    }
+std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionProyectil(ArmaProtocolo& proyectil, bool& es_fragmento) {
+    return proyectiles[std::make_pair(proyectil, es_fragmento)];
 }
 
-void GestorMultimedia::dibujarAgua(int& pos_x, int& pos_y, int& it) {
+std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionEscenario(ItemEscenario& item) {
+    return escenario[item];
+}
+
+std::shared_ptr<Animacion> GestorAnimaciones::getImagenIcono(ArmaProtocolo& arma) {
+    return iconos[arma];
+}
+/*
+void GestorAnimaciones::dibujarAgua(int& pos_x, int& pos_y, int& it) {
     escenario[AGUA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarFondo() {
+void GestorAnimaciones::dibujarFondo() {
     int pos_x = ancho_mapa / 2;
     int pos_y = alto_mapa / 2;
     int it = 0;
     escenario[FONDO]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla) {
+void GestorAnimaciones::dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla) {
     int pos_x = ancho_pantalla / 2;
     int pos_y = alto_pantalla / 2;
     int it = 0;
@@ -291,7 +193,7 @@ void GestorMultimedia::dibujarFondoEspera(int& ancho_pantalla, int& alto_pantall
     escenario[FONDOESPERA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla) {
+void GestorAnimaciones::dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla) {
     // Cambio el tamaño y la posicion segun el tamaño de la pantalla.
     // La imagen tiene relacion de aspecto 4:3, hago que siempre ocupe el 50% del ancho de la pantalla.
     int tam_x = ancho_pantalla / 2;
@@ -305,12 +207,12 @@ void GestorMultimedia::dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantal
 }
 
 
-void GestorMultimedia::dibujarPanorama(int& pos_x, int& pos_y) {
+void GestorAnimaciones::dibujarPanorama(int& pos_x, int& pos_y) {
     int it = 0;
     escenario[PANORAMA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo) {
+void GestorAnimaciones::dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo) {
     int it = 0;
     radianes ang = -angulo;
     if (largo > 3) {
@@ -322,7 +224,7 @@ void GestorMultimedia::dibujarViga(int& pos_x, int& pos_y, int& largo, radianes&
     }    
 }
 
-void GestorMultimedia::dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
+void GestorAnimaciones::dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
     // Si la animacion cambio, reseteo el iterador.
     iteraciones.actualizarAnimacionGusano(id_gusano, gusanos[std::make_pair(estado, arma.arma)]);
     if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
@@ -333,20 +235,20 @@ void GestorMultimedia::dibujarGusano(id& id_gusano, EstadoGusano& estado, Repres
     reproducirSonidoGusano(iteraciones.getIteradorGusano(id_gusano), estado, arma.arma);
 }
 
-void GestorMultimedia::dibujarReticula(int& pos_x, int& pos_y, int& it) {
+void GestorAnimaciones::dibujarReticula(int& pos_x, int& pos_y, int& it) {
     escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarCursor(int& pos_x, int& pos_y, int& it) {
+void GestorAnimaciones::dibujarCursor(int& pos_x, int& pos_y, int& it) {
     escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y) {
+void GestorAnimaciones::dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y) {
     int it = 0;
     iconos[arma]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones) {
+void GestorAnimaciones::dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones) {
     // Si la animacion cambio, reseteo el iterador.
     iteraciones.actualizarAnimacionProyectil(id_proyectil, proyectiles[std::make_pair(proyectil, es_fragmento)]);
     if (proyectil == DINAMITA_P)
@@ -356,7 +258,7 @@ void GestorMultimedia::dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo
     reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, false);
 }
 
-void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
+void GestorAnimaciones::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
     // Si la animacion cambio, reseteo el iterador.
     iteraciones.actualizarAnimacionProyectil(id_proyectil, escenario[EXPLOSION]);
     if (es_fragmento) {
@@ -372,11 +274,11 @@ void GestorMultimedia::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo
     reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, true);
 }
 
-void GestorMultimedia::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
+void GestorAnimaciones::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
     escenario[FLECHA_GUSANO]->dibujar(camara, pos_x, pos_y, false, it, 1);
 }
 
-void GestorMultimedia::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y) {
+void GestorAnimaciones::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y) {
     int it = 0;
     // El volumen va de 0 a 128, lo divido en 4 partes.
     if (muteado) {
@@ -391,7 +293,4 @@ void GestorMultimedia::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, i
         escenario[VOLUMEN_3]->dibujar(camara, pos_x, pos_y, false, it, 1);
     }
 }
-
-void GestorMultimedia::reproducirSonido(TipoSonido tipo) {
-    sonidos[tipo]->reproducir();
-}
+*/
