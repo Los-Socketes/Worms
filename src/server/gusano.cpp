@@ -396,7 +396,7 @@ void Gusano::preparar(Accion& accion) {
 }
 
 
-int test = 0;
+// int test = 0;
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
@@ -536,8 +536,7 @@ Ataque Gusano::ejecutar(Accion accion) {
 	 ) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
 	        std::cout << "Tiempo: " << tiempoEspera << "\n";
-        } else if (armaEquipada == BAZOOKA_P) {
-        }
+        } 
         else {
 	        tiempoEspera = 0;
         }
