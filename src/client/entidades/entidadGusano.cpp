@@ -105,7 +105,7 @@ void EntidadGusano::reproducirSonidoGusano(std::shared_ptr<Animacion>& animacion
                 if (arma == BATE_P)
                     gestor_sonidos.getSonido(SONIDO_BATE)->reproducir();
                 else if (arma == ATAQUE_AEREO_P)
-                    gestor_sonidos.getSonido(SONIDO_ATAQUE_AEREO)->reproducir();
+                    gestor_sonidos.getSonido(SONIDO_COMUNICACION)->reproducir();
                 else if (arma == TELETRANSPORTACION_P)
                     gestor_sonidos.getSonido(SONIDO_TELETRANSPORTE)->reproducir();
             }                
@@ -117,7 +117,7 @@ void EntidadGusano::reproducirSonidoGusano(std::shared_ptr<Animacion>& animacion
             break;
         case MUERTO:
             if (it == 59) {
-                gestor_sonidos.getSonido(SONIDO_COMUNICACION)->reproducir();
+                gestor_sonidos.getSonido(SONIDO_EXPLOSION)->reproducir();
             }
         default:
             break;
@@ -126,7 +126,8 @@ void EntidadGusano::reproducirSonidoGusano(std::shared_ptr<Animacion>& animacion
 
 void EntidadGusano::dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y) {
     // Si la animacion cambio, reseteo el iterador.
-    std::shared_ptr<Animacion> animacion = gestor_animaciones.getAnimacionGusano(estado, arma.arma);
+    std::shared_ptr<Animacion> animacion;
+    animacion = gestor_animaciones.getAnimacionGusano(estado, arma.arma);
     actualizarAnimacion(animacion);
     if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
         animacion->dibujar(camara, pos_x, pos_y, dir == DERECHA, arma.anguloRad);

@@ -146,7 +146,7 @@ void Cliente::actualizarObjetivoCamara() {
     if (!encontre) {
         for (auto& jugador : estado_juego->gusanos) {
             for(auto& gusano : jugador.second) {
-                if (gusano.second.estado != QUIETO && gusano.second.estado != MUERTO) {
+                if (gusano.second.estado != QUIETO && gusano.second.estado != MUERTO && gusano.second.estado != AHOGADO) {
                     camara.actualizarObjetivo(gusano.second.posicion.first, gusano.second.posicion.second);
                     encontre = true;
                     break;

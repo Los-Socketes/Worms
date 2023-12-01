@@ -86,9 +86,10 @@ void EntidadInterfaz::dibujarCursor() {
 void EntidadInterfaz::dibujarReticula() {
     // Dibujo la reticula del gusano actual si esta apuntando.
     if (gusano_actual.estado == QUIETO && gusano_actual.armaEquipada.tieneMira) {
+        std::pair<int, int> posicion = camara.traducirCoordenadas(gusano_actual.posicion.first, gusano_actual.posicion.second);
         int direccion = gusano_actual.dir == DERECHA ? 1 : -1;
-        int pos_x = gusano_actual.posicion.first + (sin(gusano_actual.armaEquipada.anguloRad + M_PI / 2) * 60) * direccion;
-        int pos_y = gusano_actual.posicion.second + (cos(gusano_actual.armaEquipada.anguloRad + M_PI / 2) * 60);
+        int pos_x = posicion.first + (sin(gusano_actual.armaEquipada.anguloRad + M_PI / 2) * 60) * direccion;
+        int pos_y = posicion.second + (cos(gusano_actual.armaEquipada.anguloRad + M_PI / 2) * 60);
         gestor_animaciones.getAnimacionEscenario(RETICULA)->dibujar(camara, pos_x, pos_y, false, it, 1);
     }
 }
@@ -348,9 +349,9 @@ void EntidadInterfaz::dibujar(){
         dibujarBarraArmas(gusano_actual.armaEquipada.arma);
         dibujarMuniciones(gusano_actual.armaEquipada);
         dibujarBarrasVida();
-        dibujarCuentaRegresivaTurno();
         dibujarVolumen();
         if (estado_juego->momento != TERMINADA) {
+            dibujarCuentaRegresivaTurno();
             dibujarTextoTurno();
         }
     }
