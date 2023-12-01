@@ -644,8 +644,8 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         }
 
         else if (arma == ATAQUE_AEREO_P) {
-	  ataque.posicion.y += 100;
-	  ataque.posicion.x += 2 * i;
+	  ataque.posicion.y += 5;
+	  ataque.posicion.x += 2;
 	  std::cout << "POSITION: " << ataque.posicion.x << " " << ataque.posicion.y << "\n";
 
 
