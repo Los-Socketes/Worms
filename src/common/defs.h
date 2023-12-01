@@ -126,6 +126,16 @@ struct RepresentacionGusano {
     RepresentacionArma armaEquipada;
 };
 
+enum tipoProvision { MUNICION, VIDA };
+
+struct RepresentacionProvisiones {
+    std::pair<coordX, coordY> posicion;
+    bool estaEnElAire;
+    tipoProvision tipo;
+    ArmaProtocolo armaMunicion;
+    bool fueAgarrada;
+};
+
 struct RepresentacionViga {
     radianes angulo;
     //WARNING: En teoria esto solo pueden valer 6 o 3. Mepa que
