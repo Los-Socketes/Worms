@@ -15,7 +15,7 @@ private:
     SituacionJugador miSituacion;
 
 public:
-    Jugador(std::vector<Gusano*> gusanos);
+    Jugador();
 
     void setGusanos(std::vector<Gusano*>gusanos);
     void anadirGusano(Gusano *nuevoGusano);

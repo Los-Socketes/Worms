@@ -280,7 +280,7 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
 InformacionInicial Partida::obtenerInfoInicial() {
     InformacionInicial infoInicial;
 
-    std::vector<Gusano*> gusanosParaElNuevoJugador;
+    // std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
     // for (int i = 0; i < CANTGUSANOS; i++) {
               
@@ -292,7 +292,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     // }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
-    Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
+    Jugador *jugadorNuevo = new Jugador();
     this->jugadores.push_back(jugadorNuevo);
 
     //Creo el id del nuevo jugador
@@ -326,6 +326,8 @@ bool Partida::enviarEstadoAJugadores() {
     std::map<idJugador, std::map<id, RepresentacionGusano>> representacionGusanos;
     std::map<idJugador, SituacionJugador> situaciones;
 
+    estadoActual->jugadorDeTurno = INVAL_ID;
+    estadoActual->gusanoDeTurno = INVAL_ID;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
@@ -944,16 +946,16 @@ void Partida::gameLoop() {
     int cantGusanos = this->mapaUsado.cantGusanos / this->clientes.size();
     if (cantJusta) {
         for (auto &&jugador : this->jugadores) {
-            std::vector<Gusano*> gusanosJugador;
-            for (int i = 0; i < cantGusanos; i++) {
+            // std::vector<Gusano*> gusanosJugador;
+            for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
                 
                 Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
 
-                gusanosJugador.push_back(nuevoGusano);
-                cantidad_gusanos_insertados += 1;
+                jugador->anadirGusano(nuevoGusano);
+                // cantidad_gusanos_insertados += 1;
 
             }
-            jugador->setGusanos(gusanosJugador);
+            // jugador->setGusanos(gusanosJugador);
         }
         
     }  else {
@@ -963,11 +965,11 @@ void Partida::gameLoop() {
                 
                 Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
 
-                gusanosJugador.push_back(nuevoGusano);
+                jugador->anadirGusano(nuevoGusano);
                 // cantidad_gusanos_insertados += 1;
 
             }
-            jugador->setGusanos(gusanosJugador);
+            // jugador->setGusanos(gusanosJugador);
         }
 
         int indexJugador = 0;

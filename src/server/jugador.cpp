@@ -2,9 +2,8 @@
 
 #include <iostream>
 
-Jugador::Jugador(std::vector<Gusano*> gusanos) {
+Jugador::Jugador() {
     this->gusanoActualPos = 0;
-    this->gusanos = gusanos;
     this->miSituacion = JUGANDO;
 }
 
