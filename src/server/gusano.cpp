@@ -715,3 +715,8 @@ void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
 void Gusano::anadirVida(int vidaExtra) {
     this->vida += vidaExtra;
 }
+
+void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
+    Arma armaQueRecibe = this->armas.at(queArma);
+    armaQueRecibe.anadirMuniciones(cantiMunicion);
+}

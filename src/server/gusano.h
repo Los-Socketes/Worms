@@ -99,6 +99,7 @@ public:
     EstadoGusano getEstado();
 
     void anadirVida(int vidaExtra);
+    void anadirMunicion(int cantiMunicion, ArmaProtocolo queArma);
     int getId();
 
     [[nodiscard]] Ataque ejecutar(Accion accion);
