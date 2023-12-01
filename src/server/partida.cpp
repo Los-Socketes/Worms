@@ -1,4 +1,5 @@
 #include "partida.h"
+#include "mapa.h"
 #include <map>
 #include "box2dDefs.h"
 
@@ -20,37 +21,17 @@ Partida::Partida(std::string mapa)
     this->termino = false;
     this->momento = ESPERANDO;
 
+    // TODO: que reciba el mapa por parametro
+    Mapas mapas;
+    Mapa mapaAUsar = mapas.mapas[0];
+    for (auto &&viga : mapaAUsar.vigas) {
+        this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
+    }
 
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 17.0f));
-    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
-    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 23.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(27.0f, 17.0f));
+    for (int i = 0; i < (int)mapaAUsar.posicionGusanos.size(); i++) {
+        this->posicionesGusanos.insert({i, mapaAUsar.posicionGusanos[i]});
+    }
     
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(50.0f, 10.0f));
-    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(60.0f, 10.0f));
-    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(70.0f, 10.0f));
-    
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
-    // this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
-
-    // this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
-    this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
-    
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(37.5f, 18.0f));
-
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(27.0f, 13.0f));
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
-
-    this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(28.5f, 19.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(28.5f, 19.0f)});
-    this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
-    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(51.0f, 19.0f)});
-    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(6.0f, 19.0f)});
-
     this->cantidad_gusanos_insertados = 0;
 
     this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));

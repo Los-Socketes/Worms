@@ -2,6 +2,7 @@
 #define PARTIDA_HEADER
 
 #include "cliente.h"
+#include "mapa.h"
 #include "defs.h"
 #include "thread.h"
 #include <utility>

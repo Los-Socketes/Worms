@@ -139,4 +139,74 @@ Teletransportacion:
 
 
 # # Caracteristicas de gusano # #
-Vida: 50
+Vida: 100
+
+
+# # Mapas # #
+Cantidad mapas: 1
+Nombres mapas: [Pico de la viuda]
+
+Pico de la viuda:
+  Cantidad vigas: 13
+  Viga 1:
+    Tamanio: 6
+    Coordenadas: [5.0, 17.0]
+    Angulo: 0
+  Viga 2:
+    Tamanio: 6
+    Coordenadas: [30.0, 17.0]
+    Angulo: 1.57
+  Viga 3:
+    Tamanio: 6
+    Coordenadas: [30.0, 23.0]
+    Angulo: 1.57
+  Viga 4:
+    Tamanio: 6
+    Coordenadas: [27.0, 17.0]
+    Angulo: 0
+  Viga 5:
+    Tamanio: 6
+    Coordenadas: [5.0, 10.0]
+    Angulo: 0
+  Viga 6:
+    Tamanio: 6
+    Coordenadas: [12.0, 10.0]
+    Angulo: 0
+  Viga 7:
+    Tamanio: 6
+    Coordenadas: [25.0, 10.0]
+    Angulo: 0
+  Viga 8:
+    Tamanio: 6
+    Coordenadas: [50.0, 10.0]
+    Angulo: 0
+  Viga 9:
+    Tamanio: 3
+    Coordenadas: [10.0, 15.0]
+    Angulo: 0
+  Viga 10:
+    Tamanio: 6
+    Coordenadas: [45.0, 17.0]
+    Angulo: -0.39
+  Viga 11:
+    Tamanio: 6
+    Coordenadas: [37.5, 18.0]
+    Angulo: 0
+  Viga 12:
+    Tamanio: 3
+    Coordenadas: [27.0, 13.0]
+    Angulo: 0
+  Viga 13:
+    Tamanio: 3
+    Coordenadas: [48.0, 13.0]
+    Angulo: 0
+
+  Posicion gusanos: [
+    [5.0 ,19.0],
+    [28.5 ,19.0],
+    [25.5 ,19.0],
+    [50.0 ,19.0],
+    [51.0 ,19.0],
+    [6.0 ,19.0],
+  ]
+
