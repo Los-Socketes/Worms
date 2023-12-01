@@ -900,8 +900,8 @@ void Partida::borrarCuerpos() {
         if (proyectil->exploto) {
             // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-            // delete entidadB;
             this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->proyectilReal;
             this->proyectiles.erase(this->proyectiles.begin() + i);
         }
 
