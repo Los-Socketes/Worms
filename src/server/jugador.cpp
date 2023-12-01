@@ -90,3 +90,18 @@ std::map<id, RepresentacionGusano> Jugador::getRepresentacionGusanos() {
 
     return misGusanos;
 }
+
+
+void Jugador::setGusanos(std::vector<Gusano*>gusanos) {
+    this->gusanos = gusanos;
+}
+void Jugador::anadirGusano(Gusano *nuevoGusano) {
+    this->gusanos.push_back(nuevoGusano);
+}
+void Jugador::darMasVidaAGusanos() {
+    for (auto &&gusano : this->gusanos) {
+        // TODO: hacer que lea el 25 del yaml
+        gusano->anadirVida(25);
+    }
+    
+}

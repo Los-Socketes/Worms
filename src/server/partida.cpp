@@ -20,37 +20,17 @@ Partida::Partida(std::string mapa)
     this->termino = false;
     this->momento = ESPERANDO;
 
+    // TODO: que reciba el mapa por parametro
+    Mapas mapas;
+    this->mapaUsado = mapas.mapas[0];
+    for (auto &&viga : this->mapaUsado.vigas) {
+        this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
+    }
 
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 17.0f));
-    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
-    this->anadirViga(M_PI/2, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 23.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(27.0f, 17.0f));
+    for (int i = 0; i < (int)this->mapaUsado.posicionGusanos.size(); i++) {
+        this->posicionesGusanos.insert({i, this->mapaUsado.posicionGusanos[i]});
+    }
     
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(5.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(50.0f, 10.0f));
-    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(60.0f, 10.0f));
-    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(70.0f, 10.0f));
-    
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
-    // this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
-
-    // this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
-    this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
-    
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(37.5f, 18.0f));
-
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(27.0f, 13.0f));
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(48.0f, 13.0f));
-
-    this->posicionesGusanos.insert({0, std::pair<coordX, coordY>(5.0f, 19.0f)});
-    this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(28.5f, 19.0f)});
-    this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(28.5f, 19.0f)});
-    this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
-    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(51.0f, 19.0f)});
-    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(6.0f, 19.0f)});
-
     this->cantidad_gusanos_insertados = 0;
 
     this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));
@@ -86,10 +66,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoA->GetLinearVelocity();
-        // std::cout << "SORETE SORETE " << entidadA->proyectil.posInicial.x << " " << entidadA->proyectil.posInicial.y << "\n";
-        // printf("B\n");
         entidadB->gusano->recibirDano(dir, entidadA);
-        // abort();
     }
 
     else if(entidadA->tipo == TipoEntidad::VIGA
@@ -97,20 +74,13 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->tipo == TipoEntidad::GUSANO) {
         std::cout << "Viga: " << cuerpoA->GetPosition().y << "\n";
         entidadB->gusano->recibirDanioCaida(cuerpoB->GetLinearVelocity());
-        // entidadB->gusano->setEstado(QUIETO);
     }
 
     else if(entidadB->tipo == TipoEntidad::VIGA 
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        // float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
-        // float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
-        // if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
-        //     std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
-        // }
         std::cout << "Viga: " << cuerpoB->GetPosition().y << "\n";
         entidadA->gusano->recibirDanioCaida(cuerpoA->GetLinearVelocity());
-        // entidadA->gusano->setEstado(QUIETO);
     }
 
     else if (entidadA->tipo == TipoEntidad::GUSANO
@@ -133,16 +103,18 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
     //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
     else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
-	   &&
-	   entidadB->tipo == TipoEntidad::VIGA) {
+	//    &&
+	//    entidadB->tipo == TipoEntidad::VIGA
+    ) {
         printf("PROYECTIL REAL A\n");
         entidadA->proyectilReal->enElAire = false;
         entidadA->proyectilReal->colisiono = true;
     }
 
     else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
-	   &&
-	   entidadA->tipo == TipoEntidad::VIGA) {
+	//    &&
+	//    entidadA->tipo == TipoEntidad::VIGA
+    ) {
         printf("PROYECTIL REAL B\n");
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
@@ -310,14 +282,14 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
-    for (int i = 0; i < CANTGUSANOS; i++) {
+    // for (int i = 0; i < CANTGUSANOS; i++) {
               
-        Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
+    //     Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
 
-        gusanosParaElNuevoJugador.push_back(nuevoGusano);
-        cantidad_gusanos_insertados += 1;
+    //     gusanosParaElNuevoJugador.push_back(nuevoGusano);
+    //     cantidad_gusanos_insertados += 1;
 
-    }
+    // }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
@@ -965,6 +937,50 @@ void Partida::gameLoop() {
         std::this_thread::sleep_for(frameDuration);
     }
 
+    bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
+    int cantGusanos = this->mapaUsado.cantGusanos / this->clientes.size();
+    if (cantJusta) {
+        for (auto &&jugador : this->jugadores) {
+            std::vector<Gusano*> gusanosJugador;
+            for (int i = 0; i < cantGusanos; i++) {
+                
+                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+
+                gusanosJugador.push_back(nuevoGusano);
+                cantidad_gusanos_insertados += 1;
+
+            }
+            jugador->setGusanos(gusanosJugador);
+        }
+        
+    }  else {
+        for (auto &&jugador : this->jugadores) {
+            std::vector<Gusano*> gusanosJugador;
+            for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
+                
+                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+
+                gusanosJugador.push_back(nuevoGusano);
+                // cantidad_gusanos_insertados += 1;
+
+            }
+            jugador->setGusanos(gusanosJugador);
+        }
+
+        int indexJugador = 0;
+        for (; cantidad_gusanos_insertados < this->mapaUsado.cantGusanos; cantidad_gusanos_insertados++, indexJugador++) {
+            Jugador *jugadorActual = this->jugadores[indexJugador];
+            Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+            jugadorActual->anadirGusano(nuevoGusano);
+        }
+
+        for (;indexJugador < (int)this->jugadores.size(); indexJugador++) {
+            Jugador *jugadorActual = this->jugadores[indexJugador];
+            jugadorActual->darMasVidaAGusanos();
+        }
+    }
+    int cant = 6/4;
+    std::cout << "CANTIDAD: " << cant << "\n";
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
     int32 positionIterations = 2;

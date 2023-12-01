@@ -711,3 +711,7 @@ void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
     this->vida -= danio;
     this->setEstado(QUIETO);
 }
+
+void Gusano::anadirVida(int vidaExtra) {
+    this->vida += vidaExtra;
+}

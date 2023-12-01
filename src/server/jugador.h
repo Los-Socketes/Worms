@@ -17,6 +17,9 @@ private:
 public:
     Jugador(std::vector<Gusano*> gusanos);
 
+    void setGusanos(std::vector<Gusano*>gusanos);
+    void anadirGusano(Gusano *nuevoGusano);
+    void darMasVidaAGusanos();
     Gusano* getGusanoActual();
     Gusano *getGusanoDeTurno();
 
