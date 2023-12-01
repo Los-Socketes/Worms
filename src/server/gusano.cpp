@@ -532,7 +532,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         if(armaEquipada == DINAMITA_P ||
 	 armaEquipada == GRANADA_VERDE_P ||
 	 armaEquipada == GRANADA_SANTA_P ||
-     armaEquipada == BANANA_P 
+     armaEquipada == BANANA_P ||
+     armaEquipada == GRANADA_ROJA_P
 	 ) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
 	        std::cout << "Tiempo: " << tiempoEspera << "\n";

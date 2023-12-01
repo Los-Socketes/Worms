@@ -475,7 +475,8 @@ void Partida::generarExplosion(Proyectil *proyectil) {
     }
     proyectil->exploto = true;
     proyectil->colisiono = true;
-    if (proyectil->armaOrigen == MORTERO_P && !proyectil->esFragmento) {
+    if ((proyectil->armaOrigen == MORTERO_P || proyectil->armaOrigen == GRANADA_ROJA_P) && 
+        !proyectil->esFragmento) {
         Arma armaElegida(proyectil->armaOrigen);
         this->crearFragmentos(proyectil, armaElegida.getFragmentos());
         return;
@@ -592,7 +593,9 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevoProyectil->countdown = ataque.tiempoEspera;
         nuevoProyectil->esFragmento = false;
 
-        if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
+        if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || 
+            arma == GRANADA_SANTA_P || arma == BANANA_P || 
+            arma == GRANADA_ROJA_P) {
 	  nuevoProyectil->tipo = TipoProyectil::Countdown;
         }
         else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P || arma == MORTERO_P) {
