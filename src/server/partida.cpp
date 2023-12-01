@@ -547,6 +547,9 @@ void Partida::crearFragmentos(Proyectil* proyectil, int cantFragmentos) {
 
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     ArmaProtocolo arma = ataque.arma;
+    if (arma == NADA_P || arma == TELETRANSPORTACION_P) {
+        return;
+    }
     int cantProyectiles = 0;
     if (arma == ATAQUE_AEREO_P)
         cantProyectiles = 5;
@@ -554,9 +557,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         cantProyectiles = 1;
         
     for (int i = 0 ; i < cantProyectiles; i++) {
-        if (arma == NADA_P) {
-	  return;
-        }
         Proyectil *nuevoProyectil = this->proyectilConstructor();
 
 
