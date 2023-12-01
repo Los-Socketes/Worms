@@ -18,8 +18,10 @@ struct Viga {
 struct Mapa {
     std::vector<Viga> vigas;
     std::vector<coordsGusanos> posicionGusanos;
+    int cantGusanos;
 
     Mapa(YAML::Node& config, std::string nombre);
+    Mapa(){}
 };
 
 struct Mapas {

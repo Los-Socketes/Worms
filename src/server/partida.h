@@ -69,6 +69,7 @@ class Partida : public Thread {
     // ResolvedorDestruccion destucciones;
 
     std::string mapa;
+    Mapa mapaUsado;
     std::vector<RepresentacionViga> vigasEnMapa;
     std::pair<coordX, coordY> dimensiones;
     std::map<int, std::pair<coordX, coordY>> posicionesGusanos;

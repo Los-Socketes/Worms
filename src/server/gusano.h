@@ -98,6 +98,7 @@ public:
     void setEstado(EstadoGusano nuevoEstado);
     EstadoGusano getEstado();
 
+    void anadirVida(int vidaExtra);
     int getId();
 
     [[nodiscard]] Ataque ejecutar(Accion accion);

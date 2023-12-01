@@ -18,6 +18,7 @@ Mapa::Mapa(YAML::Node& config, std::string nombre) {
     }
 
     this->posicionGusanos = config[nombre]["Posicion gusanos"].as<std::vector<coordsGusanos>>();
+    this->cantGusanos = this->posicionGusanos.size();
 }
 
 
@@ -31,6 +32,5 @@ Mapas::Mapas() {
 
         this->mapas.push_back(mapaActual);
     }
-
     fin.close(); 
 }

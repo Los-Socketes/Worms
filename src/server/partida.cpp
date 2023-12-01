@@ -22,13 +22,13 @@ Partida::Partida(std::string mapa)
 
     // TODO: que reciba el mapa por parametro
     Mapas mapas;
-    Mapa mapaAUsar = mapas.mapas[0];
-    for (auto &&viga : mapaAUsar.vigas) {
+    this->mapaUsado = mapas.mapas[0];
+    for (auto &&viga : this->mapaUsado.vigas) {
         this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
     }
 
-    for (int i = 0; i < (int)mapaAUsar.posicionGusanos.size(); i++) {
-        this->posicionesGusanos.insert({i, mapaAUsar.posicionGusanos[i]});
+    for (int i = 0; i < (int)this->mapaUsado.posicionGusanos.size(); i++) {
+        this->posicionesGusanos.insert({i, this->mapaUsado.posicionGusanos[i]});
     }
     
     this->cantidad_gusanos_insertados = 0;
@@ -282,14 +282,14 @@ InformacionInicial Partida::obtenerInfoInicial() {
 
     std::vector<Gusano*> gusanosParaElNuevoJugador;
     //Todos los gusanos que creamos lo anadimos al jugador y a la partida
-    for (int i = 0; i < CANTGUSANOS; i++) {
+    // for (int i = 0; i < CANTGUSANOS; i++) {
               
-        Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
+    //     Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
 
-        gusanosParaElNuevoJugador.push_back(nuevoGusano);
-        cantidad_gusanos_insertados += 1;
+    //     gusanosParaElNuevoJugador.push_back(nuevoGusano);
+    //     cantidad_gusanos_insertados += 1;
 
-    }
+    // }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador(gusanosParaElNuevoJugador);
@@ -937,6 +937,50 @@ void Partida::gameLoop() {
         std::this_thread::sleep_for(frameDuration);
     }
 
+    bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
+    int cantGusanos = this->mapaUsado.cantGusanos / this->clientes.size();
+    if (cantJusta) {
+        for (auto &&jugador : this->jugadores) {
+            std::vector<Gusano*> gusanosJugador;
+            for (int i = 0; i < cantGusanos; i++) {
+                
+                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+
+                gusanosJugador.push_back(nuevoGusano);
+                cantidad_gusanos_insertados += 1;
+
+            }
+            jugador->setGusanos(gusanosJugador);
+        }
+        
+    }  else {
+        for (auto &&jugador : this->jugadores) {
+            std::vector<Gusano*> gusanosJugador;
+            for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
+                
+                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+
+                gusanosJugador.push_back(nuevoGusano);
+                // cantidad_gusanos_insertados += 1;
+
+            }
+            jugador->setGusanos(gusanosJugador);
+        }
+
+        int indexJugador = 0;
+        for (; cantidad_gusanos_insertados < this->mapaUsado.cantGusanos; cantidad_gusanos_insertados++, indexJugador++) {
+            Jugador *jugadorActual = this->jugadores[indexJugador];
+            Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+            jugadorActual->anadirGusano(nuevoGusano);
+        }
+
+        for (;indexJugador < (int)this->jugadores.size(); indexJugador++) {
+            Jugador *jugadorActual = this->jugadores[indexJugador];
+            jugadorActual->darMasVidaAGusanos();
+        }
+    }
+    int cant = 6/4;
+    std::cout << "CANTIDAD: " << cant << "\n";
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
