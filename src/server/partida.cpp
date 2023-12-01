@@ -921,6 +921,9 @@ void Partida::gameLoop() {
     
     this->momento = POR_INICIAR;
 
+    Accion accionRecibida;
+    accionRecibida.idGusano = INVAL_ID;
+    accionRecibida.esEmpezar = false;
     while (this->finPartida == false) {
         //FIXME Esto estaria bueno, pero tira excepcion :(
         // if (this->clientes.size() >= MINJUGADORES) {
@@ -931,8 +934,7 @@ void Partida::gameLoop() {
         if (this->finPartida) {
             break;
         }
-        Accion accionRecibida;
-        accionRecibida.idGusano = INVAL_ID;
+
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
