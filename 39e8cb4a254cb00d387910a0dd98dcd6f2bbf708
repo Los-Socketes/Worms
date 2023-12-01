@@ -1,0 +1,1 @@
+Fabri: Este commit mepa que me rompe el audio. No me deja abrir dos clientes al mismo tiempo y me tira el siguiente error: terminate called after throwing an instance of 'SDL2pp::Exception'   what():  Mix_OpenAudio failed: ALSA: Couldn't open audio device: Device or resource busy Aborted
