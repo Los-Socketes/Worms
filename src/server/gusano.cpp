@@ -395,12 +395,26 @@ void Gusano::preparar(Accion& accion) {
     }
 }
 
+
+int test = 0;
+
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
         this->setEstado(QUIETO);
         return ataqueARealizar;
     }
+
+    // if (this->getUltimaAccion().armaAEquipar == ATAQUE_AEREO_P
+    //     &&
+    //     this->getUltimaAccion().accion == ATAQUE
+    //     &&
+    //     test < 2) {
+    //     std::cout << test << "ATAQUE AEREO\n";
+    //     accion = this->getUltimaAccion();
+    //     test += 1;
+    // }
+
 
 
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
@@ -411,6 +425,7 @@ Ataque Gusano::ejecutar(Accion accion) {
     accionDeseada = accion.accion;
     switch (accionDeseada) {
     case ESTAQUIETO:
+    // std::cout << "ESTA QUIETO\n";
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -421,6 +436,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     case MOVERSE:
         {
+    std::cout << "ESTA QUIETO\n";
         Direccion direccionDeseada;
         direccionDeseada = accion.dir;
         // WARNING: Aca se ejecuta el movimiento
@@ -481,6 +497,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     case ATAQUE:
         {
+    std::cout << "ATAQUE\n";
         b2Vec2 impulso(0,0);
         tiempoEspera = 0;
         armaQueQuiero = this->armaEquipada;
@@ -499,6 +516,15 @@ Ataque Gusano::ejecutar(Accion accion) {
         // tengo munciones disponibles
         if (armaEquipada == TELETRANSPORTACION_P) {
 	        this->teletransportarse();
+        }
+
+        if (armaEquipada == ATAQUE_AEREO_P) {
+	  std::pair<coordX, coordY> ataquePos;
+	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
+	  ataquePos.enY = MAXALTURA - 20;
+	  posicion = deCoordAb2Vec(ataquePos);
+	  std::cout << "POSITION: " << posicion.x << " " << posicion.y << "\n";
+	  ataqueARealizar.impulsoInicial = b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY);
         }
 
         ataqueARealizar.posicion = posicion;
@@ -544,13 +570,13 @@ Ataque Gusano::ejecutar(Accion accion) {
 
       impulso.x = adyacente;
       impulso.y = opuesto;
+        ataqueARealizar.posicion = adelante;
         }
 
         
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
         ataqueARealizar.impulsoInicial = impulso;
-        ataqueARealizar.posicion = adelante;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
         std::cout << ataqueARealizar.arma << "ATACO\n";
