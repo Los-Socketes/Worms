@@ -132,7 +132,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
 
     //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
-    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
+    else if (entidadA->tipo == TipoEntidad::PROYECTIL
 	   &&
 	   entidadB->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL A\n");
@@ -140,7 +140,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadA->proyectilReal->colisiono = true;
     }
 
-    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
+    else if (entidadB->tipo == TipoEntidad::PROYECTIL
 	   &&
 	   entidadA->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL B\n");
@@ -265,7 +265,8 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     fixtureDef.density = MASACUERPOESTATICO;
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::VIGA;
-    fixtureDef.filter.maskBits = 1;
+    fixtureDef.filter.maskBits = -1;
+    // fixtureDef.filter.maskBits = 1;
 
     groundBody->CreateFixture(&fixtureDef);
     // groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
@@ -296,7 +297,7 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
     fixtureDef.density = MASACUERPOESTATICO;
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::OCEANO;
-    fixtureDef.filter.maskBits = 1;
+    fixtureDef.filter.maskBits = -1;
 
     oceanoCuerpo->CreateFixture(&fixtureDef);
     // oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
@@ -795,7 +796,7 @@ Proyectil *Partida::proyectilConstructor() {
 
 
     Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
     nuevaEntidad->proyectilReal = nuevoProyectil;
 
     b2BodyDef bodyDef;
@@ -812,6 +813,9 @@ Proyectil *Partida::proyectilConstructor() {
     fixtureDef.density = 3.0f;
     fixtureDef.friction = 0.3f;
     fixtureDef.restitution = 0.2;
+    fixtureDef.filter.groupIndex = -1;
+    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
     // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
     // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
     // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;

@@ -23,7 +23,7 @@ class Gusano;
 #define FUERZAGRAVITARIAX 0.0f
 #define FUERZAGRAVITARIAY -20.0f
 
-#define MAXALTURA 75
+#define MAXALTURA 60
 
 #define METROS_SIN_DANIO 5.0f
 
