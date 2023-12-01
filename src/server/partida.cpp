@@ -801,9 +801,7 @@ Proyectil *Partida::proyectilConstructor() {
 
     Proyectil * nuevoProyectil = new Proyectil();
     nuevoProyectil->armaOrigen = NADA_P;
-    // nuevoProyectil->posicion = origen;
     nuevoProyectil->id = this->proyectiles.size();
-    // nuevoProyectil->id = 0;
     nuevoProyectil->tipo = TipoProyectil::Ningun;
 
     nuevoProyectil->countdown = 0;
