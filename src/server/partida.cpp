@@ -383,7 +383,7 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo += M_PI/2;
         }
         if (velocidad.x < 0) {
-            repre.angulo += M_PI/2;
+            repre.angulo += M_PI;
             std::cout << "ENTRE con: " << repre.angulo << "\n";
         } 
         if (proyectil->armaOrigen == DINAMITA_P) {
