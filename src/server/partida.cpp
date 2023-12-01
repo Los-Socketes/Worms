@@ -326,8 +326,9 @@ bool Partida::enviarEstadoAJugadores() {
     std::map<idJugador, std::map<id, RepresentacionGusano>> representacionGusanos;
     std::map<idJugador, SituacionJugador> situaciones;
 
-    estadoActual->jugadorDeTurno = INVAL_ID;
-    estadoActual->gusanoDeTurno = INVAL_ID;
+    estadoActual->jugadorDeTurno = 1;
+    estadoActual->gusanoDeTurno = 0;
+    estadoActual->segundosRestantes = 0;
     for (int jugador = 0; jugador < (int) this->jugadores.size() ; jugador++) {
         Jugador *jugadorActual;
         jugadorActual = this->jugadores.at(jugador);
