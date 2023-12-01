@@ -1,5 +1,4 @@
 #include "partida.h"
-#include "mapa.h"
 #include <map>
 #include "box2dDefs.h"
 
@@ -67,10 +66,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoA->GetLinearVelocity();
-        // std::cout << "SORETE SORETE " << entidadA->proyectil.posInicial.x << " " << entidadA->proyectil.posInicial.y << "\n";
-        // printf("B\n");
         entidadB->gusano->recibirDano(dir, entidadA);
-        // abort();
     }
 
     else if(entidadA->tipo == TipoEntidad::VIGA
@@ -78,20 +74,13 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->tipo == TipoEntidad::GUSANO) {
         std::cout << "Viga: " << cuerpoA->GetPosition().y << "\n";
         entidadB->gusano->recibirDanioCaida(cuerpoB->GetLinearVelocity());
-        // entidadB->gusano->setEstado(QUIETO);
     }
 
     else if(entidadB->tipo == TipoEntidad::VIGA 
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        // float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
-        // float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
-        // if (cuerpoB->GetLinearVelocity().y < velocidadMax) {
-        //     std::cout << "DANIO POR CAIDA " << velocidadMax << "\n";
-        // }
         std::cout << "Viga: " << cuerpoB->GetPosition().y << "\n";
         entidadA->gusano->recibirDanioCaida(cuerpoA->GetLinearVelocity());
-        // entidadA->gusano->setEstado(QUIETO);
     }
 
     else if (entidadA->tipo == TipoEntidad::GUSANO
@@ -114,16 +103,18 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
     //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
     else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
-	   &&
-	   entidadB->tipo == TipoEntidad::VIGA) {
+	//    &&
+	//    entidadB->tipo == TipoEntidad::VIGA
+    ) {
         printf("PROYECTIL REAL A\n");
         entidadA->proyectilReal->enElAire = false;
         entidadA->proyectilReal->colisiono = true;
     }
 
     else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
-	   &&
-	   entidadA->tipo == TipoEntidad::VIGA) {
+	//    &&
+	//    entidadA->tipo == TipoEntidad::VIGA
+    ) {
         printf("PROYECTIL REAL B\n");
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
