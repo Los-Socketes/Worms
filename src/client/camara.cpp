@@ -62,6 +62,12 @@ void Camara::moverHaciaObjetivo() {
     }
 }
 
+std::pair<int, int> Camara::traducirCoordenadas(coordX& x, coordY& y) {
+    // Paso de coordenadas en metros a coordenadas en pixeles.
+    int coord_x = x * PIXELS_POR_METRO;
+    int coord_y = dimension_mapa.second - y * PIXELS_POR_METRO;
+    return std::make_pair(coord_x, coord_y);
+}
 
 std::pair<coordX, coordY> Camara::traducirCoordenadasInversa(int x, int y) {
     // Teniendo la conversion metro a pixel como:
@@ -75,8 +81,7 @@ std::pair<coordX, coordY> Camara::traducirCoordenadasInversa(int x, int y) {
 }
 
 void Camara::actualizarObjetivo(coordX& x, coordY& y) {
-    objetivo.first = x * PIXELS_POR_METRO;
-    objetivo.second = dimension_mapa.second - y * PIXELS_POR_METRO;
+    objetivo = traducirCoordenadas(x, y);
 }
 
 int Camara::getPosicionX() {

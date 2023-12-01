@@ -36,8 +36,6 @@ enum TipoSonido {
 class GestorSonidos {
  private:
     std::map<TipoSonido, std::shared_ptr<Sonido>> sonidos;
-    //void reproducirSonidoGusano(IteradorGusano& iterador, EstadoGusano& estado, ArmaProtocolo& arma);
-    //void reproducirSonidoProyectil(IteradorProyectil& iterador, ArmaProtocolo& proyectil, bool exploto);
  public:
     GestorSonidos(Mixer& mixer);
     std::shared_ptr<Sonido> getSonido(TipoSonido tipo);

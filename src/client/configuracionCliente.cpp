@@ -33,7 +33,7 @@ int ConfiguracionCliente::getVolumenInicial() {
 }
 
 
-std::vector<colorJugador> ConfiguracionCliente::getColoresJugadores() {
+std::vector<colorJugador>& ConfiguracionCliente::getColoresJugadores() {
     return this->coloresJugadores;
 }
 

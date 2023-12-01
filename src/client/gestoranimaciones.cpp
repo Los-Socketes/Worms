@@ -1,6 +1,6 @@
-#include "gestoranimaciones.h"
+#include "gestorAnimaciones.h"
 
-GestorAnimaciones::GestorAnimaciones(Renderer& renderizador) {
+GestorAnimaciones::GestorAnimaciones(Renderer& renderizador, int& ancho_mapa, int& alto_mapa) {
     // Animaciones
 
     // Animaciones de escenario/interfaz.
@@ -8,6 +8,7 @@ GestorAnimaciones::GestorAnimaciones(Renderer& renderizador) {
     escenario[AGUA] = std::make_shared<Animacion>(renderizador, "assets/sprites/water.png", 128, 100, 12, true, true);
     escenario[PANORAMA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backforest.png", 640, 159, 1, true, false);
     escenario[FONDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/back.png", 3000, 2000, 1, true, false);
+    escenario[FONDO]->setDimensiones(ancho_mapa, alto_mapa);
     escenario[FONDOESPERA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backwait.png", 3000, 2000, 1, false, false);
     escenario[IMAGENGUSANOESPERA] = std::make_shared<Animacion>(renderizador, "assets/sprites/backwaitworm.png", 1024, 768, 1, false, false);
     escenario[RETICULA] = std::make_shared<Animacion>(renderizador, "assets/sprites/crshairc.png", 60, 60, 32, true, true);
@@ -166,131 +167,10 @@ std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionProyectil(ArmaProtocol
     return proyectiles[std::make_pair(proyectil, es_fragmento)];
 }
 
-std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionEscenario(ItemEscenario& item) {
+std::shared_ptr<Animacion> GestorAnimaciones::getAnimacionEscenario(ItemEscenario item) {
     return escenario[item];
 }
 
-std::shared_ptr<Animacion> GestorAnimaciones::getImagenIcono(ArmaProtocolo& arma) {
+std::shared_ptr<Animacion> GestorAnimaciones::getImagenIcono(ArmaProtocolo arma) {
     return iconos[arma];
 }
-/*
-void GestorAnimaciones::dibujarAgua(int& pos_x, int& pos_y, int& it) {
-    escenario[AGUA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarFondo() {
-    int pos_x = ancho_mapa / 2;
-    int pos_y = alto_mapa / 2;
-    int it = 0;
-    escenario[FONDO]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarFondoEspera(int& ancho_pantalla, int& alto_pantalla) {
-    int pos_x = ancho_pantalla / 2;
-    int pos_y = alto_pantalla / 2;
-    int it = 0;
-    escenario[FONDOESPERA]->setDimensiones(ancho_pantalla, alto_pantalla);
-    escenario[FONDOESPERA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarGusanoEspera(int& ancho_pantalla, int& alto_pantalla) {
-    // Cambio el tamaño y la posicion segun el tamaño de la pantalla.
-    // La imagen tiene relacion de aspecto 4:3, hago que siempre ocupe el 50% del ancho de la pantalla.
-    int tam_x = ancho_pantalla / 2;
-    int tam_y = tam_x * 3 / 4;
-    escenario[IMAGENGUSANOESPERA]->setDimensiones(tam_x, tam_y);
-    // Lo dibujo abajo a la izquierda.
-    int pos_x = tam_x / 2;
-    int pos_y = alto_pantalla - tam_y / 2;
-    int it = 0;
-    escenario[IMAGENGUSANOESPERA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-
-void GestorAnimaciones::dibujarPanorama(int& pos_x, int& pos_y) {
-    int it = 0;
-    escenario[PANORAMA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarViga(int& pos_x, int& pos_y, int& largo, radianes& angulo) {
-    int it = 0;
-    radianes ang = -angulo;
-    if (largo > 3) {
-        escenario[VIGA_GRANDE]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
-        escenario[VIGA_GRANDE]->dibujar(camara, pos_x, pos_y, false, it, 1, ang);
-    } else {
-        escenario[VIGA_CHICA]->setDimensiones(largo * PIXELS_POR_METRO, 0.8 * PIXELS_POR_METRO);
-        escenario[VIGA_CHICA]->dibujar(camara, pos_x, pos_y, false, it, 1, ang);
-    }    
-}
-
-void GestorAnimaciones::dibujarGusano(id& id_gusano, EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
-    // Si la animacion cambio, reseteo el iterador.
-    iteraciones.actualizarAnimacionGusano(id_gusano, gusanos[std::make_pair(estado, arma.arma)]);
-    if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
-        gusanos[std::make_pair(estado, arma.arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, arma.anguloRad);
-    } else {
-        gusanos[std::make_pair(estado, arma.arma)]->dibujar(camara, pos_x, pos_y, dir == DERECHA, iteraciones.getIteracionGusano(id_gusano), 1);
-    }
-    reproducirSonidoGusano(iteraciones.getIteradorGusano(id_gusano), estado, arma.arma);
-}
-
-void GestorAnimaciones::dibujarReticula(int& pos_x, int& pos_y, int& it) {
-    escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarCursor(int& pos_x, int& pos_y, int& it) {
-    escenario[RETICULA]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarIconoArma(ArmaProtocolo arma, int& pos_x, int& pos_y) {
-    int it = 0;
-    iconos[arma]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarProyectil(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, radianes& angulo, ControlIteracion& iteraciones) {
-    // Si la animacion cambio, reseteo el iterador.
-    iteraciones.actualizarAnimacionProyectil(id_proyectil, proyectiles[std::make_pair(proyectil, es_fragmento)]);
-    if (proyectil == DINAMITA_P)
-        proyectiles[std::make_pair(proyectil, es_fragmento)]->dibujar(camara, pos_x, pos_y, false, iteraciones.getIteracionProyectil(id_proyectil), 1, angulo);
-    else
-        proyectiles[std::make_pair(proyectil, es_fragmento)]->dibujar(camara, pos_x, pos_y, false, angulo);
-    reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, false);
-}
-
-void GestorAnimaciones::dibujarExplosion(idProyectil& id_proyectil, ArmaProtocolo& proyectil, bool& es_fragmento, int& pos_x, int& pos_y, ControlIteracion& iteraciones) {
-    // Si la animacion cambio, reseteo el iterador.
-    iteraciones.actualizarAnimacionProyectil(id_proyectil, escenario[EXPLOSION]);
-    if (es_fragmento) {
-        escenario[EXPLOSION]->setDimensiones(70, 70);
-    } else if (proyectil == DINAMITA_P) {
-        escenario[EXPLOSION]->setDimensiones(120, 120);
-    } else if (proyectil == GRANADA_SANTA_P) {
-        escenario[EXPLOSION]->setDimensiones(200, 200);
-    } else {
-        escenario[EXPLOSION]->setDimensiones(100, 100);
-    }
-    escenario[EXPLOSION]->dibujar(camara, pos_x, pos_y, false, iteraciones.getIteracionProyectil(id_proyectil), 1);
-    reproducirSonidoProyectil(iteraciones.getIteradorProyectil(id_proyectil), proyectil, true);
-}
-
-void GestorAnimaciones::dibujarFlechaGusano(int& pos_x, int& pos_y, int& it) {
-    escenario[FLECHA_GUSANO]->dibujar(camara, pos_x, pos_y, false, it, 1);
-}
-
-void GestorAnimaciones::dibujarVolumen(int& volumen, bool& muteado, int& pos_x, int& pos_y) {
-    int it = 0;
-    // El volumen va de 0 a 128, lo divido en 4 partes.
-    if (muteado) {
-        escenario[VOLUMEN_MUTEADO]->dibujar(camara, pos_x, pos_y, false, it, 1);
-    } else if (volumen < 32) {
-        escenario[VOLUMEN_0]->dibujar(camara, pos_x, pos_y, false, it, 1);
-    } else if (volumen < 64) {
-        escenario[VOLUMEN_1]->dibujar(camara, pos_x, pos_y, false, it, 1);
-    } else if (volumen < 96) {
-        escenario[VOLUMEN_2]->dibujar(camara, pos_x, pos_y, false, it, 1);
-    } else {
-        escenario[VOLUMEN_3]->dibujar(camara, pos_x, pos_y, false, it, 1);
-    }
-}
-*/

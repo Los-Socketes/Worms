@@ -3,7 +3,7 @@
 
 #include <SDL2pp/SDL2pp.hh>
 
-#include "entradateclado.h"
+#include "entradaTeclado.h"
 #include "recibidor.h"
 #include "enviador.h"
 #include "camara.h"
@@ -11,11 +11,9 @@
 #include "protocolo.h"
 #include "queue.h"
 #include "menu.h"
-#include "animacion.h"
 #include "defs.h"
-#include "accioncliente.h"
-#include "dibujador.h"
-#include "controliteracion.h"
+#include "accionCliente.h"
+#include "controlEntidades.h"
 #include "configuracionCliente.h"
 
 using namespace SDL2pp;
@@ -38,12 +36,17 @@ class Cliente {
     // Conexion a servidor
     Protocolo protocolo;
     std::shared_ptr<EstadoDelJuego> estado_juego;
-    // Juego
     bool es_host;
+    // Juego
     Camara camara;
-    Dibujador dibujador;
-    ControlIteracion control_iteracion;
+    std::pair<int, int> pos_cursor;
+    int volumen;
+    bool muteado;
+    Font fuente1;
+    Font fuente2;
+    ControlEntidades control_entidades;
     Menu menu;
+    // Hilos
     Queue<std::shared_ptr<EstadoDelJuego>> recepcion_estados;
     Queue<std::shared_ptr<AccionCliente>> envio_comandos;
     Queue<Comando> comandos_teclado;
@@ -53,9 +56,6 @@ class Cliente {
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
     Enviador enviador;
-    std::pair<int, int> pos_cursor;
-    int volumen;
-    bool muteado;
 
     // Configura SDL, SDL_mixer.
     void configurarSDL(InformacionInicial& info_inicial);
@@ -63,8 +63,8 @@ class Cliente {
     // Configura camara.
     void configurarCamara(InformacionInicial& info_inicial);
 
-    // Configura dibujador.
-    void configurarDibujador(InformacionInicial& info_inicial);
+    // Configura el controlador de entidades.
+    void configurarControlEntidades(InformacionInicial& info_inicial);
 
     // Inicia los hilos.
     void iniciarHilos(InformacionInicial& info_inicial);

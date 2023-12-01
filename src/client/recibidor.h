@@ -9,7 +9,7 @@
 #include "queue.h"
 #include "protocolo.h"
 #include "defs.h"
-#include "accioncliente.h"
+#include "accionCliente.h"
 
  // Hilo que se encarga de recibir los estados del juego.
 class Recibidor: public Thread {

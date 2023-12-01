@@ -32,6 +32,9 @@ class Camara {
     void moverConMouse(int& deltaX, int& deltaY);
     void moverHaciaObjetivo();
 
+    // Traduce las coordenadas del mapa a las coordenadas en pixeles del escenario.
+    std::pair<int, int> traducirCoordenadas(coordX& x, coordY& y);
+    // Traduce las coordenadas en pantalla a las coordenadas del mapa.
     std::pair<coordX, coordY> traducirCoordenadasInversa(int x, int y);
 
     void actualizarObjetivo(coordX& x, coordY& y);

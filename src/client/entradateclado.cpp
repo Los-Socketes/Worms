@@ -1,4 +1,4 @@
-#include "entradateclado.h"
+#include "entradaTeclado.h"
 
 EntradaTeclado::EntradaTeclado(Queue<std::shared_ptr<AccionCliente>>& envio_comandos,
     Queue<Comando>& comandos_teclado,
