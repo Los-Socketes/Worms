@@ -542,103 +542,110 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 
 // proyectil = nuevoProyectil
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
-    for (int i = 0; i<2; i++) {
     ArmaProtocolo arma = ataque.arma;
-    if (arma == NADA_P) {
-        return;
-    }
-    Proyectil *nuevoProyectil = this->proyectilConstructor();
-    
-
-    nuevoProyectil->armaOrigen = arma;
-    nuevoProyectil->exploto = false;
-    nuevoProyectil->colisiono = false;
-    nuevoProyectil->countdown = ataque.tiempoEspera;
-
-    if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
-        nuevoProyectil->tipo = TipoProyectil::Countdown;
-    }
-    else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P) {
-        nuevoProyectil->tipo = TipoProyectil::Colision;
-    } else {
-        nuevoProyectil->tipo = TipoProyectil::Ningun;
-    }
-
-    if (arma == BATE_P) {
-        std::cout << "ESTOY ACA\n";
-        std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
-        golpeYCaja = gusano->ejecutarGolpe();
-        std::pair<inicioCaja, finCaja> coordsGolpe;
-        coordsGolpe = golpeYCaja.second;
-        b2Vec2 golpe;
-        golpe = golpeYCaja.first;
-
-        ResolvedorQuery query;
-        b2AABB aabb;
-        aabb.lowerBound = coordsGolpe.inicio;
-        aabb.upperBound = coordsGolpe.fin;
-        this->world.QueryAABB( &query, aabb );
-
-        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-	  b2Body* cuerpoA = query.foundBodies[i];
-	  if (cuerpoA->GetType() == b2_staticBody)
-	      continue;
-
-	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-
-      Entidad *nuevaEntidad = new Entidad;
-      nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-      nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
-      b2Vec2 coords = golpeYCaja.second.first;
-      nuevaEntidad->proyectil.posInicial = coords;
-    
-     
-
-      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
-	//   entidadA->gusano->recibirDano(golpe, entidadA);
-
-	  // printf("PEGO\n");
+    int cantProyectiles = 0;
+    if (arma == ATAQUE_AEREO_P)
+        cantProyectiles = 5;
+    else
+        cantProyectiles = 1;
+        
+    for (int i = 0 ; i < cantProyectiles; i++) {
+        if (arma == NADA_P) {
+	  return;
         }
-    }
-
-    if (arma == BANANA_P) {
-        b2FixtureDef fixtureNuevo;
-        b2CircleShape circleShape;
-        circleShape.m_radius = 0.05; // very small
-    
-        fixtureNuevo.shape = &circleShape;
-        fixtureNuevo.density = 3.0f;
-        fixtureNuevo.friction = 0.3f;
-        fixtureNuevo.restitution = 0.8;
-
-        nuevoProyectil->cuerpo->DestroyFixture(nuevoProyectil->fixture);
-
-        nuevoProyectil->fixture = nuevoProyectil->cuerpo->CreateFixture(&fixtureNuevo);
-    } else if (arma == DINAMITA_P) {
-        b2FixtureDef fixtureNuevo;
-        b2CircleShape circleShape;
-        circleShape.m_radius = 0.05; // very small
-    
-        fixtureNuevo.shape = &circleShape;
-        fixtureNuevo.density = 3.0f;
-        fixtureNuevo.friction = 0.3f;
-        fixtureNuevo.restitution = 0;
-
-        nuevoProyectil->cuerpo->DestroyFixture(nuevoProyectil->fixture);
-
-        nuevoProyectil->fixture = nuevoProyectil->cuerpo->CreateFixture(&fixtureNuevo);
-    }
-
-    else if (arma == ATAQUE_AEREO_P) {
-        std::cout << "POSITION: " << ataque.posicion.x << " " << ataque.posicion.y << "\n";
+        Proyectil *nuevoProyectil = this->proyectilConstructor();
 
 
-    }
+        nuevoProyectil->armaOrigen = arma;
+        nuevoProyectil->exploto = false;
+        nuevoProyectil->colisiono = false;
+        nuevoProyectil->countdown = ataque.tiempoEspera;
 
-    ataque.posicion.y += 3 * i;
-    nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
-    nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
-      
+        if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
+	  nuevoProyectil->tipo = TipoProyectil::Countdown;
+        }
+        else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P) {
+	  nuevoProyectil->tipo = TipoProyectil::Colision;
+        } else {
+	  nuevoProyectil->tipo = TipoProyectil::Ningun;
+        }
+
+        if (arma == BATE_P) {
+	  std::cout << "ESTOY ACA\n";
+	  std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
+	  golpeYCaja = gusano->ejecutarGolpe();
+	  std::pair<inicioCaja, finCaja> coordsGolpe;
+	  coordsGolpe = golpeYCaja.second;
+	  b2Vec2 golpe;
+	  golpe = golpeYCaja.first;
+
+	  ResolvedorQuery query;
+	  b2AABB aabb;
+	  aabb.lowerBound = coordsGolpe.inicio;
+	  aabb.upperBound = coordsGolpe.fin;
+	  this->world.QueryAABB( &query, aabb );
+
+	  for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+	      b2Body* cuerpoA = query.foundBodies[i];
+	      if (cuerpoA->GetType() == b2_staticBody)
+		continue;
+
+	      Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+
+        Entidad *nuevaEntidad = new Entidad;
+        nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+        nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
+        b2Vec2 coords = golpeYCaja.second.first;
+        nuevaEntidad->proyectil.posInicial = coords;
+
+
+
+        entidadA->gusano->recibirDano(golpe, nuevaEntidad);
+	  //   entidadA->gusano->recibirDano(golpe, entidadA);
+
+	      // printf("PEGO\n");
+	  }
+        }
+
+        if (arma == BANANA_P) {
+	  b2FixtureDef fixtureNuevo;
+	  b2CircleShape circleShape;
+	  circleShape.m_radius = 0.05; // very small
+
+	  fixtureNuevo.shape = &circleShape;
+	  fixtureNuevo.density = 3.0f;
+	  fixtureNuevo.friction = 0.3f;
+	  fixtureNuevo.restitution = 0.8;
+
+	  nuevoProyectil->cuerpo->DestroyFixture(nuevoProyectil->fixture);
+
+	  nuevoProyectil->fixture = nuevoProyectil->cuerpo->CreateFixture(&fixtureNuevo);
+        } else if (arma == DINAMITA_P) {
+	  b2FixtureDef fixtureNuevo;
+	  b2CircleShape circleShape;
+	  circleShape.m_radius = 0.05; // very small
+
+	  fixtureNuevo.shape = &circleShape;
+	  fixtureNuevo.density = 3.0f;
+	  fixtureNuevo.friction = 0.3f;
+	  fixtureNuevo.restitution = 0;
+
+	  nuevoProyectil->cuerpo->DestroyFixture(nuevoProyectil->fixture);
+
+	  nuevoProyectil->fixture = nuevoProyectil->cuerpo->CreateFixture(&fixtureNuevo);
+        }
+
+        else if (arma == ATAQUE_AEREO_P) {
+	  ataque.posicion.y += 100;
+	  ataque.posicion.x += 2 * i;
+	  std::cout << "POSITION: " << ataque.posicion.x << " " << ataque.posicion.y << "\n";
+
+
+        }
+
+        nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
+        nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
+
     }
 }
 
