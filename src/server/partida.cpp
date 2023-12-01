@@ -524,6 +524,8 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         nuevaEntidad->proyectil.proyectil = body;
         nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
         nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
+        
+        nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -632,7 +634,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
         b2Vec2 coords = golpeYCaja.second.first;
         nuevaEntidad->proyectil.posInicial = coords;
-
+        nuevaEntidad->proyectilReal->esFragmento = nuevoProyectil->esFragmento;
 
 
         entidadA->gusano->recibirDano(golpe, nuevaEntidad);
