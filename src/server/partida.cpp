@@ -132,7 +132,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 
 
     //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
-    else if (entidadA->tipo == TipoEntidad::PROYECTIL
+    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
 	   &&
 	   entidadB->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL A\n");
@@ -140,7 +140,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadA->proyectilReal->colisiono = true;
     }
 
-    else if (entidadB->tipo == TipoEntidad::PROYECTIL
+    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
 	   &&
 	   entidadA->tipo == TipoEntidad::VIGA) {
         printf("PROYECTIL REAL B\n");
@@ -796,7 +796,7 @@ Proyectil *Partida::proyectilConstructor() {
 
 
     Entidad *nuevaEntidad = new Entidad;
-    nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+    nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
     nuevaEntidad->proyectilReal = nuevoProyectil;
 
     b2BodyDef bodyDef;
@@ -814,7 +814,7 @@ Proyectil *Partida::proyectilConstructor() {
     fixtureDef.friction = 0.3f;
     fixtureDef.restitution = 0.2;
     fixtureDef.filter.groupIndex = -1;
-    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+    fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
     fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
     // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
     // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
