@@ -1,19 +1,32 @@
 #include "cliente.h"
 
-Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
-    config(config),
+Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
+    config(configuracion),
     sdl(SDL_INIT_VIDEO),
     ttf(),
-    ventana("Worms", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second, SDL_WINDOW_HIDDEN),
+    ventana("Worms", SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED, configuracion.getDimensionesIniciales().first,
+        configuracion.getDimensionesIniciales().second, SDL_WINDOW_HIDDEN),
     renderizador(ventana, -1, SDL_RENDERER_ACCELERATED),
-    mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096),
+    mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
+        4, 4096),
     music("assets/sounds/music.ogg"),
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
     es_host(false),
-    camara(0, 0, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second, 0, 0),
-    dibujador(renderizador, mixer, camara, estado_juego, config.getDimensionesIniciales().first, config.getDimensionesIniciales().second),
-    control_iteracion(estado_juego),
+    camara(0, 0, configuracion.getDimensionesIniciales().first,
+        configuracion.getDimensionesIniciales().second, 0, 0),
+    pos_cursor(0, 0),
+    volumen(configuracion.getVolumenInicial()),
+    muteado(false),
+    fuente1("assets/fonts/AdLibRegular.ttf", 32),
+    fuente2("assets/fonts/ANDYB.TTF", 32),
+    control_entidades(renderizador, mixer, camara, estado_juego,
+        configuracion.getDimensionesIniciales().first,
+        configuracion.getDimensionesIniciales().second,
+        configuracion.getColoresJugadores(),
+        es_host, pos_cursor, volumen, muteado,
+        fuente1, fuente2),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -23,15 +36,17 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& config):
     inicio(false),
     entrada_teclado(envio_comandos, comandos_teclado, camara, municiones_agotadas),
     recibidor(protocolo, recepcion_estados, es_turno, municiones_agotadas),
-    enviador(protocolo, envio_comandos, es_turno),
-    pos_cursor(0, 0),
-    volumen(config.getVolumenInicial()),
-    muteado(false) {}
+    enviador(protocolo, envio_comandos, es_turno) {}
 
 void Cliente::configurarSDL(InformacionInicial& info_inicial) {
     ventana.SetResizable(true);
     ventana.Show();
     ventana.SetTitle("Worms - Jugador " + std::to_string(info_inicial.jugador));
+    mixer.AllocateChannels(5);
+    mixer.GroupChannel(1, 0);
+    mixer.GroupChannel(2, 0);
+    mixer.GroupChannel(3, 0);
+    mixer.GroupChannel(4, 0);
     mixer.FadeInMusic(music, -1, 2000);
     mixer.SetMusicVolume(volumen);
     mixer.SetVolume(-1, volumen);
@@ -41,9 +56,10 @@ void Cliente::configurarCamara(InformacionInicial& info_inicial) {
     camara.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
 }
 
-void Cliente::configurarDibujador(InformacionInicial& info_inicial) {
-    dibujador.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
-    dibujador.setIdJugador(info_inicial.jugador - 1);
+void Cliente::configurarControlEntidades(InformacionInicial& info_inicial) {
+    control_entidades.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
+    control_entidades.setIdJugador(info_inicial.jugador - 1);
+    control_entidades.setVigas(info_inicial.vigas);
 }
 
 void Cliente::iniciarHilos(InformacionInicial& info_inicial) {
@@ -112,7 +128,7 @@ void Cliente::ejecutarComandoTeclado(Comando& comando, bool& continuar, bool& mo
             }
             break;
         case SIN_MUNICIONES:
-            dibujador.reproducirSonido(SONIDO_SIN_MUNICIONES);
+            control_entidades.getGestorSonidos().getSonido(SONIDO_SIN_MUNICIONES)->reproducir();
             break;
         default:
             break;
@@ -135,7 +151,7 @@ void Cliente::actualizarObjetivoCamara() {
     if (!encontre) {
         for (auto& jugador : estado_juego->gusanos) {
             for(auto& gusano : jugador.second) {
-                if (gusano.second.estado != QUIETO && gusano.second.estado != MUERTO) {
+                if (gusano.second.estado != QUIETO && gusano.second.estado != MUERTO && gusano.second.estado != AHOGADO) {
                     camara.actualizarObjetivo(gusano.second.posicion.first, gusano.second.posicion.second);
                     encontre = true;
                     break;
@@ -166,8 +182,8 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     configurarSDL(info_inicial);
     // Configurar camara.
     configurarCamara(info_inicial);
-    // Configurar dibujador.
-    configurarDibujador(info_inicial);
+    // Configurar el controlador de entidades.
+    configurarControlEntidades(info_inicial);
     // Inicializar hilos.
     iniciarHilos(info_inicial);
 
@@ -179,15 +195,12 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
 
     Comando comando;
     
-    // Obtengo colores de los jugadores.
-    std::vector<colorJugador> colores = config.getColoresJugadores();
-
     while (continuar) {
         // Actualizo el estado del juego.
         recepcion_estados.try_pop(estado_juego);
 
-        // Actualizo entidades en el iterador.
-        control_iteracion.actualizarEntidades();     
+        // Actualizo entidades en el controlador.
+        control_entidades.actualizarEntidades();     
 
         // Chequeo comandos de teclado.
         while (comandos_teclado.try_pop(comando)) {
@@ -198,11 +211,7 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         actualizarObjetivoCamara();
 
         // Renderizo.
-        dibujador.dibujar(control_iteracion,
-            info_inicial.vigas,
-            pos_cursor, colores,
-            volumen, muteado,
-            es_host);
+        control_entidades.dibujarEntidades();
 
         // Constant rate loop.
         int tick_actual = SDL_GetTicks();
@@ -212,14 +221,14 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
             int ticks_detras = -descanso;
             int ticks_perdidos = ticks_detras - ticks_detras % rate;
             tick_anterior += ticks_perdidos;
-            control_iteracion.aumentarIteraciones(ticks_detras / rate);
+            control_entidades.aumentarIteraciones(ticks_detras / rate);
         }
         else {
             SDL_Delay(descanso);
         }
     
         tick_anterior += rate;
-        control_iteracion.aumentarIteraciones(1);
+        control_entidades.aumentarIteraciones(1);
 
     }
 }

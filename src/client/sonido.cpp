@@ -5,5 +5,8 @@ Sonido::Sonido(Mixer& mixer, const std::string& ruta) :
     sonido(ruta) {}
 
 void Sonido::reproducir() {
-    mixer.PlayChannel(-1, sonido, 0);
+    int disponible = mixer.GetGroupAvailableChannel(0);
+    if (disponible > 0) {
+        mixer.PlayChannel(disponible, sonido, 0);
+    }
 }

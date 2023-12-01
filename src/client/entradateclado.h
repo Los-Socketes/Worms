@@ -7,7 +7,7 @@
 #include <syslog.h>
 #include <SDL2pp/SDL2pp.hh>
 
-#include "accioncliente.h"
+#include "accionCliente.h"
 #include "thread.h"
 #include "queue.h"
 #include "camara.h"

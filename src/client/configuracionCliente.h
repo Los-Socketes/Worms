@@ -1,7 +1,6 @@
 #ifndef CONFIGURACION_CLIENTE_H_
 #define CONFIGURACION_CLIENTE_H_
 
-
 #define ROJO 0
 #define VERDE 1
 #define AZUL 2
@@ -24,7 +23,7 @@ public:
     ConfiguracionCliente();
     std::pair<int, int> getDimensionesIniciales();
     int getVolumenInicial();
-    std::vector<colorJugador> getColoresJugadores();
+    std::vector<colorJugador>& getColoresJugadores();
     colorJugador getColorJugador(int numJugador);
     int getPixelsPorMetro();
 };
