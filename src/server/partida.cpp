@@ -382,9 +382,14 @@ bool Partida::enviarEstadoAJugadores() {
             repre.angulo = std::atan(-velocidad.y/velocidad.x);
             repre.angulo += M_PI/2;
         }
+        if (velocidad.x < 0) {
+            repre.angulo += M_PI;
+            std::cout << "ENTRE con: " << repre.angulo << "\n";
+        } 
         if (proyectil->armaOrigen == DINAMITA_P) {
             repre.angulo = 0;
         }
+        std::cout << "ANGULO ENVIADO: " << repre.angulo << "\n";
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -653,7 +658,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 
         nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
         nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
-
     }
 }
 
