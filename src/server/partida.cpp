@@ -479,7 +479,6 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         !proyectil->esFragmento) {
         Arma armaElegida(proyectil->armaOrigen);
         this->crearFragmentos(proyectil, armaElegida.getFragmentos());
-        return;
     }
 
     // printf("KATAPUM\n");

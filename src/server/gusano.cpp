@@ -267,12 +267,14 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
 }
 
 void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
-    if (this->estado == MUERTO) {
-        return;
-    }
     if (this->golpeado == true)
         return;
     this->golpeado = true;
+    b2Vec2 velocidadActual = this->cuerpo->GetLinearVelocity();
+    if (this->estado == MUERTO || 
+        (velocidadActual.x != 0 && velocidadActual.y != 0)) {
+        return;
+    }
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
 
@@ -407,7 +409,6 @@ void Gusano::preparar(Accion& accion) {
 }
 
 
-// int test = 0;
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
@@ -415,18 +416,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         this->setEstado(QUIETO);
         return ataqueARealizar;
     }
-
-    // if (this->getUltimaAccion().armaAEquipar == ATAQUE_AEREO_P
-    //     &&
-    //     this->getUltimaAccion().accion == ATAQUE
-    //     &&
-    //     test < 2) {
-    //     std::cout << test << "ATAQUE AEREO\n";
-    //     accion = this->getUltimaAccion();
-    //     test += 1;
-    // }
-
-
 
     b2Vec2 posicion; //Posicion donde se va a realizar el ataque
     int tiempoEspera; //Delay
