@@ -605,7 +605,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
         b2Vec2 coords = golpeYCaja.second.first;
         nuevaEntidad->proyectil.posInicial = coords;
-        nuevaEntidad->proyectilReal->esFragmento = nuevoProyectil->esFragmento;
+        nuevaEntidad->proyectilReal = nuevoProyectil;
 
 
         entidadA->gusano->recibirDano(golpe, nuevaEntidad);
