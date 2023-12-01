@@ -27,6 +27,9 @@ GestorAnimaciones::GestorAnimaciones(Renderer& renderizador, int& ancho_mapa, in
     escenario[VOLUMEN_MUTEADO] = std::make_shared<Animacion>(renderizador, "assets/sprites/volumemute.png", 100, 100, 1, false, false);
     escenario[VOLUMEN_MUTEADO]->setDimensiones(35, 35);
 
+    // Gusano ganador.
+    escenario[GUSANO_GANADOR] = std::make_shared<Animacion>(renderizador, "assets/sprites/wwinner.png", 60, 60, 14, true, true);
+
     // Iconos de armas.
     iconos[NADA_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/inothing.png", 32, 32, 1, false, false);
     iconos[BATE_P] = std::make_shared<Animacion>(renderizador, "assets/sprites/ibaseball.png", 32, 32, 1, false, false);

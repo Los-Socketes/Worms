@@ -8,14 +8,15 @@
 
 // Clase padre de todas las entidades.
 class Entidad {
- protected:
-    GestorAnimaciones& gestor_animaciones;
-    int it;
- public:
-    Entidad(GestorAnimaciones& gestor_animaciones);
-    virtual void dibujar() = 0;
-    void aumentarIteraciones(int cant);
-    virtual ~Entidad() = default;
+protected:
+   GestorAnimaciones &gestor_animaciones;
+   int it;
+
+public:
+   Entidad(GestorAnimaciones &gestor_animaciones);
+   virtual void dibujar() = 0;
+   void aumentarIteraciones(int cant);
+   virtual ~Entidad() = default;
 };
 
 #endif // ENTIDAD_H_

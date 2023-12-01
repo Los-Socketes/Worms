@@ -25,7 +25,8 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     gusano_actual(),
     esperando_movimiento(false),
     teclas_armas(),
-    segundos_turno(0) { 
+    segundos_turno(0),
+    final_partida(false) { 
     // Inicializo el gusano actual con valores por defecto.
     gusano_actual.idGusano = -1;
     gusano_actual.estado = QUIETO;
@@ -321,6 +322,10 @@ void EntidadInterfaz::dibujarFinalPartida() {
         fuente1.SetOutline(0);
         Texture textura_ganaste(renderizador, fuente1.RenderText_Blended("Ganaste!", color));
         renderizador.Copy(textura_ganaste, NullOpt, Rect(posicion.first, posicion.second, 200, 50));
+        if (final_partida == false) {
+            gestor_sonidos.getSonido(SONIDO_GANADOR)->reproducir();
+            final_partida = true;
+        }
     } else if (estado_juego->situacionJugadores.at(id_jugador) == PERDISTE) {
         // Dibujo el texto "Perdiste!" en el color del jugador.
         fuente1.SetOutline(2);

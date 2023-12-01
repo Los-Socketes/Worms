@@ -127,11 +127,18 @@ void EntidadGusano::reproducirSonidoGusano(std::shared_ptr<Animacion>& animacion
 void EntidadGusano::dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y) {
     // Si la animacion cambio, reseteo el iterador.
     std::shared_ptr<Animacion> animacion;
-    animacion = gestor_animaciones.getAnimacionGusano(estado, arma.arma);
-    actualizarAnimacion(animacion);
-    if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
-        animacion->dibujar(camara, pos_x, pos_y, dir == DERECHA, arma.anguloRad);
-    } else {
+    if (estado_juego->momento != TERMINADA) {
+        animacion = gestor_animaciones.getAnimacionGusano(estado, arma.arma);
+        actualizarAnimacion(animacion);
+        if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
+            animacion->dibujar(camara, pos_x, pos_y, dir == DERECHA, arma.anguloRad);
+        } else {
+            animacion->dibujar(camara, pos_x, pos_y, dir == DERECHA, it, 1);
+        }
+    }
+    else {
+        animacion = gestor_animaciones.getAnimacionEscenario(GUSANO_GANADOR);
+        actualizarAnimacion(animacion);
         animacion->dibujar(camara, pos_x, pos_y, dir == DERECHA, it, 1);
     }
     reproducirSonidoGusano(animacion, estado, arma.arma);

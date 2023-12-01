@@ -35,6 +35,7 @@ class EntidadInterfaz : public Entidad {
     bool esperando_movimiento;
     std::map<ArmaProtocolo, std::string> teclas_armas;
     int segundos_turno;
+    bool final_partida;
 
     void actualizarGusanoActual();
     void dibujarCursor();

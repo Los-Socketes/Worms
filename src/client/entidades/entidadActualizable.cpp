@@ -1,8 +1,8 @@
 #include "entidadActualizable.h"
 
-EntidadActualizable::EntidadActualizable(std::shared_ptr<EstadoDelJuego>& estado_juego, 
-    Renderer& renderizador, GestorAnimaciones& gestor_animaciones, Camara& camara,
-    Font& fuente1, Font& fuente2) : 
+EntidadActualizable::EntidadActualizable(std::shared_ptr<EstadoDelJuego> &estado_juego,
+    Renderer &renderizador, GestorAnimaciones &gestor_animaciones, Camara &camara,
+    Font &fuente1, Font &fuente2) : 
     Entidad(gestor_animaciones),
     estado_juego(estado_juego),
     muerta(false),
@@ -20,7 +20,7 @@ void EntidadActualizable::actualizarAnimacion(std::shared_ptr<Animacion> animaci
     }
 }
 
-void EntidadActualizable::dibujarCuentaRegresiva(std::pair<int,int>& posicion, float& cuenta_regresiva) {
+void EntidadActualizable::dibujarCuentaRegresiva(std::pair<int, int> &posicion, float &cuenta_regresiva) {
     // Dibujo el temporizador al lado del gusano o proyectil.
     int pos_x = posicion.first + 20;
     int pos_y = posicion.second - 30;
@@ -34,7 +34,7 @@ void EntidadActualizable::dibujarCuentaRegresiva(std::pair<int,int>& posicion, f
     if (!rect_interseccion) {
         return;
     }
-    
+
     // Me quedo sólo con los 3 primeros digitos.
     std::string cuenta_regresiva_str = std::to_string(cuenta_regresiva);
     if (cuenta_regresiva_str.size() > 4) {

@@ -25,6 +25,7 @@ GestorSonidos::GestorSonidos(Mixer& mixer) {
     sonidos[SONIDO_TICK] = std::make_shared<Sonido>(mixer, "assets/sounds/TIMERTICK.WAV");
     sonidos[SONIDO_AGUA] = std::make_shared<Sonido>(mixer, "assets/sounds/Splash.wav");
     sonidos[SONIDO_SIN_MUNICIONES] = std::make_shared<Sonido>(mixer, "assets/sounds/NoAmmo.mp3");
+    sonidos[SONIDO_GANADOR] = std::make_shared<Sonido>(mixer, "assets/sounds/CrowdCheer.mp3");
 }
 
 std::shared_ptr<Sonido> GestorSonidos::getSonido(TipoSonido tipo) {

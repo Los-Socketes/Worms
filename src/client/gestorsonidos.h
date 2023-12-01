@@ -29,7 +29,8 @@ enum TipoSonido {
     SONIDO_DINAMITA,
     SONIDO_BATE,
     SONIDO_AGUA,
-    SONIDO_SIN_MUNICIONES
+    SONIDO_SIN_MUNICIONES,
+    SONIDO_GANADOR
 };
 
 // Clase que se encarga de cargar los sonidos y devolverlos para ser reproducidos.
