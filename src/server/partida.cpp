@@ -30,11 +30,11 @@ Partida::Partida(std::string mapa)
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(12.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(25.0f, 10.0f));
     this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(50.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(60.0f, 10.0f));
-    this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(70.0f, 10.0f));
+    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(60.0f, 10.0f));
+    // this->anadirViga(0, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(70.0f, 10.0f));
     
     this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(10.0f, 15.0f));
-    this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
+    // this->anadirViga(0, LONGITUDVIGACHICA, std::pair<coordX,coordY>(65.0f, 15.0f));
 
     // this->anadirViga(M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(30.0f, 17.0f));
     this->anadirViga(-M_PI/8, LONGITUDVIGAGRANDE, std::pair<coordX,coordY>(45.0f, 17.0f));
@@ -48,8 +48,8 @@ Partida::Partida(std::string mapa)
     this->posicionesGusanos.insert({1, std::pair<coordX, coordY>(28.5f, 19.0f)});
     this->posicionesGusanos.insert({2, std::pair<coordX, coordY>(28.5f, 19.0f)});
     this->posicionesGusanos.insert({3, std::pair<coordX, coordY>(50.0f, 19.0f)});
-    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(60.0f, 19.0f)});
-    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(70.0f, 19.0f)});
+    this->posicionesGusanos.insert({4, std::pair<coordX, coordY>(51.0f, 19.0f)});
+    this->posicionesGusanos.insert({5, std::pair<coordX, coordY>(6.0f, 19.0f)});
 
     this->cantidad_gusanos_insertados = 0;
 
@@ -397,7 +397,7 @@ bool Partida::enviarEstadoAJugadores() {
         RepresentacionProyectil repre;
         repre.id = proyectil->id;
         repre.proyectil = proyectil->armaOrigen;
-        repre.esFragmento = false;
+        repre.esFragmento = proyectil->esFragmento;
 
         // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
@@ -475,6 +475,12 @@ void Partida::generarExplosion(Proyectil *proyectil) {
     }
     proyectil->exploto = true;
     proyectil->colisiono = true;
+    if ((proyectil->armaOrigen == MORTERO_P || proyectil->armaOrigen == GRANADA_ROJA_P) && 
+        !proyectil->esFragmento) {
+        Arma armaElegida(proyectil->armaOrigen);
+        this->crearFragmentos(proyectil, armaElegida.getFragmentos());
+        return;
+    }
 
     // printf("KATAPUM\n");
     //Fuente: https://www.iforce2d.net/b2dtut/explosions
@@ -518,6 +524,8 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         nuevaEntidad->proyectil.proyectil = body;
         nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
         nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
+        
+        nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -540,7 +548,32 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 }
 
 
-// proyectil = nuevoProyectil
+void Partida::crearFragmentos(Proyectil* proyectil, int cantFragmentos) {
+    for (int i = 0; i < cantFragmentos; i++) {
+        Proyectil *nuevoProyectil = this->proyectilConstructor();
+
+
+        nuevoProyectil->armaOrigen = proyectil->armaOrigen;
+        nuevoProyectil->exploto = false;
+        nuevoProyectil->colisiono = false;
+        nuevoProyectil->enElAire = true;
+        nuevoProyectil->esFragmento = true;
+        nuevoProyectil->tipo = TipoProyectil::Colision;
+
+        float angle = (i / (float)cantFragmentos) * 360 * DEGTORAD;
+        b2Vec2 rayDir( sinf(angle), cosf(angle) );
+
+        b2Vec2 coords = proyectil->cuerpo->GetPosition();
+        coords += rayDir; 
+        
+        nuevoProyectil->cuerpo->SetTransform(coords, true);
+        
+        b2Vec2 linearVelocity = 2 * rayDir;
+        nuevoProyectil->cuerpo->SetLinearVelocity(linearVelocity);
+    }
+    
+}
+
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     ArmaProtocolo arma = ataque.arma;
     int cantProyectiles = 0;
@@ -560,17 +593,21 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevoProyectil->exploto = false;
         nuevoProyectil->colisiono = false;
         nuevoProyectil->countdown = ataque.tiempoEspera;
+        nuevoProyectil->esFragmento = false;
 
-        if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || arma == GRANADA_SANTA_P || arma == BANANA_P) {
+        if (arma == DINAMITA_P || arma == GRANADA_VERDE_P || 
+            arma == GRANADA_SANTA_P || arma == BANANA_P || 
+            arma == GRANADA_ROJA_P) {
 	  nuevoProyectil->tipo = TipoProyectil::Countdown;
         }
-        else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P) {
+        else if (arma == BAZOOKA_P || arma == ATAQUE_AEREO_P || arma == MORTERO_P) {
 	  nuevoProyectil->tipo = TipoProyectil::Colision;
         } else {
 	  nuevoProyectil->tipo = TipoProyectil::Ningun;
         }
 
         if (arma == BATE_P) {
+            nuevoProyectil->exploto = true;
 	  std::cout << "ESTOY ACA\n";
 	  std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
 	  golpeYCaja = gusano->ejecutarGolpe();
@@ -597,7 +634,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
         b2Vec2 coords = golpeYCaja.second.first;
         nuevaEntidad->proyectil.posInicial = coords;
-
+        nuevaEntidad->proyectilReal->esFragmento = nuevoProyectil->esFragmento;
 
 
         entidadA->gusano->recibirDano(golpe, nuevaEntidad);
@@ -883,7 +920,7 @@ void Partida::borrarCuerpos() {
         Proyectil *proyectil = this->proyectiles[i];
         b2Body *cuerpoABorrar = proyectil->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
-        if (proyectil->exploto && (proyectil->countdown < 0 || proyectil->colisiono)) {
+        if (proyectil->exploto) {
             // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             // delete entidadB;

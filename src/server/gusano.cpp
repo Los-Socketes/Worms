@@ -267,6 +267,9 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
 }
 
 void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
+    if (this->estado == MUERTO) {
+        return;
+    }
     if (this->golpeado == true)
         return;
     this->golpeado = true;
@@ -277,13 +280,18 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     //TODO cambiar a que no tenga que crear el arma para obtener el danio
     Arma armaUsada(tipoArma);
-    u_int danio = armaUsada.getDanio().epicentro;
-    // distancia 0 = danio full
-    // distancia 4 = dano 0
-    //TODO Hacer que cada arma tenga esta formula
-    // la formula es -12.5 * distancia + 50 = danio
+    u_int danio;
+    int radio;
 
-    int radio = armaUsada.getDanio().radio;
+    if (entidad->proyectilReal->esFragmento) {
+        std::cout << "HERE\n";
+        danio = armaUsada.getDanioFragmento().epicentro;
+        radio = armaUsada.getDanioFragmento().radio;
+    } else {
+        danio = armaUsada.getDanio().epicentro;
+        radio = armaUsada.getDanio().radio;
+    }
+
     if (tipoArma == BATE_P) {
         radio = 2;
     }
@@ -305,7 +313,10 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     std::cout << "Danio: " << danioReal << "\n";
     std::cout << "distancia: " << porcentaje << "\n";
     std::cout << "distancia: " << distanciaGusanoBomba << "\n";
-    if (this->vida < (u_int) danioReal) {
+    if ((u_int)danioReal == 0) {
+        return;
+    }
+    if (this->vida < (u_int)danioReal) {
         this->vida = 0;
         this->setEstado(MUERTO);
 
@@ -396,7 +407,7 @@ void Gusano::preparar(Accion& accion) {
 }
 
 
-int test = 0;
+// int test = 0;
 
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
@@ -532,12 +543,12 @@ Ataque Gusano::ejecutar(Accion accion) {
         if(armaEquipada == DINAMITA_P ||
 	 armaEquipada == GRANADA_VERDE_P ||
 	 armaEquipada == GRANADA_SANTA_P ||
-     armaEquipada == BANANA_P 
+     armaEquipada == BANANA_P ||
+     armaEquipada == GRANADA_ROJA_P
 	 ) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
 	        std::cout << "Tiempo: " << tiempoEspera << "\n";
-        } else if (armaEquipada == BAZOOKA_P) {
-        }
+        } 
         else {
 	        tiempoEspera = 0;
         }

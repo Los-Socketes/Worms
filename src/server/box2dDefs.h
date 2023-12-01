@@ -121,6 +121,7 @@ struct Proyectil {
     bool enElAire;
     bool colisiono;
     b2Fixture* fixture;
+    bool esFragmento;
 
     int countdown;
 };

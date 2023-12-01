@@ -109,7 +109,7 @@ class Partida : public Thread {
     void generarExplosion(Proyectil *proyectil);
 
     void crearProyectiles(Gusano *gusano, Ataque ataque);
-
+    void crearFragmentos(Proyectil* proyectil, int cantFragmentos);
 
 public:
     Partida(const std::string mapa);
