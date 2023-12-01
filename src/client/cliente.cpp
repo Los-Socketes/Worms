@@ -9,7 +9,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
         configuracion.getDimensionesIniciales().second, SDL_WINDOW_HIDDEN),
     renderizador(ventana, -1, SDL_RENDERER_ACCELERATED),
     mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
-        MIX_DEFAULT_CHANNELS, 4096),
+        4, 4096),
     music("assets/sounds/music.ogg"),
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
@@ -42,6 +42,11 @@ void Cliente::configurarSDL(InformacionInicial& info_inicial) {
     ventana.SetResizable(true);
     ventana.Show();
     ventana.SetTitle("Worms - Jugador " + std::to_string(info_inicial.jugador));
+    mixer.AllocateChannels(5);
+    mixer.GroupChannel(1, 0);
+    mixer.GroupChannel(2, 0);
+    mixer.GroupChannel(3, 0);
+    mixer.GroupChannel(4, 0);
     mixer.FadeInMusic(music, -1, 2000);
     mixer.SetMusicVolume(volumen);
     mixer.SetVolume(-1, volumen);
