@@ -356,9 +356,30 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
 
     std::vector<RepresentacionProyectil> proyectiles = {proyectil1, proyectil2};
 
+    RepresentacionProvisiones provision1;
+    provision1.id = 20;
+    std::pair<coordX, coordY> posicionProv1(45.2, 26.5);
+    provision1.posicion = posicionProv1;
+    provision1.estaEnElAire = true;
+    provision1.tipo = VIDA;
+    provision1.armaMunicion = NADA_P;
+    provision1.fueAgarrada = false;
+
+    RepresentacionProvisiones provision2;
+    provision2.id = 25;
+    std::pair<coordX, coordY> posicionProv2(13.7, 7.5);
+    provision2.posicion = posicionProv2;
+    provision2.estaEnElAire = false;
+    provision2.tipo = MUNICION;
+    provision2.armaMunicion = MORTERO_P;
+    provision2.fueAgarrada = true;
+
+    std::vector<RepresentacionProvisiones> provisiones = {provision1, provision2};
+
     std::shared_ptr<EstadoDelJuego> estado(new EstadoDelJuego);
     estado->gusanos = gusanos;
     estado->proyectiles = proyectiles;
+    estado->provisiones = provisiones;
     estado->jugadorDeTurno = jugador;
     estado->gusanoDeTurno = (id)2;
     estado->segundosRestantes = 30;
@@ -419,6 +440,21 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
         REQUIRE(resultadoProyectil.angulo == baseProyectil.angulo);
         REQUIRE(resultadoProyectil.cuentaRegresiva == baseProyectil.cuentaRegresiva);
         REQUIRE(resultadoProyectil.exploto == baseProyectil.exploto);
+    }
+
+
+    std::vector<RepresentacionProvisiones> resultadoProvisiones = resultado->provisiones;
+    REQUIRE(resultadoProvisiones.size() == provisiones.size());
+    for (int i = 0; i < (int)provisiones.size(); i++) {
+        RepresentacionProvisiones resultadoProvision = resultadoProvisiones[i];
+        RepresentacionProvisiones baseProvision = provisiones[i];
+
+        REQUIRE(resultadoProvision.id == baseProvision.id);
+        REQUIRE(resultadoProvision.posicion == baseProvision.posicion);
+        REQUIRE(resultadoProvision.estaEnElAire == baseProvision.estaEnElAire);
+        REQUIRE(resultadoProvision.tipo == baseProvision.tipo);
+        REQUIRE(resultadoProvision.armaMunicion == baseProvision.armaMunicion);
+        REQUIRE(resultadoProvision.fueAgarrada == baseProvision.fueAgarrada);
     }
     
 }
