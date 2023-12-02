@@ -129,12 +129,28 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->tipo == TipoEntidad::VIGA) {
 
         entidadA->provision->estaEnElAire = false;
-  }
+    }
       
     else if (entidadA->tipo == TipoEntidad::VIGA
         &&
         entidadB->tipo == TipoEntidad::PROVISION) {
         entidadB->provision->estaEnElAire = false;
+    }
+
+    else if (entidadA->tipo == TipoEntidad::PROVISION
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
+        std::cout << "CACACACACACCACA\n";
+        entidadA->provision->fueAgarrada = true;
+        entidadA->provision->provisionar(entidadB->gusano);
+    }
+      
+    else if (entidadA->tipo == TipoEntidad::GUSANO
+        &&
+        entidadB->tipo == TipoEntidad::PROVISION) {
+        std::cout << "CACACACACACCACA\n";
+        entidadB->provision->fueAgarrada = true;
+        entidadB->provision->provisionar(entidadA->gusano);
     }
 }
 
@@ -216,7 +232,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.friction = 0.3f;
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::GUSANO;
-    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL;
+    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL | (uint16_t)TipoEntidad::PROVISION;
 
     body->CreateFixture(&fixtureDef);
     nuevoGusano->setCuerpo(body);
@@ -278,6 +294,8 @@ void Partida::anadirProvision() {
     provisionFixDef.shape = &provision;
     provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
+    provisionFixDef.filter.categoryBits = (uint16_t)TipoEntidad::PROVISION;
+    provisionFixDef.filter.maskBits = -1;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
@@ -997,6 +1015,20 @@ void Partida::borrarCuerpos() {
 
     }
 
+    for(int i = this->provisiones.size() - 1 ; i >= 0 ; i--) {
+        Provision *provision = this->provisiones[i];
+        b2Body *cuerpoABorrar = provision->cuerpo;
+        // NO HACER delete entidad. Tira invalid delete
+        if (provision->fueAgarrada == true) {
+            // std::cout << "Delete\n";
+            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+            this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision;
+            this->provisiones.erase(this->provisiones.begin() + i);
+        }
+
+    }
+
     for (Gusano *gusano : this->gusanos) {
         gusano->golpeado = false;
     }
@@ -1121,11 +1153,6 @@ void Partida::gameLoop() {
         this->borrarCuerpos();
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
-
-        std::cout << "Posicion provision: " << 
-	  this->provisiones.at(0)->cuerpo->GetPosition().x << " " 
-	       << this->provisiones.at(0)->cuerpo->GetPosition().y << "\n "; 
-
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;
