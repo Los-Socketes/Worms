@@ -33,9 +33,15 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
     municiones_agotadas(true),
+    ejecuto_accion(false),
     inicio(false),
-    entrada_teclado(envio_comandos, comandos_teclado, camara, municiones_agotadas),
-    recibidor(protocolo, recepcion_estados, es_turno, municiones_agotadas),
+    entrada_teclado(envio_comandos,
+        comandos_teclado, camara,
+        municiones_agotadas,
+        ejecuto_accion),
+    recibidor(protocolo, recepcion_estados,
+        es_turno, municiones_agotadas,
+        ejecuto_accion),
     enviador(protocolo, envio_comandos, es_turno) {}
 
 void Cliente::configurarSDL(InformacionInicial& info_inicial) {

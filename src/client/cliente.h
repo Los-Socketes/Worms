@@ -52,6 +52,7 @@ class Cliente {
     Queue<Comando> comandos_teclado;
     std::atomic<bool> es_turno;
     std::atomic<bool> municiones_agotadas;
+    std::atomic<bool> ejecuto_accion;
     bool inicio;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;

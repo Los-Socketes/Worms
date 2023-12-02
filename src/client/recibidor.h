@@ -16,16 +16,18 @@ class Recibidor: public Thread {
 private:
     Protocolo& protocolo;
     Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados;
-    // Queue<std::shared_ptr<AccionCliente>>& envio_comandos;
     std::shared_ptr<EstadoDelJuego> estado_juego;
     std::atomic<bool> cont;
     idJugador id_jugador;
     std::atomic<bool>& es_turno;
     std::atomic<bool>& municiones_agotadas;
+    std::atomic<bool>& ejecuto_accion;
 
 public:
-    Recibidor(Protocolo& protocolo, Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados, std::atomic<bool>& es_turno, std::atomic<bool>& municiones_agotadas);
-    // Recibidor(Protocolo& protocolo, Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados, Queue<std::shared_ptr<AccionCliente>>& envio_comandos, std::atomic<bool>& es_turno);
+    Recibidor(Protocolo& protocolo,
+        Queue<std::shared_ptr<EstadoDelJuego>>& recepcion_estados,
+        std::atomic<bool>& es_turno, std::atomic<bool>& municiones_agotadas,
+        std::atomic<bool>& ejecuto_accion);
 
     void run() override;
 
