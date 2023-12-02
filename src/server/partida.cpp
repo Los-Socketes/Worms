@@ -457,6 +457,7 @@ bool Partida::enviarEstadoAJugadores() {
     for (Provision *provision : this->provisiones) {
         RepresentacionProvisiones repreActual;
         repreActual = provision->getRepresentacin();
+        representacionProvi.push_back(repreActual);
     }
     estadoActual->provisiones = representacionProvi;
 
