@@ -276,16 +276,17 @@ void Partida::anadirProvision() {
 
     b2FixtureDef provisionFixDef;
     provisionFixDef.shape = &provision;
-    provisionFixDef.density = 1.0f;
+    provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
 
-    Provision *nuevaProvision = new Provision(MUNICION, BAZOOKA_P, provisionBody);
+    Provision *nuevaProvision = new Provision(VIDA, BAZOOKA_P, provisionBody);
     nuevaEntidad->provision = nuevaProvision;
 
     this->provisiones.push_back(nuevaProvision);
+    this->cuerposADestruir.push_back(provisionBody);
 
 }
 
@@ -940,16 +941,21 @@ Proyectil *Partida::proyectilConstructor() {
 
 
 bool destruirProyectil(b2Body *proyectil) {
-    Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
-    time_t horaDeCreacion;
-    horaDeCreacion = entidad->proyectil.horaDeCreacion;
-    time_t horaActual;
-    horaActual = time(NOW);
-    double diferencia;
-    diferencia = difftime(horaActual, horaDeCreacion);
-
     bool expirado;
-    expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
+
+    Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
+    if (entidad->tipo == TipoEntidad::PROVISION) {
+        expirado = (entidad->provision->fueAgarrada == true);
+    } else {
+        time_t horaDeCreacion;
+        horaDeCreacion = entidad->proyectil.horaDeCreacion;
+        time_t horaActual;
+        horaActual = time(NOW);
+        double diferencia;
+        diferencia = difftime(horaActual, horaDeCreacion);
+
+        expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
+    }
 
     return expirado;
 }
