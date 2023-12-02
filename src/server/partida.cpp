@@ -2,6 +2,7 @@
 
 #include <map>
 #include "box2dDefs.h"
+#include <random>
 
 
 #define SLEEPSEGS 1
@@ -217,29 +218,41 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = 20;
-    posicionInicial.enX = 10;
+    // posicionInicial.enX = 10;
 
-    // bool encontreViga = false;
-    // while (encontreViga == false) {
-    //     /*Numero aleatorio entre 0 y MAXancho */
-    //     posicionInicial.enX = rand() % MAXANCHO + 1;
+    bool encontreViga = false;
+    while (encontreViga == false) {
+        /* Numero aleatorio entre 0 y MAXancho */
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(0, MAXANCHO); // define the range
+        // posicionInicial.enX = rand() % MAXANCHO + 1;
+        posicionInicial.enX = distr(gen);
 
-    //     b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
-    //     b2Vec2 fin(posicionInicial.enX, 0);
+        b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
+        b2Vec2 fin(posicionInicial.enX, 0);
 
-    //     ResolvedorQuery query;
-    //     b2AABB aabb;
-    //     aabb.lowerBound = inicio;
-    //     aabb.upperBound = fin;
-    //     this->world.QueryAABB( &query, aabb );
-    //     for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-    // 	  b2Body* cuerpoA = query.foundBodies[i];
-    // 	  if (cuerpoA->GetType() == b2_staticBody) {
-    // 	      encontreViga = true;
-    // 	      break;
-    // 	  }
-    //     }
-    // }
+        ResolvedorQuery query;
+        b2AABB aabb;
+        aabb.lowerBound = fin;
+        aabb.upperBound = inicio;
+        this->world.QueryAABB( &query, aabb );
+        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+	  b2Body* cuerpoA = query.foundBodies[i];
+	  
+	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+
+	  if (entidadA->tipo == TipoEntidad::VIGA) {
+	      encontreViga = true;
+	      break;
+	  }
+	  
+	  // if (cuerpoA->GetType() == b2_staticBody) {
+	  //     encontreViga = true;
+	  //     break;
+	  // }
+        }
+    }
 
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
