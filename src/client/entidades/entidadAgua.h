@@ -10,13 +10,16 @@
 // Clase que representa a n capas de agua.
 class EntidadAgua : public Entidad {
  private:
+    Renderer& renderizador;
     Camara& camara;
     int ancho_mapa;
     int alto_mapa;
     int capas;
     int pos_y;
+    void dibujarBloque(int& posicion_x, int& posicion_y);
  public:
-    EntidadAgua(GestorAnimaciones& gestor_animaciones,
+    EntidadAgua(Renderer& renderizador,
+        GestorAnimaciones& gestor_animaciones,
         Camara& camara,
         int& ancho_mapa,
         int& alto_mapa,
