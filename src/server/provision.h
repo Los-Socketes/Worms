@@ -17,6 +17,8 @@ class Provision {
 
     tipoProvision tipo;
     ArmaProtocolo armaMunicion;
+
+    int id;
     
  public:
     bool estaEnElAire;
@@ -24,7 +26,7 @@ class Provision {
 
     b2Body *cuerpo;
 
-    Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo);
+    Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo, int id);
 
     void provisionar(Gusano *gusano);
 
