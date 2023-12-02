@@ -20,13 +20,14 @@ class Provision {
 
     int id;
     
+    bool esTrampa;
  public:
     bool estaEnElAire;
     bool fueAgarrada;
 
     b2Body *cuerpo;
 
-    Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo, int id);
+    Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo, int id, bool esTrampa);
 
     void provisionar(Gusano *gusano);
 
