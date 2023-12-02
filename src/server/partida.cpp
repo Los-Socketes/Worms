@@ -22,6 +22,7 @@ Partida::Partida(std::string mapa)
     this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
+    this->ultimaProvision = time(NOW);
 
     // TODO: que reciba el mapa por parametro
     Mapas mapas;
@@ -905,6 +906,20 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
+void Partida::generarProvision(time_t horaActual) {
+    double diferencia;
+    diferencia = difftime(horaActual, this->ultimaProvision);
+
+    if (diferencia < TIEMPOESPERAPROVISION)
+        return;
+
+    std::cout << "GENERO PROVISION\n";
+
+    this->ultimaProvision = horaActual;
+
+    this->anadirProvision();
+}
+
 
 Proyectil *Partida::proyectilConstructor() {
     b2Vec2 origen(0,0);
@@ -1034,6 +1049,7 @@ void Partida::borrarCuerpos() {
     }
 }
 
+
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 
@@ -1131,10 +1147,11 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
 
-    this->anadirProvision();
 
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
+
+        this->generarProvision(tiempoActual);
         
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
