@@ -1,8 +1,8 @@
 #include "partida.h"
+
 #include <map>
 #include "box2dDefs.h"
 
-#include "provision.h"
 
 #define SLEEPSEGS 1
 #define NOW NULL
@@ -215,33 +215,36 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 }
 
 void Partida::anadirProvision() {
-
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
 
-    int posAleatoriaEnX = 5;
+    bool encontreViga = false;
+    while (encontreViga == false) {
+        /*Numero aleatorio entre 0 y MAXancho */
+        posicionInicial.enX = rand() % MAXANCHO + 1;
 
-    /*Numero aleatorio entre 0 y MAXancho */
-    // posAleatoriaEnX = rand() % MAXANCHO + 1;
+        b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
+        b2Vec2 fin(posicionInicial.enX, 0);
 
-    // b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
-    // b2Vec2 fin(posicionInicial.enX, 0);
-
-    // ResolvedorQuery query;
-    // b2AABB aabb;
-    // aabb.lowerBound = inicio;
-    // aabb.upperBound = fin;
-
-    // this->world.QueryAABB( &query, aabb );
-    // for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-    //     b2Body* cuerpoA = query.foundBodies[i];
-    //     if (cuerpoA->GetType() == b2_staticBody)
-    // 	  continue;
+        ResolvedorQuery query;
+        b2AABB aabb;
+        aabb.lowerBound = inicio;
+        aabb.upperBound = fin;
+        this->world.QueryAABB( &query, aabb );
+        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+	  b2Body* cuerpoA = query.foundBodies[i];
+	  if (cuerpoA->GetType() == b2_staticBody) {
+	      encontreViga = true;
+	      break;
+	  }
+        }
+    }
 
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
 
     b2BodyDef provisionDef;
+    provisionDef.type = b2_dynamicBody;
     provisionDef.position.Set(posicionInicial.enX, posicionInicial.enY);
     provisionDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
 
@@ -452,7 +455,7 @@ bool Partida::enviarEstadoAJugadores() {
     std::vector<RepresentacionProvisiones> representacionProvi;
     for (Provision *provision : this->provisiones) {
         RepresentacionProvisiones repreActual;
-        repreActual = provision->getRepresentacin();
+        // repreActual = provision->getRepresentacin();
     }
     estadoActual->provisiones = representacionProvi;
 
