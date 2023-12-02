@@ -87,6 +87,8 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+    std::vector<Provision *> provisiones;
+
 
     bool enviarEstadoAJugadores();
 
@@ -96,6 +98,8 @@ class Partida : public Thread {
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
+    void anadirProvision();
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 

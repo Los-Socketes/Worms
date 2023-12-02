@@ -2,6 +2,8 @@
 #include <map>
 #include "box2dDefs.h"
 
+#include "provision.h"
+
 #define SLEEPSEGS 1
 #define NOW NULL
 
@@ -16,7 +18,7 @@ Partida::Partida(std::string mapa)
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA,40);
+    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
 
@@ -210,6 +212,55 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     nuevoGusano->giveId(idGusano);
 
     return nuevoGusano;
+}
+
+void Partida::anadirProvision() {
+
+    std::pair<coordX, coordY> posicionInicial;
+    posicionInicial.enY = MAXALTURA;
+
+    int posAleatoriaEnX = 5;
+
+    /*Numero aleatorio entre 0 y MAXancho */
+    // posAleatoriaEnX = rand() % MAXANCHO + 1;
+
+    // b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
+    // b2Vec2 fin(posicionInicial.enX, 0);
+
+    // ResolvedorQuery query;
+    // b2AABB aabb;
+    // aabb.lowerBound = inicio;
+    // aabb.upperBound = fin;
+
+    // this->world.QueryAABB( &query, aabb );
+    // for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+    //     b2Body* cuerpoA = query.foundBodies[i];
+    //     if (cuerpoA->GetType() == b2_staticBody)
+    // 	  continue;
+
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::PROVISION;
+
+    b2BodyDef provisionDef;
+    provisionDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    provisionDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2PolygonShape provision;
+    provision.SetAsBox(0.5f, 0.5f);
+
+    b2FixtureDef provisionFixDef;
+    provisionFixDef.shape = &provision;
+    provisionFixDef.density = 1.0f;
+    provisionFixDef.friction = 0.3f;
+
+    b2Body* provisionBody = world.CreateBody(&provisionDef);
+    provisionBody->CreateFixture(&provisionFixDef);
+
+    Provision *nuevaProvision = new Provision(MUNICION, BAZOOKA_P, provisionBody);
+    nuevaEntidad->provision = nuevaProvision;
+
+    this->provisiones.push_back(nuevaProvision);
+
 }
 
 void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
