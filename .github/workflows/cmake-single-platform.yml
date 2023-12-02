@@ -29,18 +29,18 @@ jobs:
       id: server
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -- -k
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target server -j $(nproc) -- -k
 
     - name: Build Client
       id: client
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -- -k
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target client -j $(nproc) -- -k
 
     - name: Build todo junto
       if: ${{ steps.client.outcome == 'success' &&  steps.server.outcome == 'success' }}
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -- -k
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j $(nproc) -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/build
@@ -66,18 +66,18 @@ jobs:
       id: server
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -- -k
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target server -j $(nproc) -- -k
 
     - name: Build Client
       id: client
       if: always()
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -- -k
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} --target client -j $(nproc) -- -k
 
     - name: Build todo junto
       if: ${{ steps.client.outcome == 'success' &&  steps.server.outcome == 'success' }}
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -- -k
+      run: cmake --build ${{github.workspace}}/buildClang --config ${{env.BUILD_TYPE}} -j $(nproc) -- -k
 
     - name: Test
       working-directory: ${{github.workspace}}/buildClang
