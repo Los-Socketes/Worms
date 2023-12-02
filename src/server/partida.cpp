@@ -122,6 +122,20 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
     }
+
+
+    else if (entidadA->tipo == TipoEntidad::PROVISION
+        &&
+        entidadB->tipo == TipoEntidad::VIGA) {
+
+        entidadA->provision->estaEnElAire = false;
+  }
+      
+    else if (entidadA->tipo == TipoEntidad::VIGA
+        &&
+        entidadB->tipo == TipoEntidad::PROVISION) {
+        entidadB->provision->estaEnElAire = false;
+    }
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
@@ -217,7 +231,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 
 void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
-    posicionInicial.enY = 20;
+    posicionInicial.enY = MAXALTURA;
     // posicionInicial.enX = 10;
 
     bool encontreViga = false;
@@ -246,11 +260,6 @@ void Partida::anadirProvision() {
 	      encontreViga = true;
 	      break;
 	  }
-	  
-	  // if (cuerpoA->GetType() == b2_staticBody) {
-	  //     encontreViga = true;
-	  //     break;
-	  // }
         }
     }
 
