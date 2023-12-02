@@ -12,7 +12,7 @@
 // Clase que representa a los proyectiles.
 class EntidadProyectil : public EntidadActualizable {
  private:
-    id id_proyectil;
+    idProyectil id_proyectil;
     GestorSonidos& gestor_sonidos;
     void reproducirSonidoProyectil(std::shared_ptr<Animacion>& animacion,
         ArmaProtocolo& proyectil, bool exploto);
