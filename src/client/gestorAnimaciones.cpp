@@ -27,6 +27,12 @@ GestorAnimaciones::GestorAnimaciones(Renderer& renderizador, int& ancho_mapa, in
     escenario[VOLUMEN_MUTEADO] = std::make_shared<Animacion>(renderizador, "assets/sprites/volumemute.png", 100, 100, 1, false, false);
     escenario[VOLUMEN_MUTEADO]->setDimensiones(35, 35);
 
+    // Provisiones.
+    escenario[PROVISION_MEDICINA] = std::make_shared<Animacion>(renderizador, "assets/sprites/mcrate1.png", 60, 60, 12, true, true);
+    escenario[PROVISION_MEDICINA_CAYENDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/mcrate2.png", 74, 74, 20, true, true);
+    escenario[PROVISION_MUNICION] = std::make_shared<Animacion>(renderizador, "assets/sprites/wcrate1.png", 60, 60, 1, true, false);
+    escenario[PROVISION_MUNICION_CAYENDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/wcrate2.png", 74, 74, 20, true, true);
+
     // Gusano ganador.
     escenario[GUSANO_GANADOR] = std::make_shared<Animacion>(renderizador, "assets/sprites/wwinner.png", 60, 60, 14, true, true);
 

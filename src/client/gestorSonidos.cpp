@@ -21,6 +21,9 @@ GestorSonidos::GestorSonidos(Mixer& mixer) {
     sonidos[SONIDO_TELETRANSPORTE] = std::make_shared<Sonido>(mixer, "assets/sounds/TELEPORT.WAV");
     sonidos[SONIDO_DINAMITA] = std::make_shared<Sonido>(mixer, "assets/sounds/FUSE.WAV");
     sonidos[SONIDO_BATE] = std::make_shared<Sonido>(mixer, "assets/sounds/BaseBallBatImpact.wav");
+    // Sonidos de provisiones.
+    sonidos[SONIDO_IMPACTO_CAJA] = std::make_shared<Sonido>(mixer, "assets/sounds/CrateImpact.wav");
+    sonidos[SONIDO_AGARRANDO_CAJA] = std::make_shared<Sonido>(mixer, "assets/sounds/Collect.wav");
     // Sonidos de escenario.
     sonidos[SONIDO_TICK] = std::make_shared<Sonido>(mixer, "assets/sounds/TIMERTICK.WAV");
     sonidos[SONIDO_AGUA] = std::make_shared<Sonido>(mixer, "assets/sounds/Splash.wav");

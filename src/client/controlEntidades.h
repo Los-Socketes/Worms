@@ -12,6 +12,7 @@
 #include "entidades/entidadVigas.h"
 #include "entidades/entidadGusano.h"
 #include "entidades/entidadProyectil.h"
+#include "entidades/entidadProvision.h"
 #include "entidades/entidadInterfaz.h"
 #include "gestorAnimaciones.h"
 #include "gestorSonidos.h"
@@ -37,6 +38,7 @@ class ControlEntidades {
     EntidadVigas vigas;
     std::map<id, std::shared_ptr<EntidadGusano>> gusanos;
     std::map<idProyectil, std::shared_ptr<EntidadProyectil>> proyectiles;
+    std::map<idProvision, std::shared_ptr<EntidadProvision>> provisiones;
     EntidadAgua agua_delante;
     EntidadInterfaz interfaz;
  public:
