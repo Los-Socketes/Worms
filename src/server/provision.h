@@ -1,12 +1,13 @@
 #ifndef PROVISION_H
 #define PROVISION_H
 
-#include "partida.h"
 #include "defs.h"
-#include "box2dDefs.h"
+#include <box2d/box2d.h>
 
 #define CANTIDADCURACION 25
 #define CANTIDADMUNICION 2
+
+class Gusano;
 
 class Provision {
  private:

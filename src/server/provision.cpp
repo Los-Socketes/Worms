@@ -1,5 +1,14 @@
 #include "provision.h"
 
+#include "box2dDefs.h"
+
+
+class Gusano {
+public:
+    void anadirVida(int vidaExtra);
+    void anadirMunicion(int cantiMunicion, ArmaProtocolo queArma);
+};
+
 
 Provision::Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo) {
     this->tipo = miTipo;

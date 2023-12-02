@@ -107,6 +107,7 @@ add_executable(server
   "${SERVERDIR}/monitorPartida.cpp"
   "${SERVERDIR}/arma.cpp"
   "${SERVERDIR}/mapa.cpp"
+  "${SERVERDIR}/provision.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"

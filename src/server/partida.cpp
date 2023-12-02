@@ -1,8 +1,8 @@
 #include "partida.h"
+
 #include <map>
 #include "box2dDefs.h"
 
-#include "provision.h"
 
 #define SLEEPSEGS 1
 #define NOW NULL
@@ -215,9 +215,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 }
 
 void Partida::anadirProvision() {
-
-
-
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
 
@@ -458,7 +455,7 @@ bool Partida::enviarEstadoAJugadores() {
     std::vector<RepresentacionProvisiones> representacionProvi;
     for (Provision *provision : this->provisiones) {
         RepresentacionProvisiones repreActual;
-        repreActual = provision->getRepresentacin();
+        // repreActual = provision->getRepresentacin();
     }
     estadoActual->provisiones = representacionProvi;
 
