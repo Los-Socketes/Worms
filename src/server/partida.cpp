@@ -47,6 +47,17 @@ Partida::Partida(std::string mapa)
 // el codigo mas explicito
 #define REFERENCE *
 
+int numeroRandomEnRango(int comienzo, int fin) {
+    int resultado;
+    //Fuente: https://stackoverflow.com/a/13445752/13683575
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
+    resultado = dist6(rng);
+
+    return resultado;
+}
+
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     // std::cout << "CONTACTO\n";
     
@@ -255,11 +266,7 @@ void Partida::anadirProvision() {
     while (encontreViga == false) {
         //Fuente: https://stackoverflow.com/a/13445752/13683575
         /* Numero aleatorio entre 0 y MAXancho */
-        std::random_device rd; // obtain a random number from hardware
-        std::mt19937 gen(rd()); // seed the generator
-        std::uniform_int_distribution<> distr(0, MAXANCHO); // define the range
-        // posicionInicial.enX = rand() % MAXANCHO + 1;
-        posicionInicial.enX = distr(gen);
+        posicionInicial.enX = numeroRandomEnRango(0, MAXANCHO);
 
         b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
         b2Vec2 fin(posicionInicial.enX, 0);
@@ -919,11 +926,7 @@ void Partida::generarProvision(time_t horaActual) {
     //intento e intento
     this->ultimaProvision = horaActual;
 
-    //Fuente: https://stackoverflow.com/a/13445752/13683575
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,1); // distribution in range [1, 6]
-    int cointFlip = dist6(rng);
+    int cointFlip = numeroRandomEnRango(0,1);
 
     if (cointFlip == 0)
         return;
