@@ -17,11 +17,12 @@ class Provision {
 
     tipoProvision tipo;
     ArmaProtocolo armaMunicion;
-    b2Body *cuerpo;
     
  public:
     bool estaEnElAire;
     bool fueAgarrada;
+
+    b2Body *cuerpo;
 
     Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo);
 

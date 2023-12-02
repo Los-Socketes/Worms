@@ -53,5 +53,7 @@ RepresentacionProvisiones Provision::getRepresentacin() {
 
     miRepresentacion.fueAgarrada = this->fueAgarrada; 
 
+    miRepresentacion.id = 0;
+
     return miRepresentacion;
 }
