@@ -323,7 +323,6 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
     fixtureDef.filter.maskBits = -1;
 
     oceanoCuerpo->CreateFixture(&fixtureDef);
-    // oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
 
 }
 
@@ -449,6 +448,13 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->proyectiles = proyectilesRepre;
 
     estadoActual->momento = this->momento;
+
+    std::vector<RepresentacionProvisiones> representacionProvi;
+    for (Provision *provision : this->provisiones) {
+        RepresentacionProvisiones repreActual;
+        repreActual = provision->getRepresentacin();
+    }
+    estadoActual->provisiones = representacionProvi;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
