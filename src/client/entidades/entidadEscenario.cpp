@@ -26,7 +26,7 @@ void EntidadEscenario::dibujar() {
     gestor_animaciones.getAnimacionEscenario(FONDO)->dibujar(camara, pos_x, pos_y, false, it, 1);
     // Dibujo el panorama del fondo.
     std::pair<int, int> posicion;
-    for (int i = 0; i < (ancho_mapa / 640 + 1); i++) {
+    for (int i = 0; i <= (ancho_mapa / 640 + 1); i++) {
         posicion.first = i * 640;
         posicion.second = alto_mapa - 179;
         gestor_animaciones.getAnimacionEscenario(PANORAMA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
