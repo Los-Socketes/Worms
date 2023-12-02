@@ -58,10 +58,10 @@ const std::string EntidadProvision::nombreArma(ArmaProtocolo& armaMunicion) {
 
 void EntidadProvision::dibujarNombreArma(ArmaProtocolo& armaMunicion, int& pos_x, int& pos_y) {
     // Acomodo la posicion para que quede centrada en la provision.
-    int posicion_x = pos_x - 15;
+    int posicion_x = pos_x - 30;
     int posicion_y = pos_y - 30;
 
-    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(posicion_x, posicion_y, 30, 15));
+    std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(posicion_x, posicion_y, 60, 20));
     
     int coord_x = posicion_x - camara.getPosicionX();
     int coord_y = posicion_y - camara.getPosicionY();
@@ -74,9 +74,23 @@ void EntidadProvision::dibujarNombreArma(ArmaProtocolo& armaMunicion, int& pos_x
     // Obtengo el nombre del arma.
     std::string nombre_arma = nombreArma(armaMunicion);
     // Dibujo el nombre de la provision.
+    fuente1.SetOutline(2);
+    Texture textura_nombre_contorno(renderizador, fuente1.RenderText_Blended(nombre_arma, {0, 0, 0, 255}));
+    renderizador.Copy(textura_nombre_contorno, NullOpt, Rect(coord_x, coord_y, 60, 20));
+
     fuente1.SetOutline(0);
-    Texture textura_vida(renderizador, fuente1.RenderText_Blended(nombre_arma, {255, 255, 255, 255}));
-    renderizador.Copy(textura_vida, NullOpt, Rect(coord_x, coord_y, 30, 15));    
+    Texture textura_nombre(renderizador, fuente1.RenderText_Blended(nombre_arma, {255, 255, 255, 255}));
+    renderizador.Copy(textura_nombre, NullOpt, Rect(coord_x, coord_y, 60, 20));    
+}
+
+void EntidadProvision::dibujarExplosion(int& pos_x, int& pos_y) {
+    // Si la animacion cambio, reseteo el iterador.
+    std::shared_ptr<Animacion> animacion = gestor_animaciones.getAnimacionEscenario(EXPLOSION);
+    actualizarAnimacion(animacion);
+    animacion->setDimensiones(100, 100);
+    animacion->dibujar(camara, pos_x, pos_y, false, it, 1);
+    if (it == 0)
+        gestor_sonidos.getSonido(SONIDO_EXPLOSION)->reproducir();
 }
 
 void EntidadProvision::dibujarProvision(tipoProvision& tipo, bool& estaEnElAire, ArmaProtocolo& armaMunicion, int& pos_x, int& pos_y) {
@@ -120,9 +134,13 @@ void EntidadProvision::dibujar() {
     // Traduzco la posicion de la provision.
     std::pair<int, int> pos = camara.traducirCoordenadas(provision.posicion.first, provision.posicion.second);
     // Dibujo la provision.
-    dibujarProvision(provision.tipo, provision.estaEnElAire, provision.armaMunicion, pos.first, pos.second);
-    if (agarrada == false && provision.fueAgarrada == true) {
-        agarrada = true;
-        gestor_sonidos.getSonido(SONIDO_AGARRANDO_CAJA)->reproducir();
+    if (provision.exploto)
+        dibujarExplosion(pos.first, pos.second);
+    else {
+        dibujarProvision(provision.tipo, provision.estaEnElAire, provision.armaMunicion, pos.first, pos.second);
+        if (agarrada == false && provision.fueAgarrada == true) {
+            agarrada = true;
+            gestor_sonidos.getSonido(SONIDO_AGARRANDO_CAJA)->reproducir();
+        }
     }
 }
