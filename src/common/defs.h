@@ -12,6 +12,7 @@
 typedef int32_t id;
 typedef int idJugador;
 typedef int idProyectil;
+typedef int idProvision;
 typedef uint hp;
 
 #define strings std::vector<std::string>
@@ -129,6 +130,7 @@ struct RepresentacionGusano {
 enum tipoProvision { MUNICION, VIDA };
 
 struct RepresentacionProvisiones {
+    idProvision id;
     std::pair<coordX, coordY> posicion;
     bool estaEnElAire;
     tipoProvision tipo;

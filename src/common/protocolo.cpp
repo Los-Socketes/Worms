@@ -914,53 +914,16 @@ Accion Protocolo::obtenerAccion() {
         return accion;
     }
 
-    // TODO: ampliar a los otros tipos de accion
     accion.accion = MOVERSE;
     accion.dir = (Direccion)dir;
     accion.esEmpezar = false;
     return accion;
 }
 
-
-// se manda ESCENARIO+jugadorDeTurno+gusanoDeTurno+tiempoRestante+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
-bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
-    bool is_open = enviarCodigo(ESTADO);
-    if (!is_open) {
-        return false;
-    }
-
-    is_open = enviarId(estado->jugadorDeTurno);
-    if (!is_open) {
-        return false;
-    }
-
-    is_open = enviarId(estado->gusanoDeTurno);
-    if (!is_open) {
-        return false;
-    }
-
+bool Protocolo::enviarSituacion(std::map<idJugador, SituacionJugador> situacionJugadores) {
     bool was_closed = false;
-    int32_t tiempoRestante = htonl(estado->segundosRestantes);
-    socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
-    if (was_closed) {
-        return false;
-    }
-
-    int8_t momento = estado->momento;
-    socket.sendall(&momento, sizeof(momento), &was_closed);
-    if (was_closed) {
-        return false;
-    }
-    
-    //envio cantJugadores
-    int cant = estado->gusanos.size();
-    is_open = enviarCantidad(cant);
-    if (!is_open) {
-        return false;
-    }
-
-    for (auto const& [idJugador, situacionJugador] : estado->situacionJugadores) {
-        is_open = enviarId(idJugador);
+    for (auto const& [idJugador, situacionJugador] : situacionJugadores) {
+        bool is_open = enviarId(idJugador);
         if (!is_open) {
             return false;
         }
@@ -971,10 +934,14 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
             return false;
         }
     }
+    return true;
+}
 
-    for (auto const& [idJugador, mapaGusanos] : estado->gusanos) {
+bool Protocolo::enviarGusanos(std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos) {
+    bool was_closed = false;
+    for (auto const& [idJugador, mapaGusanos] : gusanos) {
         // envio idJugador
-        is_open = enviarId(idJugador);
+        bool is_open = enviarId(idJugador);
         if (!is_open) {
             return false;
         }
@@ -1101,15 +1068,17 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
             }
         }  
     }
-    
+    return true;
+}
 
-    // envio proyectiles
-    is_open = enviarCantidad(estado->proyectiles.size());
+bool Protocolo::enviarProyectiles(std::vector<RepresentacionProyectil> proyectiles) {
+    bool is_open = enviarCantidad(proyectiles.size());
     if (!is_open) {
         return false;
     }
 
-    for (auto &&proyectil : estado->proyectiles) {
+    bool was_closed = false;
+    for (auto &&proyectil : proyectiles) {
         is_open = enviarId(proyectil.id);
         if (!is_open) {
             return false;
@@ -1153,9 +1122,107 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
             return false;
         }
     }
+    return true;
+}
+
+bool Protocolo::enviarProvisiones(std::vector<RepresentacionProvisiones> provisiones) {
+    bool was_closed = false;
+    for (auto &&provision : provisiones) {
+        bool is_open = enviarId(provision.id);
+        if (!is_open) {
+            return false;
+        }
+        std::vector<int32_t> posProvision;
+        posProvision.push_back(htonl((int32_t)toInt(provision.posicion.enX)));
+        posProvision.push_back(htonl((int32_t)toInt(provision.posicion.enY)));
+
+        socket.sendall(posProvision.data(), sizeof(int32_t)*posProvision.size(), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t estaEnElAire = provision.estaEnElAire;
+        socket.sendall(estaEnElAire, sizeof(estaEnElAire), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t tipo = provision.tipo;
+        socket.sendall(tipo, sizeof(tipo), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t armaMunicion = provision.armaMunicion;
+        socket.sendall(armaMunicion, sizeof(armaMunicion), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t fueAgarrada = provision.fueAgarrada;
+        socket.sendall(fueAgarrada, sizeof(fueAgarrada), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// se manda ESCENARIO+jugadorDeTurno+gusanoDeTurno+tiempoRestante+cantJugadores+[idJugador+cantGusanos+[id+vida+posX+posY+dir+arma]]
+bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
+    bool is_open = enviarCodigo(ESTADO);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarId(estado->jugadorDeTurno);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarId(estado->gusanoDeTurno);
+    if (!is_open) {
+        return false;
+    }
+
+    bool was_closed = false;
+    int32_t tiempoRestante = htonl(estado->segundosRestantes);
+    socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int8_t momento = estado->momento;
+    socket.sendall(&momento, sizeof(momento), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+    
+    //envio cantJugadores
+    int cant = estado->gusanos.size();
+    is_open = enviarCantidad(cant);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarSituacion(estado->situacionJugadores);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarGusanos(estado->gusanos);
+    if (!is_open) {
+        return false;
+    }
     
 
-    return true;
+    is_open = enviarProyectiles(estado->proyectiles);
+    if (!is_open) {
+        return false;
+    }
+    
+    return enviarProvisiones(estado->provisiones);
 }
 
 //Endif de la macro de SERVER

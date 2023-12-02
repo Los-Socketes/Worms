@@ -24,6 +24,14 @@ private:
 
     float toFloat(int valor);
     int toInt(float valor);
+
+#ifdef SERVER
+    bool enviarProvisiones(std::vector<RepresentacionProvisiones> provisiones);
+    bool enviarProyectiles(std::vector<RepresentacionProyectil> proyectiles);
+    bool enviarGusanos(std::map<idJugador, std::map<id, RepresentacionGusano>> gusanos);
+    bool enviarSituacion(std::map<idJugador, SituacionJugador> situacionJugadores);
+#endif
+
 public:
 
     Protocolo(Socket&& socket);
