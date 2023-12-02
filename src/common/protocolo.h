@@ -25,6 +25,13 @@ private:
     float toFloat(int valor);
     int toInt(float valor);
 
+#ifdef CLIENT
+    std::map<idJugador, SituacionJugador> obtenerSituacion(int cantJugadores);
+    std::map<idJugador, std::map<id, RepresentacionGusano>> obtenerGusanos(int cantJugadores);
+    std::vector<RepresentacionProyectil> obtenerProyectiles();
+    std::vector<RepresentacionProvisiones> obtenerProvisiones();
+#endif
+
 #ifdef SERVER
     bool enviarProvisiones(std::vector<RepresentacionProvisiones> provisiones);
     bool enviarProyectiles(std::vector<RepresentacionProyectil> proyectiles);
