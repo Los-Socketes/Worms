@@ -253,6 +253,7 @@ void Partida::anadirProvision() {
 
     bool encontreViga = false;
     while (encontreViga == false) {
+        //Fuente: https://stackoverflow.com/a/13445752/13683575
         /* Numero aleatorio entre 0 y MAXancho */
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator
@@ -913,9 +914,19 @@ void Partida::generarProvision(time_t horaActual) {
     if (diferencia < TIEMPOESPERAPROVISION)
         return;
 
-    std::cout << "GENERO PROVISION\n";
-
+    //Actualizo la hora incluso si el coin flip no lo logra.
+    //Es para que SIEMPRE haya TIEMPOESPERAPROVISION de tiempo entre
+    //intento e intento
     this->ultimaProvision = horaActual;
+
+    //Fuente: https://stackoverflow.com/a/13445752/13683575
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,1); // distribution in range [1, 6]
+    int cointFlip = dist6(rng);
+
+    if (cointFlip == 0)
+        return;
 
     this->anadirProvision();
 }
