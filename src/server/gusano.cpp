@@ -696,6 +696,7 @@ void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
 
 
     printf("RECIBI DANO DE CAIDA\n");
+    this->turno.recibioDano = true;
 
     int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
 
@@ -714,4 +715,9 @@ void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
 
 void Gusano::anadirVida(int vidaExtra) {
     this->vida += vidaExtra;
+}
+
+void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
+    Arma armaQueRecibe = this->armas.at(queArma);
+    armaQueRecibe.anadirMuniciones(cantiMunicion);
 }

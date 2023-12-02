@@ -12,6 +12,7 @@
 typedef int32_t id;
 typedef int idJugador;
 typedef int idProyectil;
+typedef int idProvision;
 typedef uint hp;
 
 #define strings std::vector<std::string>
@@ -126,6 +127,17 @@ struct RepresentacionGusano {
     RepresentacionArma armaEquipada;
 };
 
+enum tipoProvision { MUNICION, VIDA };
+
+struct RepresentacionProvisiones {
+    idProvision id;
+    std::pair<coordX, coordY> posicion;
+    bool estaEnElAire;
+    tipoProvision tipo;
+    ArmaProtocolo armaMunicion;
+    bool fueAgarrada;
+};
+
 struct RepresentacionViga {
     radianes angulo;
     //WARNING: En teoria esto solo pueden valer 6 o 3. Mepa que
@@ -163,6 +175,7 @@ struct EstadoDelJuego {
     int segundosRestantes;
     MomentoDePartida momento;
     std::map<idJugador, SituacionJugador> situacionJugadores;    
+    std::vector<RepresentacionProvisiones> provisiones;
 };
 
 struct Configuracion {

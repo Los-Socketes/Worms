@@ -21,6 +21,7 @@ ControlEntidades::ControlEntidades(Renderer& renderizador,
     vigas(gestor_animaciones, camara),
     gusanos(),
     proyectiles(),
+    provisiones(),
     agua_delante(gestor_animaciones, camara, ancho_mapa, alto_mapa, 2, 50),
     interfaz(renderizador, gestor_animaciones, gestor_sonidos, camara,
         estado_juego, pos_cursor, colores, es_host, volumen, muteado,
@@ -44,7 +45,7 @@ void ControlEntidades::setVigas(std::vector<RepresentacionViga>& vigas) {
 }
 
 void ControlEntidades::actualizarEntidades() {
-    // Añado gusanos y proyectiles que no estaban en los mapas.
+    // Añado gusanos, proyectiles y provisiones que no estaban en los mapas.
     for (auto& jugador : estado_juego->gusanos) {
         for(auto& gusano : jugador.second) {
             // Si el gusano no estaba en el mapa, lo agrego.GestorAnimaciones& gestor_animaciones,
@@ -62,8 +63,15 @@ void ControlEntidades::actualizarEntidades() {
                 renderizador, estado_juego, proyectil.id, gestor_sonidos, camara, fuente1, fuente2);
         }
     }
+    for (auto& provision : estado_juego->provisiones) {
+        // Si la provision no estaba en el mapa, la agrego.
+        if (this->provisiones.find(provision.id) == this->provisiones.end()) {
+            this->provisiones[provision.id] = std::make_shared<EntidadProvision>(gestor_animaciones,
+                renderizador, estado_juego, provision.id, gestor_sonidos, camara, fuente1, fuente2);
+        }
+    }
 
-    // Elimino gusanos y proyectiles que estan muertos.
+    // Elimino gusanos, proyectiles y provisiones que estan muertos.
     std::vector<id> gusanos_a_eliminar;
     for (auto& gusano : gusanos) {
         if (gusano.second->estaMuerta()) {
@@ -84,6 +92,16 @@ void ControlEntidades::actualizarEntidades() {
         proyectiles.erase(id);
     }
     proyectiles_a_eliminar.clear();
+    std::vector<idProvision> provisiones_a_eliminar;
+    for (auto& provision : provisiones) {
+        if (provision.second->estaMuerta()) {
+            provisiones_a_eliminar.push_back(provision.first);
+        }
+    }
+    for (auto& id : provisiones_a_eliminar) {
+        provisiones.erase(id);
+    }
+    provisiones_a_eliminar.clear();
 }
 
 
@@ -99,6 +117,9 @@ void ControlEntidades::aumentarIteraciones(int cant) {
     }
     for (auto& proyectil : estado_juego->proyectiles) {
         proyectiles.at(proyectil.id)->aumentarIteraciones(cant);
+    }
+    for (auto& provision : estado_juego->provisiones) {
+        provisiones.at(provision.id)->aumentarIteraciones(cant);
     }
     agua_delante.aumentarIteraciones(cant);
     interfaz.aumentarIteraciones(cant);
@@ -116,6 +137,9 @@ void ControlEntidades::dibujarEntidades() {
         }
         for (auto& proyectil : proyectiles) {
             proyectil.second->dibujar();
+        }
+        for (auto& provision : provisiones) {
+            provision.second->dibujar();
         }
         agua_delante.dibujar();
     }

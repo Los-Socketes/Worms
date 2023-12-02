@@ -1,6 +1,8 @@
 #include "partida.h"
+
 #include <map>
 #include "box2dDefs.h"
+
 
 #define SLEEPSEGS 1
 #define NOW NULL
@@ -16,7 +18,7 @@ Partida::Partida(std::string mapa)
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA,40);
+    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
 
@@ -212,6 +214,59 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
+void Partida::anadirProvision() {
+    std::pair<coordX, coordY> posicionInicial;
+    posicionInicial.enY = 20;
+    posicionInicial.enX = 10;
+
+    // bool encontreViga = false;
+    // while (encontreViga == false) {
+    //     /*Numero aleatorio entre 0 y MAXancho */
+    //     posicionInicial.enX = rand() % MAXANCHO + 1;
+
+    //     b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
+    //     b2Vec2 fin(posicionInicial.enX, 0);
+
+    //     ResolvedorQuery query;
+    //     b2AABB aabb;
+    //     aabb.lowerBound = inicio;
+    //     aabb.upperBound = fin;
+    //     this->world.QueryAABB( &query, aabb );
+    //     for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+    // 	  b2Body* cuerpoA = query.foundBodies[i];
+    // 	  if (cuerpoA->GetType() == b2_staticBody) {
+    // 	      encontreViga = true;
+    // 	      break;
+    // 	  }
+    //     }
+    // }
+
+    Entidad *nuevaEntidad = new Entidad;
+    nuevaEntidad->tipo = TipoEntidad::PROVISION;
+
+    b2BodyDef provisionDef;
+    provisionDef.type = b2_dynamicBody;
+    provisionDef.position.Set(posicionInicial.enX, posicionInicial.enY);
+    provisionDef.userData.pointer = reinterpret_cast<uintptr_t> (nuevaEntidad);
+
+    b2PolygonShape provision;
+    provision.SetAsBox(0.5f, 0.5f);
+
+    b2FixtureDef provisionFixDef;
+    provisionFixDef.shape = &provision;
+    provisionFixDef.density = 1.0f;
+    provisionFixDef.friction = 0.3f;
+
+    b2Body* provisionBody = world.CreateBody(&provisionDef);
+    provisionBody->CreateFixture(&provisionFixDef);
+
+    Provision *nuevaProvision = new Provision(MUNICION, BAZOOKA_P, provisionBody);
+    nuevaEntidad->provision = nuevaProvision;
+
+    this->provisiones.push_back(nuevaProvision);
+
+}
+
 void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::VIGA;
@@ -272,7 +327,6 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
     fixtureDef.filter.maskBits = -1;
 
     oceanoCuerpo->CreateFixture(&fixtureDef);
-    // oceanoCuerpo->CreateFixture(&oceano, MASACUERPOESTATICO);
 
 }
 
@@ -401,6 +455,14 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->proyectiles = proyectilesRepre;
 
     estadoActual->momento = this->momento;
+
+    std::vector<RepresentacionProvisiones> representacionProvi;
+    for (Provision *provision : this->provisiones) {
+        RepresentacionProvisiones repreActual;
+        repreActual = provision->getRepresentacin();
+        representacionProvi.push_back(repreActual);
+    }
+    estadoActual->provisiones = representacionProvi;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
@@ -1009,6 +1071,8 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
 
+    this->anadirProvision();
+
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
         
@@ -1029,6 +1093,10 @@ void Partida::gameLoop() {
         this->borrarCuerpos();
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
+
+        std::cout << "Posicion provision: " << 
+	  this->provisiones.at(0)->cuerpo->GetPosition().x << " " 
+	       << this->provisiones.at(0)->cuerpo->GetPosition().y << "\n "; 
 
 
         Accion accionRecibida;

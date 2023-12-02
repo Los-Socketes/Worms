@@ -109,6 +109,9 @@ Danio Arma::getDanio() {
     return this->danio;
 }
 
+void Arma::anadirMuniciones(int cantIdad) {
+    this->municiones += cantIdad;
+}
 
 int Arma::getMuniciones() {
     return this->municiones;

@@ -107,6 +107,7 @@ add_executable(server
   "${SERVERDIR}/monitorPartida.cpp"
   "${SERVERDIR}/arma.cpp"
   "${SERVERDIR}/mapa.cpp"
+  "${SERVERDIR}/provision.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
@@ -157,6 +158,7 @@ add_executable(client
   "${CLIENTDIR}/entidades/entidadGusano.cpp"
   "${CLIENTDIR}/entidades/entidadEscenario.cpp"
   "${CLIENTDIR}/entidades/entidadProyectil.cpp"
+  "${CLIENTDIR}/entidades/entidadProvision.cpp"
   "${CLIENTDIR}/entidades/entidadVigas.cpp"
   "${CLIENTDIR}/entidades/entidadInterfaz.cpp"
 

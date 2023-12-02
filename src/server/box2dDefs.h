@@ -6,6 +6,7 @@
 
 //Forward declaration
 class Gusano;
+class Provision;
 
     /*
      *Coordenadas en Box2d:
@@ -24,6 +25,7 @@ class Gusano;
 #define FUERZAGRAVITARIAY -20.0f
 
 #define MAXALTURA 60
+#define MAXANCHO 40
 
 #define METROS_SIN_DANIO 5.0f
 
@@ -93,7 +95,7 @@ typedef b2Vec2 finCaja;
     return distancia;
 }
 
-enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 16, PROYECTILREAL = 32};
+enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 16, PROYECTILREAL = 32, PROVISION = 64};
 
 // se usa para poder saber que tipo de proyectil es
 // TODO: agregar si es fragmento
@@ -134,6 +136,7 @@ struct Entidad {
         // Arma *arma;
         ProyectilAsociado proyectil;
     Proyectil *proyectilReal;
+    Provision *provision;
     // };
 };
 

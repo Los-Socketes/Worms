@@ -13,6 +13,7 @@
 #include <mutex>
 #include <box2d/box2d.h>
 #include <set>
+#include "provision.h"
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
@@ -87,6 +88,8 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+    std::vector<Provision *> provisiones;
+
 
     bool enviarEstadoAJugadores();
 
@@ -96,6 +99,8 @@ class Partida : public Thread {
     [[nodiscard]] Gusano *anadirGusano(std::pair<coordX, coordY> coords);
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
+
+    void anadirProvision();
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 

@@ -52,6 +52,7 @@ public:
 
     // -1 es equivalente a infinitas
     int getMuniciones();
+    void anadirMuniciones(int cantIdad);
 
     float getPotencia();
     void setPotencia(float potencia);

@@ -26,7 +26,11 @@ enum ItemEscenario {
     VOLUMEN_2,
     VOLUMEN_3,
     VOLUMEN_MUTEADO,
-    GUSANO_GANADOR
+    GUSANO_GANADOR,
+    PROVISION_MEDICINA,
+    PROVISION_MEDICINA_CAYENDO,
+    PROVISION_MUNICION,
+    PROVISION_MUNICION_CAYENDO
 };
 
 // Clase que se encarga de cargar las animaciones y devolverlas para ser dibujadas.

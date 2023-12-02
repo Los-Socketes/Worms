@@ -97,8 +97,8 @@ void EntidadProyectil::dibujar() {
     } else {
         dibujarProyectil(proyectil.proyectil, proyectil.esFragmento, posicion.first, posicion.second, proyectil.angulo);
         // Dibujo la cuenta regresiva del proyectil si la tiene.
-        if (proyectil.cuentaRegresiva >= 0 && proyectil.proyectil != BAZOOKA_P && proyectil.proyectil != MORTERO_P
-            && proyectil.proyectil != ATAQUE_AEREO_P) {
+        if (proyectil.cuentaRegresiva >= 0 && ((proyectil.proyectil != BAZOOKA_P && proyectil.proyectil != MORTERO_P
+            && proyectil.proyectil != ATAQUE_AEREO_P) || proyectil.esFragmento)) {
             // Dibujo la cuenta regresiva del proyectil
             // La cuenta regresiva es un int de segundos * 30, lo paso a float de segundos.
             float cuenta_regresiva = proyectil.cuentaRegresiva / 30.0;
