@@ -142,4 +142,6 @@ struct Entidad {
 
 #define TIEMPOESPERADINAMITA 99
 
+#define TIEMPOESPERAPROVISION 20
+
 #endif

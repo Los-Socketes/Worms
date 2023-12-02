@@ -88,6 +88,8 @@ class Partida : public Thread {
 
     std::vector<Proyectil *> proyectiles;
 
+    time_t ultimaProvision;
+    void generarProvision(time_t horaActual);
     std::vector<Provision *> provisiones;
 
 

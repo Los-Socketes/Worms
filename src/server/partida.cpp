@@ -2,6 +2,7 @@
 
 #include <map>
 #include "box2dDefs.h"
+#include <random>
 
 
 #define SLEEPSEGS 1
@@ -21,6 +22,7 @@ Partida::Partida(std::string mapa)
     this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
+    this->ultimaProvision = time(NOW);
 
     // TODO: que reciba el mapa por parametro
     Mapas mapas;
@@ -121,6 +123,36 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
     }
+
+
+    else if (entidadA->tipo == TipoEntidad::PROVISION
+        &&
+        entidadB->tipo == TipoEntidad::VIGA) {
+
+        entidadA->provision->estaEnElAire = false;
+    }
+      
+    else if (entidadA->tipo == TipoEntidad::VIGA
+        &&
+        entidadB->tipo == TipoEntidad::PROVISION) {
+        entidadB->provision->estaEnElAire = false;
+    }
+
+    else if (entidadA->tipo == TipoEntidad::PROVISION
+        &&
+        entidadB->tipo == TipoEntidad::GUSANO) {
+        std::cout << "CACACACACACCACA\n";
+        entidadA->provision->fueAgarrada = true;
+        entidadA->provision->provisionar(entidadB->gusano);
+    }
+      
+    else if (entidadA->tipo == TipoEntidad::GUSANO
+        &&
+        entidadB->tipo == TipoEntidad::PROVISION) {
+        std::cout << "CACACACACACCACA\n";
+        entidadB->provision->fueAgarrada = true;
+        entidadB->provision->provisionar(entidadA->gusano);
+    }
 }
 
 void ResolvedorColisiones::EndContact(b2Contact *contact) {
@@ -201,7 +233,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.friction = 0.3f;
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::GUSANO;
-    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL;
+    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL | (uint16_t)TipoEntidad::PROVISION;
 
     body->CreateFixture(&fixtureDef);
     nuevoGusano->setCuerpo(body);
@@ -216,30 +248,38 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 
 void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
-    posicionInicial.enY = 20;
-    posicionInicial.enX = 10;
+    posicionInicial.enY = MAXALTURA;
+    // posicionInicial.enX = 10;
 
-    // bool encontreViga = false;
-    // while (encontreViga == false) {
-    //     /*Numero aleatorio entre 0 y MAXancho */
-    //     posicionInicial.enX = rand() % MAXANCHO + 1;
+    bool encontreViga = false;
+    while (encontreViga == false) {
+        //Fuente: https://stackoverflow.com/a/13445752/13683575
+        /* Numero aleatorio entre 0 y MAXancho */
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(0, MAXANCHO); // define the range
+        // posicionInicial.enX = rand() % MAXANCHO + 1;
+        posicionInicial.enX = distr(gen);
 
-    //     b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
-    //     b2Vec2 fin(posicionInicial.enX, 0);
+        b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
+        b2Vec2 fin(posicionInicial.enX, 0);
 
-    //     ResolvedorQuery query;
-    //     b2AABB aabb;
-    //     aabb.lowerBound = inicio;
-    //     aabb.upperBound = fin;
-    //     this->world.QueryAABB( &query, aabb );
-    //     for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-    // 	  b2Body* cuerpoA = query.foundBodies[i];
-    // 	  if (cuerpoA->GetType() == b2_staticBody) {
-    // 	      encontreViga = true;
-    // 	      break;
-    // 	  }
-    //     }
-    // }
+        ResolvedorQuery query;
+        b2AABB aabb;
+        aabb.lowerBound = fin;
+        aabb.upperBound = inicio;
+        this->world.QueryAABB( &query, aabb );
+        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
+	  b2Body* cuerpoA = query.foundBodies[i];
+	  
+	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
+
+	  if (entidadA->tipo == TipoEntidad::VIGA) {
+	      encontreViga = true;
+	      break;
+	  }
+        }
+    }
 
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -254,16 +294,19 @@ void Partida::anadirProvision() {
 
     b2FixtureDef provisionFixDef;
     provisionFixDef.shape = &provision;
-    provisionFixDef.density = 1.0f;
+    provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
+    provisionFixDef.filter.categoryBits = (uint16_t)TipoEntidad::PROVISION;
+    provisionFixDef.filter.maskBits = -1;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
 
-    Provision *nuevaProvision = new Provision(MUNICION, BAZOOKA_P, provisionBody);
+    Provision *nuevaProvision = new Provision(VIDA, BAZOOKA_P, provisionBody);
     nuevaEntidad->provision = nuevaProvision;
 
     this->provisiones.push_back(nuevaProvision);
+    this->cuerposADestruir.push_back(provisionBody);
 
 }
 
@@ -864,6 +907,30 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     return gusanoYJugador;
 }
 
+void Partida::generarProvision(time_t horaActual) {
+    double diferencia;
+    diferencia = difftime(horaActual, this->ultimaProvision);
+
+    if (diferencia < TIEMPOESPERAPROVISION)
+        return;
+
+    //Actualizo la hora incluso si el coin flip no lo logra.
+    //Es para que SIEMPRE haya TIEMPOESPERAPROVISION de tiempo entre
+    //intento e intento
+    this->ultimaProvision = horaActual;
+
+    //Fuente: https://stackoverflow.com/a/13445752/13683575
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,1); // distribution in range [1, 6]
+    int cointFlip = dist6(rng);
+
+    if (cointFlip == 0)
+        return;
+
+    this->anadirProvision();
+}
+
 
 Proyectil *Partida::proyectilConstructor() {
     b2Vec2 origen(0,0);
@@ -918,16 +985,21 @@ Proyectil *Partida::proyectilConstructor() {
 
 
 bool destruirProyectil(b2Body *proyectil) {
-    Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
-    time_t horaDeCreacion;
-    horaDeCreacion = entidad->proyectil.horaDeCreacion;
-    time_t horaActual;
-    horaActual = time(NOW);
-    double diferencia;
-    diferencia = difftime(horaActual, horaDeCreacion);
-
     bool expirado;
-    expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
+
+    Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
+    if (entidad->tipo == TipoEntidad::PROVISION) {
+        expirado = (entidad->provision->fueAgarrada == true);
+    } else {
+        time_t horaDeCreacion;
+        horaDeCreacion = entidad->proyectil.horaDeCreacion;
+        time_t horaActual;
+        horaActual = time(NOW);
+        double diferencia;
+        diferencia = difftime(horaActual, horaDeCreacion);
+
+        expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
+    }
 
     return expirado;
 }
@@ -969,10 +1041,25 @@ void Partida::borrarCuerpos() {
 
     }
 
+    for(int i = this->provisiones.size() - 1 ; i >= 0 ; i--) {
+        Provision *provision = this->provisiones[i];
+        b2Body *cuerpoABorrar = provision->cuerpo;
+        // NO HACER delete entidad. Tira invalid delete
+        if (provision->fueAgarrada == true) {
+            // std::cout << "Delete\n";
+            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+            this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision;
+            this->provisiones.erase(this->provisiones.begin() + i);
+        }
+
+    }
+
     for (Gusano *gusano : this->gusanos) {
         gusano->golpeado = false;
     }
 }
+
 
 void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
@@ -1071,10 +1158,11 @@ void Partida::gameLoop() {
     gusanoActual = jugadorActual->getGusanoDeTurno();
     gusanoActual->esMiTurno(tiempoActual);
 
-    this->anadirProvision();
 
     while (this->finPartida == false) {
         tiempoActual = time(NOW);
+
+        this->generarProvision(tiempoActual);
         
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
@@ -1093,11 +1181,6 @@ void Partida::gameLoop() {
         this->borrarCuerpos();
 
         this->world.Step(timeStep, velocityIterations, positionIterations);
-
-        std::cout << "Posicion provision: " << 
-	  this->provisiones.at(0)->cuerpo->GetPosition().x << " " 
-	       << this->provisiones.at(0)->cuerpo->GetPosition().y << "\n "; 
-
 
         Accion accionRecibida;
         accionRecibida.idGusano = INVAL_ID;
