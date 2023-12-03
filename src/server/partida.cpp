@@ -139,7 +139,10 @@ void Partida::anadirProvision() {
     provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
     provisionFixDef.filter.categoryBits = (uint16_t)TipoEntidad::PROVISION;
-    provisionFixDef.filter.maskBits = -1;
+    provisionFixDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        (uint16_t)TipoEntidad::OCEANO |
+        (uint16_t)TipoEntidad::PROYECTIL |
+        (uint16_t)TipoEntidad::GUSANO;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
