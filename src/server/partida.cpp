@@ -1,14 +1,12 @@
 #include "partida.h"
 
-#include <map>
 #include "box2dDefs.h"
-#include <random>
 
+#include <map>
+#include <random>
 
 #define SLEEPSEGS 1
 #define NOW NULL
-
-int esperar = 0;
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 

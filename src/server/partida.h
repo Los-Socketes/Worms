@@ -1,18 +1,20 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include <box2d/box2d.h>
+
+#include <mutex>
+#include <utility>
+#include <vector>
+#include <condition_variable>
+#include <set>
+
 #include "cliente.h"
 #include "mapa.h"
 #include "defs.h"
 #include "thread.h"
-#include <utility>
-#include <vector>
 #include "jugador.h"
 #include "queue.h"
-#include <condition_variable>
-#include <mutex>
-#include <box2d/box2d.h>
-#include <set>
 #include "provision.h"
 #include "resolvedores.h"
 
