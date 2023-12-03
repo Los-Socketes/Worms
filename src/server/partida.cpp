@@ -145,16 +145,16 @@ void Partida::anadirProvision() {
     tipo = numeroRandomEnRango(0,1);
 
     tipoProvision queProvision = VIDA;
-    ArmaProtocolo arma = NADA_P;
-    if (tipo == 0) {
-        queProvision = VIDA;
-        arma = NADA_P;
-    } else {
+    ArmaProtocolo arma = BANANA_P;
+    // if (tipo == 0) {
+    //     queProvision = VIDA;
+    //     arma = NADA_P;
+    // } else {
         queProvision = MUNICION;
-        int pri = NADA_P + 1;
-        int fin = INVAL_ARMA_P - 1;
-        arma = (ArmaProtocolo) numeroRandomEnRango(pri, fin);
-    }
+        // int pri = NADA_P + 1;
+        // int fin = INVAL_ARMA_P - 1;
+        // arma = (ArmaProtocolo) numeroRandomEnRango(pri, fin);
+    // }
 
     int idProvision;
     idProvision = this->cantidadProvisionesGeneradas;
@@ -727,10 +727,10 @@ void Partida::generarProvision(time_t horaActual) {
     //intento e intento
     this->ultimaProvision = horaActual;
 
-    int cointFlip = numeroRandomEnRango(0,1);
+    // int cointFlip = numeroRandomEnRango(0,1);
 
-    if (cointFlip == 0)
-        return;
+    // if (cointFlip == 0)
+    //     return;
 
     std::cout << "GENERAR PROVISION \n";
 
