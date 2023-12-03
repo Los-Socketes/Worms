@@ -649,6 +649,6 @@ void Gusano::anadirVida(int vidaExtra) {
 }
 
 void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
-    Arma armaQueRecibe = this->armas.at(queArma);
+    Arma &armaQueRecibe = this->armas.at(queArma);
     armaQueRecibe.anadirMuniciones(cantiMunicion);
 }
