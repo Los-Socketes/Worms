@@ -10,10 +10,12 @@ public:
 };
 
 
-Provision::Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo) {
+Provision::Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *cuerpo, int id, bool esTrampa) {
     this->tipo = miTipo;
     this->cuerpo = cuerpo;
     this->armaMunicion = tipomunicion;
+    this->id = id;
+    this->esTrampa = esTrampa;
 
     this->estaEnElAire = true;
     this->fueAgarrada = false;
@@ -28,6 +30,8 @@ void Provision::darMunicion(Gusano *gusano) {
 }
 
 void Provision::provisionar(Gusano *gusano) {
+    if (this->esTrampa)
+        return;
     switch (this->tipo) {
     case VIDA:
         this->darVida(gusano);
@@ -53,7 +57,7 @@ RepresentacionProvisiones Provision::getRepresentacin() {
 
     miRepresentacion.fueAgarrada = this->fueAgarrada; 
 
-    miRepresentacion.id = 0;
+    miRepresentacion.id = this->id;
 
     return miRepresentacion;
 }

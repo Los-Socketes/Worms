@@ -323,7 +323,20 @@ void Partida::anadirProvision() {
         int fin = INVAL_ARMA_P - 1;
         arma = (ArmaProtocolo) numeroRandomEnRango(pri, fin);
     }
-    Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody);
+
+    int idProvision;
+    idProvision = this->cantidadProvisionesGeneradas;
+    this->cantidadProvisionesGeneradas += 1;
+
+    bool esTrampa;
+    int calculoSiTrampa;
+    calculoSiTrampa = numeroRandomEnRango(0,1);
+    if (calculoSiTrampa == 0)
+        esTrampa = true;
+    else
+        esTrampa = false;
+
+    Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
 
     this->provisiones.push_back(nuevaProvision);

@@ -91,6 +91,9 @@ class Partida : public Thread {
     time_t ultimaProvision;
     void generarProvision(time_t horaActual);
     std::vector<Provision *> provisiones;
+    void anadirProvision();
+    //Uso este valor para que se no se pisen los valores
+    int cantidadProvisionesGeneradas = 0;
 
 
     bool enviarEstadoAJugadores();
@@ -102,7 +105,6 @@ class Partida : public Thread {
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
-    void anadirProvision();
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 
