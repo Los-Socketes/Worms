@@ -108,6 +108,7 @@ add_executable(server
   "${SERVERDIR}/arma.cpp"
   "${SERVERDIR}/mapa.cpp"
   "${SERVERDIR}/provision.cpp"
+  "${SERVERDIR}/resolvedores.cpp"
 
   # Protocolo
   "${COMMONDIR}/protocolo.cpp"
