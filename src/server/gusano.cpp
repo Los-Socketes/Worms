@@ -588,16 +588,24 @@ Ataque Gusano::ejecutar(Accion accion) {
     }
     case INVAL_ACCION:
         std::cout << "INVALID ACCION\n";
+        armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
+        // this->setEstado(QUIETO);
         break;
     }
 
 
     //Hago que el gusano se acuerde que fue lo ulitmo que realizo;
     this->ultimaAccion = accion;
-    if (accionDeseada == ATACO) {
-        this->ultimaAccion.accion = ESTAQUIETO;
-    }
-    std::cout << "seteamos accion: " << this->ultimaAccion.accion << "\n";
+    // if (accionDeseada == INVAL_ACCION) {
+    //     this->ultimaAccion.accion = ESTAQUIETO;
+    // }
+    // std::cout << "seteamos accion: " << this->ultimaAccion.accion << "\n";
     return ataqueARealizar;
     
 

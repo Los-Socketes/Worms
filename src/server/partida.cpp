@@ -556,7 +556,6 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         (ultimaAccion.dir != SALTO &&
         ultimaAccion.dir != PIRUETA)
     ) {
-        std::cout << "no encontro y tengo esto: " << ultimaAccion.accion << "\n";
         accionAEjecutar = ultimaAccion;
     }
     else if (tipoUltimaAccion == ATAQUE) {
@@ -564,6 +563,8 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         accionAEjecutar.accion = ATACO;
     } else if (tipoUltimaAccion == ATACO) {
         accionAEjecutar = ultimaAccion;
+        // se usa inval accion para saber que hay que volver a nada
+        accionAEjecutar.accion = INVAL_ACCION;
     } else {
         accionAEjecutar = ultimaAccion;
         accionAEjecutar.accion = ESTAQUIETO;
