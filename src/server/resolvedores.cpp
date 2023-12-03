@@ -8,7 +8,6 @@
 #include "provision.h"
 
 void ResolvedorColisiones::BeginContact(b2Contact *contact) {
-    // std::cout << "CONTACTO\n";
     
     b2Body* cuerpoA = contact->GetFixtureA()->GetBody();
     b2Body* cuerpoB = contact->GetFixtureB()->GetBody();
@@ -21,7 +20,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadA->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoB->GetLinearVelocity();
         // cuerpoA->ApplyLinearImpulseToCenter(dir, true);
-        // printf("A\n");
         entidadA->gusano->recibirDano(dir, entidadB);
         // abort();
     }
@@ -36,14 +34,12 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if(entidadA->tipo == TipoEntidad::VIGA
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        std::cout << "Viga: " << cuerpoA->GetPosition().y << "\n";
         entidadB->gusano->recibirDanioCaida(cuerpoB->GetLinearVelocity());
     }
 
     else if(entidadB->tipo == TipoEntidad::VIGA 
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        std::cout << "Viga: " << cuerpoB->GetPosition().y << "\n";
         entidadA->gusano->recibirDanioCaida(cuerpoA->GetLinearVelocity());
     }
 
@@ -59,7 +55,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         entidadB->tipo == TipoEntidad::GUSANO) {
         // b2Vec2 dir = cuerpoA->GetLinearVelocity();
         entidadB->gusano->setEstado(AHOGADO);
-        printf("AHOGADO\n");
         // abort();
     }
 
@@ -70,7 +65,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 	//    &&
 	//    entidadB->tipo == TipoEntidad::VIGA
     ) {
-        printf("PROYECTIL REAL A\n");
         entidadA->proyectilReal->enElAire = false;
         entidadA->proyectilReal->colisiono = true;
     }
@@ -79,7 +73,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
 	//    &&
 	//    entidadA->tipo == TipoEntidad::VIGA
     ) {
-        printf("PROYECTIL REAL B\n");
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
     }
@@ -101,7 +94,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if (entidadA->tipo == TipoEntidad::PROVISION
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        std::cout << "CACACACACACCACA\n";
         entidadA->provision->fueAgarrada = true;
         entidadA->provision->provisionar(entidadB->gusano);
     }
@@ -109,7 +101,6 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if (entidadA->tipo == TipoEntidad::GUSANO
         &&
         entidadB->tipo == TipoEntidad::PROVISION) {
-        std::cout << "CACACACACACCACA\n";
         entidadB->provision->fueAgarrada = true;
         entidadB->provision->provisionar(entidadA->gusano);
     }
@@ -130,14 +121,12 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     if (entidadB->tipo == TipoEntidad::PROYECTIL
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        printf("A\n");
         // abort();
     }
 
     if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        printf("B\n");
         // abort();
     }
 
@@ -160,7 +149,6 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
             entidadA->gusano->setEstado(CAYENDO);
         }
     }
-    // std::cout << "FIN CONTACTO\n";
 }
 
 bool ResolvedorQuery::ReportFixture(b2Fixture* fixture) {
