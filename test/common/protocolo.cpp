@@ -4,9 +4,9 @@
 #include "socket.h"
 #include <iostream>
 
-#if DISTRO == 1
+#if DISTRO == 1 || DISTRO == 2
 #include <catch2/catch_test_macros.hpp>
-#elif DISTRO == 2
+#elif DISTRO == 3
 #include <catch2/catch.hpp>
 #endif
 

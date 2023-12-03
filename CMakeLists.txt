@@ -182,6 +182,19 @@ add_executable(client
 target_compile_definitions(client PUBLIC
   CLIENT
 )
+if(${esUbuntu})
+  target_compile_definitions(client PUBLIC
+    DISTRO=1
+  )
+elseif(${esGentoo})
+  target_compile_definitions(client PUBLIC
+    DISTRO=2
+  )
+elseif(${esDebian})
+  target_compile_definitions(client PUBLIC
+    DISTRO=3
+  )
+endif()
 
 # Linkeo de las librerias SDL
 target_include_directories(client PRIVATE ${SDL2_INCLUDE_DIRS})
@@ -231,13 +244,17 @@ target_compile_definitions(testprotocolo PUBLIC
 target_compile_definitions(testprotocolo PUBLIC
   SERVER
 )
-if(${esGentoo} OR ${esUbuntu})
+if(${esUbuntu})
   target_compile_definitions(testprotocolo PUBLIC
     DISTRO=1
   )
-elseif(${esDebian})
+elseif(${esGentoo})
   target_compile_definitions(testprotocolo PUBLIC
     DISTRO=2
+  )
+elseif(${esDebian})
+  target_compile_definitions(testprotocolo PUBLIC
+    DISTRO=3
   )
 endif()
 

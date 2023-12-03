@@ -8,8 +8,19 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
         SDL_WINDOWPOS_UNDEFINED, config.getDimensionesIniciales().first,
         config.getDimensionesIniciales().second, SDL_WINDOW_HIDDEN),
     renderizador(ventana, -1, SDL_RENDERER_ACCELERATED),
+#if DISTRO == 1 || DISTRO == 3
     mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
         4, 4096),
+#elif DISTRO == 2
+    /*Fabri: Por algun en Gentoo (al menos en mi maquina) rompe el 4.
+     *Como el codigo lo van a testear en Ubuntu, lo dejo como esta y
+     *listo, este ifdef es mas que nada para que Fabri (yo) pueda
+     *testear el programa :_(
+     */
+    mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
+       MIX_DEFAULT_CHANNELS , 4096),
+#endif
+    
     music("assets/sounds/music.ogg"),
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
