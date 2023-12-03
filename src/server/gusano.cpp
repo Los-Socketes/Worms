@@ -376,7 +376,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
-        this->estado = QUIETO;
+        // this->estado = QUIETO;
         break;
     case MOVERSE:
         {
