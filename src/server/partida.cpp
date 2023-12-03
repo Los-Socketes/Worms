@@ -15,6 +15,17 @@
 
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
+int numeroRandomEnRango(int comienzo, int fin) {
+    int resultado;
+    //Fuente: https://stackoverflow.com/a/13445752/13683575
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
+    resultado = dist6(rng);
+
+    return resultado;
+}
+
 Partida::Partida(std::string mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
     this->mapa = mapa;
@@ -65,7 +76,10 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     fixtureDef.friction = 0.3f;
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::GUSANO;
-    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::PROYECTIL | (uint16_t)TipoEntidad::PROVISION;
+    fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        (uint16_t)TipoEntidad::OCEANO |
+        (uint16_t)TipoEntidad::PROYECTIL |
+        (uint16_t)TipoEntidad::PROVISION;
 
     body->CreateFixture(&fixtureDef);
     nuevoGusano->setCuerpo(body);
@@ -81,7 +95,6 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
 void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
-    // posicionInicial.enX = 10;
 
     bool encontreViga = false;
     while (encontreViga == false) {
@@ -181,7 +194,6 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     b2PolygonShape viga;
     // Juampi: puede que ancho viga tambien tenga que ser dividido por 2?
     viga.SetAsBox(longitud, ANCHOVIGA / 2);
-    //viga.SetAsBox(longitud, ANCHOVIGA);
 
     b2Body* groundBody = world.CreateBody(&vigaDef);
 
@@ -191,10 +203,8 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
 
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::VIGA;
     fixtureDef.filter.maskBits = -1;
-    // fixtureDef.filter.maskBits = 1;
 
     groundBody->CreateFixture(&fixtureDef);
-    // groundBody->CreateFixture(&viga, MASACUERPOESTATICO);
 
     RepresentacionViga vigaEnMapa;
     vigaEnMapa.angulo = angulo;
@@ -225,23 +235,11 @@ void Partida::anadirOceano(std::pair<coordX, coordY> posicionInicial) {
     fixtureDef.filter.maskBits = -1;
 
     oceanoCuerpo->CreateFixture(&fixtureDef);
-
 }
 
 
 InformacionInicial Partida::obtenerInfoInicial() {
     InformacionInicial infoInicial;
-
-    // std::vector<Gusano*> gusanosParaElNuevoJugador;
-    //Todos los gusanos que creamos lo anadimos al jugador y a la partida
-    // for (int i = 0; i < CANTGUSANOS; i++) {
-              
-    //     Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at((i + cantidad_gusanos_insertados) % posicionesGusanos.size()));
-
-    //     gusanosParaElNuevoJugador.push_back(nuevoGusano);
-    //     cantidad_gusanos_insertados += 1;
-
-    // }
     //Le damos los gusanos al jugador del cliente y acceso a la queue
     //de acciones
     Jugador *jugadorNuevo = new Jugador();
@@ -255,12 +253,10 @@ InformacionInicial Partida::obtenerInfoInicial() {
     infoInicial.vigas = this->vigasEnMapa;
     infoInicial.dimensiones = this->dimensiones;
 
-
     return infoInicial;
 }
 
 void Partida::anadirCliente(Cliente *clienteNuevo) {
-    std::cout << "Nuevo cliente\n";
     clienteNuevo->obtenerAccesoAAcciones(&this->acciones);
 
     //Anadimos al jugador a la partida
@@ -289,7 +285,6 @@ bool Partida::enviarEstadoAJugadores() {
 	  estadoActual->jugadorDeTurno = jugador;
 	  estadoActual->gusanoDeTurno = jugadorActual->getGusanoDeTurno()->getId();
 	  estadoActual->segundosRestantes = jugadorActual->getGusanoDeTurno()->getTiempoQueMeQueda();
-	//   std::cout << "TIEMPO: " << estadoActual->segundosRestantes << "\n";
         }
 
         std::map<id, RepresentacionGusano> gusanosJugActual;
@@ -312,12 +307,9 @@ bool Partida::enviarEstadoAJugadores() {
 
     std::vector<RepresentacionProyectil> proyectilesRepre;
     for (Proyectil *proyectil : this->proyectiles) {
-        //TODO: Hack momentaneo
         if (
-	  proyectil->armaOrigen == NADA_P
-	  ||
-	  proyectil->armaOrigen == TELETRANSPORTACION_P
-	  ||
+	  proyectil->armaOrigen == NADA_P ||
+	  proyectil->armaOrigen == TELETRANSPORTACION_P ||
 	  proyectil->armaOrigen == BATE_P
 	  )
 	  continue;
@@ -326,7 +318,6 @@ bool Partida::enviarEstadoAJugadores() {
         repre.proyectil = proyectil->armaOrigen;
         repre.esFragmento = proyectil->esFragmento;
 
-        // std::cout << "COORDS:" << proyectil->cuerpo->GetPosition().x << proyectil->cuerpo->GetPosition().y << "\n";
         repre.posicion = deb2VecACoord(proyectil->cuerpo->GetPosition());
         
         b2Vec2 velocidad = proyectil->cuerpo->GetLinearVelocity();
@@ -339,12 +330,10 @@ bool Partida::enviarEstadoAJugadores() {
         }
         if (velocidad.x < 0) {
             repre.angulo += M_PI;
-            std::cout << "ENTRE con: " << repre.angulo << "\n";
         } 
         if (proyectil->armaOrigen == DINAMITA_P) {
             repre.angulo = 0;
         }
-        std::cout << "ANGULO ENVIADO: " << repre.angulo << "\n";
         repre.cuentaRegresiva = proyectil->countdown;
         repre.exploto = proyectil->exploto;
 
@@ -390,8 +379,7 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     //Si entra en estos otros if es porque NO se obtuvo algo nuevo
     else if (tipoUltimaAccion == MOVERSE &&
         (ultimaAccion.dir != SALTO &&
-        ultimaAccion.dir != PIRUETA)
-    ) {
+        ultimaAccion.dir != PIRUETA)) {
         accionAEjecutar = ultimaAccion;
     }
     else if (tipoUltimaAccion == ATAQUE) {
@@ -400,7 +388,6 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         accionAEjecutar = ultimaAccion;
         accionAEjecutar.accion = ESTAQUIETO;
     }
-
 
     return accionAEjecutar;
 }
@@ -421,11 +408,9 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         this->crearFragmentos(proyectil, armaElegida.getFragmentos());
     }
 
-    // printf("KATAPUM\n");
     //Fuente: https://www.iforce2d.net/b2dtut/explosions
     int numRays = 32;
     for (int i = 0; i < numRays; i++) {
-        // std::cout << i << "\n";
         Entidad *nuevaEntidad = new Entidad;
         nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
         nuevaEntidad->proyectil.arma = proyectil->armaOrigen;
@@ -456,9 +441,11 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         fd.friction = 0; // friction not necessary
         fd.restitution = 0.99f; // high restitution to reflect off obstacles
         fd.filter.groupIndex = -1; // particles should not collide with each other
+        fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
+        fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+	  (uint16_t)TipoEntidad::OCEANO |
+	  (uint16_t)TipoEntidad::GUSANO;
 
-    fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-    fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
         body->CreateFixture( &fd );
         nuevaEntidad->proyectil.proyectil = body;
         nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
@@ -483,15 +470,12 @@ void Partida::generarExplosion(Proyectil *proyectil) {
 
         proyectil->fixture = proyectil->cuerpo->CreateFixture(&fixtureNuevo);
     }
-    // printf("FIN KATAPUM\n");
 }
 
 
 void Partida::crearFragmentos(Proyectil* proyectil, int cantFragmentos) {
     for (int i = 0; i < cantFragmentos; i++) {
         Proyectil *nuevoProyectil = this->proyectilConstructor();
-
-
         nuevoProyectil->armaOrigen = proyectil->armaOrigen;
         nuevoProyectil->exploto = false;
         nuevoProyectil->colisiono = false;
@@ -513,17 +497,6 @@ void Partida::crearFragmentos(Proyectil* proyectil, int cantFragmentos) {
     
 }
 
-int Partida::numeroRandomEnRango(int comienzo, int fin) {
-    int resultado;
-    //Fuente: https://stackoverflow.com/a/13445752/13683575
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
-    resultado = dist6(rng);
-
-    return resultado;
-}
-
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     ArmaProtocolo arma = ataque.arma;
     if (arma == NADA_P || arma == TELETRANSPORTACION_P) {
@@ -537,8 +510,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         
     for (int i = 0 ; i < cantProyectiles; i++) {
         Proyectil *nuevoProyectil = this->proyectilConstructor();
-
-
         nuevoProyectil->armaOrigen = arma;
         nuevoProyectil->exploto = false;
         nuevoProyectil->colisiono = false;
@@ -558,7 +529,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 
         if (arma == BATE_P) {
             nuevoProyectil->exploto = true;
-	  std::cout << "ESTOY ACA\n";
 	  std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> golpeYCaja;
 	  golpeYCaja = gusano->ejecutarGolpe();
 	  std::pair<inicioCaja, finCaja> coordsGolpe;
@@ -579,18 +549,15 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 
 	      Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
 
-        Entidad *nuevaEntidad = new Entidad;
-        nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
-        nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
-        b2Vec2 coords = golpeYCaja.second.first;
-        nuevaEntidad->proyectil.posInicial = coords;
-        nuevaEntidad->proyectilReal = nuevoProyectil;
+	      Entidad *nuevaEntidad = new Entidad;
+	      nuevaEntidad->tipo = TipoEntidad::PROYECTIL;
+	      nuevaEntidad->proyectil.arma = nuevoProyectil->armaOrigen;
+	      b2Vec2 coords = golpeYCaja.second.first;
+	      nuevaEntidad->proyectil.posInicial = coords;
+	      nuevaEntidad->proyectilReal = nuevoProyectil;
 
 
-        entidadA->gusano->recibirDano(golpe, nuevaEntidad);
-	  //   entidadA->gusano->recibirDano(golpe, entidadA);
-
-	      // printf("PEGO\n");
+	      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
 	  }
         }
 
@@ -625,11 +592,7 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
         else if (arma == ATAQUE_AEREO_P) {
 	  ataque.posicion.y += 5;
 	  ataque.posicion.x += 2;
-	  std::cout << "POSITION: " << ataque.posicion.x << " " << ataque.posicion.y << "\n";
-
-
         }
-
         nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
         nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
     }
@@ -661,10 +624,6 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
         }
     }
     
-    // todoExploto = (proyectil->countdown <= 0);
-    // if (todoExploto == false)
-    //     return false;
-
     bool todoEstaQuieto = true;
     for (int i = 0; (i < (int) this->clientes.size())
 		&&
@@ -684,10 +643,8 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
         return false;
 
 
-
-
     //Si llegue hasta aca, significa que todas las otras condiciones
-    //se cumplieron, entonces se que se puede cambiar de turno
+    //se cumplieron, entonces sabemos que se puede cambiar de turno
     return true;
 
 }
@@ -699,26 +656,12 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     gusanoYJugador.first = gusanoActual;
     gusanoYJugador.second = jugadorDeTurno;
 
-    // std::cout << "Exploto: " << std::boolalpha << todoExploto << "\n";
-
-    // std::cout << "Todo quieto: " << std::boolalpha << todoEstaQuieto << "\n";
-
-    
-
-    // std::cout << "Fin gusano actual" << std::boolalpha << finDelGusano << "\n";
-
     bool cambioDeTurno;
-    // cambioDeTurno = (todoExploto &&
-    // 		 todoEstaQuieto &&
-    // 		 finDelGusano);
-
     cambioDeTurno = this->sePuedeCambiarDeJugador(gusanoActual, tiempoActual);
 
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)
         return gusanoYJugador;
-
-    // std::cout << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
 
     //Antes de nada me fijo si el jugador actual perdio
     jugadorTurnoActual->chequearSiPerdi();
@@ -764,7 +707,6 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     }
 
     if (elProximoGano == true) {
-        std::cout << "TENEMOS UN GANADOR" << "\n";
         jugadorDeTurno->avisarQueGane();
         this->termino = true;
         this->momento = TERMINADA;
@@ -808,7 +750,6 @@ Proyectil *Partida::proyectilConstructor() {
     nuevoProyectil->enElAire = false;
     nuevoProyectil->colisiono = false;
 
-
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROYECTILREAL;
     nuevaEntidad->proyectilReal = nuevoProyectil;
@@ -830,17 +771,11 @@ Proyectil *Partida::proyectilConstructor() {
     fixtureDef.filter.groupIndex = -1;
     fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
     fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
-    // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTILREAL;
-    // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA | (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
-    // fixtureDef.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-    // fixtureDef.filter.maskBits = (uint16_t)TipoEntidad::OCEANO | (uint16_t)TipoEntidad::GUSANO;
 
     nuevoProyectil->fixture = body->CreateFixture(&fixtureDef);
-
     nuevoProyectil->cuerpo = body;
-
-
     nuevoProyectil->exploto = false;
+
     this->proyectiles.push_back(nuevoProyectil);
 
     return nuevoProyectil;
@@ -873,7 +808,6 @@ void Partida::borrarCuerpos() {
     //Leo la lista al reves para no tener problemas del offset al
     //borrar elementos
 
-    // std::cout << "AHORA CUERPOS\n";
     for(int i = this->cuerposADestruir.size() - 1 ; i >= 0 ; i--) {
         b2Body *cuerpoABorrar;
         cuerpoABorrar = this->cuerposADestruir.at(i);
@@ -881,22 +815,18 @@ void Partida::borrarCuerpos() {
         loBorro = destruirProyectil(cuerpoABorrar);
         // NO HACER delete entidad. Tira invalid delete
         if (loBorro == true) {
-	  // std::cout << "Delete\n";
 	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-	//   delete entidadB;
 	  this->world.DestroyBody(cuerpoABorrar);
 	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
         }
 
     }
 
-    // std::cout << "AHORA PROYECTILES\n";
     for(int i = this->proyectiles.size() - 1 ; i >= 0 ; i--) {
         Proyectil *proyectil = this->proyectiles[i];
         b2Body *cuerpoABorrar = proyectil->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
         if (proyectil->exploto) {
-            // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->proyectilReal;
@@ -910,7 +840,6 @@ void Partida::borrarCuerpos() {
         b2Body *cuerpoABorrar = provision->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
         if (provision->fueAgarrada == true) {
-            // std::cout << "Delete\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->provision;
@@ -938,11 +867,6 @@ void Partida::gameLoop() {
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
     while (this->finPartida == false) {
-        //FIXME Esto estaria bueno, pero tira excepcion :(
-        // if (this->clientes.size() >= MINJUGADORES) {
-        // 	  this->momento = POR_INICIAR;
-        // }
-
         this->finPartida = NOT this->enviarEstadoAJugadores();
         if (this->finPartida) {
             break;
@@ -1001,7 +925,6 @@ void Partida::gameLoop() {
         }
     }
     int cant = 6/4;
-    std::cout << "CANTIDAD: " << cant << "\n";
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
     int32 positionIterations = 2;
