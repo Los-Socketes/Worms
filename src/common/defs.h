@@ -136,6 +136,7 @@ struct RepresentacionProvisiones {
     tipoProvision tipo;
     ArmaProtocolo armaMunicion;
     bool fueAgarrada;
+    bool exploto;
 };
 
 struct RepresentacionViga {

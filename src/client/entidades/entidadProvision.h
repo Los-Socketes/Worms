@@ -17,6 +17,7 @@ class EntidadProvision : public EntidadActualizable {
     bool agarrada;
     const std::string nombreArma(ArmaProtocolo& armaMunicion);
     void dibujarNombreArma(ArmaProtocolo& armaMunicion, int& pos_x, int& pos_y);
+    void dibujarExplosion(int& pos_x, int& pos_y);
     void dibujarProvision(tipoProvision& tipo, bool& estaEnElAire, ArmaProtocolo& armaMunicion, int& pos_x, int& pos_y);
  public:
     EntidadProvision(GestorAnimaciones& gestor_animaciones,
