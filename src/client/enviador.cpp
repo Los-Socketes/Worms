@@ -1,6 +1,8 @@
 #include "enviador.h"
 
-Enviador::Enviador(Protocolo& protocolo, Queue<std::shared_ptr<AccionCliente>>& envio_comandos, std::atomic<bool>& es_turno) :
+Enviador::Enviador(Protocolo& protocolo,
+    Queue<std::shared_ptr<AccionCliente>>& envio_comandos,
+    std::atomic<bool>& es_turno) :
     protocolo(protocolo),
     envio_comandos(envio_comandos),
     cont(true),
