@@ -44,7 +44,8 @@ void Recibidor::run() {
                 es_turno = true;
             } else
                 es_turno = false;
-            recepcion_estados.push(estado_juego);                                              
+            if (estado_juego->momento != ESTADO_INVALIDO)
+                recepcion_estados.push(estado_juego);                                              
         }
     } catch (const ClosedQueue& e) {
         syslog(LOG_INFO, "%s", e.what());

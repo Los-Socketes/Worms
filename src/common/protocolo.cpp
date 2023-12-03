@@ -718,6 +718,7 @@ std::vector<RepresentacionProvisiones> Protocolo::obtenerProvisiones() {
 std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     int8_t codigo = obtenerCodigo();
     std::shared_ptr<EstadoDelJuego> estado = std::make_shared<EstadoDelJuego>();
+    estado->momento = ESTADO_INVALIDO;
     if (codigo == -1 || codigo != ESTADO) {
         return estado;
     }
