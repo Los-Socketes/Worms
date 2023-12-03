@@ -139,7 +139,7 @@ void EntradaTeclado::run() {
                         if (municiones_agotadas)
                             break;
                         envio_comandos.push(std::make_shared<AccionDisparar>());
-                        envio_comandos.push(std::make_shared<AccionCambiarPotencia>(0));
+                        // envio_comandos.push(std::make_shared<AccionCambiarPotencia>(0));
                         break;
                     default:
                         break;

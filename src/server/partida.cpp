@@ -556,9 +556,13 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         (ultimaAccion.dir != SALTO &&
         ultimaAccion.dir != PIRUETA)
     ) {
+        std::cout << "no encontro y tengo esto: " << ultimaAccion.accion << "\n";
         accionAEjecutar = ultimaAccion;
     }
     else if (tipoUltimaAccion == ATAQUE) {
+        accionAEjecutar = ultimaAccion;
+        accionAEjecutar.accion = ATACO;
+    } else if (tipoUltimaAccion == ATACO) {
         accionAEjecutar = ultimaAccion;
     } else {
         accionAEjecutar = ultimaAccion;
