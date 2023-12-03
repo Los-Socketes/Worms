@@ -185,8 +185,12 @@ void Arma::setCoordenadasTeletransporte(std::pair<coordX, coordY> coordenadas) {
 }
 
 void Arma::usar() {
+    this->potencia = 0;
+    this->cuentaRegresiva = 5;
+    // this->angulo = 0;
     if (municiones <= 0) {
         return;
     }
     this->municiones -= 1;
+
 }

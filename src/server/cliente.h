@@ -15,7 +15,7 @@ private:
 
 
 public:
-    Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& monitorPartidas);
+    Cliente(Socket&& socket, Mapas mapasDisponibles, MonitorPartida& monitorPartidas);
 
     void obtenerAccesoAAcciones(Queue<Accion>* acciones);
 

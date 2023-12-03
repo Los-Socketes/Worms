@@ -39,7 +39,7 @@ class Partida : public Thread {
     std::vector<b2Body *> cuerposADestruir;
     // ResolvedorDestruccion destucciones;
 
-    std::string mapa;
+    // std::string mapa;
     Mapa mapaUsado;
     std::vector<RepresentacionViga> vigasEnMapa;
     std::pair<coordX, coordY> dimensiones;
@@ -92,7 +92,7 @@ class Partida : public Thread {
     void crearFragmentos(Proyectil* proyectil, int cantFragmentos);
 
 public:
-    Partida(const std::string mapa);
+    Partida(Mapa mapa);
 
     [[nodiscard]] InformacionInicial obtenerInfoInicial();
 

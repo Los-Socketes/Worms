@@ -26,9 +26,9 @@ int numeroRandomEnRango(int comienzo, int fin) {
     return resultado;
 }
 
-Partida::Partida(std::string mapa)
+Partida::Partida(Mapa mapa)
     :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
-    this->mapa = mapa;
+    // this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
     this->finPartida = false;
@@ -37,16 +37,14 @@ Partida::Partida(std::string mapa)
     this->termino = false;
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
-
-    // TODO: que reciba el mapa por parametro
-    Mapas mapas;
-    this->mapaUsado = mapas.mapas[0];
-    for (auto &&viga : this->mapaUsado.vigas) {
+    this->mapaUsado = mapa;
+    
+    for (auto &&viga : mapa.vigas) {
         this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
     }
 
-    for (int i = 0; i < (int)this->mapaUsado.posicionGusanos.size(); i++) {
-        this->posicionesGusanos.insert({i, this->mapaUsado.posicionGusanos[i]});
+    for (int i = 0; i < (int)mapa.posicionGusanos.size(); i++) {
+        this->posicionesGusanos.insert({i, mapa.posicionGusanos[i]});
     }
     
     this->cantidad_gusanos_insertados = 0;
@@ -384,6 +382,9 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
         accionAEjecutar = ultimaAccion;
     }
     else if (tipoUltimaAccion == ATAQUE) {
+        accionAEjecutar = ultimaAccion;
+        accionAEjecutar.accion = ATACO;
+    } else if (tipoUltimaAccion == ATACO) {
         accionAEjecutar = ultimaAccion;
     } else {
         accionAEjecutar = ultimaAccion;
@@ -884,7 +885,7 @@ void Partida::gameLoop() {
     }
 
     bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
-    int cantGusanos = this->mapaUsado.cantGusanos / this->clientes.size();
+    int cantGusanos = this->mapaUsado.cantGusanos / this->jugadores.size();
     if (cantJusta) {
         for (auto &&jugador : this->jugadores) {
             // std::vector<Gusano*> gusanosJugador;
@@ -925,7 +926,6 @@ void Partida::gameLoop() {
             jugadorActual->darMasVidaAGusanos();
         }
     }
-    int cant = 6/4;
     float timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 6;
     int32 positionIterations = 2;

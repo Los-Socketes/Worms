@@ -18,7 +18,7 @@ class MonitorPartida {
 public:
     MonitorPartida();
 
-    [[nodiscard]] id anadirPartida(std::string mapaNombre);
+    [[nodiscard]] id anadirPartida(Mapa mapa);
 
     void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
 

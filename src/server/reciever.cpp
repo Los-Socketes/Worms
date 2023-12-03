@@ -3,7 +3,7 @@
 #include "protocolo.h"
 #include <cstdlib>
 
-class MonitorPartida {public: [[nodiscard]] id anadirPartida(std::string mapaNombre);
+class MonitorPartida {public: [[nodiscard]] id anadirPartida(Mapa mapa);
 
     void anadirJugadorAPartida(Cliente *nuevoJugador, id partidaEspecifica);
 
@@ -13,7 +13,7 @@ class MonitorPartida {public: [[nodiscard]] id anadirPartida(std::string mapaNom
 };
 
 
-Reciever::Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente) 
+Reciever::Reciever(Protocolo& protocol, Mapas mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente) 
     : protocolo(protocol), partidas(monitorPartidas), cliente(cliente) {
         this->mapasDisponibles = mapasDisponibles;
         this->acciones = nullptr;
@@ -28,7 +28,7 @@ bool Reciever::lobby() {
         case MAPA:
 	    {
         //Le mando los mapas que me dieron
-        envio = this->protocolo.enviarMapas(mapasDisponibles);
+        envio = this->protocolo.enviarMapas(mapasDisponibles.nombresMapas);
         if (!envio) {
             return false;
         }
@@ -37,10 +37,10 @@ bool Reciever::lobby() {
         if (mapaDeseado == INVAL_ID) {
             return false;
         }
-        std::string nombreMapaDeseado;
-        nombreMapaDeseado = mapasDisponibles.at(mapaDeseado);
+        Mapa mapa;
+        mapa = mapasDisponibles.at(mapaDeseado);
 
-        partidaElegida = partidas.anadirPartida(nombreMapaDeseado);
+        partidaElegida = partidas.anadirPartida(mapa);
 
         break;
         }

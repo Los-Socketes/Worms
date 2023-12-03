@@ -8,15 +8,6 @@ class Server {
 private:
     Aceptador aceptador;
 
-    //Esto lo hago constante porque es fijo. Se tiene que leer de
-    //un archivo
-    //TODO: Leer de un archivo
-    const std::vector<std::string> escenariosDisponibles = {
-        "El pico de la Viuda", "Battlesnax"
-    };
-
-
-
 public:
     Server(const char *puerto);
 

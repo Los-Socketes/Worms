@@ -26,8 +26,10 @@ struct Mapa {
 
 struct Mapas {
     std::vector<Mapa> mapas;
+    std::vector<std::string> nombresMapas;
 
     Mapas();
+    Mapa at(int index);
 };
 
 #endif

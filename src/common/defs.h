@@ -48,7 +48,7 @@ enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};
  *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                    0         1         2        3          4
-enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, INVAL_ACCION};
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, ATACO, INVAL_ACCION};
 enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 
 

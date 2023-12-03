@@ -376,6 +376,7 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
+        this->estado = QUIETO;
         break;
     case MOVERSE:
         {
@@ -480,10 +481,9 @@ Ataque Gusano::ejecutar(Accion accion) {
 	  float throwPower = this->armaSeleccionada->getPotencia();
 	  float minPower = 5.0f;
 	  float maxPower = 100.0f;
-	  float minSpeed = 5.0f;  // Adjust this value for the minimum throw speed
-	  float maxSpeed = 20.0f;  // Adjust this value for the maximum throw speed
+	  float minSpeed = 5.0f;
+	  float maxSpeed = 20.0f;
 
-	  // Map throwPower to the throw speed range using linear interpolation
 	  float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
 
 	  float adyacente = cos(angulo) * throwSpeed;
@@ -506,14 +506,29 @@ Ataque Gusano::ejecutar(Accion accion) {
         this->armaSeleccionada->usar();
         break;
         }
+    case ATACO: {
+        armaQueQuiero = NADA_P;
+        tiempoEspera = 0;
+        posicion = (deCoordAb2Vec(this->getCoords()));
+
+        ataqueARealizar.posicion = posicion;
+        ataqueARealizar.tiempoEspera = tiempoEspera;
+        ataqueARealizar.arma = armaQueQuiero;
+        this->estado = DISPARANDO;
+        break;
+    }
     case INVAL_ACCION:
         break;
     }
 
+    //Hago que el gusano se acuerde que fue lo ulitmo que realizo
+    // si es ataco hay que "mentirle"
+    if (this->ultimaAccion.accion == ATACO) {
+        this->ultimaAccion.accion = ESTAQUIETO;
+    } else {
+        this->ultimaAccion = accion;
 
-    //Hago que el gusano se acuerde que fue lo ulitmo que realizo;
-    this->ultimaAccion = accion;
-
+    }
     return ataqueARealizar;
     
 

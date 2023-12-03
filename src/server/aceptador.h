@@ -13,15 +13,13 @@
 class Aceptador : public Thread {
     Socket socket;
 
-    //TODO: Hacerlo un puntero
-    strings escenariosDisponibles;
+    Mapas escenariosDisponibles;
 
     MonitorPartida partidas;
     std::list<Cliente*> listaClientes;
 
  public:
     Aceptador(const char *puerto);
-    void asignar(std::vector<std::string> escenariosDisponibles);
 
     void aceptarClientes();
 

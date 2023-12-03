@@ -3,7 +3,6 @@
 
 Server::Server(const char *puerto)
     :aceptador(puerto) {
-    this->aceptador.asignar(escenariosDisponibles);
     this->aceptador.start();
 };
 
