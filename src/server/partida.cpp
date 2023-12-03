@@ -173,8 +173,6 @@ void Partida::anadirProvision() {
     nuevaEntidad->provision = nuevaProvision;
 
     this->provisiones.push_back(nuevaProvision);
-    this->cuerposADestruir.push_back(provisionBody);
-
 }
 
 void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial) {
@@ -789,18 +787,14 @@ bool destruirProyectil(b2Body *proyectil) {
     bool expirado;
 
     Entidad *entidad = (Entidad *) proyectil->GetUserData().pointer;
-    if (entidad->tipo == TipoEntidad::PROVISION) {
-        expirado = (entidad->provision->fueAgarrada == true);
-    } else {
-        time_t horaDeCreacion;
-        horaDeCreacion = entidad->proyectil.horaDeCreacion;
-        time_t horaActual;
-        horaActual = time(NOW);
-        double diferencia;
-        diferencia = difftime(horaActual, horaDeCreacion);
+    time_t horaDeCreacion;
+    horaDeCreacion = entidad->proyectil.horaDeCreacion;
+    time_t horaActual;
+    horaActual = time(NOW);
+    double diferencia;
+    diferencia = difftime(horaActual, horaDeCreacion);
 
-        expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
-    }
+    expirado = diferencia > entidad->proyectil.tiempoMinimoDeVida;
 
     return expirado;
 }
