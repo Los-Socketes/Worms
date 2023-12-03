@@ -127,7 +127,7 @@ void EntidadGusano::reproducirSonidoGusano(std::shared_ptr<Animacion>& animacion
 void EntidadGusano::dibujarGusano(EstadoGusano& estado, RepresentacionArma& arma, DireccionGusano& dir, int& pos_x, int& pos_y) {
     // Si la animacion cambio, reseteo el iterador.
     std::shared_ptr<Animacion> animacion;
-    if (estado_juego->momento != TERMINADA && estado != MUERTO && estado != AHOGADO) {
+    if (estado_juego->momento != TERMINADA || estado == MUERTO || estado == AHOGADO) {
         animacion = gestor_animaciones.getAnimacionGusano(estado, arma.arma);
         actualizarAnimacion(animacion);
         if(arma.tieneMira && (estado == QUIETO || estado == DISPARANDO)) {
