@@ -328,12 +328,13 @@ void Partida::anadirProvision() {
     idProvision = this->cantidadProvisionesGeneradas;
     this->cantidadProvisionesGeneradas += 1;
 
+    //FIXME Comento lo de es trampa hasta que ande bien
     bool esTrampa;
-    int calculoSiTrampa;
-    calculoSiTrampa = numeroRandomEnRango(0,1);
-    if (calculoSiTrampa == 0)
-        esTrampa = true;
-    else
+    // int calculoSiTrampa;
+    // calculoSiTrampa = numeroRandomEnRango(0,1);
+    // if (calculoSiTrampa == 0)
+    //     esTrampa = true;
+    // else
         esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
