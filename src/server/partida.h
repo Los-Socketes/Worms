@@ -66,6 +66,13 @@ class Partida : public Thread {
     int cantidadProvisionesGeneradas = 0;
 
 
+    //No tiene ningun tipo de sentido logico que esta funcion sea un
+    //metodo.
+    //Bajo cualquier tipo de logica, deberia ser una funcion sola,
+    //tradicional. Sin embargo, la catedra nos prohibe de poner
+    //funciones solas. Todo "tiene" que ser un metodo. 
+    [[nodiscard]] int numeroRandomEnRango(int comienzo, int fin);
+
     bool enviarEstadoAJugadores();
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,

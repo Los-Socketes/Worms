@@ -8,6 +8,11 @@
 #define SLEEPSEGS 1
 #define NOW NULL
 
+
+// Usado para castear un puntero a una reference y hacer
+// el codigo mas explicito
+#define REFERENCE *
+
 const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 Partida::Partida(std::string mapa)
@@ -36,24 +41,6 @@ Partida::Partida(std::string mapa)
     this->cantidad_gusanos_insertados = 0;
 
     this->anadirOceano(std::pair<coordX, coordY>(0.0f, 0.0f));
-}
-
-//Esto tendria que estar en el YAML? Posiblemente
-#define CANTGUSANOS 3
-
-// Usado para castear un puntero a una reference y hacer
-// el codigo mas explicito
-#define REFERENCE *
-
-int numeroRandomEnRango(int comienzo, int fin) {
-    int resultado;
-    //Fuente: https://stackoverflow.com/a/13445752/13683575
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
-    resultado = dist6(rng);
-
-    return resultado;
 }
 
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
@@ -524,6 +511,17 @@ void Partida::crearFragmentos(Proyectil* proyectil, int cantFragmentos) {
         nuevoProyectil->cuerpo->SetLinearVelocity(linearVelocity);
     }
     
+}
+
+int Partida::numeroRandomEnRango(int comienzo, int fin) {
+    int resultado;
+    //Fuente: https://stackoverflow.com/a/13445752/13683575
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
+    resultado = dist6(rng);
+
+    return resultado;
 }
 
 void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {

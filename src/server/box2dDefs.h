@@ -58,6 +58,8 @@ typedef b2Vec2 finCaja;
 
 #define POTENCIASALTO 5.0f
 
+#define CANTGUSANOS 3
+
 [[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2 vec) {
     std::pair<coordX, coordY> representacionCoord;
     representacionCoord.enX = vec.x;
@@ -72,27 +74,6 @@ typedef b2Vec2 finCaja;
     representacionVec.y = coord.enY;
 
     return representacionVec;
-}
-
-//Gracias algebra 2
-[[nodiscard]] inline int distanciaEntreVectores(b2Vec2 a, b2Vec2 b) {
-    /* √((x_2-x_1)²+(y_2-y_1)²) */
-    int distEnX;
-    distEnX = a.x - b.x;
-
-    int distEnY;
-    distEnY = a.y - b.y;
-
-    int cuadradoX;
-    cuadradoX = distEnX * distEnX;
-
-    int cuadradoY;
-    cuadradoY = distEnY * distEnY;
-
-    int distancia;
-    distancia = sqrt(cuadradoX + cuadradoY);
-
-    return distancia;
 }
 
 enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 16, PROYECTILREAL = 32, PROVISION = 64};
