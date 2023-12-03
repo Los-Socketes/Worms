@@ -48,14 +48,10 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
         direccion.x = 0.0f;
         direccion.y = 0.0f;
         this->cuerpo->SetLinearVelocity(direccion);
-    } else if (this->estado == MUERTO
-	     ||
+    } else if (this->estado == MUERTO ||
 	     this->estado == AHOGADO) {
-    this->turno.recibioDano = true;
+        this->turno.recibioDano = true;
         this->vida = 0;
-        //Desabilito al cuerpo para que, una vez muerto, no colisione
-        //ras
-        // this->cuerpo->SetEnabled(false);
     }
 }
 
@@ -72,8 +68,6 @@ void Gusano::esMiTurno(time_t arrancoAhora) {
 bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     double cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     if (this->turno.usoSuArma && cuantoTiempoLlevo < TIEMPOCAMBIOTURNO - TIEMPOCHANGUI) {
-	  
-        std::cout << "KILL YOU\n";
         this->setEstado(QUIETO);
         this->turno.cuandoArranco -= (TIEMPOCAMBIOTURNO - cuantoTiempoLlevo - 3);
     }
@@ -82,26 +76,14 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
 
     //Esto, en teoria, da la rta en segundos
     bool noTengoMasTiempo;
-    // double cuantoTiempoLlevo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
     noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
 
     //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
     cambiaDeTurno = (noTengoMasTiempo ||
-        this->turno.recibioDano == true
-        // ||
-        // this->turno.usoSuArma == true
-		 );
-
-    // if (cambiaDeTurno == true) {
-    //     std::cout << cuantoTiempoLlevo << "\n";
-    //     std::cout << this->idGusano << "\n";
-    //     std::cout << "CAMBIO DE TURNO!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    // }
-
+        this->turno.recibioDano == true);
 
     this->tiempoQueMeQueda = TIEMPOCAMBIOTURNO - cuantoTiempoLlevo;
-    // std::cout << "tiempo restante: " << this->tiempoQueMeQueda << "\n";
     return cambiaDeTurno;
 }
 
@@ -148,7 +130,6 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     adyacente = cos(angulo) * hipotenusa;
     if (this->direccion == IZQUIERDA)
         adyacente *= -1;
-    std::cout << adyacente << "\n";
 
     float opuesto;
     opuesto = sin(angulo) * hipotenusa*2;
@@ -159,13 +140,9 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
     b2Vec2 golpeDeseado(adyacente, opuesto);
     golpeYCaja.first = golpeDeseado;
 
-    std::cout << "GOLPE: " << golpeDeseado.x << ", " << golpeDeseado.y << "\n";
-
     //CAJA
     std::pair<coordX, coordY> coords;
     coords = this->getCoords();
-
-    std::cout << "ANGULO" << this->armaSeleccionada->getAngulo() << "\n";
 
     DireccionGusano dondeMira;
     dondeMira = this->direccion;
@@ -202,7 +179,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     std::pair<coordX, coordY> direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
-        std::cout << "Inicio der" << "\n";
         direccion.enX = VELOCIDADMOVIMIENTO;
         direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
@@ -210,7 +186,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case INICIO_IZQ:
-        std::cout << "Inicio izq" << "\n";
         direccion.enX = -VELOCIDADMOVIMIENTO;
         direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
@@ -218,7 +193,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_DER:
-        std::cout << "Fin der" << "\n";
         direccion.enX = 0.0f;
         direccion.enY = 0.0f;
         this->setEstado(QUIETO);
@@ -226,7 +200,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case FIN_IZQ:
-        std::cout << "Fin izq" << "\n";
         direccion.enX = 0.0f;
         direccion.enY = 0.0f;
         this->setEstado(QUIETO);
@@ -238,7 +211,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         if (this->estado == SALTANDO) {
             break;
         }
-        std::cout << "Salto" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
@@ -251,7 +223,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         if (this->estado == HACE_PIRUETA) {
             break;
         }
-        std::cout << "PIRUETA" << "\n";
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
         direccion.enY = POTENCIASALTO*2;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
@@ -260,7 +231,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         break;
         }
     case INVAL_DIR:
-        std::cout << "Invalid dir" << "\n";
         abort();
         break;
     }
@@ -286,7 +256,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     int radio;
 
     if (entidad->proyectilReal->esFragmento) {
-        std::cout << "HERE\n";
         danio = armaUsada.getDanioFragmento().epicentro;
         radio = armaUsada.getDanioFragmento().radio;
     } else {
@@ -299,7 +268,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     }
 
     float danioReal;
-    std::cout << "DISTANCIA: " << distanciaGusanoBomba << "\n";
 
     float porcentaje = 1.0f / (1.0f + std::pow(distanciaGusanoBomba / radio,2));
 
@@ -310,11 +278,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         danioReal = danio;
     }
 
-    std::cout << this->cuerpo->GetLinearVelocity().x << this->cuerpo->GetLinearVelocity().y << "\n";
-    // std::cout << "Danio: " << danio << "\n";
-    std::cout << "Danio: " << danioReal << "\n";
-    std::cout << "distancia: " << porcentaje << "\n";
-    std::cout << "distancia: " << distanciaGusanoBomba << "\n";
     if ((u_int)danioReal == 0) {
         return;
     }
@@ -323,18 +286,10 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         this->setEstado(MUERTO);
 
     } else {
-        printf("RECIBI DANO\n");
         this->vida -= danioReal;
     }
     this->turno.recibioDano = true;
 
-
-    // golpe.x *= distancia;
-    // golpe.y *= distancia;
-    // b2Vec2 golpeton(0.0f, 0.0f);
-    
-    // this->cuerpo->ApplyLinearImpulseToCenter(golpeton, true);
-    std::cout << "Vida nueva: " << this->vida << "\n";
     if (tipoArma == BATE_P) {
         this->cuerpo->SetLinearVelocity(golpe);
     } else {
@@ -342,7 +297,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         float fuerzaY = golpe.y > 0 ? golpe.y : -golpe.y;
         float angulo = std::atan(fuerzaY/fuerzaX);
         float hipotenusa = 10;
-        // float hipotenusa = danioReal*0.3;
         float adyacente = cos(angulo) * hipotenusa;
         if (golpe.x < 0)
             adyacente *= -1;
@@ -355,15 +309,9 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
         golpe.x = adyacente;
         golpe.y = opuesto;
-        std::cout << "FUERZA EMPUJE: " << adyacente << ", " << opuesto << "\n";
         this->cuerpo->SetLinearVelocity(golpe);
     }
     this->setEstado(HERIDO);
-    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
-    // this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
-
-
-    // this->golpeado = true;
 }
 
 void Gusano::preparar(Accion& accion) {
@@ -377,8 +325,6 @@ void Gusano::preparar(Accion& accion) {
         if (!this->armaSeleccionada->getCaracteristicas().tieneMira || anguloActual > M_PI/2 || anguloActual < -M_PI/2) {
             break;
         } 
-        // std::cout << "Cambio: " << configDeseado.angulo << "\n";
-        // std::cout << "Angulo nuevo: " << anguloActual << "\n";
         this->armaSeleccionada->setAngulo(anguloActual);
         break;
         }
@@ -391,8 +337,6 @@ void Gusano::preparar(Accion& accion) {
         }else if (!this->armaSeleccionada->getCaracteristicas().tienePotenciaVariable || potenciaActual > 100) {
             potenciaActual = 100;
         } 
-        // std::cout << "Cambio: " << configDeseado.potencia << "\n";
-        // std::cout << "Potencia nueva: " << potenciaActual << "\n";
         this->armaSeleccionada->setPotencia(potenciaActual);
         break;
         }
@@ -425,7 +369,6 @@ Ataque Gusano::ejecutar(Accion accion) {
     accionDeseada = accion.accion;
     switch (accionDeseada) {
     case ESTAQUIETO:
-    // std::cout << "ESTA QUIETO\n";
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
         posicion = (deCoordAb2Vec(this->getCoords()));
@@ -437,7 +380,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     case MOVERSE:
         {
-    std::cout << "ESTA QUIETO\n";
         Direccion direccionDeseada;
         direccionDeseada = accion.dir;
         // WARNING: Aca se ejecuta el movimiento
@@ -454,12 +396,10 @@ Ataque Gusano::ejecutar(Accion accion) {
         }
     case EQUIPARSE: 
         {
-        std::cout << "EQUIPO EL ARMA\n";
         ArmaProtocolo armaElegida;
         armaElegida = accion.armaAEquipar;
 
         this->armaEquipada = armaElegida;
-        // Arma armaSeleccionada(armaElegida);
         this->armaSeleccionada = &this->armas[armaElegida];
         armaQueQuiero = NADA_P;
         tiempoEspera = 0;
@@ -472,11 +412,8 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
         }
     case PREPARAR:
-        std::cout << "PREPARAR\n";
-
         this->preparar(accion);
 
-        // armaQueQuiero = NADA_P;
         armaQueQuiero = NADA_P;
 
         tiempoEspera = 0;
@@ -490,7 +427,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     case ATAQUE:
         {
-    std::cout << "ATAQUE\n";
         b2Vec2 impulso(0,0);
         tiempoEspera = 0;
         armaQueQuiero = this->armaEquipada;
@@ -516,20 +452,18 @@ Ataque Gusano::ejecutar(Accion accion) {
 	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
 	  ataquePos.enY = MAXALTURA - 20;
 	  posicion = deCoordAb2Vec(ataquePos);
-	//   std::cout << "POSITION: " << posicion.x << " " << posicion.y << "\n";
 	  ataqueARealizar.impulsoInicial = b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY);
         }
 
         ataqueARealizar.posicion = posicion;
-        // tiempoEspera = 99;
+
         if(armaEquipada == DINAMITA_P ||
 	 armaEquipada == GRANADA_VERDE_P ||
 	 armaEquipada == GRANADA_SANTA_P ||
-     armaEquipada == BANANA_P ||
-     armaEquipada == GRANADA_ROJA_P
+	 armaEquipada == BANANA_P ||
+	 armaEquipada == GRANADA_ROJA_P
 	 ) {
 	        tiempoEspera = this->armaSeleccionada->getCuentaRegresiva() * 30;
-	        // std::cout << "Tiempo: " << tiempoEspera << "\n";
         } 
         else {
 	        tiempoEspera = 0;
@@ -552,13 +486,11 @@ Ataque Gusano::ejecutar(Accion accion) {
 
 	  float throwSpeed = minSpeed + (maxSpeed - minSpeed) * ((throwPower - minPower) / (maxPower - minPower));
 
-	  std::cout << "ANGULO: " << angulo << "\n"; 
 	  float adyacente = cos(angulo) * throwSpeed;
 	  float opuesto = sin(angulo) * throwSpeed;
 
 	  if (this->direccion == IZQUIERDA)
 	      adyacente *= -1;
-	  std::cout << "POTENCIA POTENCIA" << this->armaSeleccionada->getPotencia() << "\n"; 
 
       impulso.x = adyacente;
       impulso.y = opuesto;
@@ -571,7 +503,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.impulsoInicial = impulso;
         this->estado = DISPARANDO;
         this->turno.usoSuArma = true;
-        std::cout << ataqueARealizar.arma << "ATACO\n";
         this->armaSeleccionada->usar();
         break;
         }
@@ -587,7 +518,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         break;
     }
     case INVAL_ACCION:
-        std::cout << "INVALID ACCION\n";
         break;
     }
 
@@ -607,7 +537,6 @@ Ataque Gusano::ejecutar(Accion accion) {
 void Gusano::teletransportarse() {
     std::pair<coordX, coordY> destino = this->armaSeleccionada->getCoordenadasTeletransporte();
 
-    std::cout << destino.first << " " << destino.second << "\n";
     b2Vec2 vectorDestino = deCoordAb2Vec(destino);
 
     this->cuerpo->SetTransform(vectorDestino, true);
@@ -654,7 +583,6 @@ RepresentacionGusano Gusano::getRepresentacion() {
     //TODO Ahora est hardcodeado. Hacer algo generico.
     //Esto solo aplica al bate
     RepresentacionArma arma = this->armaSeleccionada->getRepresentacion();
-    // std::cout << "Angulo a enviar: " << arma.anguloRad << "\n";
     // arma.municiones = 100000;
     // arma.arma = this->armaEquipada;
 
@@ -701,14 +629,10 @@ void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
         return;
     }
 
-
-    printf("RECIBI DANO DE CAIDA\n");
     this->turno.recibioDano = true;
 
     int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
 
-    std::cout << "DISTANCIA QUE CAE: " << distanciaQueCae << "\n";
-    std::cout << "VELOCIDAD QUE CAE: " << velocidad.y << "\n";
     int vidaMax = 100;
     float danio = distanciaQueCae * vida / (METROS_SIN_DANIO*3);
     if (this->vida <= (u_int) danio) {

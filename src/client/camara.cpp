@@ -11,16 +11,25 @@ void Camara::mover(int& deltaX, int& deltaY) {
     int nueva_pos_x = posicion.first + deltaX;
     int nueva_pos_y = posicion.second + deltaY;
 
-    if (nueva_pos_x < 0) {
-        nueva_pos_x = 0;
-    } else if (nueva_pos_x + dimension.first > dimension_mapa.first) {
-        nueva_pos_x = dimension_mapa.first - dimension.first;
+    // Si las dimensiones de la pantalla son menores a las del mapa, se limita el movimiento
+    // para que no se salga del mapa. Si no, la camara queda en el centro de esa dimension.
+    if (dimension_mapa.first > dimension.first) {
+        if (nueva_pos_x < 0) {
+            nueva_pos_x = 0;
+        } else if (nueva_pos_x > dimension_mapa.first - dimension.first) {
+            nueva_pos_x = dimension_mapa.first - dimension.first;
+        }
+    } else {
+        nueva_pos_x = (dimension_mapa.first - dimension.first) / 2;
     }
-
-    if (nueva_pos_y < 0) {
-        nueva_pos_y = 0;
-    } else if (nueva_pos_y + dimension.second > dimension_mapa.second) {
-        nueva_pos_y = dimension_mapa.second - dimension.second;
+    if (dimension_mapa.second > dimension.second) {
+        if (nueva_pos_y < 0) {
+            nueva_pos_y = 0;
+        } else if (nueva_pos_y > dimension_mapa.second - dimension.second) {
+            nueva_pos_y = dimension_mapa.second - dimension.second;
+        }
+    } else {
+        nueva_pos_y = (dimension_mapa.second - dimension.second) / 2;
     }
 
     posicion.first = nueva_pos_x;

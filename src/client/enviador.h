@@ -21,8 +21,9 @@ private:
     std::atomic<bool>& es_turno;
 
 public:
-    Enviador(Protocolo& protocolo, Queue<std::shared_ptr<AccionCliente>>& envio_comandos, std::atomic<bool>& es_turno);
-
+    Enviador(Protocolo& protocolo,
+        Queue<std::shared_ptr<AccionCliente>>& envio_comandos,
+        std::atomic<bool>& es_turno);
     
     void run() override;
 

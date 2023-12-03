@@ -10,13 +10,16 @@
 // Clase que representa al escenario.
 class EntidadEscenario : public Entidad {
  private:
+    Renderer& renderizador;
     Camara& camara;
     int ancho_mapa;
     int alto_mapa;
     int pos_x;
     int pos_y;
+    void dibujarBloque(int& posicion_x, int& posicion_y);
  public:
-    EntidadEscenario(GestorAnimaciones& gestor_animaciones,
+    EntidadEscenario(Renderer& renderizador,
+        GestorAnimaciones& gestor_animaciones,
         Camara& camara,
         int& ancho_mapa,
         int& alto_mapa);

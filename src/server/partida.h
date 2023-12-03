@@ -1,57 +1,27 @@
 #ifndef PARTIDA_HEADER
 #define PARTIDA_HEADER
 
+#include <box2d/box2d.h>
+
+#include <mutex>
+#include <utility>
+#include <vector>
+#include <condition_variable>
+#include <set>
+
 #include "cliente.h"
 #include "mapa.h"
 #include "defs.h"
 #include "thread.h"
-#include <utility>
-#include <vector>
 #include "jugador.h"
 #include "queue.h"
-#include <condition_variable>
-#include <mutex>
-#include <box2d/box2d.h>
-#include <set>
 #include "provision.h"
+#include "resolvedores.h"
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
 #define MINJUGADORES 1
-
-// Uso potencia de 2 para operaciones con bits (con quien colisiona cada clase)
-
-
-// Este struct se usa para asociar facilmente un body de box2d a
-// alguna de nuestras clases. En teoria se podria usar solo el puntero,
-// pero esto nos evita casteos falopas y hace que todas los bodies tengan
-// lo mismo. Aparte usamos un union, en memoria es casi el mismo tamano
-
-
-// class ResolvedorDestruccion : public b2DestructionListener {
-//     void SayGoodbye(b2Fixture *fixture); 	
-//     void SayGoodbye(b2Joint *joint); 	
-// };
-
-class ResolvedorColisiones : public b2ContactListener {
-public:
-    std::atomic<bool> finPartida;
-    void BeginContact(b2Contact* contact);
- 
-    void EndContact(b2Contact* contact);
- 
-    // void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
- 
-    // void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-};
-
-class ResolvedorQuery : public b2QueryCallback {
-public:
-    std::vector<b2Body*> foundBodies;
-      
-    bool ReportFixture(b2Fixture* fixture);
-};
 
 class Partida : public Thread {
     std::atomic<bool> finPartida;
@@ -91,7 +61,9 @@ class Partida : public Thread {
     time_t ultimaProvision;
     void generarProvision(time_t horaActual);
     std::vector<Provision *> provisiones;
-
+    void anadirProvision();
+    //Uso este valor para que se no se pisen los valores
+    int cantidadProvisionesGeneradas = 0;
 
     bool enviarEstadoAJugadores();
 
@@ -102,7 +74,6 @@ class Partida : public Thread {
 
     void anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY> posicionInicial);
 
-    void anadirProvision();
 
     void anadirOceano(std::pair<coordX, coordY> posicionInicial);
 

@@ -14,6 +14,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
     protocolo(std::move(skt)),
     estado_juego(std::make_shared<EstadoDelJuego>()),
     es_host(false),
+    timeout(TIMEOUT * FPS),
     camara(0, 0, config.getDimensionesIniciales().first,
         config.getDimensionesIniciales().second, 0, 0),
     pos_cursor(0, 0),
@@ -33,9 +34,15 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
     comandos_teclado(TAM_QUEUE),
     es_turno(false),
     municiones_agotadas(true),
+    ejecuto_accion(false),
     inicio(false),
-    entrada_teclado(envio_comandos, comandos_teclado, camara, municiones_agotadas),
-    recibidor(protocolo, recepcion_estados, es_turno, municiones_agotadas),
+    entrada_teclado(envio_comandos,
+        comandos_teclado, camara,
+        municiones_agotadas,
+        ejecuto_accion),
+    recibidor(protocolo, recepcion_estados,
+        es_turno, municiones_agotadas,
+        ejecuto_accion),
     enviador(protocolo, envio_comandos, es_turno) {}
 
 void Cliente::configurarSDL(InformacionInicial& info_inicial) {
@@ -196,8 +203,18 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
     Comando comando;
     
     while (continuar) {
-        // Actualizo el estado del juego.
-        recepcion_estados.try_pop(estado_juego);
+        // Actualizo el estado del juego, si no se recibio nada, empiezo a contar el timeout.
+        if (!recepcion_estados.try_pop(estado_juego)) {
+            timeout--;
+            printf("Timeout: %d\n", timeout);
+            if (timeout == 0) {
+                continuar = false;
+                std::cout << "Se perdio la conexion con el servidor." << std::endl;
+                break;
+            }
+        } else {
+            timeout = TIMEOUT * FPS;
+        }
 
         // Actualizo entidades en el controlador.
         control_entidades.actualizarEntidades();     

@@ -19,6 +19,7 @@
 using namespace SDL2pp;
 
 #define TAM_QUEUE 500
+#define TIMEOUT 10
 
 // Clase principal del cliente. Se encarga de ejecutar el menu, iniciar los hilos,
 // y ejecutar el loop principal del juego.
@@ -37,6 +38,7 @@ class Cliente {
     Protocolo protocolo;
     std::shared_ptr<EstadoDelJuego> estado_juego;
     bool es_host;
+    int timeout;
     // Juego
     Camara camara;
     std::pair<int, int> pos_cursor;
@@ -52,6 +54,7 @@ class Cliente {
     Queue<Comando> comandos_teclado;
     std::atomic<bool> es_turno;
     std::atomic<bool> municiones_agotadas;
+    std::atomic<bool> ejecuto_accion;
     bool inicio;
     EntradaTeclado entrada_teclado;
     Recibidor recibidor;
