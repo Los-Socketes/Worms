@@ -33,4 +33,10 @@ Mapas::Mapas() {
         this->mapas.push_back(mapaActual);
     }
     fin.close(); 
+    this->nombresMapas = nombresMapas;
 }
+
+Mapa Mapas::at(int index) {
+    return this->mapas.at(index);
+}
+

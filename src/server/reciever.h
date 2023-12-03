@@ -7,11 +7,13 @@
 #include "protocolo.h"
 #include "queue.h"
 #include "thread.h"
+#include "mapa.h"
 // #include "monitorPartida.h"
 
 //Forward declaration
 class MonitorPartida;
 class Cliente;
+
 
 #define recibirEstado run
 
@@ -20,7 +22,7 @@ class Reciever: public Thread {
     Protocolo& protocolo;
 
     Queue<Accion> *acciones;
-    strings mapasDisponibles;
+    Mapas mapasDisponibles;
     MonitorPartida& partidas;
     Cliente *cliente;
     idJugador miId;
@@ -31,7 +33,7 @@ class Reciever: public Thread {
 
 public:
 
-    Reciever(Protocolo& protocol, strings mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente);
+    Reciever(Protocolo& protocol, Mapas mapasDisponibles, MonitorPartida& monitorPartidas, Cliente *cliente);
 
     void obtener(Queue<Accion> *acciones);
 

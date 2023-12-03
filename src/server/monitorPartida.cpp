@@ -6,14 +6,14 @@ MonitorPartida::MonitorPartida() {
     this->contador = 0;
 }
 
-id MonitorPartida::anadirPartida(const std::string mapaNombre) {
+id MonitorPartida::anadirPartida(Mapa mapa) {
     std::unique_lock<std::mutex> lck(mtx);
 
     // recorro toda la lista para que si hay alguna libre
     // se ocupe de vuelta y los ids no suban tan rapido
     for (auto const& [idPartida, partida] : this->mapa) {
         if (partida == nullptr || !partida->is_alive()) {
-            Partida *partidaNueva = new Partida(mapaNombre);
+            Partida *partidaNueva = new Partida(mapa);
             partidaNueva->start();
             this->mapa[idPartida] = partidaNueva;
             return idPartida;
@@ -24,7 +24,7 @@ id MonitorPartida::anadirPartida(const std::string mapaNombre) {
     idPartidaNueva = this->contador;
 
     //TODO: Check new for no memory
-    Partida *partidaNueva = new Partida(mapaNombre);
+    Partida *partidaNueva = new Partida(mapa);
     partidaNueva->start();
 
     this->mapa.insert({idPartidaNueva, partidaNueva});

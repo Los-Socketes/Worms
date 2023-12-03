@@ -2,8 +2,7 @@
 #include "liberror.h"
 
 
-Aceptador::Aceptador(const char *puerto)
-    : socket(puerto) {};
+Aceptador::Aceptador(const char *puerto) : socket(puerto) {};
 
 void Aceptador::aceptarClientes() {
     //TODO: Hacer que en vez de true sea socket cerrado
@@ -32,9 +31,6 @@ void Aceptador::aceptarClientes() {
 
 }
 
-void Aceptador::asignar(std::vector<std::string> escenariosDisponibles) {
-    this->escenariosDisponibles = escenariosDisponibles;
-}
 
 void Aceptador::reap_dead() {
     this->listaClientes.remove_if([](Cliente* c) {

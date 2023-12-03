@@ -1,7 +1,7 @@
 #include "cliente.h"
 
 
-Cliente::Cliente(Socket&& socket, strings mapasDisponibles, MonitorPartida& monitorPartidas) 
+Cliente::Cliente(Socket&& socket, Mapas mapasDisponibles, MonitorPartida& monitorPartidas) 
     : protocolo(std::move(socket)), sender(std::ref(protocolo)), 
       reciever(std::ref(protocolo), mapasDisponibles, monitorPartidas, this) {
     this->reciever.start();
