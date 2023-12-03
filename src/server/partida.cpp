@@ -451,7 +451,10 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
         nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
         
-        nuevaEntidad->proyectilReal = proyectil;
+        Proyectil *proyectilNuevo = new Proyectil();
+        *proyectilNuevo = *proyectil;
+        nuevaEntidad->proyectilReal = proyectilNuevo;
+        // nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -555,7 +558,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	      b2Vec2 coords = golpeYCaja.second.first;
 	      nuevaEntidad->proyectil.posInicial = coords;
 	      nuevaEntidad->proyectilReal = nuevoProyectil;
-
 
 	      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
 	  }
@@ -734,7 +736,7 @@ void Partida::generarProvision(time_t horaActual) {
 
     std::cout << "GENERAR PROVISION \n";
 
-    this->anadirProvision();
+    // this->anadirProvision();
 }
 
 
