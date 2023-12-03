@@ -7,6 +7,7 @@
 
 #define SLEEPSEGS 1
 #define NOW NULL
+#define PLANO 0
 
 
 // Usado para castear un puntero a una reference y hacer
@@ -94,32 +95,34 @@ void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
 
-    bool encontreViga = false;
-    while (encontreViga == false) {
-        //Fuente: https://stackoverflow.com/a/13445752/13683575
-        /* Numero aleatorio entre 0 y MAXancho */
-        posicionInicial.enX = numeroRandomEnRango(0, MAXANCHO);
-
-        b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
-        b2Vec2 fin(posicionInicial.enX, 0);
-
-        ResolvedorQuery query;
-        b2AABB aabb;
-        aabb.lowerBound = fin;
-        aabb.upperBound = inicio;
-        this->world.QueryAABB( &query, aabb );
-        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-	  b2Body* cuerpoA = query.foundBodies[i];
-	  
-	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-
-	  if (entidadA->tipo == TipoEntidad::VIGA) {
-	      encontreViga = true;
-	      break;
-	  }
-        }
+    std::vector<Viga> vigasChatas;
+    for (Viga viga : this->mapaUsado.vigas) {
+        if (viga.angulo != PLANO)
+	  continue;
+        vigasChatas.push_back(viga);
     }
 
+    int ultimaViga;
+    ultimaViga = vigasChatas.size() - 1;
+
+    int vigaRandom;
+    vigaRandom = numeroRandomEnRango(0, ultimaViga);
+
+    Viga vigaElegida;
+    vigaElegida = vigasChatas.at(vigaRandom);
+
+    int offestRandom;
+    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
+
+    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
+    int coordALaIzquierda;
+    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2);
+
+    int posEnX;
+    posEnX = coordALaIzquierda + offestRandom;
+
+    posicionInicial.enX = posEnX;
+        
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
 
@@ -136,7 +139,10 @@ void Partida::anadirProvision() {
     provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
     provisionFixDef.filter.categoryBits = (uint16_t)TipoEntidad::PROVISION;
-    provisionFixDef.filter.maskBits = -1;
+    provisionFixDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        (uint16_t)TipoEntidad::OCEANO |
+        (uint16_t)TipoEntidad::PROYECTIL |
+        (uint16_t)TipoEntidad::GUSANO;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
