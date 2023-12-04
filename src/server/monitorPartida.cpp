@@ -40,7 +40,7 @@ InformacionInicial MonitorPartida::obtenerInfoInicialDePartida(id partidaEspecif
 
     InformacionInicial infoInicial;
     infoInicial = partidaRecibidora->obtenerInfoInicial();
-
+    infoInicial.idPartida = partidaEspecifica;
 
     return infoInicial;
 }

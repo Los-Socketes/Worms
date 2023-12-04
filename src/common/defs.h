@@ -153,6 +153,7 @@ struct InformacionInicial {
     idJugador jugador;
     std::vector<RepresentacionViga> vigas;
     std::pair<coordX, coordY> dimensiones;
+    id idPartida;
 
 };
 
