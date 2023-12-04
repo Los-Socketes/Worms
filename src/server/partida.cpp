@@ -121,7 +121,8 @@ void Partida::anadirProvision() {
     int posEnX;
     posEnX = coordALaIzquierda + offestRandom;
 
-    posicionInicial.enX = posEnX;
+    posicionInicial.enX = 3;
+    // posicionInicial.enX = posEnX;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -171,9 +172,9 @@ void Partida::anadirProvision() {
     // int calculoSiTrampa;
     // calculoSiTrampa = numeroRandomEnRango(0,1);
     // if (calculoSiTrampa == 0)
-    //     esTrampa = true;
+        esTrampa = true;
     // else
-        esTrampa = false;
+        // esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
@@ -742,7 +743,7 @@ void Partida::generarProvision(time_t horaActual) {
 
     std::cout << "GENERAR PROVISION \n";
 
-    // this->anadirProvision();
+    this->anadirProvision();
 }
 
 
@@ -844,18 +845,18 @@ void Partida::borrarCuerpos() {
         b2Body *cuerpoABorrar = provision->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
         if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == false) {
-	  Proyectil dinamita;
-	  dinamita.armaOrigen = BAZOOKA_P;
-	  dinamita.tipo = TipoProyectil::Colision;
+	  Proyectil *dinamita = new Proyectil();
+	  dinamita->armaOrigen = BAZOOKA_P;
+	  dinamita->tipo = TipoProyectil::Colision;
 	  //GOTCHA No se lo voy a enviar, este id es basura
-	  dinamita.id = -1;
-	  dinamita.cuerpo = provision->cuerpo;
-	  dinamita.exploto = true;
-	  dinamita.colisiono = true;
-	  dinamita.esFragmento = false;
-	  dinamita.countdown = 0;
+	  dinamita->id = -1;
+	  dinamita->cuerpo = provision->cuerpo;
+	  dinamita->exploto = true;
+	  dinamita->colisiono = true;
+	  dinamita->esFragmento = false;
+	  dinamita->countdown = 0;
 
-	  this->generarExplosion(&dinamita);
+	  this->generarExplosion(dinamita);
 
 	  provision->exploto = true;
         }
