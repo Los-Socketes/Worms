@@ -20,8 +20,9 @@ class Provision {
 
     int id;
     
-    bool esTrampa;
  public:
+    bool exploto;
+    bool esTrampa;
     bool estaEnElAire;
     bool fueAgarrada;
 

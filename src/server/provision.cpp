@@ -17,6 +17,7 @@ Provision::Provision(tipoProvision miTipo, ArmaProtocolo tipomunicion, b2Body *c
     this->id = id;
     this->esTrampa = esTrampa;
 
+    this->exploto = false;
     this->estaEnElAire = true;
     this->fueAgarrada = false;
 }
