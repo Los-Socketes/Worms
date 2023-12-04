@@ -449,9 +449,11 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         fd.restitution = 0.99f; // high restitution to reflect off obstacles
         fd.filter.groupIndex = -1; // particles should not collide with each other
         fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-        fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
-	  (uint16_t)TipoEntidad::OCEANO |
-	  (uint16_t)TipoEntidad::GUSANO;
+        // fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        // 	  (uint16_t)TipoEntidad::OCEANO |
+        // 	  (uint16_t)TipoEntidad::OCEANO |
+        // 	  (uint16_t)TipoEntidad::GUSANO;
+        fd.filter.maskBits = -1;
 
         body->CreateFixture( &fd );
         nuevaEntidad->proyectil.proyectil = body;
@@ -823,6 +825,10 @@ void Partida::borrarCuerpos() {
 	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
 	  this->world.DestroyBody(cuerpoABorrar);
 	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+
+	  for (Gusano *gusano : this->gusanos) {
+	      gusano->golpeado = false;
+	  }
         }
 
     }
@@ -836,6 +842,9 @@ void Partida::borrarCuerpos() {
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->proyectilReal;
             this->proyectiles.erase(this->proyectiles.begin() + i);
+	  for (Gusano *gusano : this->gusanos) {
+	      gusano->golpeado = false;
+	  }
         }
 
     }
@@ -846,8 +855,8 @@ void Partida::borrarCuerpos() {
         // NO HACER delete entidad. Tira invalid delete
         if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == false) {
 	  Proyectil *dinamita = new Proyectil();
-	  dinamita->armaOrigen = BAZOOKA_P;
-	  dinamita->tipo = TipoProyectil::Colision;
+	  dinamita->armaOrigen = GRANADA_VERDE_P;
+	  dinamita->tipo = TipoProyectil::Countdown;
 	  //GOTCHA No se lo voy a enviar, este id es basura
 	  dinamita->id = -1;
 	  dinamita->cuerpo = provision->cuerpo;
@@ -857,8 +866,8 @@ void Partida::borrarCuerpos() {
 	  dinamita->countdown = 0;
 
 	  this->generarExplosion(dinamita);
-
 	  provision->exploto = true;
+
         }
         else if (provision->fueAgarrada == true && provision->esTrampa == false) {
 	  std::cout << "BORRO PROVISION NO TRAMPA\n";
@@ -867,19 +876,17 @@ void Partida::borrarCuerpos() {
             delete entidadB->provision;
             this->provisiones.erase(this->provisiones.begin() + i);
         }
-        else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
-	  std::cout << "BORRO PROVISION TRAMPA\n";
-            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-            this->world.DestroyBody(cuerpoABorrar);
-            delete entidadB->provision;
-            this->provisiones.erase(this->provisiones.begin() + i);
-        }
+        // else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
+        // 	  std::cout << "BORRO PROVISION TRAMPA\n";
+        //     Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+        //     this->world.DestroyBody(cuerpoABorrar);
+        //     delete entidadB->provision;
+        //     this->provisiones.erase(this->provisiones.begin() + i);
+        // }
+
 
     }
 
-    for (Gusano *gusano : this->gusanos) {
-        gusano->golpeado = false;
-    }
 }
 
 

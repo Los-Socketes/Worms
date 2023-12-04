@@ -243,10 +243,13 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     b2Vec2 velocidadActual = this->cuerpo->GetLinearVelocity();
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
-    if (this->estado == MUERTO || 
-        ((tipoArma != DINAMITA_P) && (velocidadActual.x != 0 && velocidadActual.y != 0))) {
+    if (this->estado == MUERTO || false) {
+        // ((tipoArma != GRANADA_VERDE_P) // && (velocidadActual.x != 0 && velocidadActual.y != 0)
+        //  )) {
         return;
     }
+
+    std::cout << "RECIBO DAN\n";
 
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
