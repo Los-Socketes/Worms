@@ -233,6 +233,22 @@ void EntidadInterfaz::actualizarViento() {
         viento_actual++;
 }
 
+void EntidadInterfaz::dibujarRonda() {
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    // Dibujo el numero de ronda en la esquina superior derecha.
+    std::pair<int, int> posicion;
+    posicion.first = ancho_pantalla - 70;
+    posicion.second = 12;
+    std::string texto = "Ronda " + std::to_string(estado_juego->ronda);
+    fuente1.SetOutline(2);
+    Texture textura_ronda_outline(renderizador, fuente1.RenderText_Blended(texto, {0, 0, 0, 255}));
+    renderizador.Copy(textura_ronda_outline, NullOpt, Rect(posicion.first, posicion.second, 50, 20));
+    fuente1.SetOutline(0);
+    Texture textura_ronda(renderizador, fuente1.RenderText_Blended(texto, {255, 255, 255, 255}));
+    renderizador.Copy(textura_ronda, NullOpt, Rect(posicion.first, posicion.second, 50, 20));
+}
+
 void EntidadInterfaz::dibujarCuentaRegresivaTurno() {
     if (estado_juego->segundosRestantes >= 0) {
         // Dibujo los segundos restantes arriba a la derecha de la pantalla.
@@ -240,7 +256,7 @@ void EntidadInterfaz::dibujarCuentaRegresivaTurno() {
         int alto_pantalla = renderizador.GetOutputSize().y;
         std::pair<int, int> posicion;
         posicion.first = ancho_pantalla - 40;
-        posicion.second = 20;
+        posicion.second = 35;
         // Determino el color blanco como default.
         SDL_Color color = {255, 255, 255, 255};
         // Si quedan 5 o menos segundos, dibujo en rojo.
@@ -414,6 +430,7 @@ void EntidadInterfaz::dibujar(){
         dibujarViento();
         dibujarVolumen();
         if (estado_juego->momento != TERMINADA) {
+            dibujarRonda();
             dibujarCuentaRegresivaTurno();
             dibujarTextoTurno();
         }
