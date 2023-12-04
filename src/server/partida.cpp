@@ -858,14 +858,23 @@ void Partida::borrarCuerpos() {
 	  dinamita->armaOrigen = GRANADA_VERDE_P;
 	  dinamita->tipo = TipoProyectil::Countdown;
 	  //GOTCHA No se lo voy a enviar, este id es basura
-	  dinamita->id = -1;
+	  dinamita->id = -2;
 	  dinamita->cuerpo = provision->cuerpo;
-	  dinamita->exploto = true;
+	  dinamita->exploto = false;
 	  dinamita->colisiono = true;
 	  dinamita->esFragmento = false;
-	  dinamita->countdown = 0;
+	  dinamita->countdown = 2;
 
-	  this->generarExplosion(dinamita);
+	  Ataque ataqueProvision;
+	  ataqueProvision.posicion = provision->cuerpo->GetPosition();
+	  ataqueProvision.posicion.y += 1;
+	  ataqueProvision.potencia = 100;
+	  ataqueProvision.tiempoEspera = 8;
+	  ataqueProvision.arma = DINAMITA_P;
+	  ataqueProvision.impulsoInicial = b2Vec2(0,0);
+	  ataqueProvision.proyectilAsociado = dinamita;
+
+	  this->crearProyectiles(nullptr, ataqueProvision);
 	  provision->exploto = true;
 
         }
@@ -876,13 +885,13 @@ void Partida::borrarCuerpos() {
             delete entidadB->provision;
             this->provisiones.erase(this->provisiones.begin() + i);
         }
-        // else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
-        // 	  std::cout << "BORRO PROVISION TRAMPA\n";
-        //     Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
-        //     this->world.DestroyBody(cuerpoABorrar);
-        //     delete entidadB->provision;
-        //     this->provisiones.erase(this->provisiones.begin() + i);
-        // }
+        else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
+	  std::cout << "BORRO PROVISION TRAMPA\n";
+            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+            this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision;
+            this->provisiones.erase(this->provisiones.begin() + i);
+        }
 
 
     }
