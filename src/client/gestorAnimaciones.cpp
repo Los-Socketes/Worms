@@ -126,7 +126,7 @@ GestorAnimaciones::GestorAnimaciones(Renderer& renderizador, int& ancho_mapa, in
     gusanos[std::make_pair(QUIETO, TELETRANSPORTACION_P)] = std::make_shared<Animacion>(
         renderizador, "assets/sprites/wteltlk.png", 60, 60, 10, true, true);
     gusanos[std::make_pair(DISPARANDO, TELETRANSPORTACION_P)] = std::make_shared<Animacion>(
-        renderizador, "assets/sprites/wteldsv.png", 60, 60, 97, true, false);
+        renderizador, "assets/sprites/wteldsv.png", 60, 60, 49, true, false);
 
     // Proyectiles.    
     
