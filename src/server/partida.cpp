@@ -608,7 +608,9 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	  ataque.posicion.x += 2;
         }
 
-        ataque.impulsoInicial += viento;
+        Arma armaFinal(arma);
+        if (armaFinal.getCaracteristicas().esAfectadoPorViento == true)
+	  ataque.impulsoInicial += viento;
 
         nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
         nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
