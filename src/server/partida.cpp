@@ -337,7 +337,8 @@ bool Partida::enviarEstadoAJugadores() {
     return hayJugadores;
 }
 
-void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
+void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual,
+		         Jugador *jugadorActual) {
     TipoCheat cheatDeseado;
     cheatDeseado = cheat.cheat;
 
@@ -350,8 +351,6 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
         this->anadirProvision(coordenadasGusano, MUNICION, false);
         break;
         }
-    case ARRANCAR_C:
-        break;
     case VIDA_C:
         {
         std::pair<coordX, coordY> coordenadasGusano;
@@ -360,8 +359,19 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
         this->anadirProvision(coordenadasGusano, VIDA, false);
         break;
         }
-        break;
     case DANIO_C:
+        for (Jugador *jugador : this->jugadores) {
+	  if (jugador == jugadorActual)
+	      continue;
+	  std::vector<Gusano *> gusanosEnemigos;
+	  gusanosEnemigos = jugador->getGusanos();
+	  for (Gusano *gusanoEnemigo : gusanosEnemigos) {
+	      gusanoEnemigo->recibirDanoPorCheat();
+	  }
+        }
+        break;
+    case ARRANCAR_C:
+        //Este cheat se procesa antes, en el loop de conexion
         break;
     case INVAL_CHEAT_C:
         break;
@@ -466,7 +476,6 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         Proyectil *proyectilNuevo = new Proyectil();
         *proyectilNuevo = *proyectil;
         nuevaEntidad->proyectilReal = proyectilNuevo;
-        // nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -1118,13 +1127,13 @@ void Partida::gameLoop() {
 				      gusanoActual);
 
         if (accionAEjecutar.accion == CHEAT)
-	  this->procesarCheats(accionAEjecutar, gusanoActual);
+	  this->procesarCheats(accionAEjecutar, gusanoActual, jugadorActual);
         else
 	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
-            proyectil->countdown -= 1;
+	      proyectil->countdown -= 1;
             }
             this->generarExplosion(proyectil);
         }

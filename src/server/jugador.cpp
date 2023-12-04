@@ -104,3 +104,7 @@ void Jugador::darMasVidaAGusanos() {
     }
     
 }
+
+std::vector<Gusano *> Jugador::getGusanos() {
+    return this->gusanos;
+}

@@ -658,3 +658,8 @@ void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
     Arma &armaQueRecibe = this->armas.at(queArma);
     armaQueRecibe.anadirMuniciones(cantiMunicion);
 }
+
+
+void Gusano::recibirDanoPorCheat() {
+    this->vida /= 2;
+}

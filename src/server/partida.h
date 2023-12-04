@@ -71,7 +71,8 @@ class Partida : public Thread {
 
     bool enviarEstadoAJugadores();
 
-    void procesarCheats(Accion cheat, Gusano *gusanoActual);
+    void procesarCheats(Accion cheat, Gusano *gusanoActual,
+		    Jugador *jugadorActual);
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 		     Gusano* gusanoActual);
