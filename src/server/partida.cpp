@@ -377,6 +377,16 @@ bool Partida::enviarEstadoAJugadores() {
     return hayJugadores;
 }
 
+void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
+    TipoCheat cheatDeseado;
+    cheatDeseado = cheat.cheat;
+
+    switch(cheatDeseado) {
+    case PROVISION:
+        
+    }
+
+}
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Gusano* gusanoActual) {
@@ -1077,7 +1087,10 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        // if (accionAEjecutar.accion == CHEAT)
+	  this->procesarCheats(accionAEjecutar, gusanoActual);
+        // else
+        // 	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
