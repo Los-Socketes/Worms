@@ -382,8 +382,16 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
     cheatDeseado = cheat.cheat;
 
     switch(cheatDeseado) {
-    case PROVISION:
-        
+    case PROVISION_C:
+        break;
+    case ARRANCAR_C:
+        break;
+    case VIDA_C:
+        break;
+    case DANIO_C:
+        break;
+    case INVAL_CHEAT_C:
+        break;
     }
 
 }
