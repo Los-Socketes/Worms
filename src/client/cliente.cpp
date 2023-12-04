@@ -77,6 +77,7 @@ void Cliente::configurarCamara(InformacionInicial& info_inicial) {
 void Cliente::configurarControlEntidades(InformacionInicial& info_inicial) {
     control_entidades.setDimensionMapa(info_inicial.dimensiones.first, info_inicial.dimensiones.second);
     control_entidades.setIdJugador(info_inicial.jugador - 1);
+    control_entidades.setIdPartida(info_inicial.idPartida);
     control_entidades.setVigas(info_inicial.vigas);
 }
 

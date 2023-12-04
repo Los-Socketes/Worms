@@ -24,6 +24,7 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     fuente1(fuente1),
     fuente2(fuente2),
     id_jugador(0),
+    id_partida(0),
     gusano_actual(),
     esperando_movimiento(false),
     teclas_armas(),
@@ -295,6 +296,15 @@ void EntidadInterfaz::dibujarPantallaEspera(MomentoDePartida& momento) {
     fuente1.SetOutline(0);
     Texture textura_espera(renderizador, fuente1.RenderText_Blended("Esperando a los demas jugadores...", color));
     renderizador.Copy(textura_espera, NullOpt, Rect(posicion.first, posicion.second, 500, 50));
+    // Dibujo el id de la partida.
+    posicion.first = ancho_pantalla - 120;
+    posicion.second = alto_pantalla - 30;
+    fuente2.SetOutline(2);
+    Texture textura_id_outline(renderizador, fuente2.RenderText_Blended("ID Partida: " + std::to_string(id_partida), {0, 0, 0, 255}));
+    renderizador.Copy(textura_id_outline, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
+    fuente2.SetOutline(0);
+    Texture textura_id(renderizador, fuente2.RenderText_Blended("ID Partida: " + std::to_string(id_partida), {255, 255, 255, 255}));
+    renderizador.Copy(textura_id, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
     // Si ya hay suficientes jugadores y soy el host, dibujo el texto "Presiona C para comenzar la partida".
     if (momento == POR_INICIAR && es_host) {
         posicion.first = ancho_pantalla / 2 - 125;
@@ -348,6 +358,10 @@ void EntidadInterfaz::dibujarTimeout() {
 
 void EntidadInterfaz::setIdJugador(int id) {
     id_jugador = id;
+}
+
+void EntidadInterfaz::setIdPartida(id id_partida) {
+    this->id_partida = id_partida;
 }
 
 void EntidadInterfaz::dibujar(){
