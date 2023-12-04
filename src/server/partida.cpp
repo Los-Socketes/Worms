@@ -855,6 +855,7 @@ void Partida::borrarCuerpos() {
         // NO HACER delete entidad. Tira invalid delete
         if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == false) {
 	  Proyectil *dinamita = new Proyectil();
+
 	  dinamita->armaOrigen = GRANADA_VERDE_P;
 	  dinamita->tipo = TipoProyectil::Countdown;
 	  //GOTCHA No se lo voy a enviar, este id es basura
@@ -865,6 +866,7 @@ void Partida::borrarCuerpos() {
 	  dinamita->esFragmento = false;
 	  dinamita->countdown = 2;
 
+	  provision->miProyectil = dinamita;
 	  Ataque ataqueProvision;
 	  ataqueProvision.posicion = provision->cuerpo->GetPosition();
 	  ataqueProvision.posicion.y += 1;
@@ -876,21 +878,25 @@ void Partida::borrarCuerpos() {
 
 	  this->crearProyectiles(nullptr, ataqueProvision);
 	  provision->exploto = true;
-
         }
         else if (provision->fueAgarrada == true && provision->esTrampa == false) {
 	  std::cout << "BORRO PROVISION NO TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision->miProyectil;
             delete entidadB->provision;
+            delete entidadB;
             this->provisiones.erase(this->provisiones.begin() + i);
         }
         else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
 	  std::cout << "BORRO PROVISION TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision->miProyectil;
             delete entidadB->provision;
+            delete entidadB;
             this->provisiones.erase(this->provisiones.begin() + i);
+	  
         }
 
 
@@ -1064,6 +1070,11 @@ Partida::~Partida() {
 
     for (auto &&proyectil : this->proyectiles) {
         delete proyectil;
+    }
+
+    for (Provision *provision : this->provisiones) {
+        delete provision->miProyectil;
+        delete provision;
     }
 
     

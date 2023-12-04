@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include <box2d/box2d.h>
+#include "box2dDefs.h"
 
 #define CANTIDADCURACION 25
 #define CANTIDADMUNICION 2
@@ -18,6 +19,7 @@ class Provision {
     tipoProvision tipo;
     ArmaProtocolo armaMunicion;
 
+
     int id;
     
  public:
@@ -25,6 +27,8 @@ class Provision {
     bool esTrampa;
     bool estaEnElAire;
     bool fueAgarrada;
+
+    Proyectil *miProyectil;
 
     b2Body *cuerpo;
 
