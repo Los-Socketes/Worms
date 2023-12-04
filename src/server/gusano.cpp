@@ -523,6 +523,9 @@ Ataque Gusano::ejecutar(Accion accion) {
     case INVAL_ACCION:
         break;
     }
+    // case CHEAT;
+    //     break;
+    // }
 
     //Hago que el gusano se acuerde que fue lo ulitmo que realizo
     // si es ataco hay que "mentirle"
