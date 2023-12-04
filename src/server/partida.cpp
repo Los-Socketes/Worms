@@ -843,7 +843,31 @@ void Partida::borrarCuerpos() {
         Provision *provision = this->provisiones[i];
         b2Body *cuerpoABorrar = provision->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
-        if (provision->fueAgarrada == true) {
+        if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == false) {
+	  Proyectil dinamita;
+	  dinamita.armaOrigen = BAZOOKA_P;
+	  dinamita.tipo = TipoProyectil::Colision;
+	  //GOTCHA No se lo voy a enviar, este id es basura
+	  dinamita.id = -1;
+	  dinamita.cuerpo = provision->cuerpo;
+	  dinamita.exploto = true;
+	  dinamita.colisiono = true;
+	  dinamita.esFragmento = false;
+	  dinamita.countdown = 0;
+
+	  this->generarExplosion(&dinamita);
+
+	  provision->exploto = true;
+        }
+        else if (provision->fueAgarrada == true && provision->esTrampa == false) {
+	  std::cout << "BORRO PROVISION NO TRAMPA\n";
+            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+            this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision;
+            this->provisiones.erase(this->provisiones.begin() + i);
+        }
+        else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
+	  std::cout << "BORRO PROVISION TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->provision;
