@@ -48,6 +48,8 @@ RepresentacionProvisiones Provision::getRepresentacin() {
 
     std::pair<coordX, coordY> miPosicion;
     miPosicion = deb2VecACoord(this->cuerpo->GetPosition());
+    miRepresentacion.id = this->id;
+
     miRepresentacion.posicion = miPosicion;
 
     miRepresentacion.estaEnElAire = this->estaEnElAire;
@@ -58,7 +60,8 @@ RepresentacionProvisiones Provision::getRepresentacin() {
 
     miRepresentacion.fueAgarrada = this->fueAgarrada; 
 
-    miRepresentacion.id = this->id;
+    miRepresentacion.exploto = this->exploto; 
+
 
     return miRepresentacion;
 }
