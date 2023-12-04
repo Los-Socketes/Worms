@@ -14,6 +14,8 @@ private:
 
     SituacionJugador miSituacion;
 
+    idJugador miID;
+
 public:
     Jugador();
 
@@ -23,6 +25,9 @@ public:
     void darMasVidaAGusanos();
     Gusano* getGusanoActual();
     Gusano *getGusanoDeTurno();
+
+    void setID(idJugador id);
+    [[nodiscard]] idJugador getID();
 
     std::map<id, RepresentacionGusano> getRepresentacionGusanos();
 

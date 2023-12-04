@@ -184,6 +184,7 @@ struct EstadoDelJuego {
     std::map<idJugador, SituacionJugador> situacionJugadores;    
     std::vector<RepresentacionProvisiones> provisiones;
     int viento;
+    int ronda;
 };
 
 struct Configuracion {
