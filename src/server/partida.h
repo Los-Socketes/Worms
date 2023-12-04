@@ -62,7 +62,7 @@ class Partida : public Thread {
     time_t ultimaProvision;
     void generarProvision(time_t horaActual);
     std::vector<Provision *> provisiones;
-    void anadirProvision(std::pair<coordX, coordY> coordenadas, bool esTrampa);
+    void anadirProvision(std::pair<coordX, coordY> coordenadas, tipoProvision queProvision, bool esTrampa);
     //Uso este valor para que se no se pisen los valores
     int cantidadProvisionesGeneradas = 0;
 

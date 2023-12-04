@@ -89,7 +89,7 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, bool esTrampa) {
+void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, tipoProvision queProvision, bool esTrampa) {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial = coordenadas;
         
@@ -120,14 +120,10 @@ void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, bool esTram
     int tipo;
     tipo = numeroRandomEnRango(0,1);
 
-    tipoProvision queProvision = VIDA;
     ArmaProtocolo arma = BANANA_P;
-    if (tipo == 0) {
-        queProvision = VIDA;
+    if (queProvision == VIDA) {
         arma = NADA_P;
     } else {
-        queProvision = MUNICION;
-
         std::vector<ArmaProtocolo> armasConMunicion;
         for (int i = 0; i < INVAL_ARMA_P; i++) {
 	  Arma arma((ArmaProtocolo)i);
@@ -351,12 +347,19 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
         std::pair<coordX, coordY> coordenadasGusano;
         coordenadasGusano = gusanoActual->getCoords();
         coordenadasGusano.enY += 3;
-        this->anadirProvision(coordenadasGusano, false);
+        this->anadirProvision(coordenadasGusano, MUNICION, false);
         break;
         }
     case ARRANCAR_C:
         break;
     case VIDA_C:
+        {
+        std::pair<coordX, coordY> coordenadasGusano;
+        coordenadasGusano = gusanoActual->getCoords();
+        coordenadasGusano.enY += 3;
+        this->anadirProvision(coordenadasGusano, VIDA, false);
+        break;
+        }
         break;
     case DANIO_C:
         break;
@@ -781,6 +784,16 @@ void Partida::generarProvision(time_t horaActual) {
     float posEnY = MAXALTURA;
     std::pair<coordX, coordY> coordenadas (posEnX, posEnY);
 
+    int tipo;
+    tipo = numeroRandomEnRango(0,1);
+
+    tipoProvision queProvision;
+    if (tipo == 0)
+        queProvision = VIDA;
+    else
+        queProvision = MUNICION;
+
+
     bool esTrampa;
     int calculoSiTrampa;
     calculoSiTrampa = numeroRandomEnRango(0,10);
@@ -789,7 +802,7 @@ void Partida::generarProvision(time_t horaActual) {
     else
         esTrampa = false;
 
-    this->anadirProvision(coordenadas, esTrampa);
+    this->anadirProvision(coordenadas, queProvision, esTrampa);
 }
 
 
@@ -1105,7 +1118,7 @@ void Partida::gameLoop() {
 
         // if (accionAEjecutar.accion == CHEAT)
         accionAEjecutar.accion = CHEAT;
-        accionAEjecutar.cheat = PROVISION_C;
+        accionAEjecutar.cheat = VIDA_C;
 	  this->procesarCheats(accionAEjecutar, gusanoActual);
         // else
         // 	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
