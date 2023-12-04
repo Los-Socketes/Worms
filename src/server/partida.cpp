@@ -223,6 +223,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     idJugador idNuevoJugador;
     idNuevoJugador = (idJugador) this->jugadores.size();
     infoInicial.jugador = idNuevoJugador;
+    jugadorNuevo->setID(idNuevoJugador);
 
     infoInicial.vigas = this->vigasEnMapa;
     infoInicial.dimensiones = this->dimensiones;
@@ -326,6 +327,8 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->provisiones = representacionProvi;
 
     estadoActual->viento = this->viento.x;
+
+    estadoActual->ronda = this->rondas;
 
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
@@ -691,6 +694,12 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)
         return gusanoYJugador;
+
+    //Si el ultimo jugador cambia de turno, significa que tenemos una
+    //ronda nueva
+    if(jugadorTurnoActual->getID() == (idJugador) this->jugadores.size())
+        this->rondas += 1;
+
 
     //Antes de nada me fijo si el jugador actual perdio
     jugadorTurnoActual->chequearSiPerdi();

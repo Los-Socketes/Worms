@@ -88,6 +88,7 @@ class Partida : public Thread {
 
     bool sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual);
 
+    int rondas = 0;
     std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
 
     //Bueno que lo construye
