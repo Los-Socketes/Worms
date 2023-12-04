@@ -154,16 +154,21 @@ void Partida::anadirProvision() {
         arma = NADA_P;
     } else {
         queProvision = MUNICION;
-        ArmaProtocolo armasPosibles[] = {MORTERO_P, GRANADA_ROJA_P, 
-				GRANADA_SANTA_P, BANANA_P,
-				DINAMITA_P, ATAQUE_AEREO_P};
+
+        std::vector<ArmaProtocolo> armasConMunicion;
+        for (int i = 0; i < INVAL_ARMA_P; i++) {
+	  Arma arma((ArmaProtocolo)i);
+	  if (arma.getMuniciones() == -1)
+	      continue;
+	  armasConMunicion.push_back((ArmaProtocolo)i);
+        }
         int pri = 0;
         //Longitud del array
-        int fin = sizeof(armasPosibles) / sizeof(armasPosibles[0]) - 1;
+        int fin = armasConMunicion.size() - 1;
 
         int armaAUsar = numeroRandomEnRango(pri, fin);
 
-        arma = armasPosibles[armaAUsar];
+        arma = armasConMunicion.at(armaAUsar);
     }
 
     int idProvision;
