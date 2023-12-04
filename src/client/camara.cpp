@@ -7,9 +7,8 @@ Camara::Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa)
     objetivo(ancho_mapa / 2, alto_mapa / 2),
     tiempo_espera_mouse(0) {}
 
-void Camara::mover(int& deltaX, int& deltaY) {
+void Camara::moverEnEjeX(int& deltaX) {
     int nueva_pos_x = posicion.first + deltaX;
-    int nueva_pos_y = posicion.second + deltaY;
 
     // Si las dimensiones de la pantalla son menores a las del mapa, se limita el movimiento
     // para que no se salga del mapa. Si no, la camara queda en el centro de esa dimension.
@@ -22,6 +21,15 @@ void Camara::mover(int& deltaX, int& deltaY) {
     } else {
         nueva_pos_x = (dimension_mapa.first - dimension.first) / 2;
     }
+
+    posicion.first = nueva_pos_x;
+}
+
+void Camara::moverEnEjeY(int& deltaY) {
+    int nueva_pos_y = posicion.second + deltaY;
+
+    // Si las dimensiones de la pantalla son menores a las del mapa, se limita el movimiento
+    // para que no se salga del mapa. Si no, la camara queda en el centro de esa dimension.
     if (dimension_mapa.second > dimension.second) {
         if (nueva_pos_y < 0) {
             nueva_pos_y = 0;
@@ -32,21 +40,21 @@ void Camara::mover(int& deltaX, int& deltaY) {
         nueva_pos_y = (dimension_mapa.second - dimension.second) / 2;
     }
 
-    posicion.first = nueva_pos_x;
     posicion.second = nueva_pos_y;
 }
 
 void Camara::moverConMouse(int& deltaX, int& deltaY) {
     tiempo_espera_mouse = SEGUNDOS_ESPERA_MOUSE * FPS;
-    mover(deltaX, deltaY);
+    moverEnEjeX(deltaX);
+    moverEnEjeY(deltaY);
 }
 
 void Camara::moverHaciaObjetivo() {
     // Si no se movio el mouse en los ultimos 3 segundos, se mueve la camara hacia el objetivo.
     if (tiempo_espera_mouse == 0) {
-        // Calculo el vector unitario entre la posicion de la camara y el objetivo.
+        // Calculo el vector entre la posicion de la camara y el objetivo.
         int deltaX = objetivo.first - posicion.first - dimension.first / 2;
-        int deltaY = objetivo.second - posicion.second + dimension.second / 2;
+        int deltaY = objetivo.second - posicion.second - dimension.second / 2;
 
         // Si ya esta en el objetivo, no se mueve.
         if (deltaX == 0 && deltaY == 0) {
@@ -63,8 +71,13 @@ void Camara::moverHaciaObjetivo() {
             deltaX = deltaX * 20 / norma;
             deltaY = deltaY * 20 / norma;
         }
-
-        mover(deltaX, deltaY);
+        
+        if (deltaX != 0) {
+            moverEnEjeX(deltaX);
+        }
+        if (deltaY != 0) {
+            moverEnEjeY(deltaY);
+        }
     } else {
         // Si el mouse se movio en los ultimos 3 segundos, se decrementa el contador.
         tiempo_espera_mouse--;
