@@ -58,6 +58,9 @@ class ControlEntidades {
     // Asigna el id del jugador.
     void setIdJugador(int id);
 
+    // Asigna el id de la partida.
+    void setIdPartida(id id_partida);
+
     // Asigna las vigas del mapa.
     void setVigas(std::vector<RepresentacionViga>& vigas);
 

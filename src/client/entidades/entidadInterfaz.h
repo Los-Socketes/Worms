@@ -32,6 +32,7 @@ class EntidadInterfaz : public Entidad {
     Font& fuente1;
     Font& fuente2;
     int id_jugador;
+    id id_partida;
     int viento_actual;
     RepresentacionGusano gusano_actual;
     bool esperando_movimiento;
@@ -70,6 +71,9 @@ class EntidadInterfaz : public Entidad {
 
     // Asigna el id del jugador.
     void setIdJugador(int id);
+
+    // Asigna el id de la partida.
+    void setIdPartida(id id_partida);
 
     void dibujar() override;
 

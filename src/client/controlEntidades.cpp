@@ -41,6 +41,10 @@ void ControlEntidades::setIdJugador(int id) {
     interfaz.setIdJugador(id);
 }
 
+void ControlEntidades::setIdPartida(id id_partida) {
+    interfaz.setIdPartida(id_partida);
+}
+
 void ControlEntidades::setVigas(std::vector<RepresentacionViga>& vigas) {
     this->vigas.setVigas(vigas);
 }
