@@ -89,11 +89,12 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirProvision(coordX coordEnX) {
+void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas) {
     std::pair<coordX, coordY> posicionInicial;
-    posicionInicial.enY = MAXALTURA;
+    posicionInicial = coordenadas;
+    // posicionInicial.enY = MAXALTURA;
 
-    posicionInicial.enX = coordEnX;
+    // posicionInicial.enX = coordEnX;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -356,7 +357,13 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
 
     switch(cheatDeseado) {
     case PROVISION_C:
+        {
+        std::pair<coordX, coordY> coordenadasGusano;
+        coordenadasGusano = gusanoActual->getCoords();
+        coordenadasGusano.enY += 3;
+        this->anadirProvision(coordenadasGusano);
         break;
+        }
     case ARRANCAR_C:
         break;
     case VIDA_C:
@@ -781,7 +788,11 @@ void Partida::generarProvision(time_t horaActual) {
     float posEnX;
     posEnX = coordALaIzquierda + offestRandom;
 
-    this->anadirProvision(posEnX);
+    float posEnY = MAXALTURA;
+    std::pair<coordX, coordY> coordenadas (posEnX, posEnY);
+
+
+    this->anadirProvision(coordenadas);
 }
 
 
@@ -1096,6 +1107,8 @@ void Partida::gameLoop() {
 				      gusanoActual);
 
         // if (accionAEjecutar.accion == CHEAT)
+        accionAEjecutar.accion = CHEAT;
+        accionAEjecutar.cheat = PROVISION_C;
 	  this->procesarCheats(accionAEjecutar, gusanoActual);
         // else
         // 	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
