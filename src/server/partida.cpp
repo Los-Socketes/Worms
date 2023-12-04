@@ -1116,12 +1116,10 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        // if (accionAEjecutar.accion == CHEAT)
-        accionAEjecutar.accion = CHEAT;
-        accionAEjecutar.cheat = VIDA_C;
+        if (accionAEjecutar.accion == CHEAT)
 	  this->procesarCheats(accionAEjecutar, gusanoActual);
-        // else
-        // 	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        else
+	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
