@@ -522,6 +522,7 @@ Ataque Gusano::ejecutar(Accion accion) {
     }
     case INVAL_ACCION:
         break;
+
     case CHEAT:
         break;
     }
