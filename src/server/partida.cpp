@@ -1004,8 +1004,8 @@ void Partida::gameLoop() {
     std::unique_lock<std::mutex> lck(mtx);
 
     //Esperamos hasta que se unan todos los jugadores necesarios
-    while (this->clientes.size() < MINJUGADORES)
-        this->seUnioJugador.wait(lck);
+    // while (this->clientes.size() < MINJUGADORES)
+    //     this->seUnioJugador.wait(lck);
     
     this->momento = POR_INICIAR;
 
@@ -1014,6 +1014,7 @@ void Partida::gameLoop() {
     accionRecibida.esEmpezar = false;
     while (this->finPartida == false) {
         this->finPartida = NOT this->enviarEstadoAJugadores();
+        std::cout << "ENVIO\n";
         if (this->finPartida) {
             break;
         }
@@ -1028,6 +1029,7 @@ void Partida::gameLoop() {
         }
         std::this_thread::sleep_for(frameDuration);
     }
+    std::cout << "LISTO\n";
 
     bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
     int cantGusanos = this->mapaUsado.cantGusanos / this->jugadores.size();
