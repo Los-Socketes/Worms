@@ -1083,11 +1083,11 @@ Partida::~Partida() {
     }
 
     for (Provision *provision : this->provisiones) {
-        delete provision->miProyectil;
+        if (provision->esTrampa) {
+            delete provision->miProyectil;
+        }
         delete provision;
     }
-
-    
 }
 
 void Partida::stop() {
