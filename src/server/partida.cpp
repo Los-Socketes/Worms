@@ -1022,15 +1022,18 @@ void Partida::gameLoop() {
     // while (this->clientes.size() < MINJUGADORES)
     //     this->seUnioJugador.wait(lck);
     
-    this->momento = POR_INICIAR;
+    this->momento = ESPERANDO;
 
     Accion accionRecibida;
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
     while (this->finPartida == false) {
         this->enviarEstadoAJugadores();
+        if (this->clientes.size()-1 < MINJUGADORES)
+            continue;
+        this->momento = POR_INICIAR;
         // this->finPartida = NOT this->enviarEstadoAJugadores();
-        std::cout << "ENVIO\n";
+        // std::cout << "ENVIO\n";
         // if (this->finPartida) {
         //     break;
         // }
