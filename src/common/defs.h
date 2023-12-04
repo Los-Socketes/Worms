@@ -29,6 +29,10 @@ typedef float cambioY;
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 
+
+#define VIENTOMAXIMODER 10
+#define VIENTOMAXIMOIZQ -10
+
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
 enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HACE_PIRUETA, MUERTO, AHOGADO};
 enum DireccionGusano {IZQUIERDA, DERECHA};

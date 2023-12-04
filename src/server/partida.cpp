@@ -36,6 +36,7 @@ Partida::Partida(Mapa mapa)
     this->ultimaProvision = time(NOW);
     this->mapaUsado = mapa;
     this->viento = b2Vec2(FUERZAVIENTOX, FUERZAVIENTOY);
+    this->ultimoCambioViento = time(NOW);
     
     for (auto &&viga : mapa.vigas) {
         this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
@@ -807,6 +808,31 @@ Proyectil *Partida::proyectilConstructor() {
     return nuevoProyectil;
 }
 
+void Partida::cambiarElViento(time_t tiempoActual) {
+    double diferencia;
+    diferencia = difftime(tiempoActual, this->ultimoCambioViento);
+
+    if (diferencia < TIEMPOESPERAVIENTO)
+        return;
+
+    //Actualizo la hora incluso si el coin flip no lo logra.
+    //Es para que SIEMPRE haya TIEMPOESPERAPROVISION de tiempo entre
+    //intento e intento
+    this->ultimoCambioViento = tiempoActual;
+
+    int cointFlip = numeroRandomEnRango(0,1);
+
+    if (cointFlip == 0)
+        return;
+
+    int nuevoViento = numeroRandomEnRango(0, 20);
+    std::cout << "Valor random: " << nuevoViento << "\n";
+    nuevoViento = nuevoViento - 10;
+    
+    this->viento.x = nuevoViento;
+
+    std::cout << "VIENTO: " << viento.x << "\n";
+}
 
 
 bool destruirProyectil(b2Body *proyectil) {
@@ -1019,6 +1045,8 @@ void Partida::gameLoop() {
         tiempoActual = time(NOW);
 
         this->generarProvision(tiempoActual);
+        
+        this->cambiarElViento(tiempoActual);
         
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
