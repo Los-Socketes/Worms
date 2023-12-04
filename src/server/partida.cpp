@@ -18,11 +18,7 @@ const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 int numeroRandomEnRango(int comienzo, int fin) {
     int resultado;
-    //Fuente: https://stackoverflow.com/a/13445752/13683575
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
-    resultado = dist6(rng);
+    resultado = rand() % (fin + 1) + comienzo;
 
     return resultado;
 }
