@@ -26,6 +26,7 @@ class EntidadInterfaz : public Entidad {
     std::pair<int, int>& pos_cursor;
     std::vector<colorJugador>& colores;
     bool& es_host;
+    int& timeout;
     int& volumen;
     bool& muteado;
     Font& fuente1;
@@ -51,6 +52,7 @@ class EntidadInterfaz : public Entidad {
     void dibujarVolumen();
     void dibujarTextoTurno();
     void dibujarFinalPartida();
+    void dibujarTimeout();
  public:
     EntidadInterfaz(Renderer& renderizador,
         GestorAnimaciones& gestor_animaciones,
@@ -59,7 +61,8 @@ class EntidadInterfaz : public Entidad {
         std::pair<int, int>& pos_cursor,
         std::vector<colorJugador>& colores,
         bool& es_host, int& volumen, bool& muteado,
-        Font& fuente1, Font& fuente2);
+        Font& fuente1, Font& fuente2,
+        int& timeout);
 
 
     // Asigna el id del jugador.
