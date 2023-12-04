@@ -829,6 +829,7 @@ void Partida::borrarCuerpos() {
 	  for (Gusano *gusano : this->gusanos) {
 	      gusano->golpeado = false;
 	  }
+	  delete entidadB;
         }
 
     }
@@ -845,6 +846,8 @@ void Partida::borrarCuerpos() {
 	  for (Gusano *gusano : this->gusanos) {
 	      gusano->golpeado = false;
 	  }
+
+	  delete entidadB;
         }
 
     }
@@ -1069,6 +1072,10 @@ Partida::~Partida() {
     }
 
     for (auto &&proyectil : this->proyectiles) {
+        b2Body *cuerpo;
+        cuerpo = proyectil->cuerpo;
+        Entidad *entidadB = (Entidad *) cuerpo->GetUserData().pointer;
+        delete entidadB;
         delete proyectil;
     }
 
