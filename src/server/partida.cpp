@@ -112,10 +112,11 @@ void Partida::anadirProvision() {
     offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
 
     //Restamos la mitad porque la coordenada se toma en el centro (creemos)
-    int coordALaIzquierda;
-    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2);
+    float coordALaIzquierda;
+    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2.0f) - 0.5;
+    //0.5 es una pequena correccion para que no se caiga
 
-    int posEnX;
+    float posEnX;
     posEnX = coordALaIzquierda + offestRandom;
 
     posicionInicial.enX = posEnX;
