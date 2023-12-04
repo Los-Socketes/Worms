@@ -89,12 +89,9 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas) {
+void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, bool esTrampa) {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial = coordenadas;
-    // posicionInicial.enY = MAXALTURA;
-
-    // posicionInicial.enX = coordEnX;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -152,13 +149,6 @@ void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas) {
     this->cantidadProvisionesGeneradas += 1;
 
     //FIXME Comento lo de es trampa hasta que ande bien
-    bool esTrampa;
-    int calculoSiTrampa;
-    calculoSiTrampa = numeroRandomEnRango(0,10);
-    if (calculoSiTrampa == 0)
-        esTrampa = true;
-    else
-        esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
@@ -361,7 +351,7 @@ void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual) {
         std::pair<coordX, coordY> coordenadasGusano;
         coordenadasGusano = gusanoActual->getCoords();
         coordenadasGusano.enY += 3;
-        this->anadirProvision(coordenadasGusano);
+        this->anadirProvision(coordenadasGusano, false);
         break;
         }
     case ARRANCAR_C:
@@ -791,8 +781,15 @@ void Partida::generarProvision(time_t horaActual) {
     float posEnY = MAXALTURA;
     std::pair<coordX, coordY> coordenadas (posEnX, posEnY);
 
+    bool esTrampa;
+    int calculoSiTrampa;
+    calculoSiTrampa = numeroRandomEnRango(0,10);
+    if (calculoSiTrampa == 0)
+        esTrampa = true;
+    else
+        esTrampa = false;
 
-    this->anadirProvision(coordenadas);
+    this->anadirProvision(coordenadas, esTrampa);
 }
 
 
