@@ -365,6 +365,8 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->provisiones = representacionProvi;
 
+    estadoActual->viento = this->viento.x;
+
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
@@ -816,7 +818,7 @@ void Partida::cambiarElViento(time_t tiempoActual) {
         return;
 
     //Actualizo la hora incluso si el coin flip no lo logra.
-    //Es para que SIEMPRE haya TIEMPOESPERAPROVISION de tiempo entre
+    //Es para que SIEMPRE haya TIEMPOEESPERAVIENTO de tiempo entre
     //intento e intento
     this->ultimoCambioViento = tiempoActual;
 

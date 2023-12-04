@@ -182,6 +182,7 @@ struct EstadoDelJuego {
     MomentoDePartida momento;
     std::map<idJugador, SituacionJugador> situacionJugadores;    
     std::vector<RepresentacionProvisiones> provisiones;
+    int viento;
 };
 
 struct Configuracion {
