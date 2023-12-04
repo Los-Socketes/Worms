@@ -49,7 +49,8 @@ class ControlEntidades {
         std::vector<colorJugador>& colores,
         bool& es_host, std::pair<int, int>& pos_cursor,
         int& volumen, bool& muteado,
-        Font& fuente1, Font& fuente2);
+        Font& fuente1, Font& fuente2,
+        int& timeout);
 
     // Asigna las dimensiones del mapa.
     void setDimensionMapa(coordX& ancho_mapa, coordY& alto_mapa);

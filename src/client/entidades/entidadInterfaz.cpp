@@ -7,7 +7,8 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     std::pair<int, int>& pos_cursor,
     std::vector<colorJugador>& colores,
     bool& es_host, int& volumen, bool& muteado,
-    Font& fuente1, Font& fuente2) :
+    Font& fuente1, Font& fuente2,
+    int& timeout) :
     Entidad(gestor_animaciones),
     renderizador(renderizador),
     gestor_animaciones(gestor_animaciones),
@@ -17,6 +18,7 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     pos_cursor(pos_cursor),
     colores(colores),
     es_host(es_host),
+    timeout(timeout),    
     volumen(volumen),
     muteado(muteado),
     fuente1(fuente1),
@@ -337,6 +339,13 @@ void EntidadInterfaz::dibujarFinalPartida() {
     }
 }
 
+void EntidadInterfaz::dibujarTimeout() {
+    std::pair<int, int> posicion;
+    posicion.first = 35;
+    posicion.second = 80;    
+    gestor_animaciones.getAnimacionEscenario(TIMEOUT)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
+}
+
 void EntidadInterfaz::setIdJugador(int id) {
     id_jugador = id;
 }
@@ -363,4 +372,8 @@ void EntidadInterfaz::dibujar(){
     if (estado_juego->momento == TERMINADA) {
         dibujarFinalPartida();
     }
+    // El timeout parpadea lentamente cuando quedan 5 segundos o menos.
+    if (timeout <= 150 && timeout % 30 < 15) {
+        dibujarTimeout();
+    }    
 }

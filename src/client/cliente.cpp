@@ -38,7 +38,7 @@ Cliente::Cliente(Socket&& skt, ConfiguracionCliente& configuracion):
         config.getDimensionesIniciales().second,
         config.getColoresJugadores(),
         es_host, pos_cursor, volumen, muteado,
-        fuente1, fuente2),
+        fuente1, fuente2, timeout),
     menu(protocolo),
     recepcion_estados(TAM_QUEUE),
     envio_comandos(TAM_QUEUE),
@@ -217,7 +217,6 @@ void Cliente::loop_principal(InformacionInicial& info_inicial) {
         // Actualizo el estado del juego, si no se recibio nada, empiezo a contar el timeout.
         if (!recepcion_estados.try_pop(estado_juego)) {
             timeout--;
-            printf("Timeout: %d\n", timeout);
             if (timeout == 0) {
                 continuar = false;
                 std::cout << "Se perdio la conexion con el servidor." << std::endl;
