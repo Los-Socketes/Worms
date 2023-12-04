@@ -121,8 +121,7 @@ void Partida::anadirProvision() {
     int posEnX;
     posEnX = coordALaIzquierda + offestRandom;
 
-    posicionInicial.enX = 3;
-    // posicionInicial.enX = posEnX;
+    posicionInicial.enX = posEnX;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -153,15 +152,22 @@ void Partida::anadirProvision() {
 
     tipoProvision queProvision = VIDA;
     ArmaProtocolo arma = BANANA_P;
-    // if (tipo == 0) {
-    //     queProvision = VIDA;
-    //     arma = NADA_P;
-    // } else {
+    if (tipo == 0) {
+        queProvision = VIDA;
+        arma = NADA_P;
+    } else {
         queProvision = MUNICION;
-        // int pri = NADA_P + 1;
-        // int fin = INVAL_ARMA_P - 1;
-        // arma = (ArmaProtocolo) numeroRandomEnRango(pri, fin);
-    // }
+        ArmaProtocolo armasPosibles[] = {MORTERO_P, GRANADA_ROJA_P, 
+				GRANADA_SANTA_P, BANANA_P,
+				DINAMITA_P, ATAQUE_AEREO_P};
+        int pri = 0;
+        //Longitud del array
+        int fin = sizeof(armasPosibles) / sizeof(armasPosibles[0]) - 1;
+
+        int armaAUsar = numeroRandomEnRango(pri, fin);
+
+        arma = armasPosibles[armaAUsar];
+    }
 
     int idProvision;
     idProvision = this->cantidadProvisionesGeneradas;
@@ -169,12 +175,12 @@ void Partida::anadirProvision() {
 
     //FIXME Comento lo de es trampa hasta que ande bien
     bool esTrampa;
-    // int calculoSiTrampa;
-    // calculoSiTrampa = numeroRandomEnRango(0,1);
-    // if (calculoSiTrampa == 0)
+    int calculoSiTrampa;
+    calculoSiTrampa = numeroRandomEnRango(0,10);
+    if (calculoSiTrampa == 0)
         esTrampa = true;
-    // else
-        // esTrampa = false;
+    else
+        esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
@@ -738,10 +744,10 @@ void Partida::generarProvision(time_t horaActual) {
     //intento e intento
     this->ultimaProvision = horaActual;
 
-    // int cointFlip = numeroRandomEnRango(0,1);
+    int cointFlip = numeroRandomEnRango(0,1);
 
-    // if (cointFlip == 0)
-    //     return;
+    if (cointFlip == 0)
+        return;
 
     std::cout << "GENERAR PROVISION \n";
 
@@ -887,7 +893,7 @@ void Partida::borrarCuerpos() {
 	  std::cout << "BORRO PROVISION NO TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
-            delete entidadB->provision->miProyectil;
+            // delete entidadB->provision->miProyectil;
             delete entidadB->provision;
             delete entidadB;
             this->provisiones.erase(this->provisiones.begin() + i);
