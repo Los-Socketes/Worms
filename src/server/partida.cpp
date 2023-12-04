@@ -35,6 +35,7 @@ Partida::Partida(Mapa mapa)
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
     this->mapaUsado = mapa;
+    this->viento = b2Vec2(FUERZAVIENTOX, FUERZAVIENTOY);
     
     for (auto &&viga : mapa.vigas) {
         this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
@@ -606,8 +607,12 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	  ataque.posicion.y += 5;
 	  ataque.posicion.x += 2;
         }
+
+        ataque.impulsoInicial += viento;
+
         nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
         nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
+
     }
 }
 

@@ -32,6 +32,7 @@ class Partida : public Thread {
 
     //World de box2d de la partida
     b2World world;
+    b2Vec2 viento;
     ResolvedorColisiones colisiones;
     ResolvedorQuery query;
     //WARNING Actualmente solo usado para sacar los cuerpos creados en

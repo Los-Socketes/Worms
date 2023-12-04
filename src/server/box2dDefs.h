@@ -24,6 +24,9 @@ class Provision;
 #define FUERZAGRAVITARIAX 0.0f
 #define FUERZAGRAVITARIAY -20.0f
 
+#define FUERZAVIENTOX 20
+#define FUERZAVIENTOY 0
+
 #define MAXALTURA 60
 #define MAXANCHO 40
 
