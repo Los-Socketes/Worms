@@ -27,6 +27,9 @@ GestorAnimaciones::GestorAnimaciones(Renderer& renderizador, int& ancho_mapa, in
     escenario[VOLUMEN_MUTEADO] = std::make_shared<Animacion>(renderizador, "assets/sprites/volumemute.png", 100, 100, 1, false, false);
     escenario[VOLUMEN_MUTEADO]->setDimensiones(35, 35);
 
+    escenario[TIMEOUT] = std::make_shared<Animacion>(renderizador, "assets/sprites/timeout.png", 300, 300, 1, false, true);
+    escenario[TIMEOUT]->setDimensiones(40, 40);
+
     // Provisiones.
     escenario[PROVISION_MEDICINA] = std::make_shared<Animacion>(renderizador, "assets/sprites/mcrate1.png", 60, 60, 24, true, true);
     escenario[PROVISION_MEDICINA_CAYENDO] = std::make_shared<Animacion>(renderizador, "assets/sprites/mcrate2.png", 74, 74, 40, true, true);

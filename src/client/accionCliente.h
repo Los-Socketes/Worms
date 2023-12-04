@@ -17,6 +17,12 @@ enum TipoComando{
     SIN_MUNICIONES
 };
 
+enum Cheat {
+    CHEAT_EMPEZAR_PARTIDA,
+    CHEAT_SPAWNEAR_CAJA,
+    CHEAT_SUBIR_VIDA
+};
+
 // Comandos internos del cliente.
 struct Comando{
     TipoComando tipo;
@@ -104,9 +110,18 @@ class AccionEquiparArma : public AccionCliente {
 };
 
 class AccionEmpezarPartida : public AccionCliente {
-public:
+ public:
    void enviar(Protocolo& protocolo) override;
 };
+
+class AccionCheat : public AccionCliente {
+ private:
+    Cheat cheat;
+ public:
+      AccionCheat(Cheat cheat);
+      void enviar(Protocolo& protocolo) override;
+};
+
 
 
 #endif  // ACCIONCLIENTE_H_

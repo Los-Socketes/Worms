@@ -49,8 +49,19 @@ void AccionDisparar::enviar(Protocolo& protocolo) {
     protocolo.atacar();
 }
 
-
 void AccionEmpezarPartida::enviar(Protocolo& protocolo) {
     protocolo.iniciarPartida();
+}
+
+AccionCheat::AccionCheat(Cheat cheat) :
+    cheat(cheat) {}
+
+void AccionCheat::enviar(Protocolo& protocolo) {
+    //if (cheat == CHEAT_EMPEZAR_PARTIDA)
+        //protocolo.iniciarPartida();
+    //else if (cheat == CHEAT_SPAWNEAR_CAJA)
+        //protocolo.spawnearCaja();
+    //else if (cheat == CHEAT_SUBIR_VIDA)
+        //protocolo.subirVida();
 }
 

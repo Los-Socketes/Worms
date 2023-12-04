@@ -125,7 +125,19 @@ void EntradaTeclado::run() {
                         break;
                     case SDLK_c:
                         envio_comandos.push(std::make_shared<AccionEmpezarPartida>());
-                        break;                   
+                        break;
+                    // Cheats:
+                    /*
+                    case SDLK_F1:
+                        envio_comandos.push(std::make_shared<AccionCheat>(CHEAT_EMPEZAR_PARTIDA));                        
+                        break;
+                    case SDLK_F2:
+                        envio_comandos.push(std::make_shared<AccionCheat>(CHEAT_SPAWNEAR_CAJA));
+                        break;
+                    case SDLK_F3:
+                        envio_comandos.push(std::make_shared<AccionCheat>(CHEAT_SUBIR_VIDA));
+                        break;
+                    */
                     default:
                         break;
                 }
