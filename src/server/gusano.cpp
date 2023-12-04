@@ -661,5 +661,11 @@ void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
 
 
 void Gusano::recibirDanoPorCheat() {
-    this->vida /= 2;
+    if (this->vida / 2 <= 0 ) {
+        this->vida = 0;
+        this->setEstado(MUERTO);
+    }
+    else {
+        this->vida /= 2;
+    }
 }
