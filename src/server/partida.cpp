@@ -646,11 +646,17 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
     finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
     if (finDelGusano == false)
         return false;
-    bool todoExploto;
+    bool todoExploto = true;
     for (auto &&proyectil : this->proyectiles) {
         if (!proyectil->exploto) {
-            return false;
+            todoExploto = false;
         }
+        if (proyectil->cuerpo->GetPosition().y < 5) {
+            proyectil->exploto = true;
+        } 
+    }
+    if (todoExploto == false) {
+        return false;
     }
     
     bool todoEstaQuieto = true;
@@ -1013,11 +1019,12 @@ void Partida::gameLoop() {
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
     while (this->finPartida == false) {
-        this->finPartida = NOT this->enviarEstadoAJugadores();
+        this->enviarEstadoAJugadores();
+        // this->finPartida = NOT this->enviarEstadoAJugadores();
         std::cout << "ENVIO\n";
-        if (this->finPartida) {
-            break;
-        }
+        // if (this->finPartida) {
+        //     break;
+        // }
 
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
