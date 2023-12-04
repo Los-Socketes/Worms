@@ -829,6 +829,7 @@ void Partida::borrarCuerpos() {
 	  for (Gusano *gusano : this->gusanos) {
 	      gusano->golpeado = false;
 	  }
+	  delete entidadB->proyectilReal;
 	  delete entidadB;
         }
 
