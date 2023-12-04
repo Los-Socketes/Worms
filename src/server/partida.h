@@ -43,7 +43,7 @@ class Partida : public Thread {
     // std::string mapa;
     Mapa mapaUsado;
     std::vector<RepresentacionViga> vigasEnMapa;
-    std::pair<coordX, coordY> dimensiones;
+    // std::pair<coordX, coordY> dimensiones;
     std::map<int, std::pair<coordX, coordY>> posicionesGusanos;
     int cantidad_gusanos_insertados;
 

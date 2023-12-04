@@ -147,6 +147,7 @@ Cantidad mapas: 2
 Nombres mapas: [Pico de la viuda, Battlesnax]
 
 Pico de la viuda:
+  Dimensiones: [60, 40]
   Cantidad vigas: 18
   Viga 1:
     Tamanio: 6
@@ -231,6 +232,7 @@ Pico de la viuda:
   ]
 
 Battlesnax:
+  Dimensiones: [60, 40]
   Cantidad vigas: 13
   Viga 1:
     Tamanio: 6

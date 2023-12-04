@@ -30,7 +30,7 @@ Partida::Partida(Mapa mapa)
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
+    // this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
@@ -226,7 +226,7 @@ InformacionInicial Partida::obtenerInfoInicial() {
     jugadorNuevo->setID(idNuevoJugador);
 
     infoInicial.vigas = this->vigasEnMapa;
-    infoInicial.dimensiones = this->dimensiones;
+    infoInicial.dimensiones = this->mapaUsado.dimensiones;
 
     return infoInicial;
 }
