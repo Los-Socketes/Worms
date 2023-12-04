@@ -98,6 +98,11 @@ InformacionInicial Protocolo::verificarConexion() {
         return info;
     }
 
+    id idPartida = obtenerId();
+    if (idPartida == INVAL_ID) {
+        return info;
+    }
+
     int16_t cantVigas;
     bool was_closed = false;
     socket.recvall(&cantVigas, sizeof(cantVigas), &was_closed);
@@ -151,6 +156,7 @@ InformacionInicial Protocolo::verificarConexion() {
     info.jugador = idEnviada;
     info.vigas = vigas;
     info.dimensiones = dimensionesRecibidas;
+    info.idPartida = idPartida;
     return info;
 
 }
@@ -879,6 +885,11 @@ bool Protocolo::enviarConfirmacion(InformacionInicial informacion) {
     }
 
     is_open = enviarId(informacion.jugador);
+    if (!is_open) {
+        return false;
+    }
+
+    is_open = enviarId(informacion.idPartida);
     if (!is_open) {
         return false;
     }

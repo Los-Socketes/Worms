@@ -638,7 +638,7 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
     }
     
     bool todoEstaQuieto = true;
-    for (int i = 0; (i < (int) this->clientes.size())
+    for (int i = 0; (i < (int) this->gusanos.size())
 		&&
 		//Apenas sea false, no quiero seguir iterando
 		(todoEstaQuieto == true);
@@ -709,7 +709,7 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
 
         if (jugadorAChequear == jugadorDeTurno)
 	  continue;
-
+        jugadorAChequear->chequearSiPerdi();
         SituacionJugador situacion;
         situacion = jugadorAChequear->getSituacion();
         bool jugadorPerdio;
@@ -1083,11 +1083,11 @@ Partida::~Partida() {
     }
 
     for (Provision *provision : this->provisiones) {
-        delete provision->miProyectil;
+        if (provision->esTrampa) {
+            delete provision->miProyectil;
+        }
         delete provision;
     }
-
-    
 }
 
 void Partida::stop() {
