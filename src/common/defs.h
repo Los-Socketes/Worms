@@ -52,9 +52,9 @@ enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};
  *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                    0         1         2        3          4
-enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, ATACO, INVAL_ACCION};
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, ATACO, CHEAT, INVAL_ACCION};
 enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
-
+enum TipoCheat {ARRANCAR_C, PROVISION_C, VIDA_C, DANIO_C, INVAL_CHEAT_C};
 
 #define TIEMPOCAMBIOTURNO 60
 #define TIEMPOCHANGUI 3
@@ -75,6 +75,7 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 #define EQUIPAR 10
 #define CALIBRAR 11
 #define ATACAR 12
+#define CHEATEAR 14
 
 
 #define PIXELS_POR_METRO 20
@@ -203,6 +204,7 @@ struct Accion {
     Direccion dir;
     ArmaProtocolo armaAEquipar;
     Configuracion configARealizar;
+    TipoCheat cheat;
     bool esEmpezar;
 
 };

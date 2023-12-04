@@ -552,3 +552,21 @@ TEST_CASE( "Tests de configurar coordenadas", "[obtenerAccionDeConfigurarCoorden
     REQUIRE(resultado.configARealizar.coordenadas.enX == config.coordenadas.enX);
     REQUIRE(resultado.configARealizar.coordenadas.enY == config.coordenadas.enY);
 }
+
+// TEST 16
+
+Accion obtenerAccionConCheat(TipoCheat cheat) {
+    protocolo.enviarCheat(cheat);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de enviar cheat", "[obtenerAccionConCheat]" ) {
+    Accion cheat;
+    cheat.accion = CHEAT;
+    TipoCheat cheatAHacer = DANIO_C;
+    cheat.cheat = cheatAHacer;
+
+    Accion resultado = obtenerAccionConCheat(cheatAHacer);
+    REQUIRE(resultado.accion == cheat.accion);
+    REQUIRE(resultado.cheat == cheat.cheat);
+}
