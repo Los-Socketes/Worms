@@ -89,38 +89,11 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirProvision() {
+void Partida::anadirProvision(coordX coordEnX) {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
 
-    std::vector<Viga> vigasChatas;
-    for (Viga viga : this->mapaUsado.vigas) {
-        if (viga.angulo != PLANO)
-	  continue;
-        vigasChatas.push_back(viga);
-    }
-
-    int ultimaViga;
-    ultimaViga = vigasChatas.size() - 1;
-
-    int vigaRandom;
-    vigaRandom = numeroRandomEnRango(0, ultimaViga);
-
-    Viga vigaElegida;
-    vigaElegida = vigasChatas.at(vigaRandom);
-
-    int offestRandom;
-    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
-
-    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
-    float coordALaIzquierda;
-    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2.0f) - 0.5;
-    //0.5 es una pequena correccion para que no se caiga
-
-    float posEnX;
-    posEnX = coordALaIzquierda + offestRandom;
-
-    posicionInicial.enX = posEnX;
+    posicionInicial.enX = coordEnX;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -781,7 +754,34 @@ void Partida::generarProvision(time_t horaActual) {
 
     std::cout << "GENERAR PROVISION \n";
 
-    this->anadirProvision();
+    std::vector<Viga> vigasChatas;
+    for (Viga viga : this->mapaUsado.vigas) {
+        if (viga.angulo != PLANO)
+	  continue;
+        vigasChatas.push_back(viga);
+    }
+
+    int ultimaViga;
+    ultimaViga = vigasChatas.size() - 1;
+
+    int vigaRandom;
+    vigaRandom = numeroRandomEnRango(0, ultimaViga);
+
+    Viga vigaElegida;
+    vigaElegida = vigasChatas.at(vigaRandom);
+
+    int offestRandom;
+    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
+
+    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
+    float coordALaIzquierda;
+    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2.0f) - 0.5;
+    //0.5 es una pequena correccion para que no se caiga
+
+    float posEnX;
+    posEnX = coordALaIzquierda + offestRandom;
+
+    this->anadirProvision(posEnX);
 }
 
 
