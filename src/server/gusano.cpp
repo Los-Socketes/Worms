@@ -241,12 +241,15 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         return;
     this->golpeado = true;
     b2Vec2 velocidadActual = this->cuerpo->GetLinearVelocity();
-    if (this->estado == MUERTO || 
-        (velocidadActual.x != 0 && velocidadActual.y != 0)) {
-        return;
-    }
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
+    if (this->estado == MUERTO || false) {
+        // ((tipoArma != GRANADA_VERDE_P) // && (velocidadActual.x != 0 && velocidadActual.y != 0)
+        //  )) {
+        return;
+    }
+
+    std::cout << "RECIBO DAN\n";
 
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
@@ -649,6 +652,6 @@ void Gusano::anadirVida(int vidaExtra) {
 }
 
 void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
-    Arma armaQueRecibe = this->armas.at(queArma);
+    Arma &armaQueRecibe = this->armas.at(queArma);
     armaQueRecibe.anadirMuniciones(cantiMunicion);
 }

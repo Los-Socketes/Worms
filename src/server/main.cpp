@@ -8,6 +8,7 @@
 #define SUCCESS_M 0
 
 int main(int argc, char* argv[]) {
+    srand(time(NULL));
     try {
         std::cout << "Hola mundo desde el server\n";
 

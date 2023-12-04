@@ -699,6 +699,12 @@ std::vector<RepresentacionProvisiones> Protocolo::obtenerProvisiones() {
             return error;
         }
 
+        int8_t exploto;
+        socket.recvall(&exploto, sizeof(exploto), &was_closed);
+        if (was_closed) {
+            return error;
+        }
+
         RepresentacionProvisiones provision;
         provision.id = id;
         provision.posicion = posicionRecibidaProv;
@@ -706,6 +712,7 @@ std::vector<RepresentacionProvisiones> Protocolo::obtenerProvisiones() {
         provision.tipo = (tipoProvision)tipo;
         provision.armaMunicion = (ArmaProtocolo)armaMunicion;
         provision.fueAgarrada = fueAgarrada;
+        provision.exploto = exploto;
 
 
         provisiones.push_back(provision);
@@ -1255,6 +1262,12 @@ bool Protocolo::enviarProvisiones(std::vector<RepresentacionProvisiones> provisi
 
         int8_t fueAgarrada = provision.fueAgarrada;
         socket.sendall(&fueAgarrada, sizeof(fueAgarrada), &was_closed);
+        if (was_closed) {
+            return false;
+        }
+
+        int8_t exploto = provision.exploto;
+        socket.sendall(&exploto, sizeof(exploto), &was_closed);
         if (was_closed) {
             return false;
         }

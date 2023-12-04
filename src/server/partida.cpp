@@ -7,6 +7,7 @@
 
 #define SLEEPSEGS 1
 #define NOW NULL
+#define PLANO 0
 
 
 // Usado para castear un puntero a una reference y hacer
@@ -17,11 +18,7 @@ const std::chrono::duration<double> frameDuration(1.0 / 30);
 
 int numeroRandomEnRango(int comienzo, int fin) {
     int resultado;
-    //Fuente: https://stackoverflow.com/a/13445752/13683575
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(comienzo, fin);
-    resultado = dist6(rng);
+    resultado = rand() % (fin + 1) + comienzo;
 
     return resultado;
 }
@@ -94,32 +91,34 @@ void Partida::anadirProvision() {
     std::pair<coordX, coordY> posicionInicial;
     posicionInicial.enY = MAXALTURA;
 
-    bool encontreViga = false;
-    while (encontreViga == false) {
-        //Fuente: https://stackoverflow.com/a/13445752/13683575
-        /* Numero aleatorio entre 0 y MAXancho */
-        posicionInicial.enX = numeroRandomEnRango(0, MAXANCHO);
-
-        b2Vec2 inicio(posicionInicial.enX, posicionInicial.enY);
-        b2Vec2 fin(posicionInicial.enX, 0);
-
-        ResolvedorQuery query;
-        b2AABB aabb;
-        aabb.lowerBound = fin;
-        aabb.upperBound = inicio;
-        this->world.QueryAABB( &query, aabb );
-        for (int i = 0; i < (int) query.foundBodies.size(); i++) {
-	  b2Body* cuerpoA = query.foundBodies[i];
-	  
-	  Entidad *entidadA = (Entidad *) cuerpoA->GetUserData().pointer;
-
-	  if (entidadA->tipo == TipoEntidad::VIGA) {
-	      encontreViga = true;
-	      break;
-	  }
-        }
+    std::vector<Viga> vigasChatas;
+    for (Viga viga : this->mapaUsado.vigas) {
+        if (viga.angulo != PLANO)
+	  continue;
+        vigasChatas.push_back(viga);
     }
 
+    int ultimaViga;
+    ultimaViga = vigasChatas.size() - 1;
+
+    int vigaRandom;
+    vigaRandom = numeroRandomEnRango(0, ultimaViga);
+
+    Viga vigaElegida;
+    vigaElegida = vigasChatas.at(vigaRandom);
+
+    int offestRandom;
+    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
+
+    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
+    int coordALaIzquierda;
+    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2);
+
+    int posEnX;
+    posEnX = coordALaIzquierda + offestRandom;
+
+    posicionInicial.enX = posEnX;
+        
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
 
@@ -136,7 +135,10 @@ void Partida::anadirProvision() {
     provisionFixDef.density = 0.1f;
     provisionFixDef.friction = 0.3f;
     provisionFixDef.filter.categoryBits = (uint16_t)TipoEntidad::PROVISION;
-    provisionFixDef.filter.maskBits = -1;
+    provisionFixDef.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        (uint16_t)TipoEntidad::OCEANO |
+        (uint16_t)TipoEntidad::PROYECTIL |
+        (uint16_t)TipoEntidad::GUSANO;
 
     b2Body* provisionBody = world.CreateBody(&provisionDef);
     provisionBody->CreateFixture(&provisionFixDef);
@@ -145,15 +147,22 @@ void Partida::anadirProvision() {
     tipo = numeroRandomEnRango(0,1);
 
     tipoProvision queProvision = VIDA;
-    ArmaProtocolo arma = NADA_P;
+    ArmaProtocolo arma = BANANA_P;
     if (tipo == 0) {
         queProvision = VIDA;
         arma = NADA_P;
     } else {
         queProvision = MUNICION;
-        int pri = NADA_P + 1;
-        int fin = INVAL_ARMA_P - 1;
-        arma = (ArmaProtocolo) numeroRandomEnRango(pri, fin);
+        ArmaProtocolo armasPosibles[] = {MORTERO_P, GRANADA_ROJA_P, 
+				GRANADA_SANTA_P, BANANA_P,
+				DINAMITA_P, ATAQUE_AEREO_P};
+        int pri = 0;
+        //Longitud del array
+        int fin = sizeof(armasPosibles) / sizeof(armasPosibles[0]) - 1;
+
+        int armaAUsar = numeroRandomEnRango(pri, fin);
+
+        arma = armasPosibles[armaAUsar];
     }
 
     int idProvision;
@@ -162,11 +171,11 @@ void Partida::anadirProvision() {
 
     //FIXME Comento lo de es trampa hasta que ande bien
     bool esTrampa;
-    // int calculoSiTrampa;
-    // calculoSiTrampa = numeroRandomEnRango(0,1);
-    // if (calculoSiTrampa == 0)
-    //     esTrampa = true;
-    // else
+    int calculoSiTrampa;
+    calculoSiTrampa = numeroRandomEnRango(0,10);
+    if (calculoSiTrampa == 0)
+        esTrampa = true;
+    else
         esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
@@ -442,16 +451,21 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         fd.restitution = 0.99f; // high restitution to reflect off obstacles
         fd.filter.groupIndex = -1; // particles should not collide with each other
         fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-        fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
-	  (uint16_t)TipoEntidad::OCEANO |
-	  (uint16_t)TipoEntidad::GUSANO;
+        // fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
+        // 	  (uint16_t)TipoEntidad::OCEANO |
+        // 	  (uint16_t)TipoEntidad::OCEANO |
+        // 	  (uint16_t)TipoEntidad::GUSANO;
+        fd.filter.maskBits = -1;
 
         body->CreateFixture( &fd );
         nuevaEntidad->proyectil.proyectil = body;
         nuevaEntidad->proyectil.horaDeCreacion = time(NOW);
         nuevaEntidad->proyectil.tiempoMinimoDeVida = 0.5f;
         
-        nuevaEntidad->proyectilReal = proyectil;
+        Proyectil *proyectilNuevo = new Proyectil();
+        *proyectilNuevo = *proyectil;
+        nuevaEntidad->proyectilReal = proyectilNuevo;
+        // nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -555,7 +569,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	      b2Vec2 coords = golpeYCaja.second.first;
 	      nuevaEntidad->proyectil.posInicial = coords;
 	      nuevaEntidad->proyectilReal = nuevoProyectil;
-
 
 	      entidadA->gusano->recibirDano(golpe, nuevaEntidad);
 	  }
@@ -814,6 +827,12 @@ void Partida::borrarCuerpos() {
 	  Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
 	  this->world.DestroyBody(cuerpoABorrar);
 	  this->cuerposADestruir.erase(this->cuerposADestruir.begin() + i);
+
+	  for (Gusano *gusano : this->gusanos) {
+	      gusano->golpeado = false;
+	  }
+	  delete entidadB->proyectilReal;
+	  delete entidadB;
         }
 
     }
@@ -827,6 +846,11 @@ void Partida::borrarCuerpos() {
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->proyectilReal;
             this->proyectiles.erase(this->proyectiles.begin() + i);
+	  for (Gusano *gusano : this->gusanos) {
+	      gusano->golpeado = false;
+	  }
+
+	  delete entidadB;
         }
 
     }
@@ -835,18 +859,55 @@ void Partida::borrarCuerpos() {
         Provision *provision = this->provisiones[i];
         b2Body *cuerpoABorrar = provision->cuerpo;
         // NO HACER delete entidad. Tira invalid delete
-        if (provision->fueAgarrada == true) {
+        if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == false) {
+	  Proyectil *dinamita = new Proyectil();
+
+	  dinamita->armaOrigen = GRANADA_VERDE_P;
+	  dinamita->tipo = TipoProyectil::Countdown;
+	  //GOTCHA No se lo voy a enviar, este id es basura
+	  dinamita->id = -2;
+	  dinamita->cuerpo = provision->cuerpo;
+	  dinamita->exploto = false;
+	  dinamita->colisiono = true;
+	  dinamita->esFragmento = false;
+	  dinamita->countdown = 2;
+
+	  provision->miProyectil = dinamita;
+	  Ataque ataqueProvision;
+	  ataqueProvision.posicion = provision->cuerpo->GetPosition();
+	  ataqueProvision.posicion.y += 1;
+	  ataqueProvision.potencia = 100;
+	  ataqueProvision.tiempoEspera = 8;
+	  ataqueProvision.arma = DINAMITA_P;
+	  ataqueProvision.impulsoInicial = b2Vec2(0,0);
+	  ataqueProvision.proyectilAsociado = dinamita;
+
+	  this->crearProyectiles(nullptr, ataqueProvision);
+	  provision->exploto = true;
+        }
+        else if (provision->fueAgarrada == true && provision->esTrampa == false) {
+	  std::cout << "BORRO PROVISION NO TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
+            // delete entidadB->provision->miProyectil;
             delete entidadB->provision;
+            delete entidadB;
             this->provisiones.erase(this->provisiones.begin() + i);
         }
+        else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
+	  std::cout << "BORRO PROVISION TRAMPA\n";
+            Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
+            this->world.DestroyBody(cuerpoABorrar);
+            delete entidadB->provision->miProyectil;
+            delete entidadB->provision;
+            delete entidadB;
+            this->provisiones.erase(this->provisiones.begin() + i);
+	  
+        }
+
 
     }
 
-    for (Gusano *gusano : this->gusanos) {
-        gusano->golpeado = false;
-    }
 }
 
 
@@ -1014,7 +1075,16 @@ Partida::~Partida() {
     }
 
     for (auto &&proyectil : this->proyectiles) {
+        b2Body *cuerpo;
+        cuerpo = proyectil->cuerpo;
+        Entidad *entidadB = (Entidad *) cuerpo->GetUserData().pointer;
+        delete entidadB;
         delete proyectil;
+    }
+
+    for (Provision *provision : this->provisiones) {
+        delete provision->miProyectil;
+        delete provision;
     }
 
     
