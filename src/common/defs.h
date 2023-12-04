@@ -29,6 +29,10 @@ typedef float cambioY;
 #define INVAL_ID (id)-1
 #define noIgn [[nodiscard]]
 
+
+#define VIENTOMAXIMODER 10
+#define VIENTOMAXIMOIZQ -10
+
 enum Direccion {INICIO_IZQ, FIN_IZQ, INICIO_DER, FIN_DER, SALTO, PIRUETA, INVAL_DIR};
 enum EstadoGusano {QUIETO, CAMINANDO, SALTANDO, CAYENDO, DISPARANDO, HERIDO, HACE_PIRUETA, MUERTO, AHOGADO};
 enum DireccionGusano {IZQUIERDA, DERECHA};
@@ -48,9 +52,9 @@ enum SituacionJugador {JUGANDO, GANASTE, PERDISTE};
  *4. El gusano realiza el ataque con la calibracion previamente establecida
  */
 //                    0         1         2        3          4
-enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, ATACO, INVAL_ACCION};
+enum tipoAccion {ESTAQUIETO, MOVERSE, EQUIPARSE, PREPARAR, ATAQUE, ATACO, CHEAT, INVAL_ACCION};
 enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
-
+enum TipoCheat {ARRANCAR_C, PROVISION_C, VIDA_C, DANIO_C, INVAL_CHEAT_C};
 
 #define TIEMPOCAMBIOTURNO 60
 #define TIEMPOCHANGUI 3
@@ -71,6 +75,7 @@ enum ValorAConfigurar {ANGULO, POTENCIA, CUENTA_REGRESIVA, COORDENADAS};
 #define EQUIPAR 10
 #define CALIBRAR 11
 #define ATACAR 12
+#define CHEATEAR 14
 
 
 #define PIXELS_POR_METRO 20
@@ -178,6 +183,7 @@ struct EstadoDelJuego {
     MomentoDePartida momento;
     std::map<idJugador, SituacionJugador> situacionJugadores;    
     std::vector<RepresentacionProvisiones> provisiones;
+    int viento;
 };
 
 struct Configuracion {
@@ -198,6 +204,7 @@ struct Accion {
     Direccion dir;
     ArmaProtocolo armaAEquipar;
     Configuracion configARealizar;
+    TipoCheat cheat;
     bool esEmpezar;
 
 };

@@ -307,6 +307,18 @@ bool Protocolo::atacar() {
 }
 
 
+bool Protocolo::enviarCheat(TipoCheat cheat) {
+    bool is_open = enviarCodigo(CHEATEAR);
+    if (!is_open) {
+        return false;
+    }
+    int8_t cheatAEnviar = cheat;
+    bool was_closed = false;
+    socket.sendall(&cheatAEnviar, sizeof(cheatAEnviar), &was_closed);
+    return !was_closed;
+}
+
+
 bool Protocolo::configurarAngulo(float angulo) {
     bool is_open = enviarCodigo(CALIBRAR);
     if (!is_open) {
@@ -754,6 +766,13 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     }
     segundosRestantes = ntohl(segundosRestantes);
 
+    int32_t viento;
+    socket.recvall(&viento, sizeof(viento), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    viento = ntohl(viento);
+
     int8_t momento;
     socket.recvall(&momento, sizeof(momento), &was_closed);
     if (was_closed) {
@@ -783,6 +802,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->segundosRestantes = segundosRestantes;
     estado->momento = (MomentoDePartida)momento;
     estado->situacionJugadores = situacionJugadores;
+    estado->viento = viento;
 
     return estado;
 }
@@ -944,10 +964,11 @@ Accion Protocolo::obtenerAccion() {
     Accion accion;
     accion.accion = INVAL_ACCION;
     if (codigo != MOV && codigo != ATACAR && 
-        codigo != EQUIPAR && codigo != CALIBRAR && codigo != EMPEZAR) {
+        codigo != EQUIPAR && codigo != CALIBRAR &&
+        codigo != EMPEZAR && codigo != CHEATEAR) {
         return accion;
     }
-    
+
     if (codigo == EMPEZAR) {
         accion.esEmpezar = true;
         return accion;
@@ -962,6 +983,19 @@ Accion Protocolo::obtenerAccion() {
 
         accion.accion = EQUIPARSE;
         accion.armaAEquipar = (ArmaProtocolo)arma;
+        accion.esEmpezar = false;
+        return accion;
+    }
+
+    if (codigo == CHEATEAR) {
+        int8_t cheat;
+        socket.recvall(&cheat, sizeof(cheat), &was_closed);
+        if (was_closed) {
+            return accion;
+        }
+
+        accion.accion = CHEAT;
+        accion.cheat = (TipoCheat)cheat;
         accion.esEmpezar = false;
         return accion;
     }
@@ -1307,6 +1341,12 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
     bool was_closed = false;
     int32_t tiempoRestante = htonl(estado->segundosRestantes);
     socket.sendall(&tiempoRestante, sizeof(tiempoRestante), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t viento = htonl(estado->viento);
+    socket.sendall(&viento, sizeof(viento), &was_closed);
     if (was_closed) {
         return false;
     }

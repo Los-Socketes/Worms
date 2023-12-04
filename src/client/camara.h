@@ -24,11 +24,12 @@ class Camara {
 
     int tiempo_espera_mouse;
 
+    // Mueven la camara en deltaX y deltaY, chequeando que no se salga del mapa.
+    void moverEnEjeX(int& deltaX);
+    void moverEnEjeY(int& deltaY);
  public:
     Camara(int x, int y, int ancho, int alto, int ancho_mapa, int alto_mapa);
     
-    // Mueve la camara en deltaX y deltaY, chequeando que no se salga del mapa.
-    void mover(int& deltaX, int& deltaY);
     void moverConMouse(int& deltaX, int& deltaY);
     void moverHaciaObjetivo();
 

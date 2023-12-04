@@ -21,7 +21,7 @@
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
-#define MINJUGADORES 1
+#define MINJUGADORES 2
 
 class Partida : public Thread {
     std::atomic<bool> finPartida;
@@ -62,11 +62,17 @@ class Partida : public Thread {
     time_t ultimaProvision;
     void generarProvision(time_t horaActual);
     std::vector<Provision *> provisiones;
-    void anadirProvision();
+    void anadirProvision(std::pair<coordX, coordY> coordenadas, tipoProvision queProvision, bool esTrampa);
     //Uso este valor para que se no se pisen los valores
     int cantidadProvisionesGeneradas = 0;
 
+    time_t ultimoCambioViento;
+    void cambiarElViento(time_t tiempoActual);
+
     bool enviarEstadoAJugadores();
+
+    void procesarCheats(Accion cheat, Gusano *gusanoActual,
+		    Jugador *jugadorActual);
 
     [[nodiscard]] Accion obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 		     Gusano* gusanoActual);

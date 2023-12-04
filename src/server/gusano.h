@@ -33,7 +33,6 @@ private:
     int idGusano;
     int tiempoQueMeQueda;
 
-
     //Guardo la ultima accion que realizo el gusano
     Accion ultimaAccion;
 
@@ -107,6 +106,8 @@ public:
     [[nodiscard]] std::pair<coordX, coordY> getCoords();
 
     [[nodiscard]] RepresentacionGusano getRepresentacion();
+
+    void recibirDanoPorCheat();
 
     [[nodiscard]] std::pair<
         b2Vec2,

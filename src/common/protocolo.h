@@ -58,6 +58,7 @@ public:
     bool configurarPotencia(float potencia);
     bool configurarCuentaRegresiva(int valor);
     bool configurarCoordenadas(std::pair<coordX,coordY> coordenadas);
+    bool enviarCheat(TipoCheat cheat);
     bool atacar();
     std::shared_ptr<EstadoDelJuego> obtenerEstadoDelJuego();
 #endif

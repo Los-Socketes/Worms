@@ -36,6 +36,7 @@ Partida::Partida(Mapa mapa)
     this->ultimaProvision = time(NOW);
     this->mapaUsado = mapa;
     this->viento = b2Vec2(FUERZAVIENTOX, FUERZAVIENTOY);
+    this->ultimoCambioViento = time(NOW);
     
     for (auto &&viga : mapa.vigas) {
         this->anadirViga(viga.angulo, viga.tamanio, viga.coordenadas);
@@ -88,37 +89,9 @@ Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     return nuevoGusano;
 }
 
-void Partida::anadirProvision() {
+void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, tipoProvision queProvision, bool esTrampa) {
     std::pair<coordX, coordY> posicionInicial;
-    posicionInicial.enY = MAXALTURA;
-
-    std::vector<Viga> vigasChatas;
-    for (Viga viga : this->mapaUsado.vigas) {
-        if (viga.angulo != PLANO)
-	  continue;
-        vigasChatas.push_back(viga);
-    }
-
-    int ultimaViga;
-    ultimaViga = vigasChatas.size() - 1;
-
-    int vigaRandom;
-    vigaRandom = numeroRandomEnRango(0, ultimaViga);
-
-    Viga vigaElegida;
-    vigaElegida = vigasChatas.at(vigaRandom);
-
-    int offestRandom;
-    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
-
-    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
-    int coordALaIzquierda;
-    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2);
-
-    int posEnX;
-    posEnX = coordALaIzquierda + offestRandom;
-
-    posicionInicial.enX = posEnX;
+    posicionInicial = coordenadas;
         
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::PROVISION;
@@ -147,23 +120,24 @@ void Partida::anadirProvision() {
     int tipo;
     tipo = numeroRandomEnRango(0,1);
 
-    tipoProvision queProvision = VIDA;
     ArmaProtocolo arma = BANANA_P;
-    if (tipo == 0) {
-        queProvision = VIDA;
+    if (queProvision == VIDA) {
         arma = NADA_P;
     } else {
-        queProvision = MUNICION;
-        ArmaProtocolo armasPosibles[] = {MORTERO_P, GRANADA_ROJA_P, 
-				GRANADA_SANTA_P, BANANA_P,
-				DINAMITA_P, ATAQUE_AEREO_P};
+        std::vector<ArmaProtocolo> armasConMunicion;
+        for (int i = 0; i < INVAL_ARMA_P; i++) {
+	  Arma arma((ArmaProtocolo)i);
+	  if (arma.getMuniciones() == -1)
+	      continue;
+	  armasConMunicion.push_back((ArmaProtocolo)i);
+        }
         int pri = 0;
         //Longitud del array
-        int fin = sizeof(armasPosibles) / sizeof(armasPosibles[0]) - 1;
+        int fin = armasConMunicion.size() - 1;
 
         int armaAUsar = numeroRandomEnRango(pri, fin);
 
-        arma = armasPosibles[armaAUsar];
+        arma = armasConMunicion.at(armaAUsar);
     }
 
     int idProvision;
@@ -171,13 +145,6 @@ void Partida::anadirProvision() {
     this->cantidadProvisionesGeneradas += 1;
 
     //FIXME Comento lo de es trampa hasta que ande bien
-    bool esTrampa;
-    int calculoSiTrampa;
-    calculoSiTrampa = numeroRandomEnRango(0,10);
-    if (calculoSiTrampa == 0)
-        esTrampa = true;
-    else
-        esTrampa = false;
 
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
@@ -358,6 +325,8 @@ bool Partida::enviarEstadoAJugadores() {
     }
     estadoActual->provisiones = representacionProvi;
 
+    estadoActual->viento = this->viento.x;
+
     bool hayJugadores = false;
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
@@ -368,6 +337,47 @@ bool Partida::enviarEstadoAJugadores() {
     return hayJugadores;
 }
 
+void Partida::procesarCheats(Accion cheat, Gusano *gusanoActual,
+		         Jugador *jugadorActual) {
+    TipoCheat cheatDeseado;
+    cheatDeseado = cheat.cheat;
+
+    switch(cheatDeseado) {
+    case PROVISION_C:
+        {
+        std::pair<coordX, coordY> coordenadasGusano;
+        coordenadasGusano = gusanoActual->getCoords();
+        coordenadasGusano.enY += 3;
+        this->anadirProvision(coordenadasGusano, MUNICION, false);
+        break;
+        }
+    case VIDA_C:
+        {
+        std::pair<coordX, coordY> coordenadasGusano;
+        coordenadasGusano = gusanoActual->getCoords();
+        coordenadasGusano.enY += 3;
+        this->anadirProvision(coordenadasGusano, VIDA, false);
+        break;
+        }
+    case DANIO_C:
+        for (Jugador *jugador : this->jugadores) {
+	  if (jugador == jugadorActual)
+	      continue;
+	  std::vector<Gusano *> gusanosEnemigos;
+	  gusanosEnemigos = jugador->getGusanos();
+	  for (Gusano *gusanoEnemigo : gusanosEnemigos) {
+	      gusanoEnemigo->recibirDanoPorCheat();
+	  }
+        }
+        break;
+    case ARRANCAR_C:
+        //Este cheat se procesa antes, en el loop de conexion
+        break;
+    case INVAL_CHEAT_C:
+        break;
+    }
+
+}
 
 Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
 			Gusano* gusanoActual) {
@@ -466,7 +476,6 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         Proyectil *proyectilNuevo = new Proyectil();
         *proyectilNuevo = *proyectil;
         nuevaEntidad->proyectilReal = proyectilNuevo;
-        // nuevaEntidad->proyectilReal = proyectil;
 
         this->cuerposADestruir.push_back(body);
     }
@@ -608,7 +617,9 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	  ataque.posicion.x += 2;
         }
 
-        ataque.impulsoInicial += viento;
+        Arma armaFinal(arma);
+        if (armaFinal.getCaracteristicas().esAfectadoPorViento == true)
+	  ataque.impulsoInicial += viento;
 
         nuevoProyectil->cuerpo->SetTransform(ataque.posicion, true);
         nuevoProyectil->cuerpo->SetLinearVelocity(ataque.impulsoInicial);
@@ -752,7 +763,55 @@ void Partida::generarProvision(time_t horaActual) {
 
     std::cout << "GENERAR PROVISION \n";
 
-    this->anadirProvision();
+    std::vector<Viga> vigasChatas;
+    for (Viga viga : this->mapaUsado.vigas) {
+        if (viga.angulo != PLANO)
+	  continue;
+        vigasChatas.push_back(viga);
+    }
+
+    int ultimaViga;
+    ultimaViga = vigasChatas.size() - 1;
+
+    int vigaRandom;
+    vigaRandom = numeroRandomEnRango(0, ultimaViga);
+
+    Viga vigaElegida;
+    vigaElegida = vigasChatas.at(vigaRandom);
+
+    int offestRandom;
+    offestRandom = numeroRandomEnRango(0, vigaElegida.tamanio);
+
+    //Restamos la mitad porque la coordenada se toma en el centro (creemos)
+    float coordALaIzquierda;
+    coordALaIzquierda = vigaElegida.coordenadas.enX - (vigaElegida.tamanio / 2.0f) - 0.5;
+    //0.5 es una pequena correccion para que no se caiga
+
+    float posEnX;
+    posEnX = coordALaIzquierda + offestRandom;
+
+    float posEnY = MAXALTURA;
+    std::pair<coordX, coordY> coordenadas (posEnX, posEnY);
+
+    int tipo;
+    tipo = numeroRandomEnRango(0,1);
+
+    tipoProvision queProvision;
+    if (tipo == 0)
+        queProvision = VIDA;
+    else
+        queProvision = MUNICION;
+
+
+    bool esTrampa;
+    int calculoSiTrampa;
+    calculoSiTrampa = numeroRandomEnRango(0,10);
+    if (calculoSiTrampa == 0)
+        esTrampa = true;
+    else
+        esTrampa = false;
+
+    this->anadirProvision(coordenadas, queProvision, esTrampa);
 }
 
 
@@ -799,6 +858,31 @@ Proyectil *Partida::proyectilConstructor() {
     return nuevoProyectil;
 }
 
+void Partida::cambiarElViento(time_t tiempoActual) {
+    double diferencia;
+    diferencia = difftime(tiempoActual, this->ultimoCambioViento);
+
+    if (diferencia < TIEMPOESPERAVIENTO)
+        return;
+
+    //Actualizo la hora incluso si el coin flip no lo logra.
+    //Es para que SIEMPRE haya TIEMPOEESPERAVIENTO de tiempo entre
+    //intento e intento
+    this->ultimoCambioViento = tiempoActual;
+
+    int cointFlip = numeroRandomEnRango(0,1);
+
+    if (cointFlip == 0)
+        return;
+
+    int nuevoViento = numeroRandomEnRango(0, 20);
+    std::cout << "Valor random: " << nuevoViento << "\n";
+    nuevoViento = nuevoViento - 10;
+    
+    this->viento.x = nuevoViento;
+
+    std::cout << "VIENTO: " << viento.x << "\n";
+}
 
 
 bool destruirProyectil(b2Body *proyectil) {
@@ -937,7 +1021,8 @@ void Partida::gameLoop() {
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        if (accionRecibida.esEmpezar && pudeObtenerla) {
+        if ((accionRecibida.esEmpezar && pudeObtenerla) ||
+            (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
             this->momento = EN_MARCHA;
             break;
         }
@@ -1012,6 +1097,8 @@ void Partida::gameLoop() {
 
         this->generarProvision(tiempoActual);
         
+        this->cambiarElViento(tiempoActual);
+        
         std::pair<Gusano *, Jugador *> gusanoYJugador;
         gusanoYJugador = this->cambiarDeJugador(jugadorActual, gusanoActual, tiempoActual);
         // se quedo sin gusanos posibles para jugar
@@ -1039,11 +1126,14 @@ void Partida::gameLoop() {
         accionAEjecutar = this->obtenerAccion(accionRecibida, pudeObtenerla,
 				      gusanoActual);
 
-        ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
+        if (accionAEjecutar.accion == CHEAT)
+	  this->procesarCheats(accionAEjecutar, gusanoActual, jugadorActual);
+        else
+	  ataqueARealizar = gusanoActual->ejecutar(accionAEjecutar);
 
         for (auto &&proyectil : this->proyectiles) {
             if (proyectil->tipo == TipoProyectil::Countdown) {
-            proyectil->countdown -= 1;
+	      proyectil->countdown -= 1;
             }
             this->generarExplosion(proyectil);
         }

@@ -33,6 +33,7 @@ class EntidadInterfaz : public Entidad {
     Font& fuente2;
     int id_jugador;
     id id_partida;
+    int viento_actual;
     RepresentacionGusano gusano_actual;
     bool esperando_movimiento;
     std::map<ArmaProtocolo, std::string> teclas_armas;
@@ -49,6 +50,8 @@ class EntidadInterfaz : public Entidad {
     void dibujarBarraArmas(ArmaProtocolo& arma_equipada);
     void dibujarMuniciones(RepresentacionArma& arma);
     void dibujarBarrasVida();
+    void dibujarViento();
+    void actualizarViento();
     void dibujarCuentaRegresivaTurno();
     void dibujarVolumen();
     void dibujarTextoTurno();

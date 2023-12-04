@@ -31,7 +31,9 @@ enum ItemEscenario {
     PROVISION_MEDICINA,
     PROVISION_MEDICINA_CAYENDO,
     PROVISION_MUNICION,
-    PROVISION_MUNICION_CAYENDO
+    PROVISION_MUNICION_CAYENDO,
+    VIENTO_IZQUIERDA,
+    VIENTO_DERECHA
 };
 
 // Clase que se encarga de cargar las animaciones y devolverlas para ser dibujadas.

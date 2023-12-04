@@ -522,6 +522,9 @@ Ataque Gusano::ejecutar(Accion accion) {
     }
     case INVAL_ACCION:
         break;
+
+    case CHEAT:
+        break;
     }
 
     //Hago que el gusano se acuerde que fue lo ulitmo que realizo
@@ -654,4 +657,15 @@ void Gusano::anadirVida(int vidaExtra) {
 void Gusano::anadirMunicion(int cantiMunicion, ArmaProtocolo queArma) {
     Arma &armaQueRecibe = this->armas.at(queArma);
     armaQueRecibe.anadirMuniciones(cantiMunicion);
+}
+
+
+void Gusano::recibirDanoPorCheat() {
+    if (this->vida / 2 <= 0 ) {
+        this->vida = 0;
+        this->setEstado(MUERTO);
+    }
+    else {
+        this->vida /= 2;
+    }
 }

@@ -390,6 +390,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     std::map<idJugador, SituacionJugador> situacionJugadores;
     situacionJugadores.insert({jugador, PERDISTE});
     estado->situacionJugadores = situacionJugadores;
+    estado->viento = 8;
     
     std::shared_ptr<EstadoDelJuego> resultado = enviarEstadoDelJuego(estado);
     REQUIRE(resultado->gusanos.size() == gusanos.size());
@@ -397,6 +398,7 @@ TEST_CASE( "Tests de enviar estado del Juego", "[enviarEstadoDelJuego]" ) {
     REQUIRE(resultado->gusanoDeTurno == estado->gusanoDeTurno);
     REQUIRE(resultado->segundosRestantes == estado->segundosRestantes);
     REQUIRE(resultado->momento == estado->momento);
+    REQUIRE(resultado->viento == estado->viento);
     REQUIRE(resultado->situacionJugadores == estado->situacionJugadores);
     std::map<id, RepresentacionGusano> resultadoGusanos = resultado->gusanos[jugador];
     REQUIRE(resultadoGusanos.size() == mapaGusanos.size());
@@ -549,4 +551,22 @@ TEST_CASE( "Tests de configurar coordenadas", "[obtenerAccionDeConfigurarCoorden
     REQUIRE(resultado.configARealizar.caracteristica == config.caracteristica);
     REQUIRE(resultado.configARealizar.coordenadas.enX == config.coordenadas.enX);
     REQUIRE(resultado.configARealizar.coordenadas.enY == config.coordenadas.enY);
+}
+
+// TEST 16
+
+Accion obtenerAccionConCheat(TipoCheat cheat) {
+    protocolo.enviarCheat(cheat);
+    return protocoloServer.obtenerAccion();
+}
+
+TEST_CASE( "Tests de enviar cheat", "[obtenerAccionConCheat]" ) {
+    Accion cheat;
+    cheat.accion = CHEAT;
+    TipoCheat cheatAHacer = DANIO_C;
+    cheat.cheat = cheatAHacer;
+
+    Accion resultado = obtenerAccionConCheat(cheatAHacer);
+    REQUIRE(resultado.accion == cheat.accion);
+    REQUIRE(resultado.cheat == cheat.cheat);
 }

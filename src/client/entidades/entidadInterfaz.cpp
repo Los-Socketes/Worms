@@ -25,6 +25,7 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     fuente2(fuente2),
     id_jugador(0),
     id_partida(0),
+    viento_actual(0),
     gusano_actual(),
     esperando_movimiento(false),
     teclas_armas(),
@@ -189,6 +190,50 @@ void EntidadInterfaz::dibujarBarrasVida() {
     }    
 }
 
+void EntidadInterfaz::dibujarViento() {
+    int ancho_pantalla = renderizador.GetOutputSize().x;
+    int alto_pantalla = renderizador.GetOutputSize().y;
+    // Primero dibujo un recuadro negro que contenga ambas imagenes.
+    renderizador.SetDrawBlendMode(SDL_BLENDMODE_BLEND);
+    renderizador.SetDrawColor(0, 0, 0, 100);
+    renderizador.FillRect((ancho_pantalla / 2) - 100, 15, (ancho_pantalla / 2) + 100, 33);
+    // Las imágenes de viento tienen 96x13. Las dibujo arriba en el centro de la pantalla,
+    // sobre el recuadro negro. Las tapo según la dirección e intensidad del viento.
+    std::pair<int, int> posicion;
+    int viento_a_dibujar = 0;
+    // Para la barra izquierda, si el viento no sopla/sopla a la derecha la tapo completamente.
+    if (viento_actual >= 0)
+        viento_a_dibujar = 10;
+    // Si no, la tapo según la intensidad.
+    else
+        viento_a_dibujar = 10 + viento_actual;
+    posicion.first = ancho_pantalla / 2 - 97;
+    posicion.second = 18;
+    gestor_animaciones.getAnimacionEscenario(VIENTO_IZQUIERDA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
+    // Tapo las imágenes según el valor del viento.
+    renderizador.SetDrawBlendMode(SDL_BLENDMODE_NONE);
+    renderizador.SetDrawColor(0, 0, 0, 255);
+    renderizador.FillRect(posicion.first, posicion.second, floor(posicion.first + viento_a_dibujar * 9.6), posicion.second + 12);
+    posicion.first = ancho_pantalla / 2 + 2;
+    // Calculo el viento para la barra derecha, si sopla a la izquierda o no sopla, se tapa toda.
+    if (viento_actual <= 0)
+        viento_a_dibujar = 10;
+    // Si no, la tapo según la intensidad.
+    else
+        viento_a_dibujar = 10 - viento_actual;
+    gestor_animaciones.getAnimacionEscenario(VIENTO_DERECHA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
+    renderizador.FillRect(posicion.first + 96, posicion.second + 13, floor(posicion.first + 95 - viento_a_dibujar * 9.6), posicion.second - 1);
+}
+
+void EntidadInterfaz::actualizarViento() {
+    if (viento_actual == estado_juego->viento)
+        return;
+    else if (viento_actual > estado_juego->viento)
+        viento_actual--;
+    else if (viento_actual < estado_juego->viento)
+        viento_actual++;
+}
+
 void EntidadInterfaz::dibujarCuentaRegresivaTurno() {
     if (estado_juego->segundosRestantes >= 0) {
         // Dibujo los segundos restantes arriba a la derecha de la pantalla.
@@ -218,6 +263,8 @@ void EntidadInterfaz::dibujarCuentaRegresivaTurno() {
         segundos_turno = estado_juego->segundosRestantes;
     }
 }
+
+
 
 void EntidadInterfaz::dibujarVolumen() {
     // Dibujo el volumen en la esquina superior izquierda.
@@ -377,6 +424,8 @@ void EntidadInterfaz::dibujar(){
         dibujarBarraArmas(gusano_actual.armaEquipada.arma);
         dibujarMuniciones(gusano_actual.armaEquipada);
         dibujarBarrasVida();
+        actualizarViento();
+        dibujarViento();
         dibujarVolumen();
         if (estado_juego->momento != TERMINADA) {
             dibujarCuentaRegresivaTurno();
