@@ -991,7 +991,8 @@ void Partida::gameLoop() {
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        if (accionRecibida.esEmpezar && pudeObtenerla) {
+        if (accionRecibida.esEmpezar && pudeObtenerla ||
+            accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C) {
             this->momento = EN_MARCHA;
             break;
         }
