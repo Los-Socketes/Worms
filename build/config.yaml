@@ -143,10 +143,95 @@ Vida: 100
 
 
 # # Mapas # #
-Cantidad mapas: 2
-Nombres mapas: [Pico de la viuda, Battlesnax]
+Cantidad mapas: 3
+Nombres mapas: [Pico de la viuda, Torres gemelas, Battlesnax]
 
 Pico de la viuda:
+  Dimensiones: [60, 40]
+  Cantidad vigas: 18
+  Viga 1:
+    Tamanio: 6
+    Coordenadas: [3.0, 17.0]
+    Angulo: 0
+  Viga 2:
+    Tamanio: 6
+    Coordenadas: [11.0, 19.0]
+    Angulo: 0
+  Viga 3:
+    Tamanio: 6
+    Coordenadas: [9.0, 15.0]
+    Angulo: 0
+  Viga 4:
+    Tamanio: 6
+    Coordenadas: [34.0, 25.0]
+    Angulo: 0.78
+  Viga 5:
+    Tamanio: 6
+    Coordenadas: [19.0, 20.0]
+    Angulo: 0
+  Viga 6:
+    Tamanio: 6
+    Coordenadas: [15.0, 27.0]
+    Angulo: 0
+  Viga 7:
+    Tamanio: 6
+    Coordenadas: [16.0, 14.0]
+    Angulo: 0
+  Viga 8:
+    Tamanio: 6
+    Coordenadas: [30.0, 15.0]
+    Angulo: 0
+  Viga 9:
+    Tamanio: 6
+    Coordenadas: [24.0, 13.0]
+    Angulo: 0
+  Viga 10:
+    Tamanio: 3
+    Coordenadas: [30.0, 33.0]
+    Angulo: 0
+  Viga 11:
+    Tamanio: 6
+    Coordenadas: [36.0, 13.0]
+    Angulo: 0
+  Viga 12:
+    Tamanio: 6
+    Coordenadas: [44.0, 14.0]
+    Angulo: 0
+  Viga 13:
+    Tamanio: 6
+    Coordenadas: [45.0, 27.0]
+    Angulo: 0
+  Viga 14:
+    Tamanio: 6
+    Coordenadas: [41.0, 20.0]
+    Angulo: 0
+  Viga 15:
+    Tamanio: 6
+    Coordenadas: [26.0, 25.0]
+    Angulo: -0.78
+  Viga 16:
+    Tamanio: 6
+    Coordenadas: [51.0, 15.0]
+    Angulo: 0
+  Viga 17:
+    Tamanio: 6
+    Coordenadas: [49.0, 19.0]
+    Angulo: 0
+  Viga 18:
+    Tamanio: 6
+    Coordenadas: [57.0, 17.0]
+    Angulo: 0
+
+  Posicion gusanos: [
+    [11.0 ,21.0],
+    [5.0 ,19.0],
+    [31.0 ,26.0],
+    [50.0 ,15.0],
+    [33.0 ,15.0],
+    [5.0 ,27.0],
+  ]
+
+Torres gemelas:
   Dimensiones: [60, 40]
   Cantidad vigas: 18
   Viga 1:
@@ -227,7 +312,7 @@ Pico de la viuda:
     [5.0 ,19.0],
     [31.0 ,26.0],
     [50.0 ,15.0],
-    [33.0 ,15.0],
+    [24.0 ,18.0],
     [5.0 ,27.0],
   ]
 
