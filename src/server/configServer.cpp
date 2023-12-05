@@ -4,20 +4,28 @@
 #include "yaml-cpp/yaml.h"
 
 ConfiguracionServer::ConfiguracionServer() {
-    std::ifstream fin("../src/common/config.yaml");
+    std::ifstream fin("config.yaml");
     YAML::Node config = YAML::Load(fin);
 
-    this->dimensionesIniciales.enX = config["Dimensiones pantalla"]["ancho"].as<int>();
-    this->dimensionesIniciales.enY = config["Dimensiones pantalla"]["alto"].as<int>();
-    this->volumenInicial = config["Volumen inicial"].as<int>();
+    this->gravedad.enX = config["Gravedad"]["X"].as<float>();
+    this->gravedad.enY = config["Gravedad"]["Y"].as<float>();
 
-    int cantJugadores = config["Cantidad maxima jugadores"].as<int>();
-    for (int i = 1; i <= cantJugadores; i++) {
-        std::stringstream jugador;
-        jugador << "Jugador " << i;
-        colorJugador colores = config["Color jugadores"][jugador.str()].as<colorJugador>();
-        this->coloresJugadores.push_back(colores);
-    }
-    this->pixelsPorMetro = config["Pixels por metro"].as<int>();
+    this->viento.enX = config["Viento"]["X"].as<int>();
+    this->viento.enY = config["Viento"]["Y"].as<int>();
+
+    this->metrosSinDanio = config["Metros sin danio"].as<float>();
+
+    this->velocidadMovimiento = config["Velocidad movimiento"].as<float>();
+
+    this->potenciaSalto = config["Potencia salto"].as<float>();
+
+    this->vidaGusano = config["Vida gusano"].as<int>();
+
+    this->esperaDinamita = config["Tiempo espera dinamita"].as<int>();
+
+    this->esperaProvision = config["Tiempo espera provision"].as<int>();
+
+    this->esperaViento = config["Tiempo espera viento"].as<int>();
+
     fin.close();
 }

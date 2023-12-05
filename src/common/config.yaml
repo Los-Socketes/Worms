@@ -12,7 +12,6 @@ Degtorad: 0.0174532925199432957
 # Ancho viga: 0.8
 
 Velocidad movimiento: 5.0
-Masa cuerpo estatico: 0.0
 Distancia entre vigas: 7
 
 # Tamanio gusano: 20
@@ -20,7 +19,7 @@ Potencia salto: 3.0
 Vida gusano: 100
 
 Tiempo espera dinamita: 99
-TIempo espera provision: 45
+Tiempo espera provision: 45
 Tiempo espera viento: 25
 
 

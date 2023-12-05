@@ -11,15 +11,11 @@ class ConfiguracionServer {
 public:
     std::pair<float, float> gravedad;
     std::pair<int, int> viento;
+
     float metrosSinDanio;
-    float degtorad;
-    float anchoViga;
 
     float velocidadMovimiento;
-    float masaCuerpoEstatico;
-    int distanciaEntreVigas;
 
-    int tamanioGusano;
     float potenciaSalto;
     int vidaGusano;
 

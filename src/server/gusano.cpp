@@ -4,8 +4,8 @@
 #include <math.h>       /* sin */
 #include <time.h>
 
-
-Gusano::Gusano() {
+Gusano::Gusano(Mapa& mapa):
+    mapa(mapa){
     this->direccion = DERECHA;
     this->vida = 100;
     this->armaEquipada = NADA_P;
@@ -179,14 +179,14 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
     std::pair<coordX, coordY> direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
-        direccion.enX = VELOCIDADMOVIMIENTO;
+        direccion.enX = config.velocidadMovimiento;
         direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(DERECHA);
         this->cuerpo->SetLinearVelocity(deCoordAb2Vec(direccion));
         break;
     case INICIO_IZQ:
-        direccion.enX = -VELOCIDADMOVIMIENTO;
+        direccion.enX = -config.velocidadMovimiento;
         direccion.enY = 0.0f;
         this->setEstado(CAMINANDO);
         this->setDireccion(IZQUIERDA);
@@ -211,8 +211,8 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         if (this->estado == SALTANDO) {
             break;
         }
-        direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*3;
+        direccion.enX = (this->direccion == DERECHA) ? config.potenciaSalto : -config.potenciaSalto;
+        direccion.enY = config.potenciaSalto*3;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(SALTANDO);
@@ -223,8 +223,8 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         if (this->estado == HACE_PIRUETA) {
             break;
         }
-        direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*3.5;
+        direccion.enX = (this->direccion == DERECHA) ? -config.potenciaSalto : config.potenciaSalto;
+        direccion.enY = config.potenciaSalto*3.5;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(HACE_PIRUETA);
@@ -460,9 +460,9 @@ Ataque Gusano::ejecutar(Accion accion) {
         if (armaEquipada == ATAQUE_AEREO_P) {
 	  std::pair<coordX, coordY> ataquePos;
 	  ataquePos = this->armaSeleccionada->getCoordenadasTeletransporte();
-	  ataquePos.enY = MAXALTURA - 20;
+	  ataquePos.enY = this->mapa.dimensiones.enY - 20;
 	  posicion = deCoordAb2Vec(ataquePos);
-	  ataqueARealizar.impulsoInicial = b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY);
+	  ataqueARealizar.impulsoInicial = b2Vec2(config.gravedad.enX, config.gravedad.enY);
         }
 
         ataqueARealizar.posicion = posicion;
@@ -634,9 +634,9 @@ bool Gusano::estaQuieto() {
 }
 
 void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
-    int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
+    int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*config.gravedad.enY);
     
-    if (distanciaQueCae < METROS_SIN_DANIO) {
+    if (distanciaQueCae < config.metrosSinDanio) {
         this->setEstado(QUIETO);
         return;
     }

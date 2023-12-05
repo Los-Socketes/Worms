@@ -9,6 +9,8 @@ private:
     Aceptador aceptador;
 
 public:
+    ConfiguracionServer config;
+
     Server(const char *puerto);
 
     void esperarQueSeCierre();

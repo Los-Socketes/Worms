@@ -1,11 +1,14 @@
 #include <cstring>
 #include <iostream>
 #include "server.h"
+#include "configServer.h"
 
 #define BINARIO "./server"
 
 #define ERROR_M 1
 #define SUCCESS_M 0
+
+ConfiguracionServer config;
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
@@ -21,6 +24,8 @@ int main(int argc, char* argv[]) {
             std::cout << "Usar como: " << BINARIO << " <ip/hostname server> "
                 << std::endl;
         }
+
+        ConfiguracionServer config = ConfiguracionServer();
 
         Server server(argv[1]);
         server.esperarQueSeCierre();

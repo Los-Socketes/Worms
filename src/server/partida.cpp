@@ -23,8 +23,8 @@ int numeroRandomEnRango(int comienzo, int fin) {
     return resultado;
 }
 
-Partida::Partida(Mapa mapa)
-    :world(b2Vec2(FUERZAGRAVITARIAX, FUERZAGRAVITARIAY)){
+Partida::Partida(Mapa mapa):
+    world(b2Vec2(config.gravedad.enX, config.gravedad.enY )){
     // this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
@@ -35,7 +35,7 @@ Partida::Partida(Mapa mapa)
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
     this->mapaUsado = mapa;
-    this->viento = b2Vec2(FUERZAVIENTOX, FUERZAVIENTOY);
+    this->viento = b2Vec2(config.viento.enX, config.viento.enY);
     this->ultimoCambioViento = time(NOW);
     
     for (auto &&viga : mapa.vigas) {
@@ -54,7 +54,7 @@ Partida::Partida(Mapa mapa)
 Gusano *Partida::anadirGusano(std::pair<coordX, coordY> coords) {
     Entidad *nuevaEntidad = new Entidad;
     nuevaEntidad->tipo = TipoEntidad::GUSANO;
-    Gusano *nuevoGusano = new Gusano();
+    Gusano *nuevoGusano = new Gusano(std::ref(mapaUsado));
     nuevaEntidad->gusano = nuevoGusano;
 
     b2BodyDef bodyDef;
@@ -761,7 +761,7 @@ void Partida::generarProvision(time_t horaActual) {
     double diferencia;
     diferencia = difftime(horaActual, this->ultimaProvision);
 
-    if (diferencia < TIEMPOESPERAPROVISION)
+    if (diferencia < config.esperaProvision)
         return;
 
     //Actualizo la hora incluso si el coin flip no lo logra.
@@ -803,7 +803,7 @@ void Partida::generarProvision(time_t horaActual) {
     float posEnX;
     posEnX = coordALaIzquierda + offestRandom;
 
-    float posEnY = MAXALTURA;
+    float posEnY = mapaUsado.dimensiones.enY;
     std::pair<coordX, coordY> coordenadas (posEnX, posEnY);
 
     int tipo;
@@ -875,7 +875,7 @@ void Partida::cambiarElViento(time_t tiempoActual) {
     double diferencia;
     diferencia = difftime(tiempoActual, this->ultimoCambioViento);
 
-    if (diferencia < TIEMPOESPERAVIENTO)
+    if (diferencia < config.esperaViento)
         return;
 
     //Actualizo la hora incluso si el coin flip no lo logra.

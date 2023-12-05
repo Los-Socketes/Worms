@@ -2,13 +2,19 @@
 #define GUSANO_HEADER
 
 #include <box2d/box2d.h>
-#include "defs.h"
-#include "arma.h"
-#include "box2dDefs.h"
+
 #include <ctime>
 #include <atomic>
+
+#include "box2dDefs.h"
+#include "defs.h"
+#include "arma.h"
+#include "configServer.h"
+#include "mapa.h"
 //Arma que el gusano quiere crear
 #define ArmaDeseada ArmaProtocolo
+
+extern ConfiguracionServer config;
 
 struct Ataque {
     b2Vec2 posicion;
@@ -54,11 +60,13 @@ private:
     //TODO Cambiar nombre
     void realizarMovimiento(Direccion direccionDeseada);
 
+    Mapa& mapa;
+
 public:
 
     std::atomic<bool> golpeado;
 
-    Gusano();
+    Gusano(Mapa &mapa);
 
     Accion getUltimaAccion();
 

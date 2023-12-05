@@ -125,7 +125,8 @@ add_executable(server
   #Thread safe queue
   "${COMMONDIR}/queue.h"
   
-  #Armas
+  # Server
+  "${SERVERDIR}/configServer.cpp"
 )
 ## Macros para pasarle al server
 target_compile_definitions(server PUBLIC
