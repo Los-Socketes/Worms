@@ -52,7 +52,6 @@ typedef b2Vec2 finCaja;
 enum class TipoEntidad { GUSANO = 1, VIGA = 2, ARMA = 4, PROYECTIL = 8, OCEANO = 16, PROYECTILREAL = 32, PROVISION = 64};
 
 // se usa para poder saber que tipo de proyectil es
-// TODO: agregar si es fragmento
 struct ProyectilAsociado {
     b2Body *proyectil;
     ArmaProtocolo arma;

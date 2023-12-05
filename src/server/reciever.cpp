@@ -61,30 +61,25 @@ bool Reciever::lobby() {
         }
         case INVAL_TIPO:
         {
-        //TODO: _hacer algo_
-        //   abort();
-        //   break;
         return false;
         }
     }
 
     InformacionInicial infoInicial;
     infoInicial = partidas.obtenerInfoInicialDePartida(partidaElegida);
-    // infoInicial = partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
 
     envio = this->protocolo.enviarConfirmacion(infoInicial);
     if (!envio) {
         return false;
     }
     partidas.anadirJugadorAPartida(this->cliente, partidaElegida);
-    // TODO: cambiar a que sea de cliente o algo idk
+
     this->miId = infoInicial.jugador;
     return true;
 }
 
 
 void Reciever::obtener(Queue<Accion> *accionesRecibidas) {
-    //TODO Throw
     if (accionesRecibidas == nullptr)
         abort();
 
@@ -92,7 +87,6 @@ void Reciever::obtener(Queue<Accion> *accionesRecibidas) {
 }
 
 void Reciever::run() {
-    //TODO Cambiar a socket vivo o algo
     try {
         if (!lobby()) {
             return;
@@ -106,7 +100,6 @@ void Reciever::run() {
             accionDeseada.jugador = this->miId;
 
             this->acciones->push(accionDeseada);
-            // std::cout << "PUSHEO: " << accionDeseada.esEmpezar << "\n";
         }
     }
     catch( ... ) {

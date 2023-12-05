@@ -1,6 +1,5 @@
 #include "cliente.h"
 
-
 Cliente::Cliente(Socket&& socket, Mapas mapasDisponibles, MonitorPartida& monitorPartidas) 
     : protocolo(std::move(socket)), sender(std::ref(protocolo)), 
       reciever(std::ref(protocolo), mapasDisponibles, monitorPartidas, this) {
@@ -24,13 +23,9 @@ void Cliente::cerrarSocket(int forma) {
 
 Cliente::~Cliente() {
     this->reciever.join();
-    std::cout << "despues reciever\n";
     this->sender.stop();
-    std::cout << "despues de parar sender\n";
     this->sender.join();
-    std::cout << "despues sender\n";
 }
-
 
 bool Cliente::estaMuerto() {
     return !this->reciever.is_alive();

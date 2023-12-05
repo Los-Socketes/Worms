@@ -13,10 +13,7 @@ ConfiguracionServer config;
 int main(int argc, char* argv[]) {
     srand(time(NULL));
     try {
-        std::cout << "Hola mundo desde el server\n";
-
         if (strcmp(argv[0], BINARIO) != 0) {
-            std::cout << argv[0];
             std::cerr << "Algo salio terriblemente mal\n";
         }
 

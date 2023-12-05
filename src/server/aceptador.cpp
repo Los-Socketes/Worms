@@ -5,12 +5,10 @@
 Aceptador::Aceptador(const char *puerto) : socket(puerto) {};
 
 void Aceptador::aceptarClientes() {
-    //TODO: Hacer que en vez de true sea socket cerrado
     while (!this->socket.is_closed()) {
         try {
             Socket conexionEntrante = this->socket.accept();
 
-            //TODO Anadir un reap dead ACA que busque en una lista de jugadores
             Cliente* cliente = new Cliente(std::move(conexionEntrante), this->escenariosDisponibles, std::ref(this->partidas));
 
             // Primero el reap_dead para que la lista tenga un elemento menos
@@ -51,7 +49,6 @@ void Aceptador::kill() {
     for (auto &&cliente : this->listaClientes) {
         if (!cliente->estaMuerto()) {
             cliente->cerrarSocket(SHUT_RDWR);
-            std::cout << "delete\n";
             delete cliente;
         }
     }

@@ -6,7 +6,6 @@ Server::Server(const char *puerto)
     this->aceptador.start();
 };
 
-// TODO: que funcione este metodo
 void Server::esperarQueSeCierre() {
     std::string input;
     while (std::cin >> input) {
@@ -15,9 +14,5 @@ void Server::esperarQueSeCierre() {
             break;
         }
     };
-    std::cout << "antes join aceptador\n";
     this->aceptador.join();
-    std::cout << "despues join aceptador\n";
 }
-
-//TODO Pide partidas en vez de mapas || TODO (Anto): preguntar que es este todo

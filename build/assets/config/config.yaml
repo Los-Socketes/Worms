@@ -24,9 +24,9 @@ Tiempo espera viento: 25
 
 
 # # Comun (lo necesitan cliente y server) # #
-Viento maximo:
-  X: 10
-  Y: -10
+Viento rango:
+  Max: 10
+  Min: -10
 Tiempo turno: 60
 Tiempo changui: 3
 
@@ -62,6 +62,7 @@ Bazooka:
     Epicentro: 50 
     Radio: 2
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 Mortero:
   ConMira: true
@@ -75,6 +76,7 @@ Mortero:
     Epicentro: 50
     Radio: 2
   CantidadFragmentos: 6
+  CantidadProyectiles: 1
   DanioFragmento: 
     Epicentro: 10
     Radio: 2
@@ -91,6 +93,7 @@ Granada Verde:
     Epicentro: 30
     Radio: 2
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 Granada Roja:
   ConMira: true
@@ -104,6 +107,7 @@ Granada Roja:
     Epicentro: 30
     Radio: 2
   CantidadFragmentos: 6
+  CantidadProyectiles: 1
   DanioFragmento: 
     Epicentro: 10
     Radio: 2
@@ -120,6 +124,7 @@ Banana:
     Epicentro: 70
     Radio: 4
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 Granada Santa:
   ConMira: true
@@ -133,6 +138,7 @@ Granada Santa:
     Epicentro: 110
     Radio: 8
   CantidadFragmentos: 0 
+  CantidadProyectiles: 1
   
 Dinamita:
   ConMira: false
@@ -146,6 +152,7 @@ Dinamita:
     Epicentro: 50
     Radio: 4
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 Bate de Baseball:
   ConMira: true
@@ -159,6 +166,7 @@ Bate de Baseball:
     Epicentro: 10
     Radio: 0
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 # Agregar cant de misiles
 Ataque Aereo:
@@ -173,6 +181,7 @@ Ataque Aereo:
     Epicentro: 40
     Radio: 2
   CantidadFragmentos: 0
+  CantidadProyectiles: 6
 
 Teletransportacion:
   ConMira: false
@@ -186,6 +195,7 @@ Teletransportacion:
     Epicentro: 0
     Radio: 0
   CantidadFragmentos: 0
+  CantidadProyectiles: 1
 
 
 # # Mapas # #

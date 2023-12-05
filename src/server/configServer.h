@@ -5,12 +5,14 @@
 #include "defs.h"
 #include <cstdint>
 
-
 // Clase que se encarga de leer el archivo de configuracion del server.
 class ConfiguracionServer {
 public:
     std::pair<float, float> gravedad;
     std::pair<int, int> viento;
+
+    int maxViento;
+    int minViento;
 
     float metrosSinDanio;
 
