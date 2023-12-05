@@ -104,20 +104,22 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
 
     QHBoxLayout *layoutHorizontalCrear = new QHBoxLayout();
     QVBoxLayout *botonesCrear = new QVBoxLayout();
-    // QScrollArea* botonesCrear = new QScrollArea;
-    QWidget* scrollAreaContent = new QWidget;
-    scrollAreaContent->setLayout( botonesCrear );
-    QScrollArea* scrollArea = new QScrollArea;
-    scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    scrollArea->setWidgetResizable( true );
-    scrollArea->setWidget( scrollAreaContent );
+    QWidget* scrollCrear = new QWidget;
+    scrollCrear->setLayout( botonesCrear );
+    QScrollArea* scrollAreaCrear = new QScrollArea;
+
+    scrollCrear->setStyleSheet("background-color:#cc8835");
+    scrollAreaCrear->setStyleSheet("background-color:#f2ece9;");
+    scrollAreaCrear->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    scrollAreaCrear->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    scrollAreaCrear->setWidgetResizable( true );
+    scrollAreaCrear->setWidget( scrollCrear );
 
     QSpacerItem *espacioIzqBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QSpacerItem *espacioDerBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     layoutHorizontalCrear->addItem(espacioIzqBotonesCrear);
-    layoutHorizontalCrear->addWidget(scrollArea);
+    layoutHorizontalCrear->addWidget(scrollAreaCrear);
     layoutHorizontalCrear->addItem(espacioDerBotonesCrear);
     verticalLayoutCrear->addLayout(layoutHorizontalCrear);
 
@@ -139,12 +141,22 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
 
     QHBoxLayout *layoutHorizontalUnirse = new QHBoxLayout();
     QVBoxLayout *botonesUnirse = new QVBoxLayout();
+    QWidget* scrollUnirse = new QWidget;
+    scrollUnirse->setLayout( botonesUnirse );
+    QScrollArea* scrollAreaUnirse = new QScrollArea;
+
+    scrollUnirse->setStyleSheet("background-color:#cc8835");
+    scrollAreaUnirse->setStyleSheet("background-color:#f2ece9;");
+    scrollAreaUnirse->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    scrollAreaUnirse->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    scrollAreaUnirse->setWidgetResizable( true );
+    scrollAreaUnirse->setWidget( scrollUnirse );
 
     QSpacerItem *espacioIzqBotonesUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QSpacerItem *espacioDerBotonesUnirse = new QSpacerItem(100, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     layoutHorizontalUnirse->addItem(espacioIzqBotonesUnirse);
-    layoutHorizontalUnirse->addLayout(botonesUnirse);
+    layoutHorizontalUnirse->addWidget(scrollAreaUnirse);
     layoutHorizontalUnirse->addItem(espacioDerBotonesUnirse);
     verticalLayoutUnirse->addLayout(layoutHorizontalUnirse);
 
