@@ -331,8 +331,11 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->ronda = this->rondas;
 
     bool hayJugadores = false;
+    std::cout << "ARRANCO Estado\n";
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
+	  std::cout << "ENvio Estado\n";
+	  std::cout << estadoActual->momento << "\n";
             cliente->enviarEstadoJuego(estadoActual);
             hayJugadores = true;
         }
@@ -1027,13 +1030,13 @@ void Partida::gameLoop() {
     Accion accionRecibida;
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
-    while (this->finPartida == false) {
+    while (this->momento != EN_MARCHA) {
         this->enviarEstadoAJugadores();
-        if (this->clientes.size()-1 < MINJUGADORES)
+        if (this->clientes.size() < MINJUGADORES)
             continue;
         this->momento = POR_INICIAR;
         // this->finPartida = NOT this->enviarEstadoAJugadores();
-        // std::cout << "ENVIO\n";
+        std::cout << "ENVIO\n";
         // if (this->finPartida) {
         //     break;
         // }
@@ -1041,10 +1044,12 @@ void Partida::gameLoop() {
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        if ((accionRecibida.esEmpezar && pudeObtenerla) ||
-            (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
-            this->momento = EN_MARCHA;
-            break;
+        if (pudeObtenerla == true) {
+	  if ((accionRecibida.esEmpezar && pudeObtenerla) ||
+	      (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
+	      this->momento = EN_MARCHA;
+	      // break;
+	  }
         }
         std::this_thread::sleep_for(frameDuration);
     }
