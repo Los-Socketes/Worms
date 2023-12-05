@@ -50,7 +50,8 @@ class ControlEntidades {
         bool& es_host, std::pair<int, int>& pos_cursor,
         int& volumen, bool& muteado,
         Font& fuente1, Font& fuente2,
-        int& timeout);
+        int& timeout, int tiempo_turno,
+        int viento_max, int viento_min);
 
     // Asigna las dimensiones del mapa.
     void setDimensionMapa(coordX& ancho_mapa, coordY& alto_mapa);

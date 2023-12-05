@@ -25,6 +25,7 @@ class EntidadInterfaz : public Entidad {
     std::shared_ptr<EstadoDelJuego>& estado_juego;
     std::pair<int, int>& pos_cursor;
     std::vector<colorJugador>& colores;
+    int tiempo_turno;
     bool& es_host;
     int& timeout;
     int& volumen;
@@ -34,6 +35,8 @@ class EntidadInterfaz : public Entidad {
     int id_jugador;
     id id_partida;
     int viento_actual;
+    int viento_max;
+    int viento_min;
     RepresentacionGusano gusano_actual;
     bool esperando_movimiento;
     std::map<ArmaProtocolo, std::string> teclas_armas;
@@ -65,9 +68,10 @@ class EntidadInterfaz : public Entidad {
         std::shared_ptr<EstadoDelJuego>& estado_juego,
         std::pair<int, int>& pos_cursor,
         std::vector<colorJugador>& colores,
-        bool& es_host, int& volumen, bool& muteado,
+        int tiempo_turno, bool& es_host, 
+        int& volumen, bool& muteado,
         Font& fuente1, Font& fuente2,
-        int& timeout);
+        int& timeout, int viento_max, int viento_min);
 
 
     // Asigna el id del jugador.
