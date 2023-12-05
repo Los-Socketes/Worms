@@ -13,8 +13,7 @@ void Enviador::run() {
         cont = true;
         while(cont){
             std::shared_ptr<AccionCliente> accion = envio_comandos.pop();
-            if (es_turno)
-                accion->enviar(protocolo);
+            accion->enviar(protocolo, es_turno);
         }
     } catch (const ClosedQueue& e) {
         syslog(LOG_INFO, "%s", e.what());
