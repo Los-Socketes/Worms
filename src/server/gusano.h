@@ -44,7 +44,6 @@ private:
 
     condicionDeTurno turno;
 
-    //Arma armaequipada;
     std::vector<Arma> armas;
     ArmaProtocolo armaEquipada;
     Arma* armaSeleccionada;
@@ -53,11 +52,9 @@ private:
 
     //Conceptos de b2box
     b2Body* cuerpo;
-    // int tiempoEspera;
 
     void setDireccion(DireccionGusano nuevaDireccion);
 
-    //TODO Cambiar nombre
     void realizarMovimiento(Direccion direccionDeseada);
 
     Mapa& mapa;
@@ -92,10 +89,8 @@ public:
 
     void preparar(Accion& accion);
 
-    //TODO: Esta funcion recibe el arma o tipo de dano
     void recibirDano(b2Vec2 golpe, Entidad *entidad);
     void recibirDanioCaida(b2Vec2 velocidad);
-    // [[nodiscard]] std::pair<cambioX, cambioY> cambio(Accion accion);
 
     //WARNING: Esta funcion tiene que se ser llamada CERCA, sino AL
     //AL LADO del constructor. Gracias por nada c++, null pointers para
@@ -117,10 +112,7 @@ public:
 
     void recibirDanoPorCheat();
 
-    [[nodiscard]] std::pair<
-        b2Vec2,
-        std::pair<inicioCaja, finCaja>
-        > ejecutarGolpe();
+    [[nodiscard]] std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> ejecutarGolpe();
 };
 
 #endif

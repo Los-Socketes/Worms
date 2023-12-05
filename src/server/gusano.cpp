@@ -41,7 +41,7 @@ void Gusano::setEstado(EstadoGusano nuevoEstado) {
     this->estado = nuevoEstado;
 
     //Si se esta cayendo queremos cancelar todo tipo de velocidad y
-    //que caiga directo. TODO: Esto lo hace "re duro". Podriamos hacer
+    //que caiga directo. GOTCHA: Esto lo hace "re duro". Podriamos hacer
     //que se conserve ALGO de la velocidad
     if (this->estado == CAYENDO || this->estado == QUIETO) {
         b2Vec2 direccion;
@@ -111,7 +111,6 @@ std::pair<b2Vec2, std::pair<inicioCaja, finCaja>> Gusano::ejecutarGolpe() {
 
     //Angulo
     //Usando trigonometria  vamos a obtener los vectores dado el angulo
-    //WARNING: HARDCODEO La potencia
     /*
            /| 
           / |
@@ -175,7 +174,6 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
         this->estado == HACE_PIRUETA)
         return;
 
-    // b2Vec2 direccion;
     std::pair<coordX, coordY> direccion;
     switch (direccionDeseada) {
     case INICIO_DER:
@@ -244,8 +242,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     ArmaProtocolo tipoArma;
     tipoArma = entidad->proyectil.arma;
     if (this->estado == MUERTO || false) {
-        // ((tipoArma != GRANADA_VERDE_P) // && (velocidadActual.x != 0 && velocidadActual.y != 0)
-        //  )) {
         return;
     }
 
@@ -253,7 +249,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
-    //TODO cambiar a que no tenga que crear el arma para obtener el danio
     Arma armaUsada(tipoArma);
     u_int danio;
     int radio;
@@ -274,7 +269,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
     float porcentaje = 1.0f / (1.0f + std::pow(distanciaGusanoBomba / radio,2));
 
-    // // Calculate the graduated damage
+    // Calculate the graduated damage
     danioReal = (distanciaGusanoBomba > radio) ? 0 : danio * porcentaje;
     if (tipoArma == BATE_P && distanciaGusanoBomba <= radio) {
         radio = 2;
@@ -386,7 +381,6 @@ Ataque Gusano::ejecutar(Accion accion) {
         ataqueARealizar.posicion = posicion;
         ataqueARealizar.tiempoEspera = tiempoEspera;
         ataqueARealizar.arma = armaQueQuiero;
-        // this->estado = QUIETO;
         break;
     case MOVERSE:
         {
@@ -536,6 +530,7 @@ Ataque Gusano::ejecutar(Accion accion) {
 
     //Hago que el gusano se acuerde que fue lo ulitmo que realizo
     // si es ataco hay que "mentirle"
+    //:0
     if (this->ultimaAccion.accion == ATACO) {
         this->ultimaAccion.accion = ESTAQUIETO;
     } else {
@@ -593,11 +588,7 @@ RepresentacionGusano Gusano::getRepresentacion() {
     repre.dir = this->direccion;
     repre.estado = this->estado;
     repre.posicion = this->getCoords();
-    //TODO Ahora est hardcodeado. Hacer algo generico.
-    //Esto solo aplica al bate
     RepresentacionArma arma = this->armaSeleccionada->getRepresentacion();
-    // arma.municiones = 100000;
-    // arma.arma = this->armaEquipada;
 
     repre.armaEquipada = arma;
 

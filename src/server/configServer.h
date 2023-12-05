@@ -5,7 +5,6 @@
 #include "defs.h"
 #include <cstdint>
 
-
 // Clase que se encarga de leer el archivo de configuracion del server.
 class ConfiguracionServer {
 public:

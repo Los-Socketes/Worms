@@ -25,12 +25,10 @@ int numeroRandomEnRango(int comienzo, int fin) {
 
 Partida::Partida(Mapa mapa):
     world(b2Vec2(config.gravedad.enX, config.gravedad.enY )){
-    // this->mapa = mapa;
     this->world.SetContactListener(&this->colisiones);
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    // this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
@@ -144,8 +142,6 @@ void Partida::anadirProvision(std::pair<coordX, coordY> coordenadas, tipoProvisi
     idProvision = this->cantidadProvisionesGeneradas;
     this->cantidadProvisionesGeneradas += 1;
 
-    //FIXME Comento lo de es trampa hasta que ande bien
-
     Provision *nuevaProvision = new Provision(queProvision, arma, provisionBody, idProvision, esTrampa);
     nuevaEntidad->provision = nuevaProvision;
 
@@ -166,7 +162,6 @@ void Partida::anadirViga(radianes angulo, int longitud, std::pair<coordX, coordY
     longitud /= 2;
 
     b2PolygonShape viga;
-    // Juampi: puede que ancho viga tambien tenga que ser dividido por 2?
     viga.SetAsBox(longitud, ANCHOVIGA / 2);
 
     b2Body* groundBody = world.CreateBody(&vigaDef);
@@ -392,7 +387,6 @@ Accion Partida::obtenerAccion(Accion accionObtenida, bool obtuvoNueva,
     tipoUltimaAccion = ultimaAccion.accion;
     if (obtuvoNueva == true) {
         accionAEjecutar = accionObtenida;
-        // ultimaAccion = accionAEjecutar;
     }
     //Si entra en estos otros if es porque NO se obtuvo algo nuevo
     else if (tipoUltimaAccion == MOVERSE &&
@@ -463,10 +457,6 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         fd.restitution = 0.99f; // high restitution to reflect off obstacles
         fd.filter.groupIndex = -1; // particles should not collide with each other
         fd.filter.categoryBits = (uint16_t)TipoEntidad::PROYECTIL;
-        // fd.filter.maskBits = (uint16_t)TipoEntidad::VIGA |
-        // 	  (uint16_t)TipoEntidad::OCEANO |
-        // 	  (uint16_t)TipoEntidad::OCEANO |
-        // 	  (uint16_t)TipoEntidad::GUSANO;
         fd.filter.maskBits = -1;
 
         body->CreateFixture( &fd );
@@ -1060,22 +1050,14 @@ void Partida::gameLoop() {
         if (this->clientes.size() < MINJUGADORES)
             continue;
         this->momento = POR_INICIAR;
-        // this->finPartida = NOT this->enviarEstadoAJugadores();
-        // std::cout << "ENVIO\n";
-        // if (this->finPartida) {
-        //     break;
-        // }
-
 
         if (pudeObtenerla == true) {
 	  if ((accionRecibida.esEmpezar) ||
 	      (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
 	      this->momento = EN_MARCHA;
-	      // break;
 	  }
         }
     }
-    std::cout << "LISTO\n";
 
     bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
     int cantGusanos = this->mapaUsado.cantGusanos / this->jugadores.size();
@@ -1083,16 +1065,12 @@ void Partida::gameLoop() {
     mezclarPosiciones(posiciones);
     if (cantJusta) {
         for (auto &&jugador : this->jugadores) {
-            // std::vector<Gusano*> gusanosJugador;
             for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
                 
                 Gusano *nuevoGusano = this->anadirGusano(posiciones.at(cantidad_gusanos_insertados));
 
                 jugador->anadirGusano(nuevoGusano);
-                // cantidad_gusanos_insertados += 1;
-
             }
-            // jugador->setGusanos(gusanosJugador);
         }
         
     }  else {
@@ -1103,10 +1081,7 @@ void Partida::gameLoop() {
                 Gusano *nuevoGusano = this->anadirGusano(posiciones.at(cantidad_gusanos_insertados));
 
                 jugador->anadirGusano(nuevoGusano);
-                // cantidad_gusanos_insertados += 1;
-
             }
-            // jugador->setGusanos(gusanosJugador);
         }
 
         int indexJugador = 0;
@@ -1127,7 +1102,6 @@ void Partida::gameLoop() {
 
 
     bool exploto = false;
-
 
     Ataque ataqueARealizar;
 

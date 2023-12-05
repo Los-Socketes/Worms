@@ -19,9 +19,7 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
         b2Vec2 dir = cuerpoB->GetLinearVelocity();
-        // cuerpoA->ApplyLinearImpulseToCenter(dir, true);
         entidadA->gusano->recibirDano(dir, entidadB);
-        // abort();
     }
 
     else if (entidadA->tipo == TipoEntidad::PROYECTIL
@@ -53,26 +51,15 @@ void ResolvedorColisiones::BeginContact(b2Contact *contact) {
     else if (entidadA->tipo == TipoEntidad::OCEANO
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        // b2Vec2 dir = cuerpoA->GetLinearVelocity();
         entidadB->gusano->setEstado(AHOGADO);
-        // abort();
     }
 
-
-
-    //TODO Cambiar estos dos a que no sea solo con viga, sino cualquiera
-    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL
-	//    &&
-	//    entidadB->tipo == TipoEntidad::VIGA
-    ) {
+    else if (entidadA->tipo == TipoEntidad::PROYECTILREAL) {
         entidadA->proyectilReal->enElAire = false;
         entidadA->proyectilReal->colisiono = true;
     }
 
-    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL
-	//    &&
-	//    entidadA->tipo == TipoEntidad::VIGA
-    ) {
+    else if (entidadB->tipo == TipoEntidad::PROYECTILREAL) {
         entidadB->proyectilReal->enElAire = false;
         entidadB->proyectilReal->colisiono = true;
     }
@@ -121,13 +108,11 @@ void ResolvedorColisiones::EndContact(b2Contact *contact) {
     if (entidadB->tipo == TipoEntidad::PROYECTIL
         &&
         entidadA->tipo == TipoEntidad::GUSANO) {
-        // abort();
     }
 
     if (entidadA->tipo == TipoEntidad::PROYECTIL
         &&
         entidadB->tipo == TipoEntidad::GUSANO) {
-        // abort();
     }
 
     if(entidadA->tipo == TipoEntidad::VIGA

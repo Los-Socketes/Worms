@@ -30,8 +30,6 @@ public:
 
     void kill();
 
-    // ~MonitorPartida();
-
 };
 
 

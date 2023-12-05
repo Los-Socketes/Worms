@@ -8,7 +8,6 @@
 #include "queue.h"
 #include "thread.h"
 #include "mapa.h"
-// #include "monitorPartida.h"
 
 //Forward declaration
 class MonitorPartida;
@@ -18,7 +17,6 @@ class Cliente;
 #define recibirEstado run
 
 class Reciever: public Thread {
-    // Queue<Mensaje>& queue;
     Protocolo& protocolo;
 
     Queue<Accion> *acciones;

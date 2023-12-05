@@ -4,14 +4,6 @@
 
 #include "defs.h"
 
-// struct MisArmas
-
-// Gusano {
-//     Arma armaEquipada; 
-
-//     EstadoArma 
-// }
-
 struct CaracteristicasArma {
     bool tieneMira;
     bool esCuerpoACuerpo;
@@ -72,25 +64,6 @@ public:
 
     std::pair<coordX, coordY> getCoordenadasTeletransporte();
     void setCoordenadasTeletransporte(std::pair<coordX, coordY> coordenadas);
-    // TODO: hacer todo el cpp y revisar la estructura
-    // (esta horrible, lo se)
-
 };
-
-
-/* CHARLA DE GUIA: 
-c: equipar X
-s: ok, estado
-c: arranco a atacar
-s: estadoGusano = configurarAngulo | estadoArma: apuntando X angulo
-c: cambio angulo
-s: ok, seteo y mando estado
-c: listo el angulo
-s: ok, estadoGusano = configurarPotencia
-c: cambio potencia
-s: ok, seteo y mando estado
-c: listo el potencia
-s: ok, ataco :p + muchos estados de como pasan las cosas
-*/
 
 #endif

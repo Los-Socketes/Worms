@@ -16,14 +16,9 @@ Gusano *Jugador::getGusanoDeTurno() {
 Gusano *Jugador::getGusanoActual() {
     Gusano *gusanoActual = nullptr;
 
-    // int posicionInicial = this->gusanoActualPos;
     //Busco el primer gusano no muerto
     for (int i = 0; i <= (int)this->gusanos.size(); i++) {
         this->gusanoActualPos += 1;
-        // if (this->gusanoActualPos == posicionInicial) {
-        //     return nullptr;
-        // }
-
         //WARNING Casteo falopa. En teoria nada deberia explotar
         if (this->gusanoActualPos >= (int) this->gusanos.size()) {
 	        this->gusanoActualPos = 0;
@@ -40,7 +35,6 @@ Gusano *Jugador::getGusanoActual() {
 
     //Una vez encontrado dicho gusano, la proxima iteracion ya arranca
     //con el proximo
-    std::cout << "gusano actual: " << gusanoActualPos << "\n";
     return gusanoActual;
 }
 
@@ -99,7 +93,6 @@ void Jugador::anadirGusano(Gusano *nuevoGusano) {
 }
 void Jugador::darMasVidaAGusanos() {
     for (auto &&gusano : this->gusanos) {
-        // TODO: hacer que lea el 25 del yaml
         gusano->anadirVida(25);
     }
     
