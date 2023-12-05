@@ -57,7 +57,8 @@ void AccionDisparar::enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) {
 }
 
 void AccionEmpezarPartida::enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) {
-    protocolo.iniciarPartida();
+    if (es_turno)
+        protocolo.iniciarPartida();
 }
 
 AccionCheat::AccionCheat(TipoCheat cheat) :
