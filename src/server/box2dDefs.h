@@ -35,21 +35,12 @@ class Provision;
 #define DEGTORAD 0.0174532925199432957f
 
 #define ANCHOVIGA 0.8f
-// es entero para que no rompa
-// Juampi: Lo vuelvo a poner en 6, 14 me parece mucho. Se van a
-// superponer las vigas.
-// #define LONGITUDVIGAGRANDE 14.0f
-#define LONGITUDVIGAGRANDE 6.0f
-#define LONGITUDVIGACHICA 3.0f
 
 #define VELOCIDADMOVIMIENTO 5.0f
 
 #define MASACUERPOESTATICO 0.0f
 
-#define DISTANCIAENTREVIGAS 7    
-
 #define TAMANOGUSANO 20
-#define CANTIDADVIGAS 3
 
 #define NOT !
 
