@@ -1,9 +1,9 @@
-#include "configuracionCliente.h"
+#include "configServer.h"
 #include <fstream>
 
 #include "yaml-cpp/yaml.h"
 
-ConfiguracionCliente::ConfiguracionCliente() {
+ConfiguracionServer::ConfiguracionServer() {
     std::ifstream fin("../src/common/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
@@ -20,29 +20,4 @@ ConfiguracionCliente::ConfiguracionCliente() {
     }
     this->pixelsPorMetro = config["Pixels por metro"].as<int>();
     fin.close();
-}
-
-
-std::pair<int, int> ConfiguracionCliente::getDimensionesIniciales() {
-    return this->dimensionesIniciales;
-}
-
-
-int ConfiguracionCliente::getVolumenInicial() {
-    return this->volumenInicial;
-}
-
-
-std::vector<colorJugador>& ConfiguracionCliente::getColoresJugadores() {
-    return this->coloresJugadores;
-}
-
-
-colorJugador ConfiguracionCliente::getColorJugador(int numJugador) {
-    return this->coloresJugadores[numJugador - 1];
-}
-
-
-int ConfiguracionCliente::getPixelsPorMetro() {
-    return this->pixelsPorMetro;
 }
