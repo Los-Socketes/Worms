@@ -1044,6 +1044,7 @@ void Partida::gameLoop() {
     while (this->momento != EN_MARCHA && !this->finPartida) {
         this->finPartida = NOT this->enviarEstadoAJugadores();
         if (this->finPartida) {
+            this->momento = TERMINADA;
             return;
         }
 

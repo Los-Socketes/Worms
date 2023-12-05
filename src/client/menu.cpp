@@ -190,7 +190,7 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
         }
         botonesUnirse->addStretch();
         for (int i = 0; i < (int)opciones_partida.size(); i++) {
-            QPushButton *partida = new QPushButton(QString("%1").arg(i));
+            QPushButton *partida = new QPushButton(QString("%1").arg(opciones_partida[i]));
             partida->setFont(letraCustom);
             partida->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             botonesUnirse->addWidget(partida);
