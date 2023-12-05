@@ -236,7 +236,8 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
 
     //Anadimos al jugador a la partida
     this->clientes.push_back(clienteNuevo);
-
+    //Aviso que se unio un jugador
+    this->seUnioJugador.notify_all();
     this->enviarEstadoAJugadores();
 }
 
@@ -1012,18 +1013,39 @@ void Partida::borrarCuerpos() {
 }
 
 
+//Fisher-Yates shuffle:
+//https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+//https://github.com/lima-limon-inc/Blackjack-basic-strategy/blob/main/cards.c#L55-L68
+void mezclarPosiciones(std::vector<coordsGusanos>& posiciones) {
+	srand(time(NULL));   // Initialization, should only be called once.
+	int rankNumer, randomPosition;
+	coordsGusanos tmp;
+    int size = posiciones.size();
+	for (rankNumer = size - 1; rankNumer > 0; rankNumer--) {
+		randomPosition = rand() % (rankNumer + 1);
+		tmp = posiciones[randomPosition];
+		posiciones[randomPosition] = posiciones[rankNumer];
+		posiciones[rankNumer] = tmp;
+	}
+}
+
+
 void Partida::gameLoop() {
-    //Esperamos hasta que se unan todos los jugadores necesarios
-    // while (this->clientes.size() < MINJUGADORES)
-    //     this->seUnioJugador.wait(lck);
+    //Esperamos hasta que se una 1 jugador
+    std::unique_lock<std::mutex> lck(mtx);
+    while (this->clientes.size() < 1)
+        this->seUnioJugador.wait(lck);
     
     this->momento = ESPERANDO;
 
     Accion accionRecibida;
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
-    while (this->momento != EN_MARCHA) {
-        this->enviarEstadoAJugadores();
+    while (this->momento != EN_MARCHA && !this->finPartida) {
+        this->finPartida = NOT this->enviarEstadoAJugadores();
+        if (this->finPartida) {
+            return;
+        }
 
         std::this_thread::sleep_for(frameDuration);
 
@@ -1056,12 +1078,14 @@ void Partida::gameLoop() {
 
     bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
     int cantGusanos = this->mapaUsado.cantGusanos / this->jugadores.size();
+    std::vector<coordsGusanos> posiciones = this->mapaUsado.posicionGusanos;
+    mezclarPosiciones(posiciones);
     if (cantJusta) {
         for (auto &&jugador : this->jugadores) {
             // std::vector<Gusano*> gusanosJugador;
             for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
                 
-                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+                Gusano *nuevoGusano = this->anadirGusano(posiciones.at(cantidad_gusanos_insertados));
 
                 jugador->anadirGusano(nuevoGusano);
                 // cantidad_gusanos_insertados += 1;
@@ -1075,7 +1099,7 @@ void Partida::gameLoop() {
             std::vector<Gusano*> gusanosJugador;
             for (int i = 0; i < cantGusanos; i++, cantidad_gusanos_insertados++) {
                 
-                Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+                Gusano *nuevoGusano = this->anadirGusano(posiciones.at(cantidad_gusanos_insertados));
 
                 jugador->anadirGusano(nuevoGusano);
                 // cantidad_gusanos_insertados += 1;
@@ -1087,7 +1111,7 @@ void Partida::gameLoop() {
         int indexJugador = 0;
         for (; cantidad_gusanos_insertados < this->mapaUsado.cantGusanos; cantidad_gusanos_insertados++, indexJugador++) {
             Jugador *jugadorActual = this->jugadores[indexJugador];
-            Gusano *nuevoGusano = this->anadirGusano(posicionesGusanos.at(cantidad_gusanos_insertados));
+            Gusano *nuevoGusano = this->anadirGusano(posiciones.at(cantidad_gusanos_insertados));
             jugadorActual->anadirGusano(nuevoGusano);
         }
 

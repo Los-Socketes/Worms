@@ -24,6 +24,8 @@
 #define MINJUGADORES 2
 
 class Partida : public Thread {
+    std::mutex mtx;
+    std::condition_variable seUnioJugador;
     std::atomic<bool> finPartida;
     Queue<Accion> acciones;
 
