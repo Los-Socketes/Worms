@@ -14,7 +14,5 @@ void Server::esperarQueSeCierre() {
             break;
         }
     };
-    std::cout << "antes join aceptador\n";
     this->aceptador.join();
-    std::cout << "despues join aceptador\n";
 }

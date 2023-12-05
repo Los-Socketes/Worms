@@ -764,7 +764,6 @@ void Partida::generarProvision(time_t horaActual) {
     if (cointFlip == 0)
         return;
 
-    std::cout << "GENERAR PROVISION \n";
 
     std::vector<Viga> vigasChatas;
     for (Viga viga : this->mapaUsado.vigas) {
@@ -882,12 +881,10 @@ void Partida::cambiarElViento(time_t tiempoActual) {
     maxRandom = config.maxViento - config.minViento;
 
     int nuevoViento = numeroRandomEnRango(0, maxRandom);
-    std::cout << "Valor random: " << nuevoViento << "\n";
     nuevoViento = nuevoViento + config.minViento;
     
     this->viento.x = nuevoViento;
 
-    std::cout << "VIENTO: " << viento.x << "\n";
 }
 
 
@@ -981,16 +978,13 @@ void Partida::borrarCuerpos() {
 	  provision->exploto = true;
         }
         else if (provision->fueAgarrada == true && provision->esTrampa == false) {
-	  std::cout << "BORRO PROVISION NO TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
-            // delete entidadB->provision->miProyectil;
             delete entidadB->provision;
             delete entidadB;
             this->provisiones.erase(this->provisiones.begin() + i);
         }
         else if (provision->fueAgarrada == true && provision->esTrampa == true && provision->exploto == true) {
-	  std::cout << "BORRO PROVISION TRAMPA\n";
             Entidad *entidadB = (Entidad *) cuerpoABorrar->GetUserData().pointer;
             this->world.DestroyBody(cuerpoABorrar);
             delete entidadB->provision->miProyectil;

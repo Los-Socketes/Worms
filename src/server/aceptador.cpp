@@ -49,7 +49,6 @@ void Aceptador::kill() {
     for (auto &&cliente : this->listaClientes) {
         if (!cliente->estaMuerto()) {
             cliente->cerrarSocket(SHUT_RDWR);
-            std::cout << "delete\n";
             delete cliente;
         }
     }

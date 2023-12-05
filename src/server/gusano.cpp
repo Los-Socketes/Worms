@@ -245,8 +245,6 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         return;
     }
 
-    std::cout << "RECIBO DANIO\n";
-
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
     Arma armaUsada(tipoArma);
