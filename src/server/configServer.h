@@ -11,6 +11,9 @@ public:
     std::pair<float, float> gravedad;
     std::pair<int, int> viento;
 
+    int maxViento;
+    int minViento;
+
     float metrosSinDanio;
 
     float velocidadMovimiento;

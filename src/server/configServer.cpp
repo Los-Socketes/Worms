@@ -4,7 +4,7 @@
 #include "yaml-cpp/yaml.h"
 
 ConfiguracionServer::ConfiguracionServer() {
-    std::ifstream fin("config.yaml");
+    std::ifstream fin("../src/common/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
     this->gravedad.enX = config["Gravedad"]["X"].as<float>();
@@ -12,6 +12,9 @@ ConfiguracionServer::ConfiguracionServer() {
 
     this->viento.enX = config["Viento"]["X"].as<int>();
     this->viento.enY = config["Viento"]["Y"].as<int>();
+
+    this->maxViento = config["Viento rango"]["Max"].as<int>();
+    this->minViento = config["Viento rango"]["Min"].as<int>();
 
     this->metrosSinDanio = config["Metros sin danio"].as<float>();
 

@@ -24,9 +24,9 @@ Tiempo espera viento: 25
 
 
 # # Comun (lo necesitan cliente y server) # #
-Viento maximo:
-  X: 10
-  Y: -10
+Viento rango:
+  Max: 10
+  Min: -10
 Tiempo turno: 60
 Tiempo changui: 3
 

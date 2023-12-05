@@ -878,9 +878,12 @@ void Partida::cambiarElViento(time_t tiempoActual) {
     if (cointFlip == 0)
         return;
 
-    int nuevoViento = numeroRandomEnRango(0, 20);
+    int maxRandom;
+    maxRandom = config.maxViento - config.minViento;
+
+    int nuevoViento = numeroRandomEnRango(0, maxRandom);
     std::cout << "Valor random: " << nuevoViento << "\n";
-    nuevoViento = nuevoViento - 10;
+    nuevoViento = nuevoViento + config.minViento;
     
     this->viento.x = nuevoViento;
 
