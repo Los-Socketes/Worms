@@ -238,9 +238,6 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     this->clientes.push_back(clienteNuevo);
 
     this->enviarEstadoAJugadores();
-
-    //Aviso que se unio un jugador
-    this->seUnioJugador.notify_all();
 }
 
 bool Partida::enviarEstadoAJugadores() {
@@ -1019,8 +1016,6 @@ void Partida::borrarCuerpos() {
 
 
 void Partida::gameLoop() {
-    std::unique_lock<std::mutex> lck(mtx);
-
     //Esperamos hasta que se unan todos los jugadores necesarios
     // while (this->clientes.size() < MINJUGADORES)
     //     this->seUnioJugador.wait(lck);

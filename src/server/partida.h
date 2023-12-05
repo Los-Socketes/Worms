@@ -48,8 +48,6 @@ class Partida : public Thread {
     int cantidad_gusanos_insertados;
 
     std::vector<Cliente *> clientes;
-    std::mutex mtx;
-    std::condition_variable seUnioJugador;
 
     std::vector<Gusano *> gusanos;
 
