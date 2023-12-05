@@ -4,7 +4,7 @@
 #include "yaml-cpp/yaml.h"
 
 ConfiguracionServer::ConfiguracionServer() {
-    std::ifstream fin("../src/common/config.yaml");
+    std::ifstream fin("assets/config/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
     this->gravedad.enX = config["Gravedad"]["X"].as<float>();

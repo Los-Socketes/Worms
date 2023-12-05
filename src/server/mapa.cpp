@@ -24,7 +24,7 @@ Mapa::Mapa(YAML::Node& config, std::string nombre) {
 
 
 Mapas::Mapas() {
-    std::ifstream fin("./config.yaml");
+    std::ifstream fin("assets/config/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
     std::vector<std::string> nombresMapas = config["Nombres mapas"].as<std::vector<std::string>>();

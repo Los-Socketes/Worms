@@ -159,34 +159,37 @@ void EntidadInterfaz::dibujarBarrasVida() {
     // (gusanos x vida máxima inicial (100)).
     // Escribo "Jugador X" a la izquierda de la barra.
     for (auto& jugador : estado_juego->gusanos) {
-        int vida_total = 0;
-        int vida_actual = 0;
-        for (auto& gusano : jugador.second) {
-            vida_total += 100;
-            vida_actual += gusano.second.vida;
+        // Solo dibujo la barra si el jugador tiene gusanos.
+        if (jugador.second.size() > 0) {
+            int vida_total = 0;
+            int vida_actual = 0;
+            for (auto& gusano : jugador.second) {
+                vida_total += 100;
+                vida_actual += gusano.second.vida;
+            }
+            int vida_relativa = vida_actual * 100 / vida_total;
+            posicion.first = 10;
+            posicion.second = alto_pantalla - 30 * (jugador.first + 1) - 10;
+            // Dibujo el texto.
+            // Si es el turno le escribo '>' al principio.
+            std::string texto = "";
+            if (jugador.first == estado_juego->jugadorDeTurno) {
+                texto += "> ";
+            }
+            fuente1.SetOutline(2);
+            Texture textura_jugador_outline(renderizador, fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1), {0, 0, 0, 255}));
+            renderizador.Copy(textura_jugador_outline, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
+            fuente1.SetOutline(0);
+            Texture textura_jugador(renderizador,
+                fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1),
+                {colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255}));
+            renderizador.Copy(textura_jugador, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
+            // Dibujo la barra de vida.
+            renderizador.SetDrawColor(colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255);
+            renderizador.FillRect(posicion.first + 120, posicion.second + 5, posicion.first + 120 + vida_relativa, posicion.second + 15);
+            renderizador.SetDrawColor(0, 0, 0, 255);
+            renderizador.DrawRect(posicion.first + 120, posicion.second + 5, posicion.first + 220, posicion.second + 15);
         }
-        int vida_relativa = vida_actual * 100 / vida_total;
-        posicion.first = 10;
-        posicion.second = alto_pantalla - 30 * (jugador.first + 1) - 10;
-        // Dibujo el texto.
-        // Si es el turno le escribo '>' al principio.
-        std::string texto = "";
-        if (jugador.first == estado_juego->jugadorDeTurno) {
-            texto += "> ";
-        }
-        fuente1.SetOutline(2);
-        Texture textura_jugador_outline(renderizador, fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1), {0, 0, 0, 255}));
-        renderizador.Copy(textura_jugador_outline, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
-        fuente1.SetOutline(0);
-        Texture textura_jugador(renderizador,
-            fuente1.RenderText_Blended(texto + "Jugador " + std::to_string(jugador.first + 1),
-            {colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255}));
-        renderizador.Copy(textura_jugador, NullOpt, Rect(posicion.first, posicion.second, 100, 20));
-        // Dibujo la barra de vida.
-        renderizador.SetDrawColor(colores.at(jugador.first)[0], colores.at(jugador.first)[1], colores.at(jugador.first)[2], 255);
-        renderizador.FillRect(posicion.first + 120, posicion.second + 5, posicion.first + 120 + vida_relativa, posicion.second + 15);
-        renderizador.SetDrawColor(0, 0, 0, 255);
-        renderizador.DrawRect(posicion.first + 120, posicion.second + 5, posicion.first + 220, posicion.second + 15);
     }    
 }
 

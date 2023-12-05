@@ -31,7 +31,7 @@ std::tuple<int,int,int> leerArchivo(YAML::Node& config, const std::string& arma,
 
 
 Arma::Arma(ArmaProtocolo idArma) {
-    std::ifstream fin("./config.yaml");
+    std::ifstream fin("assets/config/config.yaml");
     YAML::Node config = YAML::Load(fin);
     CaracteristicasArma caracteristicas;
     Danio danio;
