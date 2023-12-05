@@ -4,7 +4,7 @@
 #include "yaml-cpp/yaml.h"
 
 ConfiguracionCliente::ConfiguracionCliente() {
-    std::ifstream fin("config.yaml");
+    std::ifstream fin("assets/config/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
     this->dimensionesIniciales.enX = config["Dimensiones pantalla"]["ancho"].as<int>();

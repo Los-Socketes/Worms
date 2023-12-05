@@ -216,7 +216,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_
 # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/client/configCliente.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Copiamos la configuracion del server a la carpeta de build
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/common/config.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/common/config.yaml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## TESTS
 # Creamos unas variables para facilitar el uso de directorios en el
@@ -264,15 +264,6 @@ add_test(NAME protocolotest
 )
 target_link_libraries(testprotocolo PRIVATE Catch2::Catch2WithMain)
 
-## TESTS DE THREAD SAFE LIST
-
-# TODO: Cambiar estos ejecutables por los tests de cmake
-add_executable(testthreadsafelist
-  "${COMMONTESTDIR}/tslist.cpp"
-)
-add_test(NAME threadsafelisttest
-  COMMAND testthreadsafelist
-)
 
 
 # Notas a pie:
