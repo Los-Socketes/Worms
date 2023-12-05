@@ -1032,6 +1032,16 @@ void Partida::gameLoop() {
     accionRecibida.esEmpezar = false;
     while (this->momento != EN_MARCHA) {
         this->enviarEstadoAJugadores();
+
+        std::this_thread::sleep_for(frameDuration);
+
+        bool pudeObtenerla;
+        pudeObtenerla = acciones.try_pop(accionRecibida);
+
+        if (pudeObtenerla == true && accionRecibida.accion == CHEAT
+	  && accionRecibida.cheat == ARRANCAR_C)
+	  this->momento = EN_MARCHA;
+
         if (this->clientes.size() < MINJUGADORES)
             continue;
         this->momento = POR_INICIAR;
@@ -1041,17 +1051,14 @@ void Partida::gameLoop() {
         //     break;
         // }
 
-        bool pudeObtenerla;
-        pudeObtenerla = acciones.try_pop(accionRecibida);
 
         if (pudeObtenerla == true) {
-	  if ((accionRecibida.esEmpezar && pudeObtenerla) ||
+	  if ((accionRecibida.esEmpezar) ||
 	      (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
 	      this->momento = EN_MARCHA;
 	      // break;
 	  }
         }
-        std::this_thread::sleep_for(frameDuration);
     }
     std::cout << "LISTO\n";
 
