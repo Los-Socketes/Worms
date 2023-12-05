@@ -4,7 +4,7 @@
 #include "yaml-cpp/yaml.h"
 
 ConfiguracionCliente::ConfiguracionCliente() {
-    std::ifstream fin("./configCliente.yaml");
+    std::ifstream fin("config.yaml");
     YAML::Node config = YAML::Load(fin);
 
     this->dimensionesIniciales.enX = config["Dimensiones pantalla"]["ancho"].as<int>();
@@ -18,7 +18,7 @@ ConfiguracionCliente::ConfiguracionCliente() {
         colorJugador colores = config["Color jugadores"][jugador.str()].as<colorJugador>();
         this->coloresJugadores.push_back(colores);
     }
-    //this->pixelsPorMetro = config["Pixeles por metro"].as<int>();
+    this->pixelsPorMetro = config["Pixels por metro"].as<int>();
     fin.close();
 }
 

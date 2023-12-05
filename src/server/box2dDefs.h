@@ -8,48 +8,22 @@
 class Gusano;
 class Provision;
 
-    /*
-     *Coordenadas en Box2d:
-     *Arranca abajo a la izquierda.
-     *X:
-     *	>: +1
-     *	<: -1
-     *Y:
-     *	^: +1
-     *	v: -1
-    */
-
-// Constantes de gravedad.
-// WARNING: Originalmente valia 10 no 100. Ver que onda.
-#define FUERZAGRAVITARIAX 0.0f
-#define FUERZAGRAVITARIAY -20.0f
-
-#define FUERZAVIENTOX 0
-#define FUERZAVIENTOY 0
-
-#define MAXALTURA 60
-#define MAXANCHO 40
-
-#define METROS_SIN_DANIO 5.0f
+/*
+    *Coordenadas en Box2d:
+    *Arranca abajo a la izquierda.
+    *X:
+    *	>: +1
+    *	<: -1
+    *Y:
+    *	^: +1
+    *	v: -1
+*/
 
 #define DEGTORAD 0.0174532925199432957f
 
 #define ANCHOVIGA 0.8f
-// es entero para que no rompa
-// Juampi: Lo vuelvo a poner en 6, 14 me parece mucho. Se van a
-// superponer las vigas.
-// #define LONGITUDVIGAGRANDE 14.0f
-#define LONGITUDVIGAGRANDE 6.0f
-#define LONGITUDVIGACHICA 3.0f
-
-#define VELOCIDADMOVIMIENTO 5.0f
 
 #define MASACUERPOESTATICO 0.0f
-
-#define DISTANCIAENTREVIGAS 7    
-
-#define TAMANOGUSANO 20
-#define CANTIDADVIGAS 3
 
 #define NOT !
 
@@ -58,10 +32,6 @@ typedef b2Vec2 finCaja;
 
 #define inicio first
 #define fin second
-
-#define POTENCIASALTO 3.0f
-
-#define CANTGUSANOS 3
 
 [[nodiscard]] inline std::pair<coordX, coordY> deb2VecACoord(b2Vec2 vec) {
     std::pair<coordX, coordY> representacionCoord;
@@ -114,20 +84,13 @@ struct Proyectil {
 
 struct Entidad {
     TipoEntidad tipo;
-    // union {
-        Gusano *gusano;
-        // Viga *viga;
-        // Arma *arma;
-        ProyectilAsociado proyectil;
+
+    //Aca queriamos hacer un union pero, por algun std::pair no nos
+    //deja. Gracias por nada C++ >:(
+    Gusano *gusano;
+    ProyectilAsociado proyectil;
     Proyectil *proyectilReal;
     Provision *provision;
-    // };
 };
-
-#define TIEMPOESPERADINAMITA 99
-
-#define TIEMPOESPERAPROVISION 45
-
-#define TIEMPOESPERAVIENTO 25
 
 #endif

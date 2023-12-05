@@ -1,4 +1,54 @@
 ---
+# # Server # #
+Gravedad: 
+  X: 0.0
+  Y: -20.0
+Viento:
+  X: 0
+  Y: 0
+
+Metros sin danio: 5.0
+Degtorad: 0.0174532925199432957
+# Ancho viga: 0.8
+
+Velocidad movimiento: 5.0
+Distancia entre vigas: 7
+
+# Tamanio gusano: 20
+Potencia salto: 3.0
+Vida gusano: 100
+
+Tiempo espera dinamita: 99
+Tiempo espera provision: 45
+Tiempo espera viento: 25
+
+
+# # Comun (lo necesitan cliente y server) # #
+Viento maximo:
+  X: 10
+  Y: -10
+Tiempo turno: 60
+Tiempo changui: 3
+
+
+# # Cliente # #
+Dimensiones pantalla:
+  ancho: 640
+  alto: 480
+Volumen inicial: 50
+Cantidad maxima jugadores: 8
+Color jugadores:
+  Jugador 1: [255, 255, 0]
+  Jugador 2: [255, 50, 0]
+  Jugador 3: [0, 0, 255]
+  Jugador 4: [50, 205, 50]
+  Jugador 5: [255, 165, 0]
+  Jugador 6: [255, 0, 255]
+  Jugador 7: [0, 255, 255]
+  Jugador 8: [255, 255, 255]
+Pixels por metro: 20
+
+
 # # Armas # #
 Bazooka:
   ConMira: true
@@ -138,10 +188,6 @@ Teletransportacion:
   CantidadFragmentos: 0
 
 
-# # Caracteristicas de gusano # #
-Vida: 100
-
-
 # # Mapas # #
 Cantidad mapas: 3
 Nombres mapas: [Pico de la viuda, Torres gemelas, Battlesnax]
@@ -223,12 +269,12 @@ Pico de la viuda:
     Angulo: 0
 
   Posicion gusanos: [
-    [11.0 ,21.0],
+    [15.0 ,30.0],
     [5.0 ,19.0],
-    [31.0 ,26.0],
-    [50.0 ,15.0],
-    [33.0 ,15.0],
-    [5.0 ,27.0],
+    [31.0 ,17.0],
+    [50.0 ,20.0],
+    [45.0 ,15.0],
+    [17.0 ,17.0],
   ]
 
 Torres gemelas:

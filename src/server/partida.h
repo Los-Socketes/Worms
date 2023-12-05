@@ -17,11 +17,15 @@
 #include "queue.h"
 #include "provision.h"
 #include "resolvedores.h"
+#include "configServer.h"
+
 
 //El game loop ES nuestra funcion run
 #define gameLoop run
 
 #define MINJUGADORES 2
+
+extern ConfiguracionServer config;
 
 class Partida : public Thread {
     std::mutex mtx;
