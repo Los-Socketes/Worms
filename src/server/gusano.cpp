@@ -212,7 +212,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
             break;
         }
         direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*2;
+        direccion.enY = POTENCIASALTO*3;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(SALTANDO);
@@ -224,7 +224,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
             break;
         }
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*2;
+        direccion.enY = POTENCIASALTO*3.5;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(HACE_PIRUETA);
