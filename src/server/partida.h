@@ -113,6 +113,7 @@ public:
     MomentoDePartida getMomentoDePartida();
     void gameLoop() override;
     void stop() override;
+    bool estaCompleta();
 
     ~Partida();
 };

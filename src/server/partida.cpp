@@ -1243,3 +1243,8 @@ void Partida::stop() {
     this->finPartida = true;
     this->colisiones.finPartida = true;
 }
+
+
+bool Partida::estaCompleta(){
+    return this->clientes.size() >= this->mapaUsado.posicionGusanos.size();
+}

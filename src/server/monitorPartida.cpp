@@ -70,6 +70,9 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
             momentoActual == TERMINADA) {
             continue;
         }
+        if (partida->estaCompleta()) {
+            continue;
+        }
 
         RepresentacionPartida repreActual;
         repreActual.ID = idPartida;
