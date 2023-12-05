@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QScrollArea>
 #include <QStackedWidget>
 #include <QFontDatabase>
 #include <QPixmap>
@@ -103,12 +104,20 @@ InformacionInicial Menu::ejecutar(int argc, char* argv[], bool& es_host) {
 
     QHBoxLayout *layoutHorizontalCrear = new QHBoxLayout();
     QVBoxLayout *botonesCrear = new QVBoxLayout();
+    // QScrollArea* botonesCrear = new QScrollArea;
+    QWidget* scrollAreaContent = new QWidget;
+    scrollAreaContent->setLayout( botonesCrear );
+    QScrollArea* scrollArea = new QScrollArea;
+    scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    scrollArea->setWidgetResizable( true );
+    scrollArea->setWidget( scrollAreaContent );
 
     QSpacerItem *espacioIzqBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QSpacerItem *espacioDerBotonesCrear = new QSpacerItem(100, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     layoutHorizontalCrear->addItem(espacioIzqBotonesCrear);
-    layoutHorizontalCrear->addLayout(botonesCrear);
+    layoutHorizontalCrear->addWidget(scrollArea);
     layoutHorizontalCrear->addItem(espacioDerBotonesCrear);
     verticalLayoutCrear->addLayout(layoutHorizontalCrear);
 
