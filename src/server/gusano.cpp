@@ -249,7 +249,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         return;
     }
 
-    std::cout << "RECIBO DAN\n";
+    std::cout << "RECIBO DANIO\n";
 
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
@@ -294,12 +294,17 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     this->turno.recibioDano = true;
 
     if (tipoArma == BATE_P) {
-        this->cuerpo->SetLinearVelocity(golpe);
+        this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     } else {
+        if (golpe.y > 0 && golpe.y < 10) {
+            golpe.y = 10;
+        }
+        golpe.x *= porcentaje;
+        golpe.y *= porcentaje;
         float fuerzaX = golpe.x > 0 ? golpe.x : -golpe.x;
         float fuerzaY = golpe.y > 0 ? golpe.y : -golpe.y;
         float angulo = std::atan(fuerzaY/fuerzaX);
-        float hipotenusa = 10;
+        float hipotenusa = 5;
         float adyacente = cos(angulo) * hipotenusa;
         if (golpe.x < 0)
             adyacente *= -1;
@@ -312,7 +317,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
         golpe.x = adyacente;
         golpe.y = opuesto;
-        this->cuerpo->SetLinearVelocity(golpe);
+        this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     }
     this->setEstado(HERIDO);
 }

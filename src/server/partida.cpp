@@ -449,7 +449,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         nuevaEntidad->proyectil.posInicial = coords;
         bd.position = coords;
         // bd.linearVelocity = blastPower * rayDir;
-        bd.linearVelocity = 60 * rayDir;
+        bd.linearVelocity = 20 * rayDir;
         b2Body* body = this->world.CreateBody( &bd );
 
         b2CircleShape circleShape;
