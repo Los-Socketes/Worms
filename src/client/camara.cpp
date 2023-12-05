@@ -53,30 +53,34 @@ void Camara::moverHaciaObjetivo() {
     // Si no se movio el mouse en los ultimos 3 segundos, se mueve la camara hacia el objetivo.
     if (tiempo_espera_mouse == 0) {
         // Calculo el vector entre la posicion de la camara y el objetivo.
-        int deltaX = objetivo.first - posicion.first - dimension.first / 2;
-        int deltaY = objetivo.second - posicion.second - dimension.second / 2;
+        int deltaX = objetivo.first - posicion.first - floor(dimension.first / 2);
+        int deltaY = objetivo.second - posicion.second - floor(dimension.second / 2);
 
-        // Si ya esta en el objetivo, no se mueve.
-        if (deltaX == 0 && deltaY == 0) {
-            return;
+        float norma = sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (deltaX < 5) {
+            posicion.first = objetivo.first - floor(dimension.first / 2);
+            if (posicion.first < 0)
+                posicion.first = 0;
+            else if (posicion.first > dimension_mapa.first - dimension.first)
+                posicion.first = dimension_mapa.first - dimension.first;
         }
-
-        int norma = sqrt(deltaX * deltaX + deltaY * deltaY);
-        if (norma < 5) {
-            // Si la norma es menor a 5, se mueve directamente al objetivo.
-            posicion.first = objetivo.first;
-            posicion.second = objetivo.second;
+        else {
+            deltaX = deltaX * VELOCIDAD_CAMARA / norma;
+            if (deltaX != 0) {
+                moverEnEjeX(deltaX);
+            }
+        }
+        if (deltaY < 5) {
+            posicion.second = objetivo.second - floor(dimension.second / 2);
+            if (posicion.second < 0)
+                posicion.second = 0;
+            else if (posicion.second > dimension_mapa.second - dimension.second)
+                posicion.second = dimension_mapa.second - dimension.second;
         } else {
-            // Si no, se mueve 20 pixeles en la direccion del objetivo graduando la velocidad.
-            deltaX = deltaX * 20 / norma;
-            deltaY = deltaY * 20 / norma;
-        }
-        
-        if (deltaX != 0) {
-            moverEnEjeX(deltaX);
-        }
-        if (deltaY != 0) {
-            moverEnEjeY(deltaY);
+            deltaY = deltaY * VELOCIDAD_CAMARA / norma;
+            if (deltaY != 0) {
+                moverEnEjeY(deltaY);
+            }
         }
     } else {
         // Si el mouse se movio en los ultimos 3 segundos, se decrementa el contador.

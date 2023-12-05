@@ -7,7 +7,7 @@ ControlEntidades::ControlEntidades(Renderer& renderizador,
     std::vector<colorJugador>& colores,
     bool& es_host, std::pair<int, int>& pos_cursor,
     int& volumen, bool& muteado, Font& fuente1, Font& fuente2,
-    int& timeout) :
+    int& timeout, int tiempo_turno, int viento_max, int viento_min) :
     renderizador(renderizador),
     mixer(mixer),
     camara(camara),
@@ -25,8 +25,8 @@ ControlEntidades::ControlEntidades(Renderer& renderizador,
     provisiones(),
     agua_delante(renderizador, gestor_animaciones, camara, ancho_mapa, alto_mapa, 2, 50),
     interfaz(renderizador, gestor_animaciones, gestor_sonidos, camara,
-        estado_juego, pos_cursor, colores, es_host, volumen, muteado,
-        fuente1, fuente2, timeout) {}
+        estado_juego, pos_cursor, colores, tiempo_turno, es_host, volumen, 
+        muteado, fuente1, fuente2, timeout, viento_max, viento_min) {}
 
 
 void ControlEntidades::setDimensionMapa(coordX& ancho_mapa, coordY& alto_mapa) {

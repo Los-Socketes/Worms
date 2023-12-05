@@ -7,6 +7,11 @@ ConfiguracionCliente::ConfiguracionCliente() {
     std::ifstream fin("assets/config/config.yaml");
     YAML::Node config = YAML::Load(fin);
 
+    this->viento_max = config["Viento rango"]["Max"].as<int>();
+    this->viento_min = config["Viento rango"]["Min"].as<int>();
+    this->tiempo_turno = config["Tiempo turno"].as<int>();
+    this->tiempo_changui = config["Tiempo changui"].as<int>();
+
     this->dimensionesIniciales.enX = config["Dimensiones pantalla"]["ancho"].as<int>();
     this->dimensionesIniciales.enY = config["Dimensiones pantalla"]["alto"].as<int>();
     this->volumenInicial = config["Volumen inicial"].as<int>();
@@ -22,6 +27,21 @@ ConfiguracionCliente::ConfiguracionCliente() {
     fin.close();
 }
 
+int ConfiguracionCliente::getVientoMax() {
+    return this->viento_max;
+}
+
+int ConfiguracionCliente::getVientoMin() {
+    return this->viento_min;
+}
+
+int ConfiguracionCliente::getTiempoTurno() {
+    return this->tiempo_turno;
+}
+
+int ConfiguracionCliente::getTiempoChangui() {
+    return this->tiempo_changui;
+}
 
 std::pair<int, int> ConfiguracionCliente::getDimensionesIniciales() {
     return this->dimensionesIniciales;

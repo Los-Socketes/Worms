@@ -14,12 +14,21 @@ typedef std::vector<uint8_t> colorJugador;
 // Clase que se encarga de leer el archivo de configuracion del cliente.
 class ConfiguracionCliente {
 public:
+    int viento_max;
+    int viento_min;
+    int tiempo_turno;
+    int tiempo_changui;
     std::pair<int, int> dimensionesIniciales;
     int volumenInicial;
     std::vector<colorJugador> coloresJugadores;
     int pixelsPorMetro;
 
+
     ConfiguracionCliente();
+    int getVientoMax();
+    int getVientoMin();
+    int getTiempoTurno();
+    int getTiempoChangui();
     std::pair<int, int> getDimensionesIniciales();
     int getVolumenInicial();
     std::vector<colorJugador>& getColoresJugadores();

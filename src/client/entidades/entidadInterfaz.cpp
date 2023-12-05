@@ -6,9 +6,10 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     std::shared_ptr<EstadoDelJuego>& estado_juego,
     std::pair<int, int>& pos_cursor,
     std::vector<colorJugador>& colores,
-    bool& es_host, int& volumen, bool& muteado,
+    int tiempo_turno, bool& es_host, 
+    int& volumen, bool& muteado,
     Font& fuente1, Font& fuente2,
-    int& timeout) :
+    int& timeout, int viento_max, int viento_min) :
     Entidad(gestor_animaciones),
     renderizador(renderizador),
     gestor_animaciones(gestor_animaciones),
@@ -17,6 +18,7 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     estado_juego(estado_juego),
     pos_cursor(pos_cursor),
     colores(colores),
+    tiempo_turno(tiempo_turno),
     es_host(es_host),
     timeout(timeout),    
     volumen(volumen),
@@ -26,6 +28,8 @@ EntidadInterfaz::EntidadInterfaz(Renderer& renderizador,
     id_jugador(0),
     id_partida(0),
     viento_actual(0),
+    viento_max(viento_max),
+    viento_min(viento_min),
     gusano_actual(),
     esperando_movimiento(false),
     teclas_armas(),
@@ -58,7 +62,7 @@ void EntidadInterfaz::actualizarGusanoActual() {
         estado_juego->gusanos[estado_juego->jugadorDeTurno].find(estado_juego->gusanoDeTurno) != estado_juego->gusanos[estado_juego->jugadorDeTurno].end()) {
         gusano_actual = estado_juego->gusanos.at(estado_juego->jugadorDeTurno).at(estado_juego->gusanoDeTurno);
     }
-    if (estado_juego->segundosRestantes == TIEMPOCAMBIOTURNO) {
+    if (estado_juego->segundosRestantes == tiempo_turno) {
         esperando_movimiento = true;
     } else if (gusano_actual.estado != QUIETO) {
         esperando_movimiento = false;
@@ -203,29 +207,41 @@ void EntidadInterfaz::dibujarViento() {
     // Las imágenes de viento tienen 96x13. Las dibujo arriba en el centro de la pantalla,
     // sobre el recuadro negro. Las tapo según la dirección e intensidad del viento.
     std::pair<int, int> posicion;
-    int viento_a_dibujar = 0;
+    int pixeles_a_dibujar = 0;
     // Para la barra izquierda, si el viento no sopla/sopla a la derecha la tapo completamente.
+    printf("Viento min: %d\n", viento_min);
+    printf("Viento actual: %d\n", viento_actual);
     if (viento_actual >= 0)
-        viento_a_dibujar = 10;
+        pixeles_a_dibujar = 96;
     // Si no, la tapo según la intensidad.
     else
-        viento_a_dibujar = 10 + viento_actual;
+        pixeles_a_dibujar = (abs(viento_min) + viento_actual) * 96 / abs(viento_min);
+    printf("Viento a dibujar izq: %d\n", pixeles_a_dibujar);
     posicion.first = ancho_pantalla / 2 - 97;
     posicion.second = 18;
     gestor_animaciones.getAnimacionEscenario(VIENTO_IZQUIERDA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
     // Tapo las imágenes según el valor del viento.
     renderizador.SetDrawBlendMode(SDL_BLENDMODE_NONE);
     renderizador.SetDrawColor(0, 0, 0, 255);
-    renderizador.FillRect(posicion.first, posicion.second, floor(posicion.first + viento_a_dibujar * 9.6), posicion.second + 12);
+    renderizador.FillRect(posicion.first,
+        posicion.second,
+        posicion.first + pixeles_a_dibujar,
+        posicion.second + 12);
     posicion.first = ancho_pantalla / 2 + 2;
     // Calculo el viento para la barra derecha, si sopla a la izquierda o no sopla, se tapa toda.
+    printf("Viento max: %d\n", viento_max);
+    printf("Viento actual: %d\n", viento_actual);
     if (viento_actual <= 0)
-        viento_a_dibujar = 10;
+        pixeles_a_dibujar = 96;
     // Si no, la tapo según la intensidad.
     else
-        viento_a_dibujar = 10 - viento_actual;
+        pixeles_a_dibujar = (abs(viento_max) - viento_actual) * 96 / abs(viento_max);
+    printf("Viento a dibujar der: %d\n", pixeles_a_dibujar);
     gestor_animaciones.getAnimacionEscenario(VIENTO_DERECHA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
-    renderizador.FillRect(posicion.first + 96, posicion.second + 13, floor(posicion.first + 95 - viento_a_dibujar * 9.6), posicion.second - 1);
+    renderizador.FillRect(posicion.first + 96,
+        posicion.second + 13,
+        posicion.first + 96 - pixeles_a_dibujar - 1,
+        posicion.second - 1);
 }
 
 void EntidadInterfaz::actualizarViento() {
@@ -316,7 +332,7 @@ void EntidadInterfaz::dibujarTextoTurno() {
     posicion.second = alto_pantalla / 2 - 50;
     // Dibujo el texto en blanco.
     SDL_Color color = {255, 255, 255, 255};
-    if (estado_juego->segundosRestantes >= TIEMPOCAMBIOTURNO - 2) {
+    if (estado_juego->segundosRestantes >= tiempo_turno - 2) {
         fuente1.SetOutline(2);
         Texture textura_turno_outline(renderizador, fuente1.RenderText_Blended("Turno de Jugador " + std::to_string(estado_juego->jugadorDeTurno + 1), {0, 0, 0, 255}));
         renderizador.Copy(textura_turno_outline, NullOpt, Rect(posicion.first, posicion.second, 200, 50));

@@ -8,6 +8,7 @@
 #include "defs.h"
 
 #define FPS 30
+#define VELOCIDAD_CAMARA 20
 #define SEGUNDOS_ESPERA_MOUSE 3
 
 using namespace SDL2pp;
