@@ -328,11 +328,8 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->ronda = this->rondas;
 
     bool hayJugadores = false;
-    std::cout << "ARRANCO Estado\n";
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
-	  std::cout << "ENvio Estado\n";
-	  std::cout << estadoActual->momento << "\n";
             cliente->enviarEstadoJuego(estadoActual);
             hayJugadores = true;
         }
@@ -675,7 +672,7 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
         gusanoEstaQuieto = gusano->estaQuieto();
 
         //Con que uno de estos sea false, ya te hace el valor false
-        todoEstaQuieto = todoEstaQuieto && gusanoEstaQuieto;
+        todoEstaQuieto = gusanoEstaQuieto;
     }
     if (todoEstaQuieto == false)
         return false;
@@ -1041,7 +1038,7 @@ void Partida::gameLoop() {
             continue;
         this->momento = POR_INICIAR;
         // this->finPartida = NOT this->enviarEstadoAJugadores();
-        std::cout << "ENVIO\n";
+        // std::cout << "ENVIO\n";
         // if (this->finPartida) {
         //     break;
         // }

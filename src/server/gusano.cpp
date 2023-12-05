@@ -77,7 +77,7 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     //Esto, en teoria, da la rta en segundos
     bool noTengoMasTiempo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
-    noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
+    noTengoMasTiempo = (cuantoTiempoLlevo >= TIEMPOCAMBIOTURNO);
 
     //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
     cambiaDeTurno = (noTengoMasTiempo ||
@@ -360,7 +360,9 @@ void Gusano::preparar(Accion& accion) {
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
-        this->setEstado(QUIETO);
+        if (this->estado != CAYENDO && this->estado != SALTANDO
+        && this->estado != HACE_PIRUETA) 
+            this->setEstado(QUIETO);
         return ataqueARealizar;
     }
 
@@ -616,7 +618,6 @@ bool Gusano::estaMuerto() {
 bool Gusano::estaQuieto() {
     bool estaQuieto;
     estaQuieto = (this->estado == QUIETO);
-
     bool estoyMuerto;
     estoyMuerto = this->estaMuerto();
 
