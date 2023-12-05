@@ -1170,6 +1170,10 @@ void Partida::gameLoop() {
 
 }
 
+MomentoDePartida Partida::getMomentoDePartida() {
+    return this->momento;
+}
+
 
 Partida::~Partida() {
     this->finPartida = true;
