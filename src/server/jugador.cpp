@@ -108,3 +108,11 @@ void Jugador::darMasVidaAGusanos() {
 std::vector<Gusano *> Jugador::getGusanos() {
     return this->gusanos;
 }
+
+void Jugador::setID(idJugador id) {
+    this->miID = id;
+}
+
+idJugador Jugador::getID() {
+    return this->miID;
+}

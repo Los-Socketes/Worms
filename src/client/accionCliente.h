@@ -2,6 +2,7 @@
 #define ACCIONCLIENTE_H_
 
 #include <utility>
+#include <atomic>
 #include "protocolo.h"
 
 enum TipoComando{
@@ -30,7 +31,7 @@ struct Comando{
 // Clase abstracta que representa una accion que el cliente puede realizar.
 class AccionCliente {
  public:
-    virtual void enviar(Protocolo& protocolo) = 0;
+    virtual void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) = 0;
     virtual ~AccionCliente() = default;
 };
 
@@ -40,7 +41,7 @@ class AccionMoverGusano : public AccionCliente {
     Direccion direccion;
  public:
     AccionMoverGusano(Direccion direccion);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionMoverGusano() override = default;
 };
 
@@ -50,7 +51,7 @@ class AccionCambiarAngulo : public AccionCliente {
     radianes angulo;
  public:
     AccionCambiarAngulo(radianes angulo);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionCambiarAngulo() override = default;
 };
 
@@ -61,7 +62,7 @@ class AccionCambiarCoordenadas : public AccionCliente {
     coordY y;
  public:
     AccionCambiarCoordenadas(coordX x, coordY y);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionCambiarCoordenadas() override = default;
 };
 
@@ -71,7 +72,7 @@ class AccionCambiarPotencia : public AccionCliente {
     float potencia;
  public:
     AccionCambiarPotencia(float potencia);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionCambiarPotencia() override = default;
 };
 
@@ -81,7 +82,7 @@ class AccionCambiarCuentaRegresiva : public AccionCliente {
     int cuenta_regresiva;
  public:
     AccionCambiarCuentaRegresiva(int cuenta_regresiva);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionCambiarCuentaRegresiva() override = default;
 };
 
@@ -89,7 +90,7 @@ class AccionCambiarCuentaRegresiva : public AccionCliente {
 class AccionDisparar : public AccionCliente {
  public:
     AccionDisparar();
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionDisparar() override = default;
 };
 
@@ -99,13 +100,13 @@ class AccionEquiparArma : public AccionCliente {
     ArmaProtocolo arma;
  public:
     AccionEquiparArma(ArmaProtocolo arma);
-    void enviar(Protocolo& protocolo) override;
+    void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
     ~AccionEquiparArma() override = default;
 };
 
 class AccionEmpezarPartida : public AccionCliente {
  public:
-   void enviar(Protocolo& protocolo) override;
+   void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
 };
 
 class AccionCheat : public AccionCliente {
@@ -113,7 +114,7 @@ class AccionCheat : public AccionCliente {
     TipoCheat cheat;
  public:
       AccionCheat(TipoCheat cheat);
-      void enviar(Protocolo& protocolo) override;
+      void enviar(Protocolo& protocolo, std::atomic<bool>& es_turno) override;
 };
 
 #endif  // ACCIONCLIENTE_H_

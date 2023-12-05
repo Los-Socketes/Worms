@@ -7,10 +7,11 @@
 
 typedef std::pair<coordX, coordY> coordsGusanos;
 typedef std::pair<coordX, coordY> coordsVigas;
+typedef std::pair<coordX, coordY> dimensionesMapa;
 
 struct Viga {
     int tamanio;
-    std::pair<coordX, coordY> coordenadas;
+    coordsVigas coordenadas;
     float angulo;
 
 };
@@ -19,6 +20,7 @@ struct Mapa {
     std::vector<Viga> vigas;
     std::vector<coordsGusanos> posicionGusanos;
     int cantGusanos;
+    dimensionesMapa dimensiones;
 
     Mapa(YAML::Node& config, std::string nombre);
     Mapa(){}

@@ -43,13 +43,11 @@ class Partida : public Thread {
     // std::string mapa;
     Mapa mapaUsado;
     std::vector<RepresentacionViga> vigasEnMapa;
-    std::pair<coordX, coordY> dimensiones;
+    // std::pair<coordX, coordY> dimensiones;
     std::map<int, std::pair<coordX, coordY>> posicionesGusanos;
     int cantidad_gusanos_insertados;
 
     std::vector<Cliente *> clientes;
-    std::mutex mtx;
-    std::condition_variable seUnioJugador;
 
     std::vector<Gusano *> gusanos;
 
@@ -88,6 +86,7 @@ class Partida : public Thread {
 
     bool sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual);
 
+    int rondas = 0;
     std::pair<Gusano *, Jugador *> cambiarDeJugador(Jugador *jugadorTurnoActual, Gusano *gusanoActual, time_t tiempoActual);
 
     //Bueno que lo construye

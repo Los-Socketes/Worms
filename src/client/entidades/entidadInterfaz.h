@@ -52,6 +52,7 @@ class EntidadInterfaz : public Entidad {
     void dibujarBarrasVida();
     void dibujarViento();
     void actualizarViento();
+    void dibujarRonda();
     void dibujarCuentaRegresivaTurno();
     void dibujarVolumen();
     void dibujarTextoTurno();

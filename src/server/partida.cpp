@@ -30,7 +30,7 @@ Partida::Partida(Mapa mapa)
     this->posJugadorActual = -1;
     this->finPartida = false;
     this->colisiones.finPartida = false;
-    this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
+    // this->dimensiones = std::pair<coordX, coordY>(MAXALTURA, MAXANCHO);
     this->termino = false;
     this->momento = ESPERANDO;
     this->ultimaProvision = time(NOW);
@@ -223,9 +223,10 @@ InformacionInicial Partida::obtenerInfoInicial() {
     idJugador idNuevoJugador;
     idNuevoJugador = (idJugador) this->jugadores.size();
     infoInicial.jugador = idNuevoJugador;
+    jugadorNuevo->setID(idNuevoJugador);
 
     infoInicial.vigas = this->vigasEnMapa;
-    infoInicial.dimensiones = this->dimensiones;
+    infoInicial.dimensiones = this->mapaUsado.dimensiones;
 
     return infoInicial;
 }
@@ -237,9 +238,6 @@ void Partida::anadirCliente(Cliente *clienteNuevo) {
     this->clientes.push_back(clienteNuevo);
 
     this->enviarEstadoAJugadores();
-
-    //Aviso que se unio un jugador
-    this->seUnioJugador.notify_all();
 }
 
 bool Partida::enviarEstadoAJugadores() {
@@ -327,9 +325,14 @@ bool Partida::enviarEstadoAJugadores() {
 
     estadoActual->viento = this->viento.x;
 
+    estadoActual->ronda = this->rondas;
+
     bool hayJugadores = false;
+    std::cout << "ARRANCO Estado\n";
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
+	  std::cout << "ENvio Estado\n";
+	  std::cout << estadoActual->momento << "\n";
             cliente->enviarEstadoJuego(estadoActual);
             hayJugadores = true;
         }
@@ -646,11 +649,17 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
     finDelGusano = gusanoActual->hayQueCambiarDeTurno(tiempoActual);
     if (finDelGusano == false)
         return false;
-    bool todoExploto;
+    bool todoExploto = true;
     for (auto &&proyectil : this->proyectiles) {
         if (!proyectil->exploto) {
-            return false;
+            todoExploto = false;
         }
+        if (proyectil->cuerpo->GetPosition().y < 5) {
+            proyectil->exploto = true;
+        } 
+    }
+    if (todoExploto == false) {
+        return false;
     }
     
     bool todoEstaQuieto = true;
@@ -691,6 +700,12 @@ std::pair<Gusano *, Jugador *> Partida::cambiarDeJugador(Jugador *jugadorTurnoAc
     //Si no hay cambio de turno, devolvemos el mismo gusano
     if (cambioDeTurno == false)
         return gusanoYJugador;
+
+    //Si el ultimo jugador cambia de turno, significa que tenemos una
+    //ronda nueva
+    if(jugadorTurnoActual->getID() == (idJugador) this->jugadores.size())
+        this->rondas += 1;
+
 
     //Antes de nada me fijo si el jugador actual perdio
     jugadorTurnoActual->chequearSiPerdi();
@@ -1001,33 +1016,46 @@ void Partida::borrarCuerpos() {
 
 
 void Partida::gameLoop() {
-    std::unique_lock<std::mutex> lck(mtx);
-
     //Esperamos hasta que se unan todos los jugadores necesarios
-    while (this->clientes.size() < MINJUGADORES)
-        this->seUnioJugador.wait(lck);
+    // while (this->clientes.size() < MINJUGADORES)
+    //     this->seUnioJugador.wait(lck);
     
-    this->momento = POR_INICIAR;
+    this->momento = ESPERANDO;
 
     Accion accionRecibida;
     accionRecibida.idGusano = INVAL_ID;
     accionRecibida.esEmpezar = false;
-    while (this->finPartida == false) {
-        this->finPartida = NOT this->enviarEstadoAJugadores();
-        if (this->finPartida) {
-            break;
-        }
+    while (this->momento != EN_MARCHA) {
+        this->enviarEstadoAJugadores();
+
+        std::this_thread::sleep_for(frameDuration);
 
         bool pudeObtenerla;
         pudeObtenerla = acciones.try_pop(accionRecibida);
 
-        if ((accionRecibida.esEmpezar && pudeObtenerla) ||
-            (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
-            this->momento = EN_MARCHA;
-            break;
+        if (pudeObtenerla == true && accionRecibida.accion == CHEAT
+	  && accionRecibida.cheat == ARRANCAR_C)
+	  this->momento = EN_MARCHA;
+
+        if (this->clientes.size() < MINJUGADORES)
+            continue;
+        this->momento = POR_INICIAR;
+        // this->finPartida = NOT this->enviarEstadoAJugadores();
+        std::cout << "ENVIO\n";
+        // if (this->finPartida) {
+        //     break;
+        // }
+
+
+        if (pudeObtenerla == true) {
+	  if ((accionRecibida.esEmpezar) ||
+	      (accionRecibida.accion == CHEAT && accionRecibida.cheat == ARRANCAR_C)) {
+	      this->momento = EN_MARCHA;
+	      // break;
+	  }
         }
-        std::this_thread::sleep_for(frameDuration);
     }
+    std::cout << "LISTO\n";
 
     bool cantJusta = this->mapaUsado.cantGusanos % this->jugadores.size() == 0;
     int cantGusanos = this->mapaUsado.cantGusanos / this->jugadores.size();

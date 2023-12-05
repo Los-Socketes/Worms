@@ -773,6 +773,13 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     }
     viento = ntohl(viento);
 
+    int32_t ronda;
+    socket.recvall(&ronda, sizeof(ronda), &was_closed);
+    if (was_closed) {
+        return estado;
+    }
+    ronda = ntohl(ronda);
+
     int8_t momento;
     socket.recvall(&momento, sizeof(momento), &was_closed);
     if (was_closed) {
@@ -803,6 +810,7 @@ std::shared_ptr<EstadoDelJuego> Protocolo::obtenerEstadoDelJuego() {
     estado->momento = (MomentoDePartida)momento;
     estado->situacionJugadores = situacionJugadores;
     estado->viento = viento;
+    estado->ronda = ronda;
 
     return estado;
 }
@@ -1347,6 +1355,12 @@ bool Protocolo::enviarEstadoDelJuego(std::shared_ptr<EstadoDelJuego> estado) {
 
     int32_t viento = htonl(estado->viento);
     socket.sendall(&viento, sizeof(viento), &was_closed);
+    if (was_closed) {
+        return false;
+    }
+
+    int32_t ronda = htonl(estado->ronda);
+    socket.sendall(&ronda, sizeof(ronda), &was_closed);
     if (was_closed) {
         return false;
     }

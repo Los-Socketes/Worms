@@ -6,6 +6,7 @@
 
 Mapa::Mapa(YAML::Node& config, std::string nombre) {
     int cantVigas = config[nombre]["Cantidad vigas"].as<int>();
+    this->dimensiones = config[nombre]["Dimensiones"].as<dimensionesMapa>();
     for (int i = 1; i <= cantVigas; i++) {
         std::stringstream viga;
         viga << "Viga " << i;
