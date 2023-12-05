@@ -517,12 +517,12 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
     if (arma == NADA_P || arma == TELETRANSPORTACION_P) {
         return;
     }
+
+    Arma armaFinal(arma);
+
     int cantProyectiles = 0;
-    if (arma == ATAQUE_AEREO_P)
-        cantProyectiles = 5;
-    else
-        cantProyectiles = 1;
-        
+    cantProyectiles = armaFinal.getCantidadProyectiles();
+
     for (int i = 0 ; i < cantProyectiles; i++) {
         Proyectil *nuevoProyectil = this->proyectilConstructor();
         nuevoProyectil->armaOrigen = arma;
@@ -608,7 +608,6 @@ void Partida::crearProyectiles(Gusano *gusano, Ataque ataque) {
 	  ataque.posicion.x += 2;
         }
 
-        Arma armaFinal(arma);
         if (armaFinal.getCaracteristicas().esAfectadoPorViento == true)
 	  ataque.impulsoInicial += viento;
 

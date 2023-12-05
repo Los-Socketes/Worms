@@ -24,6 +24,7 @@ private:
     CaracteristicasArma caracteristicas;
     int municiones;
     int fragmentos;
+    int proyectiles;
 
     Danio danio;
     Danio danioFragmento;
@@ -56,6 +57,8 @@ public:
 
     int getCuentaRegresiva();
     void setCuentaRegresiva(int cuentaRegresiva);
+
+    int getCantidadProyectiles();
 
     // Esto no es atacar, es un actualizar valores
     void usar();
