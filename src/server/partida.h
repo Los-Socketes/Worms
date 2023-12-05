@@ -104,6 +104,7 @@ public:
 
     void anadirCliente(Cliente *clienteNuevo);
 
+    MomentoDePartida getMomentoDePartida();
     void gameLoop() override;
     void stop() override;
 

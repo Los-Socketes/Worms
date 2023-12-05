@@ -77,7 +77,7 @@ bool Gusano::hayQueCambiarDeTurno(time_t tiempoActual) {
     //Esto, en teoria, da la rta en segundos
     bool noTengoMasTiempo;
     cuantoTiempoLlevo = difftime(tiempoActual, this->turno.cuandoArranco);
-    noTengoMasTiempo = (cuantoTiempoLlevo > TIEMPOCAMBIOTURNO);
+    noTengoMasTiempo = (cuantoTiempoLlevo >= TIEMPOCAMBIOTURNO);
 
     //Hay que cambiar de turno con que se cumpla alguna de estas condiciones
     cambiaDeTurno = (noTengoMasTiempo ||
@@ -212,7 +212,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
             break;
         }
         direccion.enX = (this->direccion == DERECHA) ? POTENCIASALTO : -POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*2;
+        direccion.enY = POTENCIASALTO*3;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(SALTANDO);
@@ -224,7 +224,7 @@ void Gusano::realizarMovimiento(Direccion direccionDeseada) {
             break;
         }
         direccion.enX = (this->direccion == DERECHA) ? -POTENCIASALTO : POTENCIASALTO;
-        direccion.enY = POTENCIASALTO*2;
+        direccion.enY = POTENCIASALTO*3.5;
         b2Vec2 saltoHorizontal = deCoordAb2Vec(direccion);
         this->cuerpo->ApplyLinearImpulseToCenter(saltoHorizontal,true);
         this->setEstado(HACE_PIRUETA);
@@ -249,7 +249,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
         return;
     }
 
-    std::cout << "RECIBO DAN\n";
+    std::cout << "RECIBO DANIO\n";
 
     float distanciaGusanoBomba = b2Distance(entidad->proyectil.posInicial, this->cuerpo->GetPosition());
 
@@ -294,12 +294,17 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
     this->turno.recibioDano = true;
 
     if (tipoArma == BATE_P) {
-        this->cuerpo->SetLinearVelocity(golpe);
+        this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     } else {
+        if (golpe.y > 0 && golpe.y < 10) {
+            golpe.y = 10;
+        }
+        golpe.x *= porcentaje;
+        golpe.y *= porcentaje;
         float fuerzaX = golpe.x > 0 ? golpe.x : -golpe.x;
         float fuerzaY = golpe.y > 0 ? golpe.y : -golpe.y;
         float angulo = std::atan(fuerzaY/fuerzaX);
-        float hipotenusa = 10;
+        float hipotenusa = 5;
         float adyacente = cos(angulo) * hipotenusa;
         if (golpe.x < 0)
             adyacente *= -1;
@@ -312,7 +317,7 @@ void Gusano::recibirDano(b2Vec2 golpe, Entidad *entidad) {
 
         golpe.x = adyacente;
         golpe.y = opuesto;
-        this->cuerpo->SetLinearVelocity(golpe);
+        this->cuerpo->ApplyLinearImpulseToCenter(golpe, true);
     }
     this->setEstado(HERIDO);
 }
@@ -360,7 +365,9 @@ void Gusano::preparar(Accion& accion) {
 Ataque Gusano::ejecutar(Accion accion) {
     Ataque ataqueARealizar;
     if (this->getTiempoQueMeQueda() <= 0) {
-        this->setEstado(QUIETO);
+        if (this->estado != CAYENDO && this->estado != SALTANDO
+        && this->estado != HACE_PIRUETA) 
+            this->setEstado(QUIETO);
         return ataqueARealizar;
     }
 
@@ -616,7 +623,6 @@ bool Gusano::estaMuerto() {
 bool Gusano::estaQuieto() {
     bool estaQuieto;
     estaQuieto = (this->estado == QUIETO);
-
     bool estoyMuerto;
     estoyMuerto = this->estaMuerto();
 
@@ -628,20 +634,18 @@ bool Gusano::estaQuieto() {
 }
 
 void Gusano::recibirDanioCaida(b2Vec2 velocidad) {
-    float tiempoParaMetrosMax = std::sqrt(METROS_SIN_DANIO*2/(-FUERZAGRAVITARIAY)); 
-    float velocidadMax = -METROS_SIN_DANIO*2/tiempoParaMetrosMax;
-    if (velocidad.y >= velocidadMax) {
+    int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
+    
+    if (distanciaQueCae < METROS_SIN_DANIO) {
         this->setEstado(QUIETO);
         return;
     }
 
     this->turno.recibioDano = true;
 
-    int distanciaQueCae = -std::pow(velocidad.y, 2) / (2.0f*FUERZAGRAVITARIAY);
 
-    int vidaMax = 100;
-    float danio = distanciaQueCae * vida / (METROS_SIN_DANIO*3);
-    if (this->vida <= (u_int) danio) {
+    float danio = std::min(distanciaQueCae*2, 25);
+    if (this->vida <= (u_int)danio) {
         this->vida = 0;
         this->setEstado(MUERTO);
         return;

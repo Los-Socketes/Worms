@@ -328,11 +328,8 @@ bool Partida::enviarEstadoAJugadores() {
     estadoActual->ronda = this->rondas;
 
     bool hayJugadores = false;
-    std::cout << "ARRANCO Estado\n";
     for(Cliente *cliente : this->clientes) {
         if (cliente != nullptr && !cliente->estaMuerto()) {
-	  std::cout << "ENvio Estado\n";
-	  std::cout << estadoActual->momento << "\n";
             cliente->enviarEstadoJuego(estadoActual);
             hayJugadores = true;
         }
@@ -452,7 +449,7 @@ void Partida::generarExplosion(Proyectil *proyectil) {
         nuevaEntidad->proyectil.posInicial = coords;
         bd.position = coords;
         // bd.linearVelocity = blastPower * rayDir;
-        bd.linearVelocity = 60 * rayDir;
+        bd.linearVelocity = 20 * rayDir;
         b2Body* body = this->world.CreateBody( &bd );
 
         b2CircleShape circleShape;
@@ -675,7 +672,7 @@ bool Partida::sePuedeCambiarDeJugador(Gusano *gusanoActual, time_t tiempoActual)
         gusanoEstaQuieto = gusano->estaQuieto();
 
         //Con que uno de estos sea false, ya te hace el valor false
-        todoEstaQuieto = todoEstaQuieto && gusanoEstaQuieto;
+        todoEstaQuieto = gusanoEstaQuieto;
     }
     if (todoEstaQuieto == false)
         return false;
@@ -1041,7 +1038,7 @@ void Partida::gameLoop() {
             continue;
         this->momento = POR_INICIAR;
         // this->finPartida = NOT this->enviarEstadoAJugadores();
-        std::cout << "ENVIO\n";
+        // std::cout << "ENVIO\n";
         // if (this->finPartida) {
         //     break;
         // }
@@ -1171,6 +1168,10 @@ void Partida::gameLoop() {
         std::this_thread::sleep_for(frameDuration);
     }
 
+}
+
+MomentoDePartida Partida::getMomentoDePartida() {
+    return this->momento;
 }
 
 

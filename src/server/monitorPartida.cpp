@@ -65,6 +65,11 @@ std::vector<RepresentacionPartida> MonitorPartida::partidasDisponibles() {
             continue;
         }
 
+        MomentoDePartida momentoActual = partida->getMomentoDePartida();
+        if (momentoActual == EN_MARCHA ||
+            momentoActual == TERMINADA) {
+            continue;
+        }
 
         RepresentacionPartida repreActual;
         repreActual.ID = idPartida;

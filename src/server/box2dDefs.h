@@ -59,7 +59,7 @@ typedef b2Vec2 finCaja;
 #define inicio first
 #define fin second
 
-#define POTENCIASALTO 5.0f
+#define POTENCIASALTO 3.0f
 
 #define CANTGUSANOS 3
 
