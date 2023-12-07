@@ -56,3 +56,13 @@ Se presentaron todas las armas funcionales, se arreglaron para que las condicion
 ### Semana 7 (1 de Diciembre a 5 de Diciembre)
 Se pidió implementar las provisiones y viento. Se sugirieron un par de cheats que consideraban útiles como el de iniciar la partida con un solo jugador (una cantidad menor a la minima que se deja).\
 Se hizo la entrega final con provisiones de vida, municiones y trampa donde dentro de la provision trampa hay una dinamita que explota. Se agrego el efecto del viento en las armas que lo piden y además se agregó un gráfico de viento para saber la potencia y dirección. Se modificó la configuración por yaml del cliente para que lea del mismo archivo que están las armas y mapas, además a ese archivo se le agrego la configuración del server para tener un único archivo de configuración y que sea independiente de quien lo usa. Se creó una clase para configurar los datos del server y sacar valores hardcodeados. Se arreglaron más bugs de conexión a partidas y gráficos en casos bordes. Se volvió a revisar valgrind para que el server no pierda memoria. Se arregló que cuando un gusano es golpeado su "salto" dependa de que tan cerca esta de la explosión y se hizo que la pirueta sea mas alta que el salto para cumplir con la consigna. Se arregló la animación de ataque para que se pueda ver como realiza el ataque. Además se agregaron cheats para bajarle vida al resto de gusanos, empezar sin la cantidad mínima de jugadores y generar provisiones en la posición del gusano de turno.
+
+## Herramientas utilizadas
+### IDEs
+Tanto Juan Pablo Fresia como Antonella Jazmín Pellegrini realizaron el código en Visual Studio Code, mientras que Tomás Fabrizio Orsi lo realizó en emacs.\
+### Documentación
+TODO: completar
+
+## Puntos problemáticos
+Uno de los mayores puntos problemáticos fueron las explosiones, ya que al no usar hitboxes y, en cambio, usar [nombre de lo q usamos] debíamos saber cuánto tiempo debían durar estos proyectiles que simulaban la explosión, reconocer cuándo recibir daño para cada gusano, ya que muchos de los proyectiles podían ser de la misma explosión y entonces bajarle la vida más de lo debido y también saber eliminarlos. Por otro lado, una vez solucionado eso, se nos presentó varias veces el problema de tener que usar bastante tiempo en probar distintos valores para poder llegar al efecto deseado, esto se dio en el salto, pirueta, al recibir daño, moverse y en la trayectoria de los proyectiles. \
+Otro punto problemático relacionado fue la destrucción de cuerpos de box2d, tanto para dejar de graficarlos como para liberar los recursos. \
