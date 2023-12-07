@@ -28,7 +28,7 @@ Se pidió tener implementadas más armas con hitboxes (u otra forma, si se puede
 ## Herramientas
 (Poner los IDES)
 
-Una herramienta que empezamos a usaron desde casi el comienzo del trabajo fueron las "Github Actions". Usando un servidor propio, cada commit era compilado cada vez que se realizaba un push. Esto nos permitia tener un ambiente "agnostico" para testear cada commit. 
+Una herramienta que empezamos a usar desde el comienzo del trabajo fueron las "Github Actions". Usando un servidor propio, cada commit era compilado cada vez que se realizaba un push. Esto nos permitia tener un ambiente "agnostico" para testear cada commit. 
 En las github actions incorporamos 3 compiladores distintos: Gcc, Clang y Zig. Esto lo hicimos con la esperanza de que distintos compiladores den distintas advertencias, y asi poder mejorar la calidad del codigo. En la practica, esto no sucedio. Los 3 compiladores tenian, en esencia, el mismo comportamiento. 
 Ademas, de compilar el codigo, corriamos cppcheck. Esto lo hicimos con la esperanza de poder atrapar errores a futuro. Sin embargo, debido a la longitud del TP, terminamos ignorando casi en su totalidad cppcheck.
 En retrospectiva, hubiese sido mejor tener solamente los compiladores (Gcc y/o Clang; Zig tuvo problemas de linkeo con algunas de las librerias); ya que, al tener siempre errores con cppcheck, las actions perdian su "peso".
