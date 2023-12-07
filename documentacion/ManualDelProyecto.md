@@ -6,8 +6,7 @@ El proyecto originalmente se dividió en:
 - Protocolo + concurrencia (realizado por Antonella Jazmín Pellegrini)
 
 A continuación se presenta una lista más detallada de que implementó cada integrante
-### Juan Pablo Fresia
-- Lógica del cliente
+### Juan Pablo Fresia - Lógica del cliente
 - Parte gráfica con SDL
 - Manual de usuario
 
