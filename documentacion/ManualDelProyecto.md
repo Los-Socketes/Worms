@@ -16,6 +16,7 @@ A continuación se presenta una lista más detallada de que implementó cada int
 - Box2d
 - CMake
 - Configuración por yaml de server
+- Github Actions
 
 ### Antonella Jazmín Pellegrini
 - Protocolo (código y tests)
