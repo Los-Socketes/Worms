@@ -58,14 +58,10 @@ Se presentaron todas las armas funcionales, se arreglaron para que las condicion
 Se pidió implementar las provisiones y viento. Se sugirieron un par de cheats que consideraban útiles como el de iniciar la partida con un solo jugador (una cantidad menor a la mínima que se deja).
 Se hizo la entrega final con provisiones de vida, municiones y trampa donde dentro de la provisión trampa hay una dinamita que explota. Se agrego el efecto del viento en las armas que lo piden y además se agregó un gráfico de viento para saber la potencia y dirección. Se modificó la configuración por yaml del cliente para que lea del mismo archivo que están las armas y mapas, además a ese archivo se le agrego la configuración del server para tener un único archivo de configuración y que sea independiente de quien lo usa. Se creó una clase para configurar los datos del server y sacar valores hardcodeados. Se arreglaron más bugs de conexión a partidas y gráficos en casos bordes. Se volvió a revisar valgrind para que el server no pierda memoria. Se arregló que cuando un gusano es golpeado su "salto" dependa de que tan cerca esta de la explosión y se hizo que la pirueta sea mas alta que el salto para cumplir con la consigna. Se arregló la animación de ataque para que se pueda ver como realiza el ataque. Además se agregaron cheats para bajarle vida al resto de gusanos, empezar sin la cantidad mínima de jugadores y generar provisiones en la posición del gusano de turno.
 
-
-## Incorporaciones al temario
-Una de los temas que nos hubiese gustado ver en clase es Box2d. Mucha de la documentacion que recomienda la catedra tiene funcionalidades deprecadas y/o no funcionales. 
-Una introduccion a como funciona Box2d y como estructurar codigo al rededor de este hubiese sido de gran ayuda. Con esta informacion, hubiese sido mas facil estructurar la logica de la parte del servidor.
-
 ## Herramientas utilizadas
 ### IDEs
 Tanto Juan Pablo Fresia como Antonella Jazmín Pellegrini realizaron el código en Visual Studio Code, mientras que Tomás Fabrizio Orsi lo realizó en Emacs.
+
 ### Documentación
 #### Server
 Para el servidor nuestras principales fuentes de información fueron la documentación oficial de [box2d](https://box2d.org/) y [iforce2d](https://www.iforce2d.net/) para ver implementaciones de ejemplo.
@@ -88,3 +84,7 @@ Otro punto problemático relacionado fue la destrucción de cuerpos de box2d, ta
 ## Cambios que haríamos
 Consideramos que en base a la experiencia de hacer este proyecto, si tuviésemos que volver a hacerlo usaríamos más tiempo al principio para crear una estructura más sólida y que considere features que no implementamos al principio pero que eran necesarias. Por ejemplo, hubo refactors de la clase cliente y jugador que se podrían haber evitado si hubiésemos planteado del principio una estructura más sólida que nos sirva para el proyecto planteado.
 Además otro cambio que haríamos sería cambiar el foco de trabajo de "hacerlo para que funcione en la próxima reunión" a "hacerlo pensando en la entrega final" ya que hubo refactors que tuvimos que realizar por el simple hecho tener una implementación temporal porque sino en las reuniones semanales no veíamos avances.
+
+## Incorporaciones al temario
+Una de los temas que nos hubiese gustado ver en clase es Box2d. Mucha de la documentación que recomienda la cátedra tiene funcionalidades deprecadas y/o no funcionales. 
+Una introducción a como funciona Box2d y como estructurar código al rededor de este hubiese sido de gran ayuda. Con esta información, hubiese sido mas fácil estructurar la lógica de la parte del servidor.
