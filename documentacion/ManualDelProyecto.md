@@ -32,3 +32,10 @@ Una herramienta que empezamos a usar desde el comienzo del trabajo fueron las "G
 En las github actions incorporamos 3 compiladores distintos: Gcc, Clang y Zig. Esto lo hicimos con la esperanza de que distintos compiladores den distintas advertencias, y asi poder mejorar la calidad del codigo. En la practica, esto no sucedio. Los 3 compiladores tenian, en esencia, el mismo comportamiento. 
 Ademas, de compilar el codigo, corriamos cppcheck. Esto lo hicimos con la esperanza de poder atrapar errores a futuro. Sin embargo, debido a la longitud del TP, terminamos ignorando casi en su totalidad cppcheck.
 En retrospectiva, hubiese sido mejor tener solamente los compiladores (Gcc y/o Clang; Zig tuvo problemas de linkeo con algunas de las librerias); ya que, al tener siempre errores con cppcheck, las actions perdian su "peso".
+
+## Incorporaciones al temario
+Box2d XD XD XD
+
+## Puntos problematicos
+### Server
+Con diferencia, el punto mas problematico del tp fueron las armas. Cada una de estas tenia un comportamiento propio y tecnicamente desafiante. Toda la implementacion de las explosiones consistio en un minusioso proceso de prueba y error de parametros hasta encontrar valores que nos satisfaciesen. Una decision que tomamos fue la de tener una clase "Arma" generica. Esto lo hicimos porque creiamos que seria mas facil tener una unica clase que cambiase de valores en vez de varias clases que implementacen todas las armas. En retrospectiva, tal vez hubiese sido mejor idea hacer una interfaz "Arma" y que cada arma fuese una implementacion de dicha interfaz. Esto, potencialmente, podria haber dejado el codigo mas limpio, ya que cada implementacion estaria encapusulado en la clase del arma correspondiente.
