@@ -26,12 +26,17 @@ Se presentó un menú con todas las armas que se pueden equipar. Se conectan var
 Se pidió tener implementadas más armas con hitboxes (u otra forma, si se puede hacer). Modificar cómo se aplica el daño para que la entidad sepa con que esta colisionando y cómo afecta la otra entidad. Se pide agregar readme con instrucciones de ejecución para la entrega parcial. También se pide tener el menú con QT implementado y poder eliminar los elementos de box2d.
 
 ## Herramientas
-(Poner los IDES)
-
+### Herramientas
+(Poner los IDES?)
 Una herramienta que empezamos a usar desde el comienzo del trabajo fueron las "Github Actions". Usando un servidor propio, cada commit era compilado cada vez que se realizaba un push. Esto nos permitía tener un ambiente "agnóstico" para testear cada commit. 
 En las github actions incorporamos 3 compiladores distintos: Gcc, Clang y Zig. Esto lo hicimos con la esperanza de que distintos compiladores den distintas advertencias, y así poder mejorar la calidad del código. En la practica, esto no sucedió. Los 3 compiladores tenían, en esencia, el mismo comportamiento. 
 Ademas, de compilar el código, corríamos cppcheck. Esto lo hicimos con la esperanza de poder atrapar errores a futuro. Sin embargo, debido a la longitud del TP, terminamos ignorando casi en su totalidad cppcheck.
 En retrospectiva, hubiese sido mejor tener solamente los compiladores (Gcc y/o Clang; Zig tuvo problemas de linkeo con algunas de las librerías); ya que, al tener siempre errores con cppcheck, las actions perdían su "peso".
+### Documentacion
+#### Server
+Para el servidor nuestras principales fuentes de informacion fueron la documentacion oficial de [box2d](https://box2d.org/) y [iforce2d](https://www.iforce2d.net/) para ver implementaciones de ejemplo.
+
+
 
 ## Incorporaciones al temario
 Box2d XD XD XD
