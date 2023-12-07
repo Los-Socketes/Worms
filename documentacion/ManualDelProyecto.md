@@ -11,16 +11,20 @@ Se pidió tener una conexión funcional entre server y cliente, se podía demost
 Se presentó un esqueleto con conversación inicial entre server y cliente para crear una partida. Además, del lado del cliente, se presentó que SDL mostraba una pantalla, renderizaba y se registraba el uso de las flechas.
 
 ### Semana 2
-Se pidió tener un gusano moviendose y configuración con archivos yaml. Además, se pidió reestructurar el proyecto para que cliente y jugador sean una sola clase. \
+Se pidió tener un gusano moviéndose y configuración con archivos yaml. Además, se pidió reestructurar el proyecto para que cliente y jugador sean una sola clase. \
 Se presentó un gusano con animación de movimiento (ya con movimiento enviado por socket) y el refactor pedido.
 
 ### Semana 3
 Se pidió tener implementada alguna arma para verificar lógica de bajar vida, incluir box2d, tener la concurrencia resuelta y reestructurar el proyecto para que el comportamiento de jugador vuelva a estar dividido en 2 clases (cliente y jugador).\
-Se presentó un juego en el que se podían conectar mas de 1 gusano a la misma partida. Se implementó gravedad, movimiento y colisión con box2d. Se presentó el mapa renderizado en capas con fondo, agua y gusanos, además de movimiento de cámara y animaciones para equipar bate y atacar. De parte del protocolo se presentaron tests para todos los metodos públicos además de cambios para permitir los avances de cliente y servidor. Por último, se presentó una base de cómo se representarán las armas y el archivo de configuración de las mismas.
+Se presentó un juego en el que se podían conectar mas de 1 gusano a la misma partida. Se implementó gravedad, movimiento y colisión con box2d. Se presentó el mapa renderizado en capas con fondo, agua y gusanos, además de movimiento de cámara y animaciones para equipar bate y atacar. De parte del protocolo se presentaron tests para todos los métodos públicos además de cambios para permitir los avances de cliente y servidor. Por último, se presentó una base de cómo se representarán las armas y el archivo de configuración de las mismas.
 
 ### Semana 4
-Se pidió tener implementadas 3 armas mas, además de poder tenerlas en un menú. Además del lado del cliente se pidió agregar el manejador de texturas. Para el server se pidió tener un juego "funcional" de forma que interactuen los gusanos y se puedan atacar los unos a los otros. \
+Se pidió tener implementadas 3 armas mas, además de poder tenerlas en un menú. Además del lado del cliente se pidió agregar el manejador de texturas. Para el server se pidió tener un juego "funcional" de forma que interactúen los gusanos y se puedan atacar los unos a los otros. \
 Se presentó un menú con todas las armas que se pueden equipar. Se conectan varios gusanos, se golpean entre ellos y se baja la vida. Para el bate se puede setear el ángulo y tiene los límites correctos. Se presentó una base de teletransportación que funciona pero envía una posición constante. De parte del protocolo se modificó el envío y obtención del estado del juego para que sea con shared pointers, también se agregaron los mensajes para la configuración de ataque (ángulo, potencia, cuenta regresiva, coordenadas teletransportación).
 
 ### Semana 5
-Se pidió tener implementadas más armas con hitboxes (u otra forma, si se puede hacer). Modificar cómo se aplica el daño para que la entidad sepa con que esta colicionando y cómo afecta la otra entidad. Se pide agregar readme con instrucciones de ejecución para la entrega parcial. También se pide tener el menú con QT implementado y poder eliminar los elementos de box2d.
+Se pidió tener implementadas más armas con hitboxes (u otra forma, si se puede hacer). Modificar cómo se aplica el daño para que la entidad sepa con que esta colisionando y cómo afecta la otra entidad. Se pide agregar readme con instrucciones de ejecución para la entrega parcial. También se pide tener el menú con QT implementado y poder eliminar los elementos de box2d. \
+Se presentaron 3 armas funcionales, bate de baseball, dinamita y teletransporte, se grafica también cuando se cambia el temporizador y la potencia. Ademas se presentó el menú hecho en QT. Al juego se le agregaron los sonidos y música ambiente. Se arreglaron los errores de valgrind del lado server para que no pierda memoria. Se programaron también para que se vean las animaciones de todos los proyectiles y fragmentos y se actualizó el estado del juego para que envíe los proyectiles a graficar. Se implementó también una clase para configurar los datos que usa el cliente en base a un yaml. Ademas se agregó la loéica de turnos y tiempo restante. Se consiguió eliminar los cuerpos de box2d.
+
+### Semana 6
+Se dieron correcciones en un excel por la primera entrega del trabajo, se clasificaban desde P1 (las mas importantes) a P5 (las menos importantes). Se pidió tener implementada la bazooka obligatoriamente e intentar tener mas armas.
