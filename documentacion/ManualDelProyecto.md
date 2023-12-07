@@ -60,7 +60,8 @@ Se hizo la entrega final con provisiones de vida, municiones y trampa donde dent
 
 
 ## Incorporaciones al temario
-Box2d XD XD XD ( TODO Terminar)
+Una de los temas que nos hubiese gustado ver en clase es Box2d. Mucha de la documentacion que recomienda la catedra tiene funcionalidades deprecadas y/o no funcionales. 
+Una introduccion a como funciona Box2d y como estructurar codigo al rededor de este hubiese sido de gran ayuda. Con esta informacion, hubiese sido mas facil estructurar la logica de la parte del servidor.
 
 ## Herramientas utilizadas
 ### IDEs
