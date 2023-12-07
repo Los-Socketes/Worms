@@ -21,6 +21,8 @@ void Animacion::dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& a
 
     int coord_x = pos_x;
     int coord_y = pos_y;
+    int dimension_x = dimensiones.first;
+    int dimension_y = dimensiones.second;
 
     if (centro == Centro::CENTRO) {
         coord_x -= dimensiones.first / 2;
@@ -34,9 +36,15 @@ void Animacion::dibujarComun(Camara& camara, int& pos_x, int& pos_y, radianes& a
         coord_x -= dimensiones.first;
     }
 
+    if (angulo != 0) {
+        // Si la imagen esta rotada utilizo la hipotenusa como dimensiones de interseccion.
+        // Es más fácil que calcular el máximo de los vertices de la imagen rotada.
+        dimension_x = sqrt(dimensiones.first * dimensiones.first + dimensiones.second * dimensiones.second);
+        dimension_y = dimension_x;
+    }
 
     if (seguir_camara) {
-        std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(coord_x, coord_y, dimensiones.first, dimensiones.second));
+        std::optional<Rect> rect_interseccion = camara.getRectangulo().GetIntersection(Rect(coord_x, coord_y, dimension_x, dimension_y));
 
         coord_x -= camara.getPosicionX();
         coord_y -= camara.getPosicionY();

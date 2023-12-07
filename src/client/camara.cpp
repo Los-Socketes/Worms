@@ -55,32 +55,29 @@ void Camara::moverHaciaObjetivo() {
         // Calculo el vector entre la posicion de la camara y el objetivo.
         int deltaX = objetivo.first - posicion.first - floor(dimension.first / 2);
         int deltaY = objetivo.second - posicion.second - floor(dimension.second / 2);
-
-        float norma = sqrt(deltaX * deltaX + deltaY * deltaY);
-        if (deltaX < 5) {
+        // La cámara se mueve lentamente en cada eje hacia el objetivo.
+        // Si el objetivo esta a menos de 10 pixeles, se mueve directamente a la posicion del objetivo.
+        if (abs(deltaX) < 5) {
             posicion.first = objetivo.first - floor(dimension.first / 2);
-            if (posicion.first < 0)
+            if (posicion.first < 0) {
                 posicion.first = 0;
-            else if (posicion.first > dimension_mapa.first - dimension.first)
+            } else if (posicion.first > dimension_mapa.first - dimension.first) {
                 posicion.first = dimension_mapa.first - dimension.first;
-        }
-        else {
-            deltaX = deltaX * VELOCIDAD_CAMARA / norma;
-            if (deltaX != 0) {
-                moverEnEjeX(deltaX);
             }
-        }
-        if (deltaY < 5) {
-            posicion.second = objetivo.second - floor(dimension.second / 2);
-            if (posicion.second < 0)
-                posicion.second = 0;
-            else if (posicion.second > dimension_mapa.second - dimension.second)
-                posicion.second = dimension_mapa.second - dimension.second;
         } else {
-            deltaY = deltaY * VELOCIDAD_CAMARA / norma;
-            if (deltaY != 0) {
-                moverEnEjeY(deltaY);
+            deltaX = deltaX / 10;
+            moverEnEjeX(deltaX);
+        }
+        if (abs(deltaY) < 5) {
+            posicion.second = objetivo.second - floor(dimension.second / 2);
+            if (posicion.second < 0) {
+                posicion.second = 0;
+            } else if (posicion.second > dimension_mapa.second - dimension.second) {
+                posicion.second = dimension_mapa.second - dimension.second;
             }
+        } else {
+            deltaY = deltaY / 10;
+            moverEnEjeY(deltaY);
         }
     } else {
         // Si el mouse se movio en los ultimos 3 segundos, se decrementa el contador.

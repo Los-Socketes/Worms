@@ -209,14 +209,11 @@ void EntidadInterfaz::dibujarViento() {
     std::pair<int, int> posicion;
     int pixeles_a_dibujar = 0;
     // Para la barra izquierda, si el viento no sopla/sopla a la derecha la tapo completamente.
-    printf("Viento min: %d\n", viento_min);
-    printf("Viento actual: %d\n", viento_actual);
     if (viento_actual >= 0)
         pixeles_a_dibujar = 96;
     // Si no, la tapo según la intensidad.
     else
         pixeles_a_dibujar = (abs(viento_min) + viento_actual) * 96 / abs(viento_min);
-    printf("Viento a dibujar izq: %d\n", pixeles_a_dibujar);
     posicion.first = ancho_pantalla / 2 - 97;
     posicion.second = 18;
     gestor_animaciones.getAnimacionEscenario(VIENTO_IZQUIERDA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
@@ -229,14 +226,11 @@ void EntidadInterfaz::dibujarViento() {
         posicion.second + 12);
     posicion.first = ancho_pantalla / 2 + 2;
     // Calculo el viento para la barra derecha, si sopla a la izquierda o no sopla, se tapa toda.
-    printf("Viento max: %d\n", viento_max);
-    printf("Viento actual: %d\n", viento_actual);
     if (viento_actual <= 0)
         pixeles_a_dibujar = 96;
     // Si no, la tapo según la intensidad.
     else
         pixeles_a_dibujar = (abs(viento_max) - viento_actual) * 96 / abs(viento_max);
-    printf("Viento a dibujar der: %d\n", pixeles_a_dibujar);
     gestor_animaciones.getAnimacionEscenario(VIENTO_DERECHA)->dibujar(camara, posicion.first, posicion.second, false, it, 1);
     renderizador.FillRect(posicion.first + 96,
         posicion.second + 13,
