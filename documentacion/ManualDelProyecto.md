@@ -1,9 +1,31 @@
 # Manual del proyecto
 ## División del trabajo
-El proyecto se dividió en:
+El proyecto originalmente se dividió en:
 - Cliente (realizado por Juan Pablo Fresia)
 - Server (realizado por Tomás Fabrizio Orsi)
 - Protocolo + concurrencia (realizado por Antonella Jazmín Pellegrini)
+
+A continuación se presenta una lista más detallada de que implementó cada integrante
+### Juan Pablo Fresia
+- Lógica del cliente
+- Parte gráfica con SDL
+- Manual de usuario
+
+### Tomás Fabrizio Orsi
+- Lógica del server
+- Box2d
+- CMake
+- Configuración por yaml de server
+
+### Antonella Jazmín Pellegrini
+- Protocolo (código y tests)
+- Valgrind del server
+- Configuración por yaml de armas, mapas y cliente
+- Menú con QT
+- Daño por caida
+- Generalización de recibir daño + salto post recibir daño
+- Parabola de proyectil + velocidad en base a potencia + representación del ángulo
+- Cambio de elasticidad para que el arma "banana" rebote más que el resto de armas
 
 ## División semanal
 La división semanal esta presentada en base a las reuniones que el grupo tuvo con las correctoras.
