@@ -68,7 +68,8 @@ Tanto Juan Pablo Fresia como Antonella Jazmín Pellegrini realizaron el código 
 Para el servidor nuestras principales fuentes de información fueron la documentación oficial de [box2d](https://box2d.org/) y [iforce2d](https://www.iforce2d.net/) para ver implementaciones de ejemplo.
 
 #### Cliente
-Para cliente, se consultaron varios ejemplos y tutoriales de SDL2. Principalmente [libSDL2pp-tutorial](https://github.com/libSDL2pp/libSDL2pp-tutorial), tutorial SDL en [Lazy Foo](https://lazyfoo.net/tutorials/SDL), ejemplos de la librería [libSDL2pp](https://github.com/libSDL2pp/libSDL2pp), y la misma wiki de [SDL2](https://wiki.libsdl.org/SDL2/FrontPage).
+Para cliente, se consultaron varios ejemplos y tutoriales de SDL2. Principalmente [libSDL2pp-tutorial](https://github.com/libSDL2pp/libSDL2pp-tutorial), tutorial SDL en [Lazy Foo](https://lazyfoo.net/tutorials/SDL), ejemplos de la librería [libSDL2pp](https://github.com/libSDL2pp/libSDL2pp), y la misma wiki de [SDL2](https://wiki.libsdl.org/SDL2/FrontPage).\
+En tanto a los recursos, los sprites fueron sacados de [The Spriters Resource](https://www.spriters-resource.com/pc_computer/wormsgeddon/sheet/13597/), los sonidos de [The Sounds Resource](https://www.sounds-resource.com/pc_computer/wormsarmageddon/sound/4621/) y la música de [Youtube](https://www.youtube.com/watch?v=Yc-M2OVIkUs).
 
 ### Otras herramientas
 Una herramienta que empezamos a usar desde el comienzo del trabajo fueron las "Github Actions". Usando un servidor propio, cada commit era compilado cada vez que se realizaba un push. Esto nos permitía tener un ambiente "agnóstico" para testear cada commit. 

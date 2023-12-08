@@ -17,6 +17,7 @@
 ![Pagina 15](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-15.png)
 ![Pagina 16](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-16.png)
 ![Pagina 17](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-17.png)
+![Pagina 18](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-18.png)
 
 ## Instrucciones de instalación:
 
