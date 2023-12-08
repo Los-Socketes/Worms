@@ -20,7 +20,7 @@ Los gusanos interactúan fundamentalmente con la clase Arma. Esta es una clase g
 
 ## Clases implementadas
 - Server: Inicia el programa y espera una "q" para terminar.
-- Monitor de partida: Encargado de manejar manejar todas las partidas vivas. Cuando una de estas termina, este se encarga de destruirla.
+- Monitor de partida: Encargado de manejar todas las partidas vivas. Cuando una de estas termina, este se encarga de destruirla.
 - Partida: Encapsula toda la logica del juego. Clase principal de la parte del server. Esta se encarga de hacer que los gusanos ejecuten sus acciones, maneja los turnos y posee toda la logica de box2d.
 - Cliente: Representa un usuario conectado al servidor. Posee las clases sender y reciever.
 - Sender: Clase que se encarga de enviar el estado del juego a traves del protocolo.
@@ -33,3 +33,4 @@ Los gusanos interactúan fundamentalmente con la clase Arma. Esta es una clase g
 - Arma: Clase genérica que encapsula el comportamiento de todas las armas. Cambia sus parámetros dependiendo del arma elegida. 
 - Mapa: Clase que se encarga de la logica del mapa. 
 
+[Diagrama de clases]("diagramaClasese.png" ":p")
