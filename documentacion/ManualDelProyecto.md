@@ -6,8 +6,10 @@ El proyecto originalmente se dividió en:
 - Protocolo + concurrencia (realizado por Antonella Jazmín Pellegrini)
 
 A continuación se presenta una lista más detallada de que implementó cada integrante
-### Juan Pablo Fresia - Lógica del cliente
-- Parte gráfica con SDL
+### Juan Pablo Fresia
+- Lógica del cliente
+- Gráficos con SDL
+- Sonidos con SDL
 - Manual de usuario
 
 ### Tomás Fabrizio Orsi
@@ -64,6 +66,9 @@ Tanto Juan Pablo Fresia como Antonella Jazmín Pellegrini realizaron el código 
 ### Documentación
 #### Server
 Para el servidor nuestras principales fuentes de información fueron la documentación oficial de [box2d](https://box2d.org/) y [iforce2d](https://www.iforce2d.net/) para ver implementaciones de ejemplo.
+
+#### Cliente
+Para cliente, se consultaron varios ejemplos y tutoriales de SDL2. Principalmente [libSDL2pp-tutorial](https://github.com/libSDL2pp/libSDL2pp-tutorial), tutorial SDL en [Lazy Foo](https://lazyfoo.net/tutorials/SDL), ejemplos de la librería [libSDL2pp](https://github.com/libSDL2pp/libSDL2pp), y la misma wiki de [SDL2](https://wiki.libsdl.org/SDL2/FrontPage).
 
 ### Otras herramientas
 Una herramienta que empezamos a usar desde el comienzo del trabajo fueron las "Github Actions". Usando un servidor propio, cada commit era compilado cada vez que se realizaba un push. Esto nos permitía tener un ambiente "agnóstico" para testear cada commit. 

@@ -34,3 +34,28 @@ Los gusanos interactúan fundamentalmente con la clase Arma. Esta es una clase g
 - Mapa: Clase que se encarga de la logica del mapa. 
 
 ![Diagrama de clases](diagramaClases.png)
+
+# Cliente
+El cliente se dividió en 4 hilos. El primero es el hilo principal, el cual se encarga de ejecutar el menú. Una vez que se conecta a una partida, inicializa los otros 3 hilos y ejecuta el loop principal del juego. El loop principal del juego llama a un control de entidades, el cual se encarga de actualizar las entidades del juego y dibujarlas en pantalla. Cada entidad controla sus iteraciones y conoce a los gestores de animaciones y sonidos, que funcionan como librerías de punteros a esos recursos. El loop principal además recibe eventos de SDL a traves de una cola no bloqueante para comandos internos del cliente, como por ejemplo cerrar el juego. El loop está implementado como un "constant rate loop" para que las animaciones no se vean afectadas por la velocidad de procesamiento del cliente.\
+El segundo hilo es el encargado de recibir los estados de juego desde el servidor. Este pushea los estados a una cola de estados, la cual es compartida con el hilo principal. El hilo principal hace un pop no bloqueante de la cola de estados, y en caso de que haya un estado disponible, lo procesa y lo muestra en pantalla. Si no hay estados disponibles, se sigue mostrando el último estado recibido y se inicia un timer para que en caso de que no se reciban estados en un tiempo determinado, se desconecte al cliente.\
+El tercer hilo es el encargado de enviar las acciones del cliente al servidor. Este hilo recibe las acciones desde una cola compartida con el cuarto hilo. Estas acciones son polimórficas, cada una conoce a qué método del protocolo debe llamar para enviarse a sí misma.\
+Por último, el cuarto hilo es el encargado de recibir los eventos de SDL y convertirlos en acciones o comandos internos. Este hilo conoce dos colas, una de acciones y otra de comandos. La primera le permite la comunicación con el hilo de envío de acciones, y la segunda con el hilo principal.
+
+## Clases implementadas
+- Cliente: Clase principal del cliente. Se encarga de inicializar los hilos y ejecutar el loop principal del juego.
+- Control de entidades: Clase que se encarga de actualizar las entidades del juego y decirles que se dibujen en pantalla.
+- Entidad: Clase abstracta que representa una entidad del juego. Sus subclases conocen cómo dibujarse en pantalla y cómo actualizarse.
+- Gestor de animaciones: Clase que se encarga de cargar y devolver punteros a las animaciones del juego.
+- Gestor de sonidos: Clase que se encarga de cargar y devolver punteros a los sonidos del juego.
+- Animación: Clase que representa una animación del juego. Conoce el recurso aplicado como textura de SDL y se encarga de dibujar el frame correspondiente según la iteración actual.
+- Sonido: Clase que representa un sonido del juego. Conoce el recurso aplicado como sonido de SDL y se encarga de reproducirlo.
+- Recibidor: Hilo encargado de recibir los estados de juego desde el servidor.
+- Enviador: Hilo encargado de enviar las acciones del cliente al servidor.
+- EntradaTeclado: Hilo encargado de recibir los eventos de SDL y convertirlos en acciones o comandos internos.
+- AcciónCliente: Clase abstracta que representa una acción del cliente. Sus subclases conocen a qué método del protocolo deben llamar para enviarse a sí mismas.
+- Cámara: Clase que representa la cámara del juego. A través de su posición y dimensiones, sabe qué parte del mapa debe dibujarse en pantalla. Conoce la posición del objetivo a seguir, y se mueve hacia él si no hubo un movimiento del mouse para controlarla en un tiempo determinado.
+- Menú: Clase que representa el menú del juego. Es lo primero en iniciarse y establecer una conexión con el servidor. A través de el se determina si se está creando una partida o uniéndose a una existente.
+
+Una aproximación de la estructura de clases del cliente se puede ver en el siguiente diagrama:
+
+![Diagrama de clases](diagramaClasesCliente.png)
