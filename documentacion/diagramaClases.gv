@@ -73,6 +73,7 @@ aceptador->monitorPartidas
 monitorPartidas->partidas
 
 partidas->cliente [label = "Lista de", style = dashed ]
+partidas->jugador [label = "Lista de", style = dashed ]
 partidas->gusano
 
 jugador->gusano [label = "Los que le pertenecen", style = dashed ]

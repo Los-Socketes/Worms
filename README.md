@@ -1,4 +1,23 @@
 # Worms - Grupo 5
+![Pagina 0](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-0.png)
+![Pagina 1](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-1.png)
+![Pagina 2](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-2.png)
+![Pagina 3](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-3.png)
+![Pagina 4](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-4.png)
+![Pagina 5](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-5.png)
+![Pagina 6](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-6.png)
+![Pagina 7](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-7.png)
+![Pagina 8](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-8.png)
+![Pagina 9](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-9.png)
+![Pagina 10](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-10.png)
+![Pagina 11](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-11.png)
+![Pagina 12](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-12.png)
+![Pagina 13](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-13.png)
+![Pagina 14](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-14.png)
+![Pagina 15](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-15.png)
+![Pagina 16](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-16.png)
+![Pagina 17](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-17.png)
+![Pagina 18](documentacion/ManualDeUsuario/ManualDeUsuario-Worms-Los-Socketes-18.png)
 
 ## Instrucciones de instalación:
 

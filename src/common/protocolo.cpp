@@ -1119,7 +1119,7 @@ bool Protocolo::enviarGusanos(std::map<idJugador, std::map<id, RepresentacionGus
                 return false;
             }
             
-            // envio posicion
+            // envio posicion :D
             std::vector<int32_t> posAEnviar;
             posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enX)));
             posAEnviar.push_back(htonl((int32_t)toInt(gusano.posicion.enY)));
