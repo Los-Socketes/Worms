@@ -1,6 +1,16 @@
 # Cliente
 
 # Protocolo
+El protocolo tiene dos tipos de mensajes, los de envío y los de obtención de información. Para ambos la estructura es similar, pero en lo que se diferencian es en que devuelven.\
+Los de envío, que comienzan en su mayoría con "enviar" en caso de éxito devuelven true, mientras que en caso de fallar devuelven false. Estos mensajes comienzan enviando un código en base al tipo de mensaje. Internamente, comienzan con un código para identificar el tipo de información a enviar y luego el contenido en un formato específico. Cada tipo de dato se envía siguiendo un formato, siendo este el siguiente:
+- Bools, códigos y enums: int8_t. Para los códigos existen métodos genéricos para enviarlos y recibirlos
+- Vectores: primero se envía la cantidad de valores a leer y luego cada valor/ conjunto de valores que forme el elemento del vector.
+- Floats: se convierten en ints con la función toInt() y se vuelven floats con toFloat(). Ademas, como se envían en int32_t es necesario el uso de htonl y ntohl para poder obtenerlos correctamente.
+- Ids: se envían con int32_t, pero también existen métodos para simplificar ese paso.
+- Pair: se preparan los valores en un vector y se envían, en caso de ser coordenadas, primero x y luego y.
+
+Por otro lado, para obtener los mensajes se van obteniendo haciendo el proceso inverso a enviar los datos y se almacenan en un struct en base a la firma del método. En caso de que en algún momento falle el método y no consiga obtener toda la información, se devuelve un struct/ valor que es conocido como inválido. Para los ids existe INVAL_ID, para enums que definen el tipo de acción a realizar se agrego un valor que sea INVAL_* para poder diferenciarlos.\
+El único método distinto es el de obtenerAccion, ya que es el que debe recibir todos los tipos de acción que el cliente/ jugador le envíe. Por esta misma razón, es necesario contemplar varios códigos validos ya que en esta implementación, los distintos tipos de acción tienen distinto código para que los mensajes sean lo mas cortos posibles y de esta forma la información se transmita eficientemente.
 
 # Server
 El server contiene una clase "Server" que inicia al aceptador y espera a que se escriba por la terminal "q" para cerrar el programa. Cada una de estas partidas se corre en un hilo propio. El conjunto de las partidas es manejado a través de un "Manejador de Partidas"; este se encarga de que crear nuevas partidas y destruir el hilo/ partida si la partida finalizó.\
