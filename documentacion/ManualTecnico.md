@@ -33,4 +33,4 @@ Los gusanos interactúan fundamentalmente con la clase Arma. Esta es una clase g
 - Arma: Clase genérica que encapsula el comportamiento de todas las armas. Cambia sus parámetros dependiendo del arma elegida. 
 - Mapa: Clase que se encarga de la logica del mapa. 
 
-![Diagrama de clases]("./diagramaClases.png")
+[Diagrama de clases]("./diagramaClases.png")
