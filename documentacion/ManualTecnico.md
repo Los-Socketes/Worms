@@ -27,9 +27,9 @@ Los gusanos interactúan fundamentalmente con la clase Arma. Esta es una clase g
 - Reciever: Clase que se encarga de recibir las acciones y enviarselas a la partida. Esta se encarga de incluir el ID del jugador al que representa. 
 - Jugador: Representa el jugador de un cliente. Este tiene una lista de sus gusanso y se encarga de saber a que gusano le toca moverse.
 - Gusano: Clase que ejecuta las acciones recibidas. Tiene la logica de qué proyectiles crear dada una accion.
-- Configuración server: Clase que lee el yaml y actualiza los valores de las constantes usadas. No tiene ningun tipo de logica del juego.
-- Aceptador: Encargado de aceptar conexiones mediante un socket aceptador. Este se encarga de crear clientes y destuirlo en caso de que se pierda la conexion.
-- Provision: Clase que se encarga de la logica de las provisiones
+- Configuración server: Clase que lee el yaml y actualiza los valores de las constantes usadas. No tiene ningún tipo de lógica del juego.
+- Aceptador: Encargado de aceptar conexiones mediante un socket aceptador. Este se encarga de crear clientes y destuirlo en caso de que se pierda la conexión.
+- Provision: Clase que se encarga de la lógica de las provisiones
 - Arma: Clase genérica que encapsula el comportamiento de todas las armas. Cambia sus parámetros dependiendo del arma elegida. 
 - Mapa: Clase que se encarga de la logica del mapa. 
 
