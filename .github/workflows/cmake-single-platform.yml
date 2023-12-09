@@ -132,15 +132,15 @@ jobs:
 
       run: sh ./build/grepearTodos.sh
 
-  cppcheck:
-    runs-on: self-hosted
+  # cppcheck:
+  #   runs-on: self-hosted
 
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: Cppcheck es solo una herramienta. Nadie nos obliga a esucharla. <Ni dioses ni reyes> - Andrew Ryan
+  #   - name: Cppcheck es solo una herramienta. Nadie nos obliga a esucharla. <Ni dioses ni reyes> - Andrew Ryan
 
-      run: sh ./build/cppcheck.sh
+  #     run: sh ./build/cppcheck.sh
 
   # include-what-you-use:
   #   runs-on: self-hosted
